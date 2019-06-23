@@ -1,0 +1,8 @@
+{
+  "restartable": "rs",
+  "ignoreRoot": [".git"],
+  "verbose": false,
+  "watch": ["server"],
+  "ext": "js",
+  "exec": "babel-node --extensions '.ts,.tsx' server/index.ts"
+}

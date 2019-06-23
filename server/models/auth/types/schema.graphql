@@ -1,0 +1,18 @@
+extend type Query {
+  getUserSecurityQuestionAnswers(
+    input: UserSecurityQuestionAnswerInput!
+  ): [SecurityQuestionAnswer!]!
+  isAuthenticated(input: IsAuthenticatedInput!): Boolean!
+}
+
+extend type Mutation {
+  registerUser(input: RegisterUserInput!): AuthPayload!
+  confirmUser(input: ConfirmUserInput!): String
+  loginUser(input: LoginUserInput!): AuthPayload!
+  setUserSecurityQuestionAnswers(input: UserSecurityQuestionInput!): String
+  verifyUserSecurityQuestionAnswers(input: UserSecurityQuestionInput!): String
+  resetPassword(input: ResetPasswordInput!): String
+  changePassword(input: ChangePasswordInput!): String
+  unlockAccount(input: UnlockAccountInput!): String
+  sendAuthEmail(input: SendAuthEmail!): String
+}

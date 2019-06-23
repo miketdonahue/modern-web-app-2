@@ -1,0 +1,18 @@
+type SecurityQuestion {
+  id: ID!
+  shortName: String!
+  question: String!
+  updatedAt: String!
+  createdAt: String!
+  deletedAt: String
+}
+
+type SecurityQuestionAnswer {
+  id: ID!
+  userAccount: UserAccount!
+  userSecurityQuestion: SecurityQuestion!
+  answer: String!
+  updatedAt: String!
+  createdAt: String!
+  deletedAt: String
+}

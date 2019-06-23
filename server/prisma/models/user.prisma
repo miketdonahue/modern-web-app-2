@@ -1,0 +1,21 @@
+type User {
+  id: ID! @id @unique
+  role: Role!
+  userAccount: UserAccount!
+  customerAccount: Customer
+  firstName: String
+  lastName: String
+  email: String! @unique
+  password: String
+  phoneCountryCode: String
+  phone: String
+  country: String
+  address1: String
+  address2: String
+  city: String
+  state: String
+  postalCode: String
+  updatedAt: DateTime!
+  createdAt: DateTime!
+  deletedAt: DateTime
+}

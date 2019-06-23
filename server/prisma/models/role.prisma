@@ -1,0 +1,12 @@
+type Role {
+  id: ID! @id @unique
+  name: RoleName! @unique
+  updatedAt: DateTime! @updatedAt
+  createdAt: DateTime! @createdAt
+  deletedAt: DateTime
+}
+
+# Enums
+enum RoleName {
+  USER
+}
