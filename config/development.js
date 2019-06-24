@@ -31,8 +31,13 @@ module.exports = merge(defaultConfig, {
         "'unsafe-eval'",
         'cdn.jsdelivr.net',
       ],
-      styleSrc: ["'self'", "'unsafe-inline'", 'cdn.jsdelivr.net'],
-      fontSrc: ["'self'", 'data:'],
+      styleSrc: [
+        "'self'",
+        "'unsafe-inline'",
+        'cdn.jsdelivr.net',
+        'fonts.googleapis.com',
+      ],
+      fontSrc: ["'self'", 'data:', 'fonts.gstatic.com'],
       imgSrc: [
         "'self'",
         'data:',

@@ -1,18 +1,26 @@
 {
-  "name": "web-app",
+  "name": "modern-web-app",
   "version": "1.0.0",
-  "description": "A React client built with Next.js",
-  "repository": "",
+  "description": "A modern web application using React, Apollo GraphQL, Prisma DB, and Express.js",
+  "repository": "https://github.com/meebix/modern-web-app",
   "author": "Michael Donahue <mtdonahue1@gmail.com>",
   "license": "MIT",
   "private": false,
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon",
-    "build": "next build && webpack --config server/webpack.config.js",
+    "build": "rm -rf .client .server && next build && webpack --config server/webpack.config.js",
     "start": "NODE_ENV=production node .server/index.js",
+    "dev": "nodemon",
     "lint": "eslint pages --ext '.ts,.tsx'",
-    "prettier:fix": ""
+    "prettier:fix": "prettier \"**/*.{ts,tsx}\" --write",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
+    "db:deploy": "prisma deploy",
+    "db:seed": "prisma seed",
+    "db:seed:reset": "yarn db:seed --reset",
+    "db:reset": "prisma reset",
+    "db:admin": "prisma admin"
   },
   "dependencies": {
     "@zeit/next-less": "^1.0.1",
