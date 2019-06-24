@@ -1,5 +1,5 @@
 .vscode
-.next
+.build
 config
 node_modules
 next.config.js

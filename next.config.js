@@ -4,7 +4,7 @@ const withLess = require('@zeit/next-less');
 
 module.exports = withTypescript(
   withLess({
-    distDir: '.client',
+    distDir: '.build/client',
     webpack(config) {
       config.resolve.alias = {
         ...config.resolve.alias,
@@ -14,18 +14,25 @@ module.exports = withTypescript(
         ),
       };
 
-      config.module.rules.push({
-        test: /\.(png|svg|eot|otf|ttf|woff|woff2)$/,
-        use: {
-          loader: 'url-loader',
-          options: {
-            limit: 8192,
-            publicPath: '/_next/static/',
-            outputPath: 'static/',
-            name: '[name].[ext]',
+      config.module.rules.push(
+        {
+          test: /\.(png|svg|eot|otf|ttf|woff|woff2)$/,
+          use: {
+            loader: 'url-loader',
+            options: {
+              limit: 8192,
+              publicPath: '/_next/static/',
+              outputPath: 'static/',
+              name: '[name].[ext]',
+            },
           },
         },
-      });
+        {
+          test: /\.graphql$/,
+          exclude: /node_modules/,
+          loader: 'graphql-tag/loader',
+        }
+      );
 
       return config;
     },

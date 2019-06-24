@@ -47,8 +47,8 @@ module.exports = merge(defaultConfig, {
       connectSrc: ["'self'", 'devtools.apollodata.com'],
     },
     dirs: {
-      types: 'models/**/types/*.graphql',
-      resolvers: 'models/**/resolvers/*.ts',
+      types: 'server/models/**/types/*.graphql',
+      resolvers: 'server/models/**/resolvers/*.ts',
       routes: 'pages/**/routes.ts',
       access: 'server/models/**/access.ts',
       validations: 'server/models/**/validations.ts',

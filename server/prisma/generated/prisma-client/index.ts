@@ -2,13 +2,13 @@
 // Please don't change this file manually but run `prisma generate` to update it.
 // For more information, please read the docs: https://www.prisma.io/docs/prisma-client/
 
-import { DocumentNode } from "graphql";
+import { DocumentNode } from 'graphql';
 import {
   makePrismaClientClass,
   BaseClientOptions,
-  Model
-} from "prisma-client-lib";
-import { typeDefs } from "./prisma-schema";
+  Model,
+} from 'prisma-client-lib';
+import { typeDefs } from './prisma-schema';
 
 export type AtLeastOne<T, U = { [K in keyof T]: Pick<T, K> }> = Partial<T> &
   U[keyof U];
@@ -357,145 +357,145 @@ export interface ClientConstructor<T> {
  * Types
  */
 
-export type RoleName = "USER";
+export type RoleName = 'USER';
 
 export type SecurityQuestionAnswerOrderByInput =
-  | "id_ASC"
-  | "id_DESC"
-  | "answer_ASC"
-  | "answer_DESC"
-  | "updatedAt_ASC"
-  | "updatedAt_DESC"
-  | "createdAt_ASC"
-  | "createdAt_DESC"
-  | "deletedAt_ASC"
-  | "deletedAt_DESC";
+  | 'id_ASC'
+  | 'id_DESC'
+  | 'answer_ASC'
+  | 'answer_DESC'
+  | 'updatedAt_ASC'
+  | 'updatedAt_DESC'
+  | 'createdAt_ASC'
+  | 'createdAt_DESC'
+  | 'deletedAt_ASC'
+  | 'deletedAt_DESC';
 
 export type CustomerOrderByInput =
-  | "id_ASC"
-  | "id_DESC"
-  | "stripeId_ASC"
-  | "stripeId_DESC"
-  | "updatedAt_ASC"
-  | "updatedAt_DESC"
-  | "createdAt_ASC"
-  | "createdAt_DESC"
-  | "deletedAt_ASC"
-  | "deletedAt_DESC";
+  | 'id_ASC'
+  | 'id_DESC'
+  | 'stripeId_ASC'
+  | 'stripeId_DESC'
+  | 'updatedAt_ASC'
+  | 'updatedAt_DESC'
+  | 'createdAt_ASC'
+  | 'createdAt_DESC'
+  | 'deletedAt_ASC'
+  | 'deletedAt_DESC';
 
-export type ProviderName = "GOOGLE";
+export type ProviderName = 'GOOGLE';
 
 export type OpenAuthOrderByInput =
-  | "id_ASC"
-  | "id_DESC"
-  | "provider_ASC"
-  | "provider_DESC"
-  | "accessToken_ASC"
-  | "accessToken_DESC"
-  | "refreshToken_ASC"
-  | "refreshToken_DESC"
-  | "expiresAt_ASC"
-  | "expiresAt_DESC"
-  | "updatedAt_ASC"
-  | "updatedAt_DESC"
-  | "createdAt_ASC"
-  | "createdAt_DESC"
-  | "deletedAt_ASC"
-  | "deletedAt_DESC";
+  | 'id_ASC'
+  | 'id_DESC'
+  | 'provider_ASC'
+  | 'provider_DESC'
+  | 'accessToken_ASC'
+  | 'accessToken_DESC'
+  | 'refreshToken_ASC'
+  | 'refreshToken_DESC'
+  | 'expiresAt_ASC'
+  | 'expiresAt_DESC'
+  | 'updatedAt_ASC'
+  | 'updatedAt_DESC'
+  | 'createdAt_ASC'
+  | 'createdAt_DESC'
+  | 'deletedAt_ASC'
+  | 'deletedAt_DESC';
 
 export type RoleOrderByInput =
-  | "id_ASC"
-  | "id_DESC"
-  | "name_ASC"
-  | "name_DESC"
-  | "updatedAt_ASC"
-  | "updatedAt_DESC"
-  | "createdAt_ASC"
-  | "createdAt_DESC"
-  | "deletedAt_ASC"
-  | "deletedAt_DESC";
+  | 'id_ASC'
+  | 'id_DESC'
+  | 'name_ASC'
+  | 'name_DESC'
+  | 'updatedAt_ASC'
+  | 'updatedAt_DESC'
+  | 'createdAt_ASC'
+  | 'createdAt_DESC'
+  | 'deletedAt_ASC'
+  | 'deletedAt_DESC';
 
-export type MutationType = "CREATED" | "UPDATED" | "DELETED";
+export type MutationType = 'CREATED' | 'UPDATED' | 'DELETED';
 
 export type SecurityQuestionOrderByInput =
-  | "id_ASC"
-  | "id_DESC"
-  | "shortName_ASC"
-  | "shortName_DESC"
-  | "question_ASC"
-  | "question_DESC"
-  | "updatedAt_ASC"
-  | "updatedAt_DESC"
-  | "createdAt_ASC"
-  | "createdAt_DESC"
-  | "deletedAt_ASC"
-  | "deletedAt_DESC";
+  | 'id_ASC'
+  | 'id_DESC'
+  | 'shortName_ASC'
+  | 'shortName_DESC'
+  | 'question_ASC'
+  | 'question_DESC'
+  | 'updatedAt_ASC'
+  | 'updatedAt_DESC'
+  | 'createdAt_ASC'
+  | 'createdAt_DESC'
+  | 'deletedAt_ASC'
+  | 'deletedAt_DESC';
 
 export type UserOrderByInput =
-  | "id_ASC"
-  | "id_DESC"
-  | "firstName_ASC"
-  | "firstName_DESC"
-  | "lastName_ASC"
-  | "lastName_DESC"
-  | "email_ASC"
-  | "email_DESC"
-  | "password_ASC"
-  | "password_DESC"
-  | "phoneCountryCode_ASC"
-  | "phoneCountryCode_DESC"
-  | "phone_ASC"
-  | "phone_DESC"
-  | "country_ASC"
-  | "country_DESC"
-  | "address1_ASC"
-  | "address1_DESC"
-  | "address2_ASC"
-  | "address2_DESC"
-  | "city_ASC"
-  | "city_DESC"
-  | "state_ASC"
-  | "state_DESC"
-  | "postalCode_ASC"
-  | "postalCode_DESC"
-  | "updatedAt_ASC"
-  | "updatedAt_DESC"
-  | "createdAt_ASC"
-  | "createdAt_DESC"
-  | "deletedAt_ASC"
-  | "deletedAt_DESC";
+  | 'id_ASC'
+  | 'id_DESC'
+  | 'firstName_ASC'
+  | 'firstName_DESC'
+  | 'lastName_ASC'
+  | 'lastName_DESC'
+  | 'email_ASC'
+  | 'email_DESC'
+  | 'password_ASC'
+  | 'password_DESC'
+  | 'phoneCountryCode_ASC'
+  | 'phoneCountryCode_DESC'
+  | 'phone_ASC'
+  | 'phone_DESC'
+  | 'country_ASC'
+  | 'country_DESC'
+  | 'address1_ASC'
+  | 'address1_DESC'
+  | 'address2_ASC'
+  | 'address2_DESC'
+  | 'city_ASC'
+  | 'city_DESC'
+  | 'state_ASC'
+  | 'state_DESC'
+  | 'postalCode_ASC'
+  | 'postalCode_DESC'
+  | 'updatedAt_ASC'
+  | 'updatedAt_DESC'
+  | 'createdAt_ASC'
+  | 'createdAt_DESC'
+  | 'deletedAt_ASC'
+  | 'deletedAt_DESC';
 
 export type UserAccountOrderByInput =
-  | "id_ASC"
-  | "id_DESC"
-  | "confirmed_ASC"
-  | "confirmed_DESC"
-  | "confirmedCode_ASC"
-  | "confirmedCode_DESC"
-  | "locked_ASC"
-  | "locked_DESC"
-  | "lockedCode_ASC"
-  | "lockedCode_DESC"
-  | "lockedExpires_ASC"
-  | "lockedExpires_DESC"
-  | "resetPasswordCode_ASC"
-  | "resetPasswordCode_DESC"
-  | "resetPasswordExpires_ASC"
-  | "resetPasswordExpires_DESC"
-  | "loginAttempts_ASC"
-  | "loginAttempts_DESC"
-  | "securityQuestionAttempts_ASC"
-  | "securityQuestionAttempts_DESC"
-  | "lastVisit_ASC"
-  | "lastVisit_DESC"
-  | "ip_ASC"
-  | "ip_DESC"
-  | "updatedAt_ASC"
-  | "updatedAt_DESC"
-  | "createdAt_ASC"
-  | "createdAt_DESC"
-  | "deletedAt_ASC"
-  | "deletedAt_DESC";
+  | 'id_ASC'
+  | 'id_DESC'
+  | 'confirmed_ASC'
+  | 'confirmed_DESC'
+  | 'confirmedCode_ASC'
+  | 'confirmedCode_DESC'
+  | 'locked_ASC'
+  | 'locked_DESC'
+  | 'lockedCode_ASC'
+  | 'lockedCode_DESC'
+  | 'lockedExpires_ASC'
+  | 'lockedExpires_DESC'
+  | 'resetPasswordCode_ASC'
+  | 'resetPasswordCode_DESC'
+  | 'resetPasswordExpires_ASC'
+  | 'resetPasswordExpires_DESC'
+  | 'loginAttempts_ASC'
+  | 'loginAttempts_DESC'
+  | 'securityQuestionAttempts_ASC'
+  | 'securityQuestionAttempts_DESC'
+  | 'lastVisit_ASC'
+  | 'lastVisit_DESC'
+  | 'ip_ASC'
+  | 'ip_DESC'
+  | 'updatedAt_ASC'
+  | 'updatedAt_DESC'
+  | 'createdAt_ASC'
+  | 'createdAt_DESC'
+  | 'deletedAt_ASC'
+  | 'deletedAt_DESC';
 
 export interface RoleUpsertNestedInput {
   update: RoleUpdateDataInput;
@@ -3340,41 +3340,41 @@ export type String = string;
 
 export const models: Model[] = [
   {
-    name: "OpenAuth",
-    embedded: false
+    name: 'OpenAuth',
+    embedded: false,
   },
   {
-    name: "ProviderName",
-    embedded: false
+    name: 'ProviderName',
+    embedded: false,
   },
   {
-    name: "Role",
-    embedded: false
+    name: 'Role',
+    embedded: false,
   },
   {
-    name: "RoleName",
-    embedded: false
+    name: 'RoleName',
+    embedded: false,
   },
   {
-    name: "User",
-    embedded: false
+    name: 'User',
+    embedded: false,
   },
   {
-    name: "UserAccount",
-    embedded: false
+    name: 'UserAccount',
+    embedded: false,
   },
   {
-    name: "SecurityQuestion",
-    embedded: false
+    name: 'SecurityQuestion',
+    embedded: false,
   },
   {
-    name: "SecurityQuestionAnswer",
-    embedded: false
+    name: 'SecurityQuestionAnswer',
+    embedded: false,
   },
   {
-    name: "Customer",
-    embedded: false
-  }
+    name: 'Customer',
+    embedded: false,
+  },
 ];
 
 /**
@@ -3384,6 +3384,6 @@ export const models: Model[] = [
 export const Prisma = makePrismaClientClass<ClientConstructor<Prisma>>({
   typeDefs,
   models,
-  endpoint: `http://localhost:4466`
+  endpoint: `http://localhost:4466`,
 });
 export const prisma = new Prisma();

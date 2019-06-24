@@ -11,8 +11,8 @@ import { applyMiddleware } from 'graphql-middleware';
 import { prisma } from './prisma/generated/prisma-client';
 import { normalizeError } from './modules/errors';
 import logger from './modules/logger';
-import fileLoader from '../utils/node-file-loader';
-import mergeResolvers from '../utils/merge-resolvers';
+import fileLoader from './utils/node-file-loader';
+import mergeResolvers from './utils/merge-resolvers';
 import config from '../config';
 import {
   access,
@@ -22,10 +22,10 @@ import {
 } from './middleware';
 
 const dev = process.env.NODE_ENV !== 'production';
-const app = next({ dev });
+const app = next({ dev, dir: './src' });
 const handle = app.getRequestHandler();
-const typesDir = path.join(__dirname, config.server.dirs.types);
-const resolversDir = path.join(__dirname, config.server.dirs.resolvers);
+const typesDir = path.join(process.cwd(), config.server.dirs.types);
+const resolversDir = path.join(process.cwd(), config.server.dirs.resolvers);
 const routesDir = path.join(process.cwd(), config.server.dirs.routes);
 
 // Register types and resolvers
@@ -121,6 +121,11 @@ app
           Object.assign({}, req.query, req.params)
         )
       );
+    });
+
+    // TODO: is this right? also need _document
+    server.get('/favicon.ico', (req, res) => {
+      app.serveStatic(req, res, path.resolve('../static/favicon.ico'));
     });
 
     server.get('*', (req, res) => {

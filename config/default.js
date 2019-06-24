@@ -47,11 +47,11 @@ module.exports = {
       defaultSrc: ["'self'"],
     },
     dirs: {
-      types: 'models/**/types/*.graphql',
-      resolvers: 'models/**/resolvers/*.js',
+      types: '.build/server/models/**/types/*.graphql',
+      resolvers: '.build/server/models/**/resolvers/*.js',
       routes: 'pages/**/routes.js',
-      access: 'server/models/**/access.js',
-      validations: 'server/models/**/validations.js',
+      access: '.build/server/models/**/access.js',
+      validations: '.build/server/models/**/validations.js',
     },
   },
 };

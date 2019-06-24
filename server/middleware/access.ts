@@ -3,7 +3,7 @@ import { shield, deny } from 'graphql-shield';
 import assign from 'assign-deep';
 import config from '../../config';
 import { InternalError } from '../modules/errors';
-import fileLoader from '../../utils/node-file-loader';
+import fileLoader from '../utils/node-file-loader';
 
 const permissionsArray = fileLoader(
   path.join(process.cwd(), config.server.dirs.access)
