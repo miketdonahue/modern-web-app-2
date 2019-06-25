@@ -1,7 +1,7 @@
-const merge = require('deepmerge');
-const defaultConfig = require('./default');
+import merge from 'deepmerge';
+import defaultConfig from './default';
 
-module.exports = merge(defaultConfig, {
+export default merge(defaultConfig, {
   server: {
     host: 'http://localhost',
     contentSecurityPolicy: {

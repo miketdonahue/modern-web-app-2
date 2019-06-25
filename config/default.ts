@@ -1,4 +1,4 @@
-module.exports = {
+export default {
   client: {
     dirs: {
       types: 'pages/**/types/*.graphql',

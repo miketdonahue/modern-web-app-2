@@ -22,7 +22,7 @@ import {
 } from './middleware';
 
 const dev = process.env.NODE_ENV !== 'production';
-const app = next({ dev, dir: './src' });
+const app = next({ dev });
 const handle = app.getRequestHandler();
 const typesDir = path.join(process.cwd(), config.server.dirs.types);
 const resolversDir = path.join(process.cwd(), config.server.dirs.resolvers);
