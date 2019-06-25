@@ -3,6 +3,6 @@
   "ignoreRoot": [".git"],
   "verbose": false,
   "watch": ["server"],
-  "ext": "js",
+  "ext": "ts",
   "exec": "babel-node --extensions '.ts,.tsx' server/index.ts"
 }

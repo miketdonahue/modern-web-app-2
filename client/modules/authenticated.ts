@@ -9,7 +9,7 @@ export const checkAuthentication = async (ctx): Promise<any> => {
     ? document.cookie
     : req.headers.cookie;
   const cookies = new Cookies(universalCookies);
-  const token = cookies.get('jwt') || '';
+  const token = cookies.get('usr') || '';
 
   const {
     data: { isAuthenticated },

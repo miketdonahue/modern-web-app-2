@@ -123,12 +123,7 @@ app
       );
     });
 
-    // TODO: is this right? also need _document
-    server.get('/favicon.ico', (req, res) => {
-      app.serveStatic(req, res, path.resolve('../static/favicon.ico'));
-    });
-
-    server.get('*', (req, res) => {
+    server.get('*', [helmet()], (req, res) => {
       // Set a CSRF cookie on every get request
       // res.cookie('csrf', req.csrfToken());
 

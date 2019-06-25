@@ -5,6 +5,7 @@ const withLess = require('@zeit/next-less');
 module.exports = withTypescript(
   withLess({
     distDir: '.build/client',
+    poweredByHeader: false,
     webpack(config) {
       config.resolve.alias = {
         ...config.resolve.alias,

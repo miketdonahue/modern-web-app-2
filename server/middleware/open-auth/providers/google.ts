@@ -182,6 +182,6 @@ export const authenticate = async (req, res): Promise<any> => {
     'OPEN-AUTH-MIDDLEWARE: Setting jwt cookie and redirecting'
   );
 
-  res.cookie('jwt', token, { path: '/' });
+  res.cookie('usr', token, { path: '/' });
   return res.redirect(302, oauthConfig.successRedirect);
 };

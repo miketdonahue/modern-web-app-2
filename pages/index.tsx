@@ -16,7 +16,7 @@ const PostLink = (props): any => {
 class Index extends Component {
   private logout = () => {
     const cookies = new Cookies();
-    cookies.remove('jwt', { path: '/' });
+    cookies.remove('usr', { path: '/' });
 
     return Router.push('/login');
   };
