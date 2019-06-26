@@ -1,5 +1,5 @@
 import Cookies from 'universal-cookie';
-import * as queries from '../queries.graphql';
+import gql from 'graphql-tag';
 import { redirectTo } from './redirect';
 
 export const checkAuthentication = async (ctx): Promise<any> => {
@@ -11,10 +11,16 @@ export const checkAuthentication = async (ctx): Promise<any> => {
   const cookies = new Cookies(universalCookies);
   const token = cookies.get('usr') || '';
 
+  const IS_AUTHENTICATED = gql`
+    query isAuthenticated($input: IsAuthenticatedInput!) {
+      isAuthenticated(input: $input)
+    }
+  `;
+
   const {
     data: { isAuthenticated },
   } = await apolloClient.query({
-    query: queries.isAuthenticated,
+    query: IS_AUTHENTICATED,
     variables: { input: { token } },
   });
 
