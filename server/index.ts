@@ -3,8 +3,8 @@ import express from 'express';
 import next from 'next';
 import helmet from 'helmet';
 import cookieParser from 'cookie-parser';
-// import bodyParser from 'body-parser';
-// import csrf from 'csurf';
+import bodyParser from 'body-parser';
+import csrf from 'csurf';
 // import healthCheck from 'express-healthcheck';
 import { ApolloServer, makeExecutableSchema } from 'apollo-server-express';
 import { applyMiddleware } from 'graphql-middleware';
@@ -86,8 +86,8 @@ app
     server.use(requestLogger());
     // server.use('/health-check', healthCheck());
     server.use(cookieParser());
-    // server.use(bodyParser.urlencoded({ extended: false }));
-    // server.use(csrf({ cookie: { key: 's_csrf' } }));
+    server.use(bodyParser.urlencoded({ extended: false }));
+    server.use(csrf({ cookie: { key: 'xxcsrf' } }));
     server.use(
       helmet.contentSecurityPolicy({
         directives: config.server.contentSecurityPolicy,
@@ -123,10 +123,7 @@ app
       );
     });
 
-    server.get('*', [helmet()], (req, res) => {
-      // Set a CSRF cookie on every get request
-      // res.cookie('csrf', req.csrfToken());
-
+    server.get('*', (req, res) => {
       return handle(req, res);
     });
 

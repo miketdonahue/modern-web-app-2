@@ -6,13 +6,13 @@ export const authMiddleware = (cookies): any =>
     operation.setContext(({ headers = {} }) => {
       const cookie = new Cookies(cookies());
       const jwtToken = cookie.get('usr');
-      // const csrfToken = cookie.get('csrf');
+      const csrfToken = cookie.get('csrf');
 
       return {
         headers: {
           ...headers,
           authorization: jwtToken ? `Bearer ${jwtToken}` : null,
-          // 'CSRF-Token': csrfToken,
+          'CSRF-Token': csrfToken,
         },
       };
     });

@@ -2,6 +2,10 @@ import { oauth } from '../../middleware';
 
 export default [
   {
+    route: '/login',
+    page: 'login',
+  },
+  {
     route: '/oauth/google',
     controller: oauth.google.authorize,
   },

@@ -31,6 +31,11 @@ export default function withApolloClient(App): any {
       // Add apollo client to the `getInitialProps` context
       ctx.apolloClient = apollo;
 
+      if (!process.browser) {
+        // Set the CSRF token on server-side requests
+        ctx.res.cookie('csrf', ctx.req.csrfToken());
+      }
+
       if (App.getInitialProps) {
         appProps = await App.getInitialProps(context);
       }
