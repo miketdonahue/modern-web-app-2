@@ -16,6 +16,7 @@ export type AtLeastOne<T, U = { [K in keyof T]: Pick<T, K> }> = Partial<T> &
 export type Maybe<T> = T | undefined | null;
 
 export interface Exists {
+  blacklistedTokens: (where?: BlacklistedTokensWhereInput) => Promise<boolean>;
   customer: (where?: CustomerWhereInput) => Promise<boolean>;
   openAuth: (where?: OpenAuthWhereInput) => Promise<boolean>;
   role: (where?: RoleWhereInput) => Promise<boolean>;
@@ -46,6 +47,27 @@ export interface Prisma {
    * Queries
    */
 
+  blacklistedTokens: (
+    where: BlacklistedTokensWhereUniqueInput
+  ) => BlacklistedTokensNullablePromise;
+  blacklistedTokenses: (args?: {
+    where?: BlacklistedTokensWhereInput;
+    orderBy?: BlacklistedTokensOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => FragmentableArray<BlacklistedTokens>;
+  blacklistedTokensesConnection: (args?: {
+    where?: BlacklistedTokensWhereInput;
+    orderBy?: BlacklistedTokensOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => BlacklistedTokensConnectionPromise;
   customer: (where: CustomerWhereUniqueInput) => CustomerNullablePromise;
   customers: (args?: {
     where?: CustomerWhereInput;
@@ -191,6 +213,28 @@ export interface Prisma {
    * Mutations
    */
 
+  createBlacklistedTokens: (
+    data: BlacklistedTokensCreateInput
+  ) => BlacklistedTokensPromise;
+  updateBlacklistedTokens: (args: {
+    data: BlacklistedTokensUpdateInput;
+    where: BlacklistedTokensWhereUniqueInput;
+  }) => BlacklistedTokensPromise;
+  updateManyBlacklistedTokenses: (args: {
+    data: BlacklistedTokensUpdateManyMutationInput;
+    where?: BlacklistedTokensWhereInput;
+  }) => BatchPayloadPromise;
+  upsertBlacklistedTokens: (args: {
+    where: BlacklistedTokensWhereUniqueInput;
+    create: BlacklistedTokensCreateInput;
+    update: BlacklistedTokensUpdateInput;
+  }) => BlacklistedTokensPromise;
+  deleteBlacklistedTokens: (
+    where: BlacklistedTokensWhereUniqueInput
+  ) => BlacklistedTokensPromise;
+  deleteManyBlacklistedTokenses: (
+    where?: BlacklistedTokensWhereInput
+  ) => BatchPayloadPromise;
   createCustomer: (data: CustomerCreateInput) => CustomerPromise;
   updateCustomer: (args: {
     data: CustomerUpdateInput;
@@ -326,6 +370,9 @@ export interface Prisma {
 }
 
 export interface Subscription {
+  blacklistedTokens: (
+    where?: BlacklistedTokensSubscriptionWhereInput
+  ) => BlacklistedTokensSubscriptionPayloadSubscription;
   customer: (
     where?: CustomerSubscriptionWhereInput
   ) => CustomerSubscriptionPayloadSubscription;
@@ -356,6 +403,18 @@ export interface ClientConstructor<T> {
 /**
  * Types
  */
+
+export type RoleOrderByInput =
+  | 'id_ASC'
+  | 'id_DESC'
+  | 'name_ASC'
+  | 'name_DESC'
+  | 'updatedAt_ASC'
+  | 'updatedAt_DESC'
+  | 'createdAt_ASC'
+  | 'createdAt_DESC'
+  | 'deletedAt_ASC'
+  | 'deletedAt_DESC';
 
 export type RoleName = 'USER';
 
@@ -403,19 +462,19 @@ export type OpenAuthOrderByInput =
   | 'deletedAt_ASC'
   | 'deletedAt_DESC';
 
-export type RoleOrderByInput =
+export type MutationType = 'CREATED' | 'UPDATED' | 'DELETED';
+
+export type BlacklistedTokensOrderByInput =
   | 'id_ASC'
   | 'id_DESC'
-  | 'name_ASC'
-  | 'name_DESC'
+  | 'token_ASC'
+  | 'token_DESC'
   | 'updatedAt_ASC'
   | 'updatedAt_DESC'
   | 'createdAt_ASC'
   | 'createdAt_DESC'
   | 'deletedAt_ASC'
   | 'deletedAt_DESC';
-
-export type MutationType = 'CREATED' | 'UPDATED' | 'DELETED';
 
 export type SecurityQuestionOrderByInput =
   | 'id_ASC'
@@ -497,9 +556,22 @@ export type UserAccountOrderByInput =
   | 'deletedAt_ASC'
   | 'deletedAt_DESC';
 
-export interface RoleUpsertNestedInput {
-  update: RoleUpdateDataInput;
-  create: RoleCreateInput;
+export interface CustomerUpdateInput {
+  user?: Maybe<UserUpdateOneRequiredWithoutCustomerAccountInput>;
+  stripeId?: Maybe<String>;
+  deletedAt?: Maybe<DateTimeInput>;
+}
+
+export type BlacklistedTokensWhereUniqueInput = AtLeastOne<{
+  id: Maybe<ID_Input>;
+  token?: Maybe<String>;
+}>;
+
+export interface UserAccountUpdateOneRequiredWithoutUserInput {
+  create?: Maybe<UserAccountCreateWithoutUserInput>;
+  update?: Maybe<UserAccountUpdateWithoutUserDataInput>;
+  upsert?: Maybe<UserAccountUpsertWithoutUserInput>;
+  connect?: Maybe<UserAccountWhereUniqueInput>;
 }
 
 export type CustomerWhereUniqueInput = AtLeastOne<{
@@ -507,11 +579,57 @@ export type CustomerWhereUniqueInput = AtLeastOne<{
   stripeId?: Maybe<String>;
 }>;
 
-export interface SecurityQuestionUpdateOneRequiredInput {
-  create?: Maybe<SecurityQuestionCreateInput>;
-  update?: Maybe<SecurityQuestionUpdateDataInput>;
-  upsert?: Maybe<SecurityQuestionUpsertNestedInput>;
-  connect?: Maybe<SecurityQuestionWhereUniqueInput>;
+export interface OpenAuthUpdateManyMutationInput {
+  provider?: Maybe<ProviderName>;
+  accessToken?: Maybe<String>;
+  refreshToken?: Maybe<String>;
+  expiresAt?: Maybe<DateTimeInput>;
+  deletedAt?: Maybe<DateTimeInput>;
+}
+
+export interface CustomerCreateWithoutUserInput {
+  id?: Maybe<ID_Input>;
+  stripeId: String;
+  deletedAt?: Maybe<DateTimeInput>;
+}
+
+export interface UserUpsertNestedInput {
+  update: UserUpdateDataInput;
+  create: UserCreateInput;
+}
+
+export interface UserAccountUpdateWithoutUserDataInput {
+  confirmed?: Maybe<Boolean>;
+  confirmedCode?: Maybe<Int>;
+  locked?: Maybe<Boolean>;
+  lockedCode?: Maybe<Int>;
+  lockedExpires?: Maybe<String>;
+  resetPasswordCode?: Maybe<Int>;
+  resetPasswordExpires?: Maybe<String>;
+  securityQuestions?: Maybe<
+    SecurityQuestionAnswerUpdateManyWithoutUserAccountInput
+  >;
+  loginAttempts?: Maybe<Int>;
+  securityQuestionAttempts?: Maybe<Int>;
+  lastVisit?: Maybe<DateTimeInput>;
+  ip?: Maybe<String>;
+  deletedAt?: Maybe<DateTimeInput>;
+}
+
+export interface CustomerUpsertWithoutUserInput {
+  update: CustomerUpdateWithoutUserDataInput;
+  create: CustomerCreateWithoutUserInput;
+}
+
+export interface UserSubscriptionWhereInput {
+  mutation_in?: Maybe<MutationType[] | MutationType>;
+  updatedFields_contains?: Maybe<String>;
+  updatedFields_contains_every?: Maybe<String[] | String>;
+  updatedFields_contains_some?: Maybe<String[] | String>;
+  node?: Maybe<UserWhereInput>;
+  AND?: Maybe<UserSubscriptionWhereInput[] | UserSubscriptionWhereInput>;
+  OR?: Maybe<UserSubscriptionWhereInput[] | UserSubscriptionWhereInput>;
+  NOT?: Maybe<UserSubscriptionWhereInput[] | UserSubscriptionWhereInput>;
 }
 
 export interface UserAccountWhereInput {
@@ -656,12 +774,6 @@ export interface UserAccountWhereInput {
   NOT?: Maybe<UserAccountWhereInput[] | UserAccountWhereInput>;
 }
 
-export interface SecurityQuestionUpdateDataInput {
-  shortName?: Maybe<String>;
-  question?: Maybe<String>;
-  deletedAt?: Maybe<DateTimeInput>;
-}
-
 export interface RoleWhereInput {
   id?: Maybe<ID_Input>;
   id_not?: Maybe<ID_Input>;
@@ -710,9 +822,10 @@ export interface RoleWhereInput {
   NOT?: Maybe<RoleWhereInput[] | RoleWhereInput>;
 }
 
-export interface SecurityQuestionUpsertNestedInput {
-  update: SecurityQuestionUpdateDataInput;
-  create: SecurityQuestionCreateInput;
+export interface BlacklistedTokensCreateInput {
+  id?: Maybe<ID_Input>;
+  token: String;
+  deletedAt?: Maybe<DateTimeInput>;
 }
 
 export interface SecurityQuestionWhereInput {
@@ -787,15 +900,122 @@ export interface SecurityQuestionWhereInput {
   NOT?: Maybe<SecurityQuestionWhereInput[] | SecurityQuestionWhereInput>;
 }
 
+export interface BlacklistedTokensUpdateInput {
+  token?: Maybe<String>;
+  deletedAt?: Maybe<DateTimeInput>;
+}
+
+export interface SecurityQuestionSubscriptionWhereInput {
+  mutation_in?: Maybe<MutationType[] | MutationType>;
+  updatedFields_contains?: Maybe<String>;
+  updatedFields_contains_every?: Maybe<String[] | String>;
+  updatedFields_contains_some?: Maybe<String[] | String>;
+  node?: Maybe<SecurityQuestionWhereInput>;
+  AND?: Maybe<
+    | SecurityQuestionSubscriptionWhereInput[]
+    | SecurityQuestionSubscriptionWhereInput
+  >;
+  OR?: Maybe<
+    | SecurityQuestionSubscriptionWhereInput[]
+    | SecurityQuestionSubscriptionWhereInput
+  >;
+  NOT?: Maybe<
+    | SecurityQuestionSubscriptionWhereInput[]
+    | SecurityQuestionSubscriptionWhereInput
+  >;
+}
+
+export interface BlacklistedTokensUpdateManyMutationInput {
+  token?: Maybe<String>;
+  deletedAt?: Maybe<DateTimeInput>;
+}
+
+export interface OpenAuthSubscriptionWhereInput {
+  mutation_in?: Maybe<MutationType[] | MutationType>;
+  updatedFields_contains?: Maybe<String>;
+  updatedFields_contains_every?: Maybe<String[] | String>;
+  updatedFields_contains_some?: Maybe<String[] | String>;
+  node?: Maybe<OpenAuthWhereInput>;
+  AND?: Maybe<
+    OpenAuthSubscriptionWhereInput[] | OpenAuthSubscriptionWhereInput
+  >;
+  OR?: Maybe<OpenAuthSubscriptionWhereInput[] | OpenAuthSubscriptionWhereInput>;
+  NOT?: Maybe<
+    OpenAuthSubscriptionWhereInput[] | OpenAuthSubscriptionWhereInput
+  >;
+}
+
+export interface CustomerUpdateWithoutUserDataInput {
+  stripeId?: Maybe<String>;
+  deletedAt?: Maybe<DateTimeInput>;
+}
+
+export interface BlacklistedTokensSubscriptionWhereInput {
+  mutation_in?: Maybe<MutationType[] | MutationType>;
+  updatedFields_contains?: Maybe<String>;
+  updatedFields_contains_every?: Maybe<String[] | String>;
+  updatedFields_contains_some?: Maybe<String[] | String>;
+  node?: Maybe<BlacklistedTokensWhereInput>;
+  AND?: Maybe<
+    | BlacklistedTokensSubscriptionWhereInput[]
+    | BlacklistedTokensSubscriptionWhereInput
+  >;
+  OR?: Maybe<
+    | BlacklistedTokensSubscriptionWhereInput[]
+    | BlacklistedTokensSubscriptionWhereInput
+  >;
+  NOT?: Maybe<
+    | BlacklistedTokensSubscriptionWhereInput[]
+    | BlacklistedTokensSubscriptionWhereInput
+  >;
+}
+
+export interface CustomerUpdateOneWithoutUserInput {
+  create?: Maybe<CustomerCreateWithoutUserInput>;
+  update?: Maybe<CustomerUpdateWithoutUserDataInput>;
+  upsert?: Maybe<CustomerUpsertWithoutUserInput>;
+  delete?: Maybe<Boolean>;
+  disconnect?: Maybe<Boolean>;
+  connect?: Maybe<CustomerWhereUniqueInput>;
+}
+
+export type OpenAuthWhereUniqueInput = AtLeastOne<{
+  id: Maybe<ID_Input>;
+}>;
+
+export interface CustomerCreateInput {
+  id?: Maybe<ID_Input>;
+  user: UserCreateOneWithoutCustomerAccountInput;
+  stripeId: String;
+  deletedAt?: Maybe<DateTimeInput>;
+}
+
+export interface UserAccountCreateInput {
+  id?: Maybe<ID_Input>;
+  user: UserCreateOneWithoutUserAccountInput;
+  confirmed?: Maybe<Boolean>;
+  confirmedCode?: Maybe<Int>;
+  locked?: Maybe<Boolean>;
+  lockedCode?: Maybe<Int>;
+  lockedExpires?: Maybe<String>;
+  resetPasswordCode?: Maybe<Int>;
+  resetPasswordExpires?: Maybe<String>;
+  securityQuestions?: Maybe<
+    SecurityQuestionAnswerCreateManyWithoutUserAccountInput
+  >;
+  loginAttempts?: Maybe<Int>;
+  securityQuestionAttempts?: Maybe<Int>;
+  lastVisit?: Maybe<DateTimeInput>;
+  ip?: Maybe<String>;
+  deletedAt?: Maybe<DateTimeInput>;
+}
+
 export interface UserCreateOneWithoutCustomerAccountInput {
   create?: Maybe<UserCreateWithoutCustomerAccountInput>;
   connect?: Maybe<UserWhereUniqueInput>;
 }
 
-export interface UserUpdateDataInput {
-  role?: Maybe<RoleUpdateOneRequiredInput>;
-  userAccount?: Maybe<UserAccountUpdateOneRequiredWithoutUserInput>;
-  customerAccount?: Maybe<CustomerUpdateOneWithoutUserInput>;
+export interface UserUpdateManyMutationInput {
   firstName?: Maybe<String>;
   lastName?: Maybe<String>;
   email?: Maybe<String>;
@@ -830,10 +1050,9 @@ export interface UserCreateWithoutCustomerAccountInput {
   deletedAt?: Maybe<DateTimeInput>;
 }
 
-export interface SecurityQuestionAnswerUpsertWithWhereUniqueWithoutUserAccountInput {
-  where: SecurityQuestionAnswerWhereUniqueInput;
-  update: SecurityQuestionAnswerUpdateWithoutUserAccountDataInput;
-  create: SecurityQuestionAnswerCreateWithoutUserAccountInput;
+export interface SecurityQuestionAnswerUpdateManyMutationInput {
+  answer?: Maybe<String>;
+  deletedAt?: Maybe<DateTimeInput>;
 }
 
 export interface RoleCreateOneInput {
@@ -841,16 +1060,10 @@ export interface RoleCreateOneInput {
   connect?: Maybe<RoleWhereUniqueInput>;
 }
 
-export interface UserSubscriptionWhereInput {
-  mutation_in?: Maybe<MutationType[] | MutationType>;
-  updatedFields_contains?: Maybe<String>;
-  updatedFields_contains_every?: Maybe<String[] | String>;
-  updatedFields_contains_some?: Maybe<String[] | String>;
-  node?: Maybe<UserWhereInput>;
-  AND?: Maybe<UserSubscriptionWhereInput[] | UserSubscriptionWhereInput>;
-  OR?: Maybe<UserSubscriptionWhereInput[] | UserSubscriptionWhereInput>;
-  NOT?: Maybe<UserSubscriptionWhereInput[] | UserSubscriptionWhereInput>;
-}
+export type RoleWhereUniqueInput = AtLeastOne<{
+  id: Maybe<ID_Input>;
+  name?: Maybe<RoleName>;
+}>;
 
 export interface RoleCreateInput {
   id?: Maybe<ID_Input>;
@@ -858,24 +1071,22 @@ export interface RoleCreateInput {
   deletedAt?: Maybe<DateTimeInput>;
 }
 
-export interface SecurityQuestionSubscriptionWhereInput {
-  mutation_in?: Maybe<MutationType[] | MutationType>;
-  updatedFields_contains?: Maybe<String>;
-  updatedFields_contains_every?: Maybe<String[] | String>;
-  updatedFields_contains_some?: Maybe<String[] | String>;
-  node?: Maybe<SecurityQuestionWhereInput>;
-  AND?: Maybe<
-    | SecurityQuestionSubscriptionWhereInput[]
-    | SecurityQuestionSubscriptionWhereInput
-  >;
-  OR?: Maybe<
-    | SecurityQuestionSubscriptionWhereInput[]
-    | SecurityQuestionSubscriptionWhereInput
-  >;
-  NOT?: Maybe<
-    | SecurityQuestionSubscriptionWhereInput[]
-    | SecurityQuestionSubscriptionWhereInput
-  >;
+export interface UserUpdateWithoutUserAccountDataInput {
+  role?: Maybe<RoleUpdateOneRequiredInput>;
+  customerAccount?: Maybe<CustomerUpdateOneWithoutUserInput>;
+  firstName?: Maybe<String>;
+  lastName?: Maybe<String>;
+  email?: Maybe<String>;
+  password?: Maybe<String>;
+  phoneCountryCode?: Maybe<String>;
+  phone?: Maybe<String>;
+  country?: Maybe<String>;
+  address1?: Maybe<String>;
+  address2?: Maybe<String>;
+  city?: Maybe<String>;
+  state?: Maybe<String>;
+  postalCode?: Maybe<String>;
+  deletedAt?: Maybe<DateTimeInput>;
 }
 
 export interface UserAccountCreateOneWithoutUserInput {
@@ -883,9 +1094,21 @@ export interface UserAccountCreateOneWithoutUserInput {
   connect?: Maybe<UserAccountWhereUniqueInput>;
 }
 
-export type OpenAuthWhereUniqueInput = AtLeastOne<{
-  id: Maybe<ID_Input>;
-}>;
+export interface UserAccountUpdateWithoutSecurityQuestionsDataInput {
+  user?: Maybe<UserUpdateOneRequiredWithoutUserAccountInput>;
+  confirmed?: Maybe<Boolean>;
+  confirmedCode?: Maybe<Int>;
+  locked?: Maybe<Boolean>;
+  lockedCode?: Maybe<Int>;
+  lockedExpires?: Maybe<String>;
+  resetPasswordCode?: Maybe<Int>;
+  resetPasswordExpires?: Maybe<String>;
+  loginAttempts?: Maybe<Int>;
+  securityQuestionAttempts?: Maybe<Int>;
+  lastVisit?: Maybe<DateTimeInput>;
+  ip?: Maybe<String>;
+  deletedAt?: Maybe<DateTimeInput>;
+}
 
 export interface UserAccountCreateWithoutUserInput {
   id?: Maybe<ID_Input>;
@@ -906,19 +1129,62 @@ export interface UserAccountCreateWithoutUserInput {
   deletedAt?: Maybe<DateTimeInput>;
 }
 
-export interface CustomerSubscriptionWhereInput {
-  mutation_in?: Maybe<MutationType[] | MutationType>;
-  updatedFields_contains?: Maybe<String>;
-  updatedFields_contains_every?: Maybe<String[] | String>;
-  updatedFields_contains_some?: Maybe<String[] | String>;
-  node?: Maybe<CustomerWhereInput>;
-  AND?: Maybe<
-    CustomerSubscriptionWhereInput[] | CustomerSubscriptionWhereInput
-  >;
-  OR?: Maybe<CustomerSubscriptionWhereInput[] | CustomerSubscriptionWhereInput>;
-  NOT?: Maybe<
-    CustomerSubscriptionWhereInput[] | CustomerSubscriptionWhereInput
-  >;
+export interface BlacklistedTokensWhereInput {
+  id?: Maybe<ID_Input>;
+  id_not?: Maybe<ID_Input>;
+  id_in?: Maybe<ID_Input[] | ID_Input>;
+  id_not_in?: Maybe<ID_Input[] | ID_Input>;
+  id_lt?: Maybe<ID_Input>;
+  id_lte?: Maybe<ID_Input>;
+  id_gt?: Maybe<ID_Input>;
+  id_gte?: Maybe<ID_Input>;
+  id_contains?: Maybe<ID_Input>;
+  id_not_contains?: Maybe<ID_Input>;
+  id_starts_with?: Maybe<ID_Input>;
+  id_not_starts_with?: Maybe<ID_Input>;
+  id_ends_with?: Maybe<ID_Input>;
+  id_not_ends_with?: Maybe<ID_Input>;
+  token?: Maybe<String>;
+  token_not?: Maybe<String>;
+  token_in?: Maybe<String[] | String>;
+  token_not_in?: Maybe<String[] | String>;
+  token_lt?: Maybe<String>;
+  token_lte?: Maybe<String>;
+  token_gt?: Maybe<String>;
+  token_gte?: Maybe<String>;
+  token_contains?: Maybe<String>;
+  token_not_contains?: Maybe<String>;
+  token_starts_with?: Maybe<String>;
+  token_not_starts_with?: Maybe<String>;
+  token_ends_with?: Maybe<String>;
+  token_not_ends_with?: Maybe<String>;
+  updatedAt?: Maybe<DateTimeInput>;
+  updatedAt_not?: Maybe<DateTimeInput>;
+  updatedAt_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  updatedAt_not_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  updatedAt_lt?: Maybe<DateTimeInput>;
+  updatedAt_lte?: Maybe<DateTimeInput>;
+  updatedAt_gt?: Maybe<DateTimeInput>;
+  updatedAt_gte?: Maybe<DateTimeInput>;
+  createdAt?: Maybe<DateTimeInput>;
+  createdAt_not?: Maybe<DateTimeInput>;
+  createdAt_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  createdAt_not_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  createdAt_lt?: Maybe<DateTimeInput>;
+  createdAt_lte?: Maybe<DateTimeInput>;
+  createdAt_gt?: Maybe<DateTimeInput>;
+  createdAt_gte?: Maybe<DateTimeInput>;
+  deletedAt?: Maybe<DateTimeInput>;
+  deletedAt_not?: Maybe<DateTimeInput>;
+  deletedAt_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  deletedAt_not_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  deletedAt_lt?: Maybe<DateTimeInput>;
+  deletedAt_lte?: Maybe<DateTimeInput>;
+  deletedAt_gt?: Maybe<DateTimeInput>;
+  deletedAt_gte?: Maybe<DateTimeInput>;
+  AND?: Maybe<BlacklistedTokensWhereInput[] | BlacklistedTokensWhereInput>;
+  OR?: Maybe<BlacklistedTokensWhereInput[] | BlacklistedTokensWhereInput>;
+  NOT?: Maybe<BlacklistedTokensWhereInput[] | BlacklistedTokensWhereInput>;
 }
 
 export interface SecurityQuestionAnswerCreateManyWithoutUserAccountInput {
@@ -932,18 +1198,12 @@ export interface SecurityQuestionAnswerCreateManyWithoutUserAccountInput {
   >;
 }
 
-export interface UserAccountUpdateManyMutationInput {
-  confirmed?: Maybe<Boolean>;
-  confirmedCode?: Maybe<Int>;
-  locked?: Maybe<Boolean>;
-  lockedCode?: Maybe<Int>;
-  lockedExpires?: Maybe<String>;
-  resetPasswordCode?: Maybe<Int>;
-  resetPasswordExpires?: Maybe<String>;
-  loginAttempts?: Maybe<Int>;
-  securityQuestionAttempts?: Maybe<Int>;
-  lastVisit?: Maybe<DateTimeInput>;
-  ip?: Maybe<String>;
+export interface SecurityQuestionAnswerUpdateInput {
+  userAccount?: Maybe<
+    UserAccountUpdateOneRequiredWithoutSecurityQuestionsInput
+  >;
+  userSecurityQuestion?: Maybe<SecurityQuestionUpdateOneRequiredInput>;
+  answer?: Maybe<String>;
   deletedAt?: Maybe<DateTimeInput>;
 }
 
@@ -954,7 +1214,16 @@ export interface SecurityQuestionAnswerCreateWithoutUserAccountInput {
   deletedAt?: Maybe<DateTimeInput>;
 }
 
-export interface UserAccountCreateInput {
+export type SecurityQuestionAnswerWhereUniqueInput = AtLeastOne<{
+  id: Maybe<ID_Input>;
+}>;
+
+export interface SecurityQuestionCreateOneInput {
+  create?: Maybe<SecurityQuestionCreateInput>;
+  connect?: Maybe<SecurityQuestionWhereUniqueInput>;
+}
+
+export interface UserAccountCreateWithoutSecurityQuestionsInput {
   id?: Maybe<ID_Input>;
   user: UserCreateOneWithoutUserAccountInput;
   confirmed?: Maybe<Boolean>;
@@ -964,25 +1233,12 @@ export interface UserAccountCreateInput {
   lockedExpires?: Maybe<String>;
   resetPasswordCode?: Maybe<Int>;
   resetPasswordExpires?: Maybe<String>;
-  securityQuestions?: Maybe<
-    SecurityQuestionAnswerCreateManyWithoutUserAccountInput
-  >;
   loginAttempts?: Maybe<Int>;
   securityQuestionAttempts?: Maybe<Int>;
   lastVisit?: Maybe<DateTimeInput>;
   ip?: Maybe<String>;
   deletedAt?: Maybe<DateTimeInput>;
 }
-
-export interface SecurityQuestionCreateOneInput {
-  create?: Maybe<SecurityQuestionCreateInput>;
-  connect?: Maybe<SecurityQuestionWhereUniqueInput>;
-}
-
-export type RoleWhereUniqueInput = AtLeastOne<{
-  id: Maybe<ID_Input>;
-  name?: Maybe<RoleName>;
-}>;
 
 export interface SecurityQuestionCreateInput {
   id?: Maybe<ID_Input>;
@@ -991,31 +1247,14 @@ export interface SecurityQuestionCreateInput {
   deletedAt?: Maybe<DateTimeInput>;
 }
 
-export interface SecurityQuestionAnswerUpdateManyMutationInput {
-  answer?: Maybe<String>;
-  deletedAt?: Maybe<DateTimeInput>;
-}
+export type UserWhereUniqueInput = AtLeastOne<{
+  id: Maybe<ID_Input>;
+  email?: Maybe<String>;
+}>;
 
-export interface CustomerUpdateInput {
-  user?: Maybe<UserUpdateOneRequiredWithoutCustomerAccountInput>;
-  stripeId?: Maybe<String>;
-  deletedAt?: Maybe<DateTimeInput>;
-}
-
-export interface UserUpsertWithoutUserAccountInput {
-  update: UserUpdateWithoutUserAccountDataInput;
-  create: UserCreateWithoutUserAccountInput;
-}
-
-export interface UserUpdateOneRequiredWithoutCustomerAccountInput {
-  create?: Maybe<UserCreateWithoutCustomerAccountInput>;
-  update?: Maybe<UserUpdateWithoutCustomerAccountDataInput>;
-  upsert?: Maybe<UserUpsertWithoutCustomerAccountInput>;
-  connect?: Maybe<UserWhereUniqueInput>;
-}
-
-export interface UserUpdateWithoutUserAccountDataInput {
+export interface UserUpdateDataInput {
   role?: Maybe<RoleUpdateOneRequiredInput>;
+  userAccount?: Maybe<UserAccountUpdateOneRequiredWithoutUserInput>;
   customerAccount?: Maybe<CustomerUpdateOneWithoutUserInput>;
   firstName?: Maybe<String>;
   lastName?: Maybe<String>;
@@ -1029,6 +1268,24 @@ export interface UserUpdateWithoutUserAccountDataInput {
   city?: Maybe<String>;
   state?: Maybe<String>;
   postalCode?: Maybe<String>;
+  deletedAt?: Maybe<DateTimeInput>;
+}
+
+export interface SecurityQuestionUpdateManyMutationInput {
+  shortName?: Maybe<String>;
+  question?: Maybe<String>;
+  deletedAt?: Maybe<DateTimeInput>;
+}
+
+export interface UserUpdateOneRequiredWithoutCustomerAccountInput {
+  create?: Maybe<UserCreateWithoutCustomerAccountInput>;
+  update?: Maybe<UserUpdateWithoutCustomerAccountDataInput>;
+  upsert?: Maybe<UserUpsertWithoutCustomerAccountInput>;
+  connect?: Maybe<UserWhereUniqueInput>;
+}
+
+export interface RoleUpdateManyMutationInput {
+  name?: Maybe<RoleName>;
   deletedAt?: Maybe<DateTimeInput>;
 }
 
@@ -1050,19 +1307,8 @@ export interface UserUpdateWithoutCustomerAccountDataInput {
   deletedAt?: Maybe<DateTimeInput>;
 }
 
-export interface UserAccountUpdateWithoutSecurityQuestionsDataInput {
-  user?: Maybe<UserUpdateOneRequiredWithoutUserAccountInput>;
-  confirmed?: Maybe<Boolean>;
-  confirmedCode?: Maybe<Int>;
-  locked?: Maybe<Boolean>;
-  lockedCode?: Maybe<Int>;
-  lockedExpires?: Maybe<String>;
-  resetPasswordCode?: Maybe<Int>;
-  resetPasswordExpires?: Maybe<String>;
-  loginAttempts?: Maybe<Int>;
-  securityQuestionAttempts?: Maybe<Int>;
-  lastVisit?: Maybe<DateTimeInput>;
-  ip?: Maybe<String>;
+export interface RoleUpdateInput {
+  name?: Maybe<RoleName>;
   deletedAt?: Maybe<DateTimeInput>;
 }
 
@@ -1073,57 +1319,160 @@ export interface RoleUpdateOneRequiredInput {
   connect?: Maybe<RoleWhereUniqueInput>;
 }
 
-export type SecurityQuestionAnswerWhereUniqueInput = AtLeastOne<{
-  id: Maybe<ID_Input>;
-}>;
+export interface SecurityQuestionAnswerWhereInput {
+  id?: Maybe<ID_Input>;
+  id_not?: Maybe<ID_Input>;
+  id_in?: Maybe<ID_Input[] | ID_Input>;
+  id_not_in?: Maybe<ID_Input[] | ID_Input>;
+  id_lt?: Maybe<ID_Input>;
+  id_lte?: Maybe<ID_Input>;
+  id_gt?: Maybe<ID_Input>;
+  id_gte?: Maybe<ID_Input>;
+  id_contains?: Maybe<ID_Input>;
+  id_not_contains?: Maybe<ID_Input>;
+  id_starts_with?: Maybe<ID_Input>;
+  id_not_starts_with?: Maybe<ID_Input>;
+  id_ends_with?: Maybe<ID_Input>;
+  id_not_ends_with?: Maybe<ID_Input>;
+  userAccount?: Maybe<UserAccountWhereInput>;
+  userSecurityQuestion?: Maybe<SecurityQuestionWhereInput>;
+  answer?: Maybe<String>;
+  answer_not?: Maybe<String>;
+  answer_in?: Maybe<String[] | String>;
+  answer_not_in?: Maybe<String[] | String>;
+  answer_lt?: Maybe<String>;
+  answer_lte?: Maybe<String>;
+  answer_gt?: Maybe<String>;
+  answer_gte?: Maybe<String>;
+  answer_contains?: Maybe<String>;
+  answer_not_contains?: Maybe<String>;
+  answer_starts_with?: Maybe<String>;
+  answer_not_starts_with?: Maybe<String>;
+  answer_ends_with?: Maybe<String>;
+  answer_not_ends_with?: Maybe<String>;
+  updatedAt?: Maybe<DateTimeInput>;
+  updatedAt_not?: Maybe<DateTimeInput>;
+  updatedAt_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  updatedAt_not_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  updatedAt_lt?: Maybe<DateTimeInput>;
+  updatedAt_lte?: Maybe<DateTimeInput>;
+  updatedAt_gt?: Maybe<DateTimeInput>;
+  updatedAt_gte?: Maybe<DateTimeInput>;
+  createdAt?: Maybe<DateTimeInput>;
+  createdAt_not?: Maybe<DateTimeInput>;
+  createdAt_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  createdAt_not_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  createdAt_lt?: Maybe<DateTimeInput>;
+  createdAt_lte?: Maybe<DateTimeInput>;
+  createdAt_gt?: Maybe<DateTimeInput>;
+  createdAt_gte?: Maybe<DateTimeInput>;
+  deletedAt?: Maybe<DateTimeInput>;
+  deletedAt_not?: Maybe<DateTimeInput>;
+  deletedAt_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  deletedAt_not_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  deletedAt_lt?: Maybe<DateTimeInput>;
+  deletedAt_lte?: Maybe<DateTimeInput>;
+  deletedAt_gt?: Maybe<DateTimeInput>;
+  deletedAt_gte?: Maybe<DateTimeInput>;
+  AND?: Maybe<
+    SecurityQuestionAnswerWhereInput[] | SecurityQuestionAnswerWhereInput
+  >;
+  OR?: Maybe<
+    SecurityQuestionAnswerWhereInput[] | SecurityQuestionAnswerWhereInput
+  >;
+  NOT?: Maybe<
+    SecurityQuestionAnswerWhereInput[] | SecurityQuestionAnswerWhereInput
+  >;
+}
 
 export interface RoleUpdateDataInput {
   name?: Maybe<RoleName>;
   deletedAt?: Maybe<DateTimeInput>;
 }
 
-export interface UserCreateWithoutUserAccountInput {
+export interface CustomerWhereInput {
   id?: Maybe<ID_Input>;
-  role: RoleCreateOneInput;
-  customerAccount?: Maybe<CustomerCreateOneWithoutUserInput>;
-  firstName?: Maybe<String>;
-  lastName?: Maybe<String>;
-  email: String;
-  password?: Maybe<String>;
-  phoneCountryCode?: Maybe<String>;
-  phone?: Maybe<String>;
-  country?: Maybe<String>;
-  address1?: Maybe<String>;
-  address2?: Maybe<String>;
-  city?: Maybe<String>;
-  state?: Maybe<String>;
-  postalCode?: Maybe<String>;
+  id_not?: Maybe<ID_Input>;
+  id_in?: Maybe<ID_Input[] | ID_Input>;
+  id_not_in?: Maybe<ID_Input[] | ID_Input>;
+  id_lt?: Maybe<ID_Input>;
+  id_lte?: Maybe<ID_Input>;
+  id_gt?: Maybe<ID_Input>;
+  id_gte?: Maybe<ID_Input>;
+  id_contains?: Maybe<ID_Input>;
+  id_not_contains?: Maybe<ID_Input>;
+  id_starts_with?: Maybe<ID_Input>;
+  id_not_starts_with?: Maybe<ID_Input>;
+  id_ends_with?: Maybe<ID_Input>;
+  id_not_ends_with?: Maybe<ID_Input>;
+  user?: Maybe<UserWhereInput>;
+  stripeId?: Maybe<String>;
+  stripeId_not?: Maybe<String>;
+  stripeId_in?: Maybe<String[] | String>;
+  stripeId_not_in?: Maybe<String[] | String>;
+  stripeId_lt?: Maybe<String>;
+  stripeId_lte?: Maybe<String>;
+  stripeId_gt?: Maybe<String>;
+  stripeId_gte?: Maybe<String>;
+  stripeId_contains?: Maybe<String>;
+  stripeId_not_contains?: Maybe<String>;
+  stripeId_starts_with?: Maybe<String>;
+  stripeId_not_starts_with?: Maybe<String>;
+  stripeId_ends_with?: Maybe<String>;
+  stripeId_not_ends_with?: Maybe<String>;
+  updatedAt?: Maybe<DateTimeInput>;
+  updatedAt_not?: Maybe<DateTimeInput>;
+  updatedAt_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  updatedAt_not_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  updatedAt_lt?: Maybe<DateTimeInput>;
+  updatedAt_lte?: Maybe<DateTimeInput>;
+  updatedAt_gt?: Maybe<DateTimeInput>;
+  updatedAt_gte?: Maybe<DateTimeInput>;
+  createdAt?: Maybe<DateTimeInput>;
+  createdAt_not?: Maybe<DateTimeInput>;
+  createdAt_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  createdAt_not_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  createdAt_lt?: Maybe<DateTimeInput>;
+  createdAt_lte?: Maybe<DateTimeInput>;
+  createdAt_gt?: Maybe<DateTimeInput>;
+  createdAt_gte?: Maybe<DateTimeInput>;
   deletedAt?: Maybe<DateTimeInput>;
+  deletedAt_not?: Maybe<DateTimeInput>;
+  deletedAt_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  deletedAt_not_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  deletedAt_lt?: Maybe<DateTimeInput>;
+  deletedAt_lte?: Maybe<DateTimeInput>;
+  deletedAt_gt?: Maybe<DateTimeInput>;
+  deletedAt_gte?: Maybe<DateTimeInput>;
+  AND?: Maybe<CustomerWhereInput[] | CustomerWhereInput>;
+  OR?: Maybe<CustomerWhereInput[] | CustomerWhereInput>;
+  NOT?: Maybe<CustomerWhereInput[] | CustomerWhereInput>;
 }
 
-export interface UserUpsertNestedInput {
-  update: UserUpdateDataInput;
-  create: UserCreateInput;
+export interface RoleUpsertNestedInput {
+  update: RoleUpdateDataInput;
+  create: RoleCreateInput;
 }
 
-export type UserWhereUniqueInput = AtLeastOne<{
-  id: Maybe<ID_Input>;
-  email?: Maybe<String>;
-}>;
-
-export interface UserAccountUpdateOneRequiredWithoutUserInput {
-  create?: Maybe<UserAccountCreateWithoutUserInput>;
-  update?: Maybe<UserAccountUpdateWithoutUserDataInput>;
-  upsert?: Maybe<UserAccountUpsertWithoutUserInput>;
-  connect?: Maybe<UserAccountWhereUniqueInput>;
+export interface RoleSubscriptionWhereInput {
+  mutation_in?: Maybe<MutationType[] | MutationType>;
+  updatedFields_contains?: Maybe<String>;
+  updatedFields_contains_every?: Maybe<String[] | String>;
+  updatedFields_contains_some?: Maybe<String[] | String>;
+  node?: Maybe<RoleWhereInput>;
+  AND?: Maybe<RoleSubscriptionWhereInput[] | RoleSubscriptionWhereInput>;
+  OR?: Maybe<RoleSubscriptionWhereInput[] | RoleSubscriptionWhereInput>;
+  NOT?: Maybe<RoleSubscriptionWhereInput[] | RoleSubscriptionWhereInput>;
 }
 
-export interface UserAccountCreateOneWithoutSecurityQuestionsInput {
-  create?: Maybe<UserAccountCreateWithoutSecurityQuestionsInput>;
-  connect?: Maybe<UserAccountWhereUniqueInput>;
+export interface UserUpdateOneRequiredInput {
+  create?: Maybe<UserCreateInput>;
+  update?: Maybe<UserUpdateDataInput>;
+  upsert?: Maybe<UserUpsertNestedInput>;
+  connect?: Maybe<UserWhereUniqueInput>;
 }
 
-export interface UserAccountUpdateWithoutUserDataInput {
+export interface UserAccountUpdateManyMutationInput {
   confirmed?: Maybe<Boolean>;
   confirmedCode?: Maybe<Int>;
   locked?: Maybe<Boolean>;
@@ -1131,9 +1480,6 @@ export interface UserAccountUpdateWithoutUserDataInput {
   lockedExpires?: Maybe<String>;
   resetPasswordCode?: Maybe<Int>;
   resetPasswordExpires?: Maybe<String>;
-  securityQuestions?: Maybe<
-    SecurityQuestionAnswerUpdateManyWithoutUserAccountInput
-  >;
   loginAttempts?: Maybe<Int>;
   securityQuestionAttempts?: Maybe<Int>;
   lastVisit?: Maybe<DateTimeInput>;
@@ -1141,10 +1487,98 @@ export interface UserAccountUpdateWithoutUserDataInput {
   deletedAt?: Maybe<DateTimeInput>;
 }
 
-export interface SecurityQuestionUpdateManyMutationInput {
-  shortName?: Maybe<String>;
-  question?: Maybe<String>;
+export interface OpenAuthUpdateInput {
+  user?: Maybe<UserUpdateOneRequiredInput>;
+  provider?: Maybe<ProviderName>;
+  accessToken?: Maybe<String>;
+  refreshToken?: Maybe<String>;
+  expiresAt?: Maybe<DateTimeInput>;
   deletedAt?: Maybe<DateTimeInput>;
+}
+
+export interface OpenAuthWhereInput {
+  id?: Maybe<ID_Input>;
+  id_not?: Maybe<ID_Input>;
+  id_in?: Maybe<ID_Input[] | ID_Input>;
+  id_not_in?: Maybe<ID_Input[] | ID_Input>;
+  id_lt?: Maybe<ID_Input>;
+  id_lte?: Maybe<ID_Input>;
+  id_gt?: Maybe<ID_Input>;
+  id_gte?: Maybe<ID_Input>;
+  id_contains?: Maybe<ID_Input>;
+  id_not_contains?: Maybe<ID_Input>;
+  id_starts_with?: Maybe<ID_Input>;
+  id_not_starts_with?: Maybe<ID_Input>;
+  id_ends_with?: Maybe<ID_Input>;
+  id_not_ends_with?: Maybe<ID_Input>;
+  user?: Maybe<UserWhereInput>;
+  provider?: Maybe<ProviderName>;
+  provider_not?: Maybe<ProviderName>;
+  provider_in?: Maybe<ProviderName[] | ProviderName>;
+  provider_not_in?: Maybe<ProviderName[] | ProviderName>;
+  accessToken?: Maybe<String>;
+  accessToken_not?: Maybe<String>;
+  accessToken_in?: Maybe<String[] | String>;
+  accessToken_not_in?: Maybe<String[] | String>;
+  accessToken_lt?: Maybe<String>;
+  accessToken_lte?: Maybe<String>;
+  accessToken_gt?: Maybe<String>;
+  accessToken_gte?: Maybe<String>;
+  accessToken_contains?: Maybe<String>;
+  accessToken_not_contains?: Maybe<String>;
+  accessToken_starts_with?: Maybe<String>;
+  accessToken_not_starts_with?: Maybe<String>;
+  accessToken_ends_with?: Maybe<String>;
+  accessToken_not_ends_with?: Maybe<String>;
+  refreshToken?: Maybe<String>;
+  refreshToken_not?: Maybe<String>;
+  refreshToken_in?: Maybe<String[] | String>;
+  refreshToken_not_in?: Maybe<String[] | String>;
+  refreshToken_lt?: Maybe<String>;
+  refreshToken_lte?: Maybe<String>;
+  refreshToken_gt?: Maybe<String>;
+  refreshToken_gte?: Maybe<String>;
+  refreshToken_contains?: Maybe<String>;
+  refreshToken_not_contains?: Maybe<String>;
+  refreshToken_starts_with?: Maybe<String>;
+  refreshToken_not_starts_with?: Maybe<String>;
+  refreshToken_ends_with?: Maybe<String>;
+  refreshToken_not_ends_with?: Maybe<String>;
+  expiresAt?: Maybe<DateTimeInput>;
+  expiresAt_not?: Maybe<DateTimeInput>;
+  expiresAt_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  expiresAt_not_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  expiresAt_lt?: Maybe<DateTimeInput>;
+  expiresAt_lte?: Maybe<DateTimeInput>;
+  expiresAt_gt?: Maybe<DateTimeInput>;
+  expiresAt_gte?: Maybe<DateTimeInput>;
+  updatedAt?: Maybe<DateTimeInput>;
+  updatedAt_not?: Maybe<DateTimeInput>;
+  updatedAt_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  updatedAt_not_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  updatedAt_lt?: Maybe<DateTimeInput>;
+  updatedAt_lte?: Maybe<DateTimeInput>;
+  updatedAt_gt?: Maybe<DateTimeInput>;
+  updatedAt_gte?: Maybe<DateTimeInput>;
+  createdAt?: Maybe<DateTimeInput>;
+  createdAt_not?: Maybe<DateTimeInput>;
+  createdAt_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  createdAt_not_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  createdAt_lt?: Maybe<DateTimeInput>;
+  createdAt_lte?: Maybe<DateTimeInput>;
+  createdAt_gt?: Maybe<DateTimeInput>;
+  createdAt_gte?: Maybe<DateTimeInput>;
+  deletedAt?: Maybe<DateTimeInput>;
+  deletedAt_not?: Maybe<DateTimeInput>;
+  deletedAt_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  deletedAt_not_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  deletedAt_lt?: Maybe<DateTimeInput>;
+  deletedAt_lte?: Maybe<DateTimeInput>;
+  deletedAt_gt?: Maybe<DateTimeInput>;
+  deletedAt_gte?: Maybe<DateTimeInput>;
+  AND?: Maybe<OpenAuthWhereInput[] | OpenAuthWhereInput>;
+  OR?: Maybe<OpenAuthWhereInput[] | OpenAuthWhereInput>;
+  NOT?: Maybe<OpenAuthWhereInput[] | OpenAuthWhereInput>;
 }
 
 export interface SecurityQuestionAnswerUpdateManyWithoutUserAccountInput {
@@ -1186,10 +1620,9 @@ export interface SecurityQuestionAnswerUpdateManyWithoutUserAccountInput {
   >;
 }
 
-export interface SecurityQuestionUpdateInput {
-  shortName?: Maybe<String>;
-  question?: Maybe<String>;
-  deletedAt?: Maybe<DateTimeInput>;
+export interface UserAccountUpsertWithoutSecurityQuestionsInput {
+  update: UserAccountUpdateWithoutSecurityQuestionsDataInput;
+  create: UserAccountCreateWithoutSecurityQuestionsInput;
 }
 
 export interface SecurityQuestionAnswerUpdateWithWhereUniqueWithoutUserAccountInput {
@@ -1197,9 +1630,11 @@ export interface SecurityQuestionAnswerUpdateWithWhereUniqueWithoutUserAccountIn
   data: SecurityQuestionAnswerUpdateWithoutUserAccountDataInput;
 }
 
-export interface RoleUpdateInput {
-  name?: Maybe<RoleName>;
-  deletedAt?: Maybe<DateTimeInput>;
+export interface UserUpdateOneRequiredWithoutUserAccountInput {
+  create?: Maybe<UserCreateWithoutUserAccountInput>;
+  update?: Maybe<UserUpdateWithoutUserAccountDataInput>;
+  upsert?: Maybe<UserUpsertWithoutUserAccountInput>;
+  connect?: Maybe<UserWhereUniqueInput>;
 }
 
 export interface SecurityQuestionAnswerUpdateWithoutUserAccountDataInput {
@@ -1208,21 +1643,55 @@ export interface SecurityQuestionAnswerUpdateWithoutUserAccountDataInput {
   deletedAt?: Maybe<DateTimeInput>;
 }
 
-export interface UserAccountSubscriptionWhereInput {
-  mutation_in?: Maybe<MutationType[] | MutationType>;
-  updatedFields_contains?: Maybe<String>;
-  updatedFields_contains_every?: Maybe<String[] | String>;
-  updatedFields_contains_some?: Maybe<String[] | String>;
-  node?: Maybe<UserAccountWhereInput>;
-  AND?: Maybe<
-    UserAccountSubscriptionWhereInput[] | UserAccountSubscriptionWhereInput
-  >;
-  OR?: Maybe<
-    UserAccountSubscriptionWhereInput[] | UserAccountSubscriptionWhereInput
-  >;
-  NOT?: Maybe<
-    UserAccountSubscriptionWhereInput[] | UserAccountSubscriptionWhereInput
-  >;
+export interface UserAccountUpdateOneRequiredWithoutSecurityQuestionsInput {
+  create?: Maybe<UserAccountCreateWithoutSecurityQuestionsInput>;
+  update?: Maybe<UserAccountUpdateWithoutSecurityQuestionsDataInput>;
+  upsert?: Maybe<UserAccountUpsertWithoutSecurityQuestionsInput>;
+  connect?: Maybe<UserAccountWhereUniqueInput>;
+}
+
+export interface SecurityQuestionUpdateOneRequiredInput {
+  create?: Maybe<SecurityQuestionCreateInput>;
+  update?: Maybe<SecurityQuestionUpdateDataInput>;
+  upsert?: Maybe<SecurityQuestionUpsertNestedInput>;
+  connect?: Maybe<SecurityQuestionWhereUniqueInput>;
+}
+
+export interface UserCreateOneWithoutUserAccountInput {
+  create?: Maybe<UserCreateWithoutUserAccountInput>;
+  connect?: Maybe<UserWhereUniqueInput>;
+}
+
+export interface SecurityQuestionUpdateDataInput {
+  shortName?: Maybe<String>;
+  question?: Maybe<String>;
+  deletedAt?: Maybe<DateTimeInput>;
+}
+
+export interface SecurityQuestionAnswerCreateInput {
+  id?: Maybe<ID_Input>;
+  userAccount: UserAccountCreateOneWithoutSecurityQuestionsInput;
+  userSecurityQuestion: SecurityQuestionCreateOneInput;
+  answer: String;
+  deletedAt?: Maybe<DateTimeInput>;
+}
+
+export interface SecurityQuestionUpsertNestedInput {
+  update: SecurityQuestionUpdateDataInput;
+  create: SecurityQuestionCreateInput;
+}
+
+export type UserAccountWhereUniqueInput = AtLeastOne<{
+  id: Maybe<ID_Input>;
+  confirmedCode?: Maybe<Int>;
+  lockedCode?: Maybe<Int>;
+  resetPasswordCode?: Maybe<Int>;
+}>;
+
+export interface SecurityQuestionAnswerUpsertWithWhereUniqueWithoutUserAccountInput {
+  where: SecurityQuestionAnswerWhereUniqueInput;
+  update: SecurityQuestionAnswerUpdateWithoutUserAccountDataInput;
+  create: SecurityQuestionAnswerCreateWithoutUserAccountInput;
 }
 
 export interface UserWhereInput {
@@ -1440,253 +1909,6 @@ export interface UserWhereInput {
   NOT?: Maybe<UserWhereInput[] | UserWhereInput>;
 }
 
-export interface RoleSubscriptionWhereInput {
-  mutation_in?: Maybe<MutationType[] | MutationType>;
-  updatedFields_contains?: Maybe<String>;
-  updatedFields_contains_every?: Maybe<String[] | String>;
-  updatedFields_contains_some?: Maybe<String[] | String>;
-  node?: Maybe<RoleWhereInput>;
-  AND?: Maybe<RoleSubscriptionWhereInput[] | RoleSubscriptionWhereInput>;
-  OR?: Maybe<RoleSubscriptionWhereInput[] | RoleSubscriptionWhereInput>;
-  NOT?: Maybe<RoleSubscriptionWhereInput[] | RoleSubscriptionWhereInput>;
-}
-
-export interface CustomerWhereInput {
-  id?: Maybe<ID_Input>;
-  id_not?: Maybe<ID_Input>;
-  id_in?: Maybe<ID_Input[] | ID_Input>;
-  id_not_in?: Maybe<ID_Input[] | ID_Input>;
-  id_lt?: Maybe<ID_Input>;
-  id_lte?: Maybe<ID_Input>;
-  id_gt?: Maybe<ID_Input>;
-  id_gte?: Maybe<ID_Input>;
-  id_contains?: Maybe<ID_Input>;
-  id_not_contains?: Maybe<ID_Input>;
-  id_starts_with?: Maybe<ID_Input>;
-  id_not_starts_with?: Maybe<ID_Input>;
-  id_ends_with?: Maybe<ID_Input>;
-  id_not_ends_with?: Maybe<ID_Input>;
-  user?: Maybe<UserWhereInput>;
-  stripeId?: Maybe<String>;
-  stripeId_not?: Maybe<String>;
-  stripeId_in?: Maybe<String[] | String>;
-  stripeId_not_in?: Maybe<String[] | String>;
-  stripeId_lt?: Maybe<String>;
-  stripeId_lte?: Maybe<String>;
-  stripeId_gt?: Maybe<String>;
-  stripeId_gte?: Maybe<String>;
-  stripeId_contains?: Maybe<String>;
-  stripeId_not_contains?: Maybe<String>;
-  stripeId_starts_with?: Maybe<String>;
-  stripeId_not_starts_with?: Maybe<String>;
-  stripeId_ends_with?: Maybe<String>;
-  stripeId_not_ends_with?: Maybe<String>;
-  updatedAt?: Maybe<DateTimeInput>;
-  updatedAt_not?: Maybe<DateTimeInput>;
-  updatedAt_in?: Maybe<DateTimeInput[] | DateTimeInput>;
-  updatedAt_not_in?: Maybe<DateTimeInput[] | DateTimeInput>;
-  updatedAt_lt?: Maybe<DateTimeInput>;
-  updatedAt_lte?: Maybe<DateTimeInput>;
-  updatedAt_gt?: Maybe<DateTimeInput>;
-  updatedAt_gte?: Maybe<DateTimeInput>;
-  createdAt?: Maybe<DateTimeInput>;
-  createdAt_not?: Maybe<DateTimeInput>;
-  createdAt_in?: Maybe<DateTimeInput[] | DateTimeInput>;
-  createdAt_not_in?: Maybe<DateTimeInput[] | DateTimeInput>;
-  createdAt_lt?: Maybe<DateTimeInput>;
-  createdAt_lte?: Maybe<DateTimeInput>;
-  createdAt_gt?: Maybe<DateTimeInput>;
-  createdAt_gte?: Maybe<DateTimeInput>;
-  deletedAt?: Maybe<DateTimeInput>;
-  deletedAt_not?: Maybe<DateTimeInput>;
-  deletedAt_in?: Maybe<DateTimeInput[] | DateTimeInput>;
-  deletedAt_not_in?: Maybe<DateTimeInput[] | DateTimeInput>;
-  deletedAt_lt?: Maybe<DateTimeInput>;
-  deletedAt_lte?: Maybe<DateTimeInput>;
-  deletedAt_gt?: Maybe<DateTimeInput>;
-  deletedAt_gte?: Maybe<DateTimeInput>;
-  AND?: Maybe<CustomerWhereInput[] | CustomerWhereInput>;
-  OR?: Maybe<CustomerWhereInput[] | CustomerWhereInput>;
-  NOT?: Maybe<CustomerWhereInput[] | CustomerWhereInput>;
-}
-
-export interface OpenAuthWhereInput {
-  id?: Maybe<ID_Input>;
-  id_not?: Maybe<ID_Input>;
-  id_in?: Maybe<ID_Input[] | ID_Input>;
-  id_not_in?: Maybe<ID_Input[] | ID_Input>;
-  id_lt?: Maybe<ID_Input>;
-  id_lte?: Maybe<ID_Input>;
-  id_gt?: Maybe<ID_Input>;
-  id_gte?: Maybe<ID_Input>;
-  id_contains?: Maybe<ID_Input>;
-  id_not_contains?: Maybe<ID_Input>;
-  id_starts_with?: Maybe<ID_Input>;
-  id_not_starts_with?: Maybe<ID_Input>;
-  id_ends_with?: Maybe<ID_Input>;
-  id_not_ends_with?: Maybe<ID_Input>;
-  user?: Maybe<UserWhereInput>;
-  provider?: Maybe<ProviderName>;
-  provider_not?: Maybe<ProviderName>;
-  provider_in?: Maybe<ProviderName[] | ProviderName>;
-  provider_not_in?: Maybe<ProviderName[] | ProviderName>;
-  accessToken?: Maybe<String>;
-  accessToken_not?: Maybe<String>;
-  accessToken_in?: Maybe<String[] | String>;
-  accessToken_not_in?: Maybe<String[] | String>;
-  accessToken_lt?: Maybe<String>;
-  accessToken_lte?: Maybe<String>;
-  accessToken_gt?: Maybe<String>;
-  accessToken_gte?: Maybe<String>;
-  accessToken_contains?: Maybe<String>;
-  accessToken_not_contains?: Maybe<String>;
-  accessToken_starts_with?: Maybe<String>;
-  accessToken_not_starts_with?: Maybe<String>;
-  accessToken_ends_with?: Maybe<String>;
-  accessToken_not_ends_with?: Maybe<String>;
-  refreshToken?: Maybe<String>;
-  refreshToken_not?: Maybe<String>;
-  refreshToken_in?: Maybe<String[] | String>;
-  refreshToken_not_in?: Maybe<String[] | String>;
-  refreshToken_lt?: Maybe<String>;
-  refreshToken_lte?: Maybe<String>;
-  refreshToken_gt?: Maybe<String>;
-  refreshToken_gte?: Maybe<String>;
-  refreshToken_contains?: Maybe<String>;
-  refreshToken_not_contains?: Maybe<String>;
-  refreshToken_starts_with?: Maybe<String>;
-  refreshToken_not_starts_with?: Maybe<String>;
-  refreshToken_ends_with?: Maybe<String>;
-  refreshToken_not_ends_with?: Maybe<String>;
-  expiresAt?: Maybe<DateTimeInput>;
-  expiresAt_not?: Maybe<DateTimeInput>;
-  expiresAt_in?: Maybe<DateTimeInput[] | DateTimeInput>;
-  expiresAt_not_in?: Maybe<DateTimeInput[] | DateTimeInput>;
-  expiresAt_lt?: Maybe<DateTimeInput>;
-  expiresAt_lte?: Maybe<DateTimeInput>;
-  expiresAt_gt?: Maybe<DateTimeInput>;
-  expiresAt_gte?: Maybe<DateTimeInput>;
-  updatedAt?: Maybe<DateTimeInput>;
-  updatedAt_not?: Maybe<DateTimeInput>;
-  updatedAt_in?: Maybe<DateTimeInput[] | DateTimeInput>;
-  updatedAt_not_in?: Maybe<DateTimeInput[] | DateTimeInput>;
-  updatedAt_lt?: Maybe<DateTimeInput>;
-  updatedAt_lte?: Maybe<DateTimeInput>;
-  updatedAt_gt?: Maybe<DateTimeInput>;
-  updatedAt_gte?: Maybe<DateTimeInput>;
-  createdAt?: Maybe<DateTimeInput>;
-  createdAt_not?: Maybe<DateTimeInput>;
-  createdAt_in?: Maybe<DateTimeInput[] | DateTimeInput>;
-  createdAt_not_in?: Maybe<DateTimeInput[] | DateTimeInput>;
-  createdAt_lt?: Maybe<DateTimeInput>;
-  createdAt_lte?: Maybe<DateTimeInput>;
-  createdAt_gt?: Maybe<DateTimeInput>;
-  createdAt_gte?: Maybe<DateTimeInput>;
-  deletedAt?: Maybe<DateTimeInput>;
-  deletedAt_not?: Maybe<DateTimeInput>;
-  deletedAt_in?: Maybe<DateTimeInput[] | DateTimeInput>;
-  deletedAt_not_in?: Maybe<DateTimeInput[] | DateTimeInput>;
-  deletedAt_lt?: Maybe<DateTimeInput>;
-  deletedAt_lte?: Maybe<DateTimeInput>;
-  deletedAt_gt?: Maybe<DateTimeInput>;
-  deletedAt_gte?: Maybe<DateTimeInput>;
-  AND?: Maybe<OpenAuthWhereInput[] | OpenAuthWhereInput>;
-  OR?: Maybe<OpenAuthWhereInput[] | OpenAuthWhereInput>;
-  NOT?: Maybe<OpenAuthWhereInput[] | OpenAuthWhereInput>;
-}
-
-export interface SecurityQuestionAnswerWhereInput {
-  id?: Maybe<ID_Input>;
-  id_not?: Maybe<ID_Input>;
-  id_in?: Maybe<ID_Input[] | ID_Input>;
-  id_not_in?: Maybe<ID_Input[] | ID_Input>;
-  id_lt?: Maybe<ID_Input>;
-  id_lte?: Maybe<ID_Input>;
-  id_gt?: Maybe<ID_Input>;
-  id_gte?: Maybe<ID_Input>;
-  id_contains?: Maybe<ID_Input>;
-  id_not_contains?: Maybe<ID_Input>;
-  id_starts_with?: Maybe<ID_Input>;
-  id_not_starts_with?: Maybe<ID_Input>;
-  id_ends_with?: Maybe<ID_Input>;
-  id_not_ends_with?: Maybe<ID_Input>;
-  userAccount?: Maybe<UserAccountWhereInput>;
-  userSecurityQuestion?: Maybe<SecurityQuestionWhereInput>;
-  answer?: Maybe<String>;
-  answer_not?: Maybe<String>;
-  answer_in?: Maybe<String[] | String>;
-  answer_not_in?: Maybe<String[] | String>;
-  answer_lt?: Maybe<String>;
-  answer_lte?: Maybe<String>;
-  answer_gt?: Maybe<String>;
-  answer_gte?: Maybe<String>;
-  answer_contains?: Maybe<String>;
-  answer_not_contains?: Maybe<String>;
-  answer_starts_with?: Maybe<String>;
-  answer_not_starts_with?: Maybe<String>;
-  answer_ends_with?: Maybe<String>;
-  answer_not_ends_with?: Maybe<String>;
-  updatedAt?: Maybe<DateTimeInput>;
-  updatedAt_not?: Maybe<DateTimeInput>;
-  updatedAt_in?: Maybe<DateTimeInput[] | DateTimeInput>;
-  updatedAt_not_in?: Maybe<DateTimeInput[] | DateTimeInput>;
-  updatedAt_lt?: Maybe<DateTimeInput>;
-  updatedAt_lte?: Maybe<DateTimeInput>;
-  updatedAt_gt?: Maybe<DateTimeInput>;
-  updatedAt_gte?: Maybe<DateTimeInput>;
-  createdAt?: Maybe<DateTimeInput>;
-  createdAt_not?: Maybe<DateTimeInput>;
-  createdAt_in?: Maybe<DateTimeInput[] | DateTimeInput>;
-  createdAt_not_in?: Maybe<DateTimeInput[] | DateTimeInput>;
-  createdAt_lt?: Maybe<DateTimeInput>;
-  createdAt_lte?: Maybe<DateTimeInput>;
-  createdAt_gt?: Maybe<DateTimeInput>;
-  createdAt_gte?: Maybe<DateTimeInput>;
-  deletedAt?: Maybe<DateTimeInput>;
-  deletedAt_not?: Maybe<DateTimeInput>;
-  deletedAt_in?: Maybe<DateTimeInput[] | DateTimeInput>;
-  deletedAt_not_in?: Maybe<DateTimeInput[] | DateTimeInput>;
-  deletedAt_lt?: Maybe<DateTimeInput>;
-  deletedAt_lte?: Maybe<DateTimeInput>;
-  deletedAt_gt?: Maybe<DateTimeInput>;
-  deletedAt_gte?: Maybe<DateTimeInput>;
-  AND?: Maybe<
-    SecurityQuestionAnswerWhereInput[] | SecurityQuestionAnswerWhereInput
-  >;
-  OR?: Maybe<
-    SecurityQuestionAnswerWhereInput[] | SecurityQuestionAnswerWhereInput
-  >;
-  NOT?: Maybe<
-    SecurityQuestionAnswerWhereInput[] | SecurityQuestionAnswerWhereInput
-  >;
-}
-
-export interface UserUpdateManyMutationInput {
-  firstName?: Maybe<String>;
-  lastName?: Maybe<String>;
-  email?: Maybe<String>;
-  password?: Maybe<String>;
-  phoneCountryCode?: Maybe<String>;
-  phone?: Maybe<String>;
-  country?: Maybe<String>;
-  address1?: Maybe<String>;
-  address2?: Maybe<String>;
-  city?: Maybe<String>;
-  state?: Maybe<String>;
-  postalCode?: Maybe<String>;
-  deletedAt?: Maybe<DateTimeInput>;
-}
-
-export interface CustomerUpsertWithoutUserInput {
-  update: CustomerUpdateWithoutUserDataInput;
-  create: CustomerCreateWithoutUserInput;
-}
-
-export interface UserAccountUpsertWithoutSecurityQuestionsInput {
-  update: UserAccountUpdateWithoutSecurityQuestionsDataInput;
-  create: UserAccountCreateWithoutSecurityQuestionsInput;
-}
-
 export interface SecurityQuestionAnswerScalarWhereInput {
   id?: Maybe<ID_Input>;
   id_not?: Maybe<ID_Input>;
@@ -1754,11 +1976,19 @@ export interface SecurityQuestionAnswerScalarWhereInput {
   >;
 }
 
-export interface UserUpdateOneRequiredWithoutUserAccountInput {
-  create?: Maybe<UserCreateWithoutUserAccountInput>;
-  update?: Maybe<UserUpdateWithoutUserAccountDataInput>;
-  upsert?: Maybe<UserUpsertWithoutUserAccountInput>;
-  connect?: Maybe<UserWhereUniqueInput>;
+export interface CustomerSubscriptionWhereInput {
+  mutation_in?: Maybe<MutationType[] | MutationType>;
+  updatedFields_contains?: Maybe<String>;
+  updatedFields_contains_every?: Maybe<String[] | String>;
+  updatedFields_contains_some?: Maybe<String[] | String>;
+  node?: Maybe<CustomerWhereInput>;
+  AND?: Maybe<
+    CustomerSubscriptionWhereInput[] | CustomerSubscriptionWhereInput
+  >;
+  OR?: Maybe<CustomerSubscriptionWhereInput[] | CustomerSubscriptionWhereInput>;
+  NOT?: Maybe<
+    CustomerSubscriptionWhereInput[] | CustomerSubscriptionWhereInput
+  >;
 }
 
 export interface SecurityQuestionAnswerUpdateManyWithWhereNestedInput {
@@ -1766,12 +1996,22 @@ export interface SecurityQuestionAnswerUpdateManyWithWhereNestedInput {
   data: SecurityQuestionAnswerUpdateManyDataInput;
 }
 
-export interface SecurityQuestionAnswerUpdateInput {
-  userAccount?: Maybe<
-    UserAccountUpdateOneRequiredWithoutSecurityQuestionsInput
-  >;
-  userSecurityQuestion?: Maybe<SecurityQuestionUpdateOneRequiredInput>;
-  answer?: Maybe<String>;
+export interface UserUpdateInput {
+  role?: Maybe<RoleUpdateOneRequiredInput>;
+  userAccount?: Maybe<UserAccountUpdateOneRequiredWithoutUserInput>;
+  customerAccount?: Maybe<CustomerUpdateOneWithoutUserInput>;
+  firstName?: Maybe<String>;
+  lastName?: Maybe<String>;
+  email?: Maybe<String>;
+  password?: Maybe<String>;
+  phoneCountryCode?: Maybe<String>;
+  phone?: Maybe<String>;
+  country?: Maybe<String>;
+  address1?: Maybe<String>;
+  address2?: Maybe<String>;
+  city?: Maybe<String>;
+  state?: Maybe<String>;
+  postalCode?: Maybe<String>;
   deletedAt?: Maybe<DateTimeInput>;
 }
 
@@ -1780,74 +2020,44 @@ export interface SecurityQuestionAnswerUpdateManyDataInput {
   deletedAt?: Maybe<DateTimeInput>;
 }
 
-export interface UserAccountCreateWithoutSecurityQuestionsInput {
-  id?: Maybe<ID_Input>;
-  user: UserCreateOneWithoutUserAccountInput;
-  confirmed?: Maybe<Boolean>;
-  confirmedCode?: Maybe<Int>;
-  locked?: Maybe<Boolean>;
-  lockedCode?: Maybe<Int>;
-  lockedExpires?: Maybe<String>;
-  resetPasswordCode?: Maybe<Int>;
-  resetPasswordExpires?: Maybe<String>;
-  loginAttempts?: Maybe<Int>;
-  securityQuestionAttempts?: Maybe<Int>;
-  lastVisit?: Maybe<DateTimeInput>;
-  ip?: Maybe<String>;
-  deletedAt?: Maybe<DateTimeInput>;
-}
+export type SecurityQuestionWhereUniqueInput = AtLeastOne<{
+  id: Maybe<ID_Input>;
+  shortName?: Maybe<String>;
+}>;
 
 export interface UserAccountUpsertWithoutUserInput {
   update: UserAccountUpdateWithoutUserDataInput;
   create: UserAccountCreateWithoutUserInput;
 }
 
-export type UserAccountWhereUniqueInput = AtLeastOne<{
-  id: Maybe<ID_Input>;
-  confirmedCode?: Maybe<Int>;
-  lockedCode?: Maybe<Int>;
-  resetPasswordCode?: Maybe<Int>;
-}>;
+export interface UserAccountCreateOneWithoutSecurityQuestionsInput {
+  create?: Maybe<UserAccountCreateWithoutSecurityQuestionsInput>;
+  connect?: Maybe<UserAccountWhereUniqueInput>;
+}
 
 export interface UserUpsertWithoutCustomerAccountInput {
   update: UserUpdateWithoutCustomerAccountDataInput;
   create: UserCreateWithoutCustomerAccountInput;
 }
 
-export interface OpenAuthUpdateManyMutationInput {
-  provider?: Maybe<ProviderName>;
-  accessToken?: Maybe<String>;
-  refreshToken?: Maybe<String>;
-  expiresAt?: Maybe<DateTimeInput>;
-  deletedAt?: Maybe<DateTimeInput>;
-}
-
-export interface CustomerUpdateManyMutationInput {
-  stripeId?: Maybe<String>;
-  deletedAt?: Maybe<DateTimeInput>;
-}
-
-export interface SecurityQuestionAnswerSubscriptionWhereInput {
+export interface UserAccountSubscriptionWhereInput {
   mutation_in?: Maybe<MutationType[] | MutationType>;
   updatedFields_contains?: Maybe<String>;
   updatedFields_contains_every?: Maybe<String[] | String>;
   updatedFields_contains_some?: Maybe<String[] | String>;
-  node?: Maybe<SecurityQuestionAnswerWhereInput>;
+  node?: Maybe<UserAccountWhereInput>;
   AND?: Maybe<
-    | SecurityQuestionAnswerSubscriptionWhereInput[]
-    | SecurityQuestionAnswerSubscriptionWhereInput
+    UserAccountSubscriptionWhereInput[] | UserAccountSubscriptionWhereInput
   >;
   OR?: Maybe<
-    | SecurityQuestionAnswerSubscriptionWhereInput[]
-    | SecurityQuestionAnswerSubscriptionWhereInput
+    UserAccountSubscriptionWhereInput[] | UserAccountSubscriptionWhereInput
   >;
   NOT?: Maybe<
-    | SecurityQuestionAnswerSubscriptionWhereInput[]
-    | SecurityQuestionAnswerSubscriptionWhereInput
+    UserAccountSubscriptionWhereInput[] | UserAccountSubscriptionWhereInput
   >;
 }
 
-export interface CustomerUpdateWithoutUserDataInput {
+export interface CustomerUpdateManyMutationInput {
   stripeId?: Maybe<String>;
   deletedAt?: Maybe<DateTimeInput>;
 }
@@ -1871,43 +2081,9 @@ export interface UserAccountUpdateInput {
   deletedAt?: Maybe<DateTimeInput>;
 }
 
-export interface CustomerUpdateOneWithoutUserInput {
+export interface CustomerCreateOneWithoutUserInput {
   create?: Maybe<CustomerCreateWithoutUserInput>;
-  update?: Maybe<CustomerUpdateWithoutUserDataInput>;
-  upsert?: Maybe<CustomerUpsertWithoutUserInput>;
-  delete?: Maybe<Boolean>;
-  disconnect?: Maybe<Boolean>;
   connect?: Maybe<CustomerWhereUniqueInput>;
-}
-
-export type SecurityQuestionWhereUniqueInput = AtLeastOne<{
-  id: Maybe<ID_Input>;
-  shortName?: Maybe<String>;
-}>;
-
-export interface OpenAuthCreateInput {
-  id?: Maybe<ID_Input>;
-  user: UserCreateOneInput;
-  provider: ProviderName;
-  accessToken: String;
-  refreshToken?: Maybe<String>;
-  expiresAt: DateTimeInput;
-  deletedAt?: Maybe<DateTimeInput>;
-}
-
-export interface UserCreateOneWithoutUserAccountInput {
-  create?: Maybe<UserCreateWithoutUserAccountInput>;
-  connect?: Maybe<UserWhereUniqueInput>;
-}
-
-export interface UserCreateOneInput {
-  create?: Maybe<UserCreateInput>;
-  connect?: Maybe<UserWhereUniqueInput>;
-}
-
-export interface RoleUpdateManyMutationInput {
-  name?: Maybe<RoleName>;
-  deletedAt?: Maybe<DateTimeInput>;
 }
 
 export interface UserCreateInput {
@@ -1930,55 +2106,59 @@ export interface UserCreateInput {
   deletedAt?: Maybe<DateTimeInput>;
 }
 
-export interface OpenAuthSubscriptionWhereInput {
+export interface UserCreateOneInput {
+  create?: Maybe<UserCreateInput>;
+  connect?: Maybe<UserWhereUniqueInput>;
+}
+
+export interface OpenAuthCreateInput {
+  id?: Maybe<ID_Input>;
+  user: UserCreateOneInput;
+  provider: ProviderName;
+  accessToken: String;
+  refreshToken?: Maybe<String>;
+  expiresAt: DateTimeInput;
+  deletedAt?: Maybe<DateTimeInput>;
+}
+
+export interface UserUpsertWithoutUserAccountInput {
+  update: UserUpdateWithoutUserAccountDataInput;
+  create: UserCreateWithoutUserAccountInput;
+}
+
+export interface SecurityQuestionAnswerSubscriptionWhereInput {
   mutation_in?: Maybe<MutationType[] | MutationType>;
   updatedFields_contains?: Maybe<String>;
   updatedFields_contains_every?: Maybe<String[] | String>;
   updatedFields_contains_some?: Maybe<String[] | String>;
-  node?: Maybe<OpenAuthWhereInput>;
+  node?: Maybe<SecurityQuestionAnswerWhereInput>;
   AND?: Maybe<
-    OpenAuthSubscriptionWhereInput[] | OpenAuthSubscriptionWhereInput
+    | SecurityQuestionAnswerSubscriptionWhereInput[]
+    | SecurityQuestionAnswerSubscriptionWhereInput
   >;
-  OR?: Maybe<OpenAuthSubscriptionWhereInput[] | OpenAuthSubscriptionWhereInput>;
+  OR?: Maybe<
+    | SecurityQuestionAnswerSubscriptionWhereInput[]
+    | SecurityQuestionAnswerSubscriptionWhereInput
+  >;
   NOT?: Maybe<
-    OpenAuthSubscriptionWhereInput[] | OpenAuthSubscriptionWhereInput
+    | SecurityQuestionAnswerSubscriptionWhereInput[]
+    | SecurityQuestionAnswerSubscriptionWhereInput
   >;
 }
 
-export interface UserUpdateOneRequiredInput {
-  create?: Maybe<UserCreateInput>;
-  update?: Maybe<UserUpdateDataInput>;
-  upsert?: Maybe<UserUpsertNestedInput>;
-  connect?: Maybe<UserWhereUniqueInput>;
-}
-
-export interface OpenAuthUpdateInput {
-  user?: Maybe<UserUpdateOneRequiredInput>;
-  provider?: Maybe<ProviderName>;
-  accessToken?: Maybe<String>;
-  refreshToken?: Maybe<String>;
-  expiresAt?: Maybe<DateTimeInput>;
+export interface SecurityQuestionUpdateInput {
+  shortName?: Maybe<String>;
+  question?: Maybe<String>;
   deletedAt?: Maybe<DateTimeInput>;
 }
 
-export interface CustomerCreateWithoutUserInput {
+export interface UserCreateWithoutUserAccountInput {
   id?: Maybe<ID_Input>;
-  stripeId: String;
-  deletedAt?: Maybe<DateTimeInput>;
-}
-
-export interface CustomerCreateOneWithoutUserInput {
-  create?: Maybe<CustomerCreateWithoutUserInput>;
-  connect?: Maybe<CustomerWhereUniqueInput>;
-}
-
-export interface UserUpdateInput {
-  role?: Maybe<RoleUpdateOneRequiredInput>;
-  userAccount?: Maybe<UserAccountUpdateOneRequiredWithoutUserInput>;
-  customerAccount?: Maybe<CustomerUpdateOneWithoutUserInput>;
+  role: RoleCreateOneInput;
+  customerAccount?: Maybe<CustomerCreateOneWithoutUserInput>;
   firstName?: Maybe<String>;
   lastName?: Maybe<String>;
-  email?: Maybe<String>;
+  email: String;
   password?: Maybe<String>;
   phoneCountryCode?: Maybe<String>;
   phone?: Maybe<String>;
@@ -1989,28 +2169,6 @@ export interface UserUpdateInput {
   state?: Maybe<String>;
   postalCode?: Maybe<String>;
   deletedAt?: Maybe<DateTimeInput>;
-}
-
-export interface CustomerCreateInput {
-  id?: Maybe<ID_Input>;
-  user: UserCreateOneWithoutCustomerAccountInput;
-  stripeId: String;
-  deletedAt?: Maybe<DateTimeInput>;
-}
-
-export interface SecurityQuestionAnswerCreateInput {
-  id?: Maybe<ID_Input>;
-  userAccount: UserAccountCreateOneWithoutSecurityQuestionsInput;
-  userSecurityQuestion: SecurityQuestionCreateOneInput;
-  answer: String;
-  deletedAt?: Maybe<DateTimeInput>;
-}
-
-export interface UserAccountUpdateOneRequiredWithoutSecurityQuestionsInput {
-  create?: Maybe<UserAccountCreateWithoutSecurityQuestionsInput>;
-  update?: Maybe<UserAccountUpdateWithoutSecurityQuestionsDataInput>;
-  upsert?: Maybe<UserAccountUpsertWithoutSecurityQuestionsInput>;
-  connect?: Maybe<UserAccountWhereUniqueInput>;
 }
 
 export interface NodeNode {
@@ -2075,130 +2233,289 @@ export interface UserAccountPreviousValuesSubscription
   deletedAt: () => Promise<AsyncIterator<DateTimeOutput>>;
 }
 
-export interface OpenAuthEdge {
-  node: OpenAuth;
+export interface PageInfo {
+  hasNextPage: Boolean;
+  hasPreviousPage: Boolean;
+  startCursor?: String;
+  endCursor?: String;
+}
+
+export interface PageInfoPromise extends Promise<PageInfo>, Fragmentable {
+  hasNextPage: () => Promise<Boolean>;
+  hasPreviousPage: () => Promise<Boolean>;
+  startCursor: () => Promise<String>;
+  endCursor: () => Promise<String>;
+}
+
+export interface PageInfoSubscription
+  extends Promise<AsyncIterator<PageInfo>>,
+    Fragmentable {
+  hasNextPage: () => Promise<AsyncIterator<Boolean>>;
+  hasPreviousPage: () => Promise<AsyncIterator<Boolean>>;
+  startCursor: () => Promise<AsyncIterator<String>>;
+  endCursor: () => Promise<AsyncIterator<String>>;
+}
+
+export interface User {
+  id: ID_Output;
+  firstName?: String;
+  lastName?: String;
+  email: String;
+  password?: String;
+  phoneCountryCode?: String;
+  phone?: String;
+  country?: String;
+  address1?: String;
+  address2?: String;
+  city?: String;
+  state?: String;
+  postalCode?: String;
+  updatedAt: DateTimeOutput;
+  createdAt: DateTimeOutput;
+  deletedAt?: DateTimeOutput;
+}
+
+export interface UserPromise extends Promise<User>, Fragmentable {
+  id: () => Promise<ID_Output>;
+  role: <T = RolePromise>() => T;
+  userAccount: <T = UserAccountPromise>() => T;
+  customerAccount: <T = CustomerPromise>() => T;
+  firstName: () => Promise<String>;
+  lastName: () => Promise<String>;
+  email: () => Promise<String>;
+  password: () => Promise<String>;
+  phoneCountryCode: () => Promise<String>;
+  phone: () => Promise<String>;
+  country: () => Promise<String>;
+  address1: () => Promise<String>;
+  address2: () => Promise<String>;
+  city: () => Promise<String>;
+  state: () => Promise<String>;
+  postalCode: () => Promise<String>;
+  updatedAt: () => Promise<DateTimeOutput>;
+  createdAt: () => Promise<DateTimeOutput>;
+  deletedAt: () => Promise<DateTimeOutput>;
+}
+
+export interface UserSubscription
+  extends Promise<AsyncIterator<User>>,
+    Fragmentable {
+  id: () => Promise<AsyncIterator<ID_Output>>;
+  role: <T = RoleSubscription>() => T;
+  userAccount: <T = UserAccountSubscription>() => T;
+  customerAccount: <T = CustomerSubscription>() => T;
+  firstName: () => Promise<AsyncIterator<String>>;
+  lastName: () => Promise<AsyncIterator<String>>;
+  email: () => Promise<AsyncIterator<String>>;
+  password: () => Promise<AsyncIterator<String>>;
+  phoneCountryCode: () => Promise<AsyncIterator<String>>;
+  phone: () => Promise<AsyncIterator<String>>;
+  country: () => Promise<AsyncIterator<String>>;
+  address1: () => Promise<AsyncIterator<String>>;
+  address2: () => Promise<AsyncIterator<String>>;
+  city: () => Promise<AsyncIterator<String>>;
+  state: () => Promise<AsyncIterator<String>>;
+  postalCode: () => Promise<AsyncIterator<String>>;
+  updatedAt: () => Promise<AsyncIterator<DateTimeOutput>>;
+  createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
+  deletedAt: () => Promise<AsyncIterator<DateTimeOutput>>;
+}
+
+export interface UserNullablePromise
+  extends Promise<User | null>,
+    Fragmentable {
+  id: () => Promise<ID_Output>;
+  role: <T = RolePromise>() => T;
+  userAccount: <T = UserAccountPromise>() => T;
+  customerAccount: <T = CustomerPromise>() => T;
+  firstName: () => Promise<String>;
+  lastName: () => Promise<String>;
+  email: () => Promise<String>;
+  password: () => Promise<String>;
+  phoneCountryCode: () => Promise<String>;
+  phone: () => Promise<String>;
+  country: () => Promise<String>;
+  address1: () => Promise<String>;
+  address2: () => Promise<String>;
+  city: () => Promise<String>;
+  state: () => Promise<String>;
+  postalCode: () => Promise<String>;
+  updatedAt: () => Promise<DateTimeOutput>;
+  createdAt: () => Promise<DateTimeOutput>;
+  deletedAt: () => Promise<DateTimeOutput>;
+}
+
+export interface OpenAuth {
+  id: ID_Output;
+  provider: ProviderName;
+  accessToken: String;
+  refreshToken?: String;
+  expiresAt: DateTimeOutput;
+  updatedAt: DateTimeOutput;
+  createdAt: DateTimeOutput;
+  deletedAt?: DateTimeOutput;
+}
+
+export interface OpenAuthPromise extends Promise<OpenAuth>, Fragmentable {
+  id: () => Promise<ID_Output>;
+  user: <T = UserPromise>() => T;
+  provider: () => Promise<ProviderName>;
+  accessToken: () => Promise<String>;
+  refreshToken: () => Promise<String>;
+  expiresAt: () => Promise<DateTimeOutput>;
+  updatedAt: () => Promise<DateTimeOutput>;
+  createdAt: () => Promise<DateTimeOutput>;
+  deletedAt: () => Promise<DateTimeOutput>;
+}
+
+export interface OpenAuthSubscription
+  extends Promise<AsyncIterator<OpenAuth>>,
+    Fragmentable {
+  id: () => Promise<AsyncIterator<ID_Output>>;
+  user: <T = UserSubscription>() => T;
+  provider: () => Promise<AsyncIterator<ProviderName>>;
+  accessToken: () => Promise<AsyncIterator<String>>;
+  refreshToken: () => Promise<AsyncIterator<String>>;
+  expiresAt: () => Promise<AsyncIterator<DateTimeOutput>>;
+  updatedAt: () => Promise<AsyncIterator<DateTimeOutput>>;
+  createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
+  deletedAt: () => Promise<AsyncIterator<DateTimeOutput>>;
+}
+
+export interface OpenAuthNullablePromise
+  extends Promise<OpenAuth | null>,
+    Fragmentable {
+  id: () => Promise<ID_Output>;
+  user: <T = UserPromise>() => T;
+  provider: () => Promise<ProviderName>;
+  accessToken: () => Promise<String>;
+  refreshToken: () => Promise<String>;
+  expiresAt: () => Promise<DateTimeOutput>;
+  updatedAt: () => Promise<DateTimeOutput>;
+  createdAt: () => Promise<DateTimeOutput>;
+  deletedAt: () => Promise<DateTimeOutput>;
+}
+
+export interface Role {
+  id: ID_Output;
+  name: RoleName;
+  updatedAt: DateTimeOutput;
+  createdAt: DateTimeOutput;
+  deletedAt?: DateTimeOutput;
+}
+
+export interface RolePromise extends Promise<Role>, Fragmentable {
+  id: () => Promise<ID_Output>;
+  name: () => Promise<RoleName>;
+  updatedAt: () => Promise<DateTimeOutput>;
+  createdAt: () => Promise<DateTimeOutput>;
+  deletedAt: () => Promise<DateTimeOutput>;
+}
+
+export interface RoleSubscription
+  extends Promise<AsyncIterator<Role>>,
+    Fragmentable {
+  id: () => Promise<AsyncIterator<ID_Output>>;
+  name: () => Promise<AsyncIterator<RoleName>>;
+  updatedAt: () => Promise<AsyncIterator<DateTimeOutput>>;
+  createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
+  deletedAt: () => Promise<AsyncIterator<DateTimeOutput>>;
+}
+
+export interface RoleNullablePromise
+  extends Promise<Role | null>,
+    Fragmentable {
+  id: () => Promise<ID_Output>;
+  name: () => Promise<RoleName>;
+  updatedAt: () => Promise<DateTimeOutput>;
+  createdAt: () => Promise<DateTimeOutput>;
+  deletedAt: () => Promise<DateTimeOutput>;
+}
+
+export interface AggregateCustomer {
+  count: Int;
+}
+
+export interface AggregateCustomerPromise
+  extends Promise<AggregateCustomer>,
+    Fragmentable {
+  count: () => Promise<Int>;
+}
+
+export interface AggregateCustomerSubscription
+  extends Promise<AsyncIterator<AggregateCustomer>>,
+    Fragmentable {
+  count: () => Promise<AsyncIterator<Int>>;
+}
+
+export interface BatchPayload {
+  count: Long;
+}
+
+export interface BatchPayloadPromise
+  extends Promise<BatchPayload>,
+    Fragmentable {
+  count: () => Promise<Long>;
+}
+
+export interface BatchPayloadSubscription
+  extends Promise<AsyncIterator<BatchPayload>>,
+    Fragmentable {
+  count: () => Promise<AsyncIterator<Long>>;
+}
+
+export interface CustomerEdge {
+  node: Customer;
   cursor: String;
 }
 
-export interface OpenAuthEdgePromise
-  extends Promise<OpenAuthEdge>,
+export interface CustomerEdgePromise
+  extends Promise<CustomerEdge>,
     Fragmentable {
-  node: <T = OpenAuthPromise>() => T;
+  node: <T = CustomerPromise>() => T;
   cursor: () => Promise<String>;
 }
 
-export interface OpenAuthEdgeSubscription
-  extends Promise<AsyncIterator<OpenAuthEdge>>,
+export interface CustomerEdgeSubscription
+  extends Promise<AsyncIterator<CustomerEdge>>,
     Fragmentable {
-  node: <T = OpenAuthSubscription>() => T;
+  node: <T = CustomerSubscription>() => T;
   cursor: () => Promise<AsyncIterator<String>>;
 }
 
-export interface SecurityQuestionAnswer {
-  id: ID_Output;
-  answer: String;
-  updatedAt: DateTimeOutput;
-  createdAt: DateTimeOutput;
-  deletedAt?: DateTimeOutput;
+export interface UserAccountEdge {
+  node: UserAccount;
+  cursor: String;
 }
 
-export interface SecurityQuestionAnswerPromise
-  extends Promise<SecurityQuestionAnswer>,
+export interface UserAccountEdgePromise
+  extends Promise<UserAccountEdge>,
     Fragmentable {
-  id: () => Promise<ID_Output>;
-  userAccount: <T = UserAccountPromise>() => T;
-  userSecurityQuestion: <T = SecurityQuestionPromise>() => T;
-  answer: () => Promise<String>;
-  updatedAt: () => Promise<DateTimeOutput>;
-  createdAt: () => Promise<DateTimeOutput>;
-  deletedAt: () => Promise<DateTimeOutput>;
+  node: <T = UserAccountPromise>() => T;
+  cursor: () => Promise<String>;
 }
 
-export interface SecurityQuestionAnswerSubscription
-  extends Promise<AsyncIterator<SecurityQuestionAnswer>>,
+export interface UserAccountEdgeSubscription
+  extends Promise<AsyncIterator<UserAccountEdge>>,
     Fragmentable {
-  id: () => Promise<AsyncIterator<ID_Output>>;
-  userAccount: <T = UserAccountSubscription>() => T;
-  userSecurityQuestion: <T = SecurityQuestionSubscription>() => T;
-  answer: () => Promise<AsyncIterator<String>>;
-  updatedAt: () => Promise<AsyncIterator<DateTimeOutput>>;
-  createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
-  deletedAt: () => Promise<AsyncIterator<DateTimeOutput>>;
+  node: <T = UserAccountSubscription>() => T;
+  cursor: () => Promise<AsyncIterator<String>>;
 }
 
-export interface SecurityQuestionAnswerNullablePromise
-  extends Promise<SecurityQuestionAnswer | null>,
+export interface AggregateUserAccount {
+  count: Int;
+}
+
+export interface AggregateUserAccountPromise
+  extends Promise<AggregateUserAccount>,
     Fragmentable {
-  id: () => Promise<ID_Output>;
-  userAccount: <T = UserAccountPromise>() => T;
-  userSecurityQuestion: <T = SecurityQuestionPromise>() => T;
-  answer: () => Promise<String>;
-  updatedAt: () => Promise<DateTimeOutput>;
-  createdAt: () => Promise<DateTimeOutput>;
-  deletedAt: () => Promise<DateTimeOutput>;
+  count: () => Promise<Int>;
 }
 
-export interface OpenAuthConnection {
-  pageInfo: PageInfo;
-  edges: OpenAuthEdge[];
-}
-
-export interface OpenAuthConnectionPromise
-  extends Promise<OpenAuthConnection>,
+export interface AggregateUserAccountSubscription
+  extends Promise<AsyncIterator<AggregateUserAccount>>,
     Fragmentable {
-  pageInfo: <T = PageInfoPromise>() => T;
-  edges: <T = FragmentableArray<OpenAuthEdge>>() => T;
-  aggregate: <T = AggregateOpenAuthPromise>() => T;
-}
-
-export interface OpenAuthConnectionSubscription
-  extends Promise<AsyncIterator<OpenAuthConnection>>,
-    Fragmentable {
-  pageInfo: <T = PageInfoSubscription>() => T;
-  edges: <T = Promise<AsyncIterator<OpenAuthEdgeSubscription>>>() => T;
-  aggregate: <T = AggregateOpenAuthSubscription>() => T;
-}
-
-export interface SecurityQuestion {
-  id: ID_Output;
-  shortName: String;
-  question: String;
-  updatedAt: DateTimeOutput;
-  createdAt: DateTimeOutput;
-  deletedAt?: DateTimeOutput;
-}
-
-export interface SecurityQuestionPromise
-  extends Promise<SecurityQuestion>,
-    Fragmentable {
-  id: () => Promise<ID_Output>;
-  shortName: () => Promise<String>;
-  question: () => Promise<String>;
-  updatedAt: () => Promise<DateTimeOutput>;
-  createdAt: () => Promise<DateTimeOutput>;
-  deletedAt: () => Promise<DateTimeOutput>;
-}
-
-export interface SecurityQuestionSubscription
-  extends Promise<AsyncIterator<SecurityQuestion>>,
-    Fragmentable {
-  id: () => Promise<AsyncIterator<ID_Output>>;
-  shortName: () => Promise<AsyncIterator<String>>;
-  question: () => Promise<AsyncIterator<String>>;
-  updatedAt: () => Promise<AsyncIterator<DateTimeOutput>>;
-  createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
-  deletedAt: () => Promise<AsyncIterator<DateTimeOutput>>;
-}
-
-export interface SecurityQuestionNullablePromise
-  extends Promise<SecurityQuestion | null>,
-    Fragmentable {
-  id: () => Promise<ID_Output>;
-  shortName: () => Promise<String>;
-  question: () => Promise<String>;
-  updatedAt: () => Promise<DateTimeOutput>;
-  createdAt: () => Promise<DateTimeOutput>;
-  deletedAt: () => Promise<DateTimeOutput>;
+  count: () => Promise<AsyncIterator<Int>>;
 }
 
 export interface UserAccount {
@@ -2309,18 +2626,885 @@ export interface UserAccountNullablePromise
   deletedAt: () => Promise<DateTimeOutput>;
 }
 
-export interface AggregateUserAccount {
+export interface UserAccountConnection {
+  pageInfo: PageInfo;
+  edges: UserAccountEdge[];
+}
+
+export interface UserAccountConnectionPromise
+  extends Promise<UserAccountConnection>,
+    Fragmentable {
+  pageInfo: <T = PageInfoPromise>() => T;
+  edges: <T = FragmentableArray<UserAccountEdge>>() => T;
+  aggregate: <T = AggregateUserAccountPromise>() => T;
+}
+
+export interface UserAccountConnectionSubscription
+  extends Promise<AsyncIterator<UserAccountConnection>>,
+    Fragmentable {
+  pageInfo: <T = PageInfoSubscription>() => T;
+  edges: <T = Promise<AsyncIterator<UserAccountEdgeSubscription>>>() => T;
+  aggregate: <T = AggregateUserAccountSubscription>() => T;
+}
+
+export interface BlacklistedTokens {
+  id: ID_Output;
+  token: String;
+  updatedAt: DateTimeOutput;
+  createdAt: DateTimeOutput;
+  deletedAt?: DateTimeOutput;
+}
+
+export interface BlacklistedTokensPromise
+  extends Promise<BlacklistedTokens>,
+    Fragmentable {
+  id: () => Promise<ID_Output>;
+  token: () => Promise<String>;
+  updatedAt: () => Promise<DateTimeOutput>;
+  createdAt: () => Promise<DateTimeOutput>;
+  deletedAt: () => Promise<DateTimeOutput>;
+}
+
+export interface BlacklistedTokensSubscription
+  extends Promise<AsyncIterator<BlacklistedTokens>>,
+    Fragmentable {
+  id: () => Promise<AsyncIterator<ID_Output>>;
+  token: () => Promise<AsyncIterator<String>>;
+  updatedAt: () => Promise<AsyncIterator<DateTimeOutput>>;
+  createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
+  deletedAt: () => Promise<AsyncIterator<DateTimeOutput>>;
+}
+
+export interface BlacklistedTokensNullablePromise
+  extends Promise<BlacklistedTokens | null>,
+    Fragmentable {
+  id: () => Promise<ID_Output>;
+  token: () => Promise<String>;
+  updatedAt: () => Promise<DateTimeOutput>;
+  createdAt: () => Promise<DateTimeOutput>;
+  deletedAt: () => Promise<DateTimeOutput>;
+}
+
+export interface AggregateUser {
   count: Int;
 }
 
-export interface AggregateUserAccountPromise
-  extends Promise<AggregateUserAccount>,
+export interface AggregateUserPromise
+  extends Promise<AggregateUser>,
     Fragmentable {
   count: () => Promise<Int>;
 }
 
-export interface AggregateUserAccountSubscription
-  extends Promise<AsyncIterator<AggregateUserAccount>>,
+export interface AggregateUserSubscription
+  extends Promise<AsyncIterator<AggregateUser>>,
+    Fragmentable {
+  count: () => Promise<AsyncIterator<Int>>;
+}
+
+export interface UserConnection {
+  pageInfo: PageInfo;
+  edges: UserEdge[];
+}
+
+export interface UserConnectionPromise
+  extends Promise<UserConnection>,
+    Fragmentable {
+  pageInfo: <T = PageInfoPromise>() => T;
+  edges: <T = FragmentableArray<UserEdge>>() => T;
+  aggregate: <T = AggregateUserPromise>() => T;
+}
+
+export interface UserConnectionSubscription
+  extends Promise<AsyncIterator<UserConnection>>,
+    Fragmentable {
+  pageInfo: <T = PageInfoSubscription>() => T;
+  edges: <T = Promise<AsyncIterator<UserEdgeSubscription>>>() => T;
+  aggregate: <T = AggregateUserSubscription>() => T;
+}
+
+export interface BlacklistedTokensSubscriptionPayload {
+  mutation: MutationType;
+  node: BlacklistedTokens;
+  updatedFields: String[];
+  previousValues: BlacklistedTokensPreviousValues;
+}
+
+export interface BlacklistedTokensSubscriptionPayloadPromise
+  extends Promise<BlacklistedTokensSubscriptionPayload>,
+    Fragmentable {
+  mutation: () => Promise<MutationType>;
+  node: <T = BlacklistedTokensPromise>() => T;
+  updatedFields: () => Promise<String[]>;
+  previousValues: <T = BlacklistedTokensPreviousValuesPromise>() => T;
+}
+
+export interface BlacklistedTokensSubscriptionPayloadSubscription
+  extends Promise<AsyncIterator<BlacklistedTokensSubscriptionPayload>>,
+    Fragmentable {
+  mutation: () => Promise<AsyncIterator<MutationType>>;
+  node: <T = BlacklistedTokensSubscription>() => T;
+  updatedFields: () => Promise<AsyncIterator<String[]>>;
+  previousValues: <T = BlacklistedTokensPreviousValuesSubscription>() => T;
+}
+
+export interface AggregateSecurityQuestionAnswer {
+  count: Int;
+}
+
+export interface AggregateSecurityQuestionAnswerPromise
+  extends Promise<AggregateSecurityQuestionAnswer>,
+    Fragmentable {
+  count: () => Promise<Int>;
+}
+
+export interface AggregateSecurityQuestionAnswerSubscription
+  extends Promise<AsyncIterator<AggregateSecurityQuestionAnswer>>,
+    Fragmentable {
+  count: () => Promise<AsyncIterator<Int>>;
+}
+
+export interface BlacklistedTokensPreviousValues {
+  id: ID_Output;
+  token: String;
+  updatedAt: DateTimeOutput;
+  createdAt: DateTimeOutput;
+  deletedAt?: DateTimeOutput;
+}
+
+export interface BlacklistedTokensPreviousValuesPromise
+  extends Promise<BlacklistedTokensPreviousValues>,
+    Fragmentable {
+  id: () => Promise<ID_Output>;
+  token: () => Promise<String>;
+  updatedAt: () => Promise<DateTimeOutput>;
+  createdAt: () => Promise<DateTimeOutput>;
+  deletedAt: () => Promise<DateTimeOutput>;
+}
+
+export interface BlacklistedTokensPreviousValuesSubscription
+  extends Promise<AsyncIterator<BlacklistedTokensPreviousValues>>,
+    Fragmentable {
+  id: () => Promise<AsyncIterator<ID_Output>>;
+  token: () => Promise<AsyncIterator<String>>;
+  updatedAt: () => Promise<AsyncIterator<DateTimeOutput>>;
+  createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
+  deletedAt: () => Promise<AsyncIterator<DateTimeOutput>>;
+}
+
+export interface SecurityQuestionAnswerConnection {
+  pageInfo: PageInfo;
+  edges: SecurityQuestionAnswerEdge[];
+}
+
+export interface SecurityQuestionAnswerConnectionPromise
+  extends Promise<SecurityQuestionAnswerConnection>,
+    Fragmentable {
+  pageInfo: <T = PageInfoPromise>() => T;
+  edges: <T = FragmentableArray<SecurityQuestionAnswerEdge>>() => T;
+  aggregate: <T = AggregateSecurityQuestionAnswerPromise>() => T;
+}
+
+export interface SecurityQuestionAnswerConnectionSubscription
+  extends Promise<AsyncIterator<SecurityQuestionAnswerConnection>>,
+    Fragmentable {
+  pageInfo: <T = PageInfoSubscription>() => T;
+  edges: <
+    T = Promise<AsyncIterator<SecurityQuestionAnswerEdgeSubscription>>
+  >() => T;
+  aggregate: <T = AggregateSecurityQuestionAnswerSubscription>() => T;
+}
+
+export interface CustomerConnection {
+  pageInfo: PageInfo;
+  edges: CustomerEdge[];
+}
+
+export interface CustomerConnectionPromise
+  extends Promise<CustomerConnection>,
+    Fragmentable {
+  pageInfo: <T = PageInfoPromise>() => T;
+  edges: <T = FragmentableArray<CustomerEdge>>() => T;
+  aggregate: <T = AggregateCustomerPromise>() => T;
+}
+
+export interface CustomerConnectionSubscription
+  extends Promise<AsyncIterator<CustomerConnection>>,
+    Fragmentable {
+  pageInfo: <T = PageInfoSubscription>() => T;
+  edges: <T = Promise<AsyncIterator<CustomerEdgeSubscription>>>() => T;
+  aggregate: <T = AggregateCustomerSubscription>() => T;
+}
+
+export interface SecurityQuestionEdge {
+  node: SecurityQuestion;
+  cursor: String;
+}
+
+export interface SecurityQuestionEdgePromise
+  extends Promise<SecurityQuestionEdge>,
+    Fragmentable {
+  node: <T = SecurityQuestionPromise>() => T;
+  cursor: () => Promise<String>;
+}
+
+export interface SecurityQuestionEdgeSubscription
+  extends Promise<AsyncIterator<SecurityQuestionEdge>>,
+    Fragmentable {
+  node: <T = SecurityQuestionSubscription>() => T;
+  cursor: () => Promise<AsyncIterator<String>>;
+}
+
+export interface CustomerSubscriptionPayload {
+  mutation: MutationType;
+  node: Customer;
+  updatedFields: String[];
+  previousValues: CustomerPreviousValues;
+}
+
+export interface CustomerSubscriptionPayloadPromise
+  extends Promise<CustomerSubscriptionPayload>,
+    Fragmentable {
+  mutation: () => Promise<MutationType>;
+  node: <T = CustomerPromise>() => T;
+  updatedFields: () => Promise<String[]>;
+  previousValues: <T = CustomerPreviousValuesPromise>() => T;
+}
+
+export interface CustomerSubscriptionPayloadSubscription
+  extends Promise<AsyncIterator<CustomerSubscriptionPayload>>,
+    Fragmentable {
+  mutation: () => Promise<AsyncIterator<MutationType>>;
+  node: <T = CustomerSubscription>() => T;
+  updatedFields: () => Promise<AsyncIterator<String[]>>;
+  previousValues: <T = CustomerPreviousValuesSubscription>() => T;
+}
+
+export interface AggregateRole {
+  count: Int;
+}
+
+export interface AggregateRolePromise
+  extends Promise<AggregateRole>,
+    Fragmentable {
+  count: () => Promise<Int>;
+}
+
+export interface AggregateRoleSubscription
+  extends Promise<AsyncIterator<AggregateRole>>,
+    Fragmentable {
+  count: () => Promise<AsyncIterator<Int>>;
+}
+
+export interface CustomerPreviousValues {
+  id: ID_Output;
+  stripeId: String;
+  updatedAt: DateTimeOutput;
+  createdAt: DateTimeOutput;
+  deletedAt?: DateTimeOutput;
+}
+
+export interface CustomerPreviousValuesPromise
+  extends Promise<CustomerPreviousValues>,
+    Fragmentable {
+  id: () => Promise<ID_Output>;
+  stripeId: () => Promise<String>;
+  updatedAt: () => Promise<DateTimeOutput>;
+  createdAt: () => Promise<DateTimeOutput>;
+  deletedAt: () => Promise<DateTimeOutput>;
+}
+
+export interface CustomerPreviousValuesSubscription
+  extends Promise<AsyncIterator<CustomerPreviousValues>>,
+    Fragmentable {
+  id: () => Promise<AsyncIterator<ID_Output>>;
+  stripeId: () => Promise<AsyncIterator<String>>;
+  updatedAt: () => Promise<AsyncIterator<DateTimeOutput>>;
+  createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
+  deletedAt: () => Promise<AsyncIterator<DateTimeOutput>>;
+}
+
+export interface RoleConnection {
+  pageInfo: PageInfo;
+  edges: RoleEdge[];
+}
+
+export interface RoleConnectionPromise
+  extends Promise<RoleConnection>,
+    Fragmentable {
+  pageInfo: <T = PageInfoPromise>() => T;
+  edges: <T = FragmentableArray<RoleEdge>>() => T;
+  aggregate: <T = AggregateRolePromise>() => T;
+}
+
+export interface RoleConnectionSubscription
+  extends Promise<AsyncIterator<RoleConnection>>,
+    Fragmentable {
+  pageInfo: <T = PageInfoSubscription>() => T;
+  edges: <T = Promise<AsyncIterator<RoleEdgeSubscription>>>() => T;
+  aggregate: <T = AggregateRoleSubscription>() => T;
+}
+
+export interface UserSubscriptionPayload {
+  mutation: MutationType;
+  node: User;
+  updatedFields: String[];
+  previousValues: UserPreviousValues;
+}
+
+export interface UserSubscriptionPayloadPromise
+  extends Promise<UserSubscriptionPayload>,
+    Fragmentable {
+  mutation: () => Promise<MutationType>;
+  node: <T = UserPromise>() => T;
+  updatedFields: () => Promise<String[]>;
+  previousValues: <T = UserPreviousValuesPromise>() => T;
+}
+
+export interface UserSubscriptionPayloadSubscription
+  extends Promise<AsyncIterator<UserSubscriptionPayload>>,
+    Fragmentable {
+  mutation: () => Promise<AsyncIterator<MutationType>>;
+  node: <T = UserSubscription>() => T;
+  updatedFields: () => Promise<AsyncIterator<String[]>>;
+  previousValues: <T = UserPreviousValuesSubscription>() => T;
+}
+
+export interface AggregateOpenAuth {
+  count: Int;
+}
+
+export interface AggregateOpenAuthPromise
+  extends Promise<AggregateOpenAuth>,
+    Fragmentable {
+  count: () => Promise<Int>;
+}
+
+export interface AggregateOpenAuthSubscription
+  extends Promise<AsyncIterator<AggregateOpenAuth>>,
+    Fragmentable {
+  count: () => Promise<AsyncIterator<Int>>;
+}
+
+export interface OpenAuthSubscriptionPayload {
+  mutation: MutationType;
+  node: OpenAuth;
+  updatedFields: String[];
+  previousValues: OpenAuthPreviousValues;
+}
+
+export interface OpenAuthSubscriptionPayloadPromise
+  extends Promise<OpenAuthSubscriptionPayload>,
+    Fragmentable {
+  mutation: () => Promise<MutationType>;
+  node: <T = OpenAuthPromise>() => T;
+  updatedFields: () => Promise<String[]>;
+  previousValues: <T = OpenAuthPreviousValuesPromise>() => T;
+}
+
+export interface OpenAuthSubscriptionPayloadSubscription
+  extends Promise<AsyncIterator<OpenAuthSubscriptionPayload>>,
+    Fragmentable {
+  mutation: () => Promise<AsyncIterator<MutationType>>;
+  node: <T = OpenAuthSubscription>() => T;
+  updatedFields: () => Promise<AsyncIterator<String[]>>;
+  previousValues: <T = OpenAuthPreviousValuesSubscription>() => T;
+}
+
+export interface OpenAuthConnection {
+  pageInfo: PageInfo;
+  edges: OpenAuthEdge[];
+}
+
+export interface OpenAuthConnectionPromise
+  extends Promise<OpenAuthConnection>,
+    Fragmentable {
+  pageInfo: <T = PageInfoPromise>() => T;
+  edges: <T = FragmentableArray<OpenAuthEdge>>() => T;
+  aggregate: <T = AggregateOpenAuthPromise>() => T;
+}
+
+export interface OpenAuthConnectionSubscription
+  extends Promise<AsyncIterator<OpenAuthConnection>>,
+    Fragmentable {
+  pageInfo: <T = PageInfoSubscription>() => T;
+  edges: <T = Promise<AsyncIterator<OpenAuthEdgeSubscription>>>() => T;
+  aggregate: <T = AggregateOpenAuthSubscription>() => T;
+}
+
+export interface OpenAuthPreviousValues {
+  id: ID_Output;
+  provider: ProviderName;
+  accessToken: String;
+  refreshToken?: String;
+  expiresAt: DateTimeOutput;
+  updatedAt: DateTimeOutput;
+  createdAt: DateTimeOutput;
+  deletedAt?: DateTimeOutput;
+}
+
+export interface OpenAuthPreviousValuesPromise
+  extends Promise<OpenAuthPreviousValues>,
+    Fragmentable {
+  id: () => Promise<ID_Output>;
+  provider: () => Promise<ProviderName>;
+  accessToken: () => Promise<String>;
+  refreshToken: () => Promise<String>;
+  expiresAt: () => Promise<DateTimeOutput>;
+  updatedAt: () => Promise<DateTimeOutput>;
+  createdAt: () => Promise<DateTimeOutput>;
+  deletedAt: () => Promise<DateTimeOutput>;
+}
+
+export interface OpenAuthPreviousValuesSubscription
+  extends Promise<AsyncIterator<OpenAuthPreviousValues>>,
+    Fragmentable {
+  id: () => Promise<AsyncIterator<ID_Output>>;
+  provider: () => Promise<AsyncIterator<ProviderName>>;
+  accessToken: () => Promise<AsyncIterator<String>>;
+  refreshToken: () => Promise<AsyncIterator<String>>;
+  expiresAt: () => Promise<AsyncIterator<DateTimeOutput>>;
+  updatedAt: () => Promise<AsyncIterator<DateTimeOutput>>;
+  createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
+  deletedAt: () => Promise<AsyncIterator<DateTimeOutput>>;
+}
+
+export interface Customer {
+  id: ID_Output;
+  stripeId: String;
+  updatedAt: DateTimeOutput;
+  createdAt: DateTimeOutput;
+  deletedAt?: DateTimeOutput;
+}
+
+export interface CustomerPromise extends Promise<Customer>, Fragmentable {
+  id: () => Promise<ID_Output>;
+  user: <T = UserPromise>() => T;
+  stripeId: () => Promise<String>;
+  updatedAt: () => Promise<DateTimeOutput>;
+  createdAt: () => Promise<DateTimeOutput>;
+  deletedAt: () => Promise<DateTimeOutput>;
+}
+
+export interface CustomerSubscription
+  extends Promise<AsyncIterator<Customer>>,
+    Fragmentable {
+  id: () => Promise<AsyncIterator<ID_Output>>;
+  user: <T = UserSubscription>() => T;
+  stripeId: () => Promise<AsyncIterator<String>>;
+  updatedAt: () => Promise<AsyncIterator<DateTimeOutput>>;
+  createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
+  deletedAt: () => Promise<AsyncIterator<DateTimeOutput>>;
+}
+
+export interface CustomerNullablePromise
+  extends Promise<Customer | null>,
+    Fragmentable {
+  id: () => Promise<ID_Output>;
+  user: <T = UserPromise>() => T;
+  stripeId: () => Promise<String>;
+  updatedAt: () => Promise<DateTimeOutput>;
+  createdAt: () => Promise<DateTimeOutput>;
+  deletedAt: () => Promise<DateTimeOutput>;
+}
+
+export interface SecurityQuestion {
+  id: ID_Output;
+  shortName: String;
+  question: String;
+  updatedAt: DateTimeOutput;
+  createdAt: DateTimeOutput;
+  deletedAt?: DateTimeOutput;
+}
+
+export interface SecurityQuestionPromise
+  extends Promise<SecurityQuestion>,
+    Fragmentable {
+  id: () => Promise<ID_Output>;
+  shortName: () => Promise<String>;
+  question: () => Promise<String>;
+  updatedAt: () => Promise<DateTimeOutput>;
+  createdAt: () => Promise<DateTimeOutput>;
+  deletedAt: () => Promise<DateTimeOutput>;
+}
+
+export interface SecurityQuestionSubscription
+  extends Promise<AsyncIterator<SecurityQuestion>>,
+    Fragmentable {
+  id: () => Promise<AsyncIterator<ID_Output>>;
+  shortName: () => Promise<AsyncIterator<String>>;
+  question: () => Promise<AsyncIterator<String>>;
+  updatedAt: () => Promise<AsyncIterator<DateTimeOutput>>;
+  createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
+  deletedAt: () => Promise<AsyncIterator<DateTimeOutput>>;
+}
+
+export interface SecurityQuestionNullablePromise
+  extends Promise<SecurityQuestion | null>,
+    Fragmentable {
+  id: () => Promise<ID_Output>;
+  shortName: () => Promise<String>;
+  question: () => Promise<String>;
+  updatedAt: () => Promise<DateTimeOutput>;
+  createdAt: () => Promise<DateTimeOutput>;
+  deletedAt: () => Promise<DateTimeOutput>;
+}
+
+export interface UserEdge {
+  node: User;
+  cursor: String;
+}
+
+export interface UserEdgePromise extends Promise<UserEdge>, Fragmentable {
+  node: <T = UserPromise>() => T;
+  cursor: () => Promise<String>;
+}
+
+export interface UserEdgeSubscription
+  extends Promise<AsyncIterator<UserEdge>>,
+    Fragmentable {
+  node: <T = UserSubscription>() => T;
+  cursor: () => Promise<AsyncIterator<String>>;
+}
+
+export interface RoleSubscriptionPayload {
+  mutation: MutationType;
+  node: Role;
+  updatedFields: String[];
+  previousValues: RolePreviousValues;
+}
+
+export interface RoleSubscriptionPayloadPromise
+  extends Promise<RoleSubscriptionPayload>,
+    Fragmentable {
+  mutation: () => Promise<MutationType>;
+  node: <T = RolePromise>() => T;
+  updatedFields: () => Promise<String[]>;
+  previousValues: <T = RolePreviousValuesPromise>() => T;
+}
+
+export interface RoleSubscriptionPayloadSubscription
+  extends Promise<AsyncIterator<RoleSubscriptionPayload>>,
+    Fragmentable {
+  mutation: () => Promise<AsyncIterator<MutationType>>;
+  node: <T = RoleSubscription>() => T;
+  updatedFields: () => Promise<AsyncIterator<String[]>>;
+  previousValues: <T = RolePreviousValuesSubscription>() => T;
+}
+
+export interface SecurityQuestionAnswerEdge {
+  node: SecurityQuestionAnswer;
+  cursor: String;
+}
+
+export interface SecurityQuestionAnswerEdgePromise
+  extends Promise<SecurityQuestionAnswerEdge>,
+    Fragmentable {
+  node: <T = SecurityQuestionAnswerPromise>() => T;
+  cursor: () => Promise<String>;
+}
+
+export interface SecurityQuestionAnswerEdgeSubscription
+  extends Promise<AsyncIterator<SecurityQuestionAnswerEdge>>,
+    Fragmentable {
+  node: <T = SecurityQuestionAnswerSubscription>() => T;
+  cursor: () => Promise<AsyncIterator<String>>;
+}
+
+export interface RolePreviousValues {
+  id: ID_Output;
+  name: RoleName;
+  updatedAt: DateTimeOutput;
+  createdAt: DateTimeOutput;
+  deletedAt?: DateTimeOutput;
+}
+
+export interface RolePreviousValuesPromise
+  extends Promise<RolePreviousValues>,
+    Fragmentable {
+  id: () => Promise<ID_Output>;
+  name: () => Promise<RoleName>;
+  updatedAt: () => Promise<DateTimeOutput>;
+  createdAt: () => Promise<DateTimeOutput>;
+  deletedAt: () => Promise<DateTimeOutput>;
+}
+
+export interface RolePreviousValuesSubscription
+  extends Promise<AsyncIterator<RolePreviousValues>>,
+    Fragmentable {
+  id: () => Promise<AsyncIterator<ID_Output>>;
+  name: () => Promise<AsyncIterator<RoleName>>;
+  updatedAt: () => Promise<AsyncIterator<DateTimeOutput>>;
+  createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
+  deletedAt: () => Promise<AsyncIterator<DateTimeOutput>>;
+}
+
+export interface SecurityQuestionConnection {
+  pageInfo: PageInfo;
+  edges: SecurityQuestionEdge[];
+}
+
+export interface SecurityQuestionConnectionPromise
+  extends Promise<SecurityQuestionConnection>,
+    Fragmentable {
+  pageInfo: <T = PageInfoPromise>() => T;
+  edges: <T = FragmentableArray<SecurityQuestionEdge>>() => T;
+  aggregate: <T = AggregateSecurityQuestionPromise>() => T;
+}
+
+export interface SecurityQuestionConnectionSubscription
+  extends Promise<AsyncIterator<SecurityQuestionConnection>>,
+    Fragmentable {
+  pageInfo: <T = PageInfoSubscription>() => T;
+  edges: <T = Promise<AsyncIterator<SecurityQuestionEdgeSubscription>>>() => T;
+  aggregate: <T = AggregateSecurityQuestionSubscription>() => T;
+}
+
+export interface SecurityQuestionAnswer {
+  id: ID_Output;
+  answer: String;
+  updatedAt: DateTimeOutput;
+  createdAt: DateTimeOutput;
+  deletedAt?: DateTimeOutput;
+}
+
+export interface SecurityQuestionAnswerPromise
+  extends Promise<SecurityQuestionAnswer>,
+    Fragmentable {
+  id: () => Promise<ID_Output>;
+  userAccount: <T = UserAccountPromise>() => T;
+  userSecurityQuestion: <T = SecurityQuestionPromise>() => T;
+  answer: () => Promise<String>;
+  updatedAt: () => Promise<DateTimeOutput>;
+  createdAt: () => Promise<DateTimeOutput>;
+  deletedAt: () => Promise<DateTimeOutput>;
+}
+
+export interface SecurityQuestionAnswerSubscription
+  extends Promise<AsyncIterator<SecurityQuestionAnswer>>,
+    Fragmentable {
+  id: () => Promise<AsyncIterator<ID_Output>>;
+  userAccount: <T = UserAccountSubscription>() => T;
+  userSecurityQuestion: <T = SecurityQuestionSubscription>() => T;
+  answer: () => Promise<AsyncIterator<String>>;
+  updatedAt: () => Promise<AsyncIterator<DateTimeOutput>>;
+  createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
+  deletedAt: () => Promise<AsyncIterator<DateTimeOutput>>;
+}
+
+export interface SecurityQuestionAnswerNullablePromise
+  extends Promise<SecurityQuestionAnswer | null>,
+    Fragmentable {
+  id: () => Promise<ID_Output>;
+  userAccount: <T = UserAccountPromise>() => T;
+  userSecurityQuestion: <T = SecurityQuestionPromise>() => T;
+  answer: () => Promise<String>;
+  updatedAt: () => Promise<DateTimeOutput>;
+  createdAt: () => Promise<DateTimeOutput>;
+  deletedAt: () => Promise<DateTimeOutput>;
+}
+
+export interface AggregateBlacklistedTokens {
+  count: Int;
+}
+
+export interface AggregateBlacklistedTokensPromise
+  extends Promise<AggregateBlacklistedTokens>,
+    Fragmentable {
+  count: () => Promise<Int>;
+}
+
+export interface AggregateBlacklistedTokensSubscription
+  extends Promise<AsyncIterator<AggregateBlacklistedTokens>>,
+    Fragmentable {
+  count: () => Promise<AsyncIterator<Int>>;
+}
+
+export interface SecurityQuestionSubscriptionPayload {
+  mutation: MutationType;
+  node: SecurityQuestion;
+  updatedFields: String[];
+  previousValues: SecurityQuestionPreviousValues;
+}
+
+export interface SecurityQuestionSubscriptionPayloadPromise
+  extends Promise<SecurityQuestionSubscriptionPayload>,
+    Fragmentable {
+  mutation: () => Promise<MutationType>;
+  node: <T = SecurityQuestionPromise>() => T;
+  updatedFields: () => Promise<String[]>;
+  previousValues: <T = SecurityQuestionPreviousValuesPromise>() => T;
+}
+
+export interface SecurityQuestionSubscriptionPayloadSubscription
+  extends Promise<AsyncIterator<SecurityQuestionSubscriptionPayload>>,
+    Fragmentable {
+  mutation: () => Promise<AsyncIterator<MutationType>>;
+  node: <T = SecurityQuestionSubscription>() => T;
+  updatedFields: () => Promise<AsyncIterator<String[]>>;
+  previousValues: <T = SecurityQuestionPreviousValuesSubscription>() => T;
+}
+
+export interface BlacklistedTokensConnection {
+  pageInfo: PageInfo;
+  edges: BlacklistedTokensEdge[];
+}
+
+export interface BlacklistedTokensConnectionPromise
+  extends Promise<BlacklistedTokensConnection>,
+    Fragmentable {
+  pageInfo: <T = PageInfoPromise>() => T;
+  edges: <T = FragmentableArray<BlacklistedTokensEdge>>() => T;
+  aggregate: <T = AggregateBlacklistedTokensPromise>() => T;
+}
+
+export interface BlacklistedTokensConnectionSubscription
+  extends Promise<AsyncIterator<BlacklistedTokensConnection>>,
+    Fragmentable {
+  pageInfo: <T = PageInfoSubscription>() => T;
+  edges: <T = Promise<AsyncIterator<BlacklistedTokensEdgeSubscription>>>() => T;
+  aggregate: <T = AggregateBlacklistedTokensSubscription>() => T;
+}
+
+export interface UserAccountSubscriptionPayload {
+  mutation: MutationType;
+  node: UserAccount;
+  updatedFields: String[];
+  previousValues: UserAccountPreviousValues;
+}
+
+export interface UserAccountSubscriptionPayloadPromise
+  extends Promise<UserAccountSubscriptionPayload>,
+    Fragmentable {
+  mutation: () => Promise<MutationType>;
+  node: <T = UserAccountPromise>() => T;
+  updatedFields: () => Promise<String[]>;
+  previousValues: <T = UserAccountPreviousValuesPromise>() => T;
+}
+
+export interface UserAccountSubscriptionPayloadSubscription
+  extends Promise<AsyncIterator<UserAccountSubscriptionPayload>>,
+    Fragmentable {
+  mutation: () => Promise<AsyncIterator<MutationType>>;
+  node: <T = UserAccountSubscription>() => T;
+  updatedFields: () => Promise<AsyncIterator<String[]>>;
+  previousValues: <T = UserAccountPreviousValuesSubscription>() => T;
+}
+
+export interface SecurityQuestionAnswerPreviousValues {
+  id: ID_Output;
+  answer: String;
+  updatedAt: DateTimeOutput;
+  createdAt: DateTimeOutput;
+  deletedAt?: DateTimeOutput;
+}
+
+export interface SecurityQuestionAnswerPreviousValuesPromise
+  extends Promise<SecurityQuestionAnswerPreviousValues>,
+    Fragmentable {
+  id: () => Promise<ID_Output>;
+  answer: () => Promise<String>;
+  updatedAt: () => Promise<DateTimeOutput>;
+  createdAt: () => Promise<DateTimeOutput>;
+  deletedAt: () => Promise<DateTimeOutput>;
+}
+
+export interface SecurityQuestionAnswerPreviousValuesSubscription
+  extends Promise<AsyncIterator<SecurityQuestionAnswerPreviousValues>>,
+    Fragmentable {
+  id: () => Promise<AsyncIterator<ID_Output>>;
+  answer: () => Promise<AsyncIterator<String>>;
+  updatedAt: () => Promise<AsyncIterator<DateTimeOutput>>;
+  createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
+  deletedAt: () => Promise<AsyncIterator<DateTimeOutput>>;
+}
+
+export interface SecurityQuestionAnswerSubscriptionPayload {
+  mutation: MutationType;
+  node: SecurityQuestionAnswer;
+  updatedFields: String[];
+  previousValues: SecurityQuestionAnswerPreviousValues;
+}
+
+export interface SecurityQuestionAnswerSubscriptionPayloadPromise
+  extends Promise<SecurityQuestionAnswerSubscriptionPayload>,
+    Fragmentable {
+  mutation: () => Promise<MutationType>;
+  node: <T = SecurityQuestionAnswerPromise>() => T;
+  updatedFields: () => Promise<String[]>;
+  previousValues: <T = SecurityQuestionAnswerPreviousValuesPromise>() => T;
+}
+
+export interface SecurityQuestionAnswerSubscriptionPayloadSubscription
+  extends Promise<AsyncIterator<SecurityQuestionAnswerSubscriptionPayload>>,
+    Fragmentable {
+  mutation: () => Promise<AsyncIterator<MutationType>>;
+  node: <T = SecurityQuestionAnswerSubscription>() => T;
+  updatedFields: () => Promise<AsyncIterator<String[]>>;
+  previousValues: <T = SecurityQuestionAnswerPreviousValuesSubscription>() => T;
+}
+
+export interface BlacklistedTokensEdge {
+  node: BlacklistedTokens;
+  cursor: String;
+}
+
+export interface BlacklistedTokensEdgePromise
+  extends Promise<BlacklistedTokensEdge>,
+    Fragmentable {
+  node: <T = BlacklistedTokensPromise>() => T;
+  cursor: () => Promise<String>;
+}
+
+export interface BlacklistedTokensEdgeSubscription
+  extends Promise<AsyncIterator<BlacklistedTokensEdge>>,
+    Fragmentable {
+  node: <T = BlacklistedTokensSubscription>() => T;
+  cursor: () => Promise<AsyncIterator<String>>;
+}
+
+export interface SecurityQuestionPreviousValues {
+  id: ID_Output;
+  shortName: String;
+  question: String;
+  updatedAt: DateTimeOutput;
+  createdAt: DateTimeOutput;
+  deletedAt?: DateTimeOutput;
+}
+
+export interface SecurityQuestionPreviousValuesPromise
+  extends Promise<SecurityQuestionPreviousValues>,
+    Fragmentable {
+  id: () => Promise<ID_Output>;
+  shortName: () => Promise<String>;
+  question: () => Promise<String>;
+  updatedAt: () => Promise<DateTimeOutput>;
+  createdAt: () => Promise<DateTimeOutput>;
+  deletedAt: () => Promise<DateTimeOutput>;
+}
+
+export interface SecurityQuestionPreviousValuesSubscription
+  extends Promise<AsyncIterator<SecurityQuestionPreviousValues>>,
+    Fragmentable {
+  id: () => Promise<AsyncIterator<ID_Output>>;
+  shortName: () => Promise<AsyncIterator<String>>;
+  question: () => Promise<AsyncIterator<String>>;
+  updatedAt: () => Promise<AsyncIterator<DateTimeOutput>>;
+  createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
+  deletedAt: () => Promise<AsyncIterator<DateTimeOutput>>;
+}
+
+export interface AggregateSecurityQuestion {
+  count: Int;
+}
+
+export interface AggregateSecurityQuestionPromise
+  extends Promise<AggregateSecurityQuestion>,
+    Fragmentable {
+  count: () => Promise<Int>;
+}
+
+export interface AggregateSecurityQuestionSubscription
+  extends Promise<AsyncIterator<AggregateSecurityQuestion>>,
     Fragmentable {
   count: () => Promise<AsyncIterator<Int>>;
 }
@@ -2386,674 +3570,23 @@ export interface UserPreviousValuesSubscription
   deletedAt: () => Promise<AsyncIterator<DateTimeOutput>>;
 }
 
-export interface CustomerConnection {
-  pageInfo: PageInfo;
-  edges: CustomerEdge[];
-}
-
-export interface CustomerConnectionPromise
-  extends Promise<CustomerConnection>,
-    Fragmentable {
-  pageInfo: <T = PageInfoPromise>() => T;
-  edges: <T = FragmentableArray<CustomerEdge>>() => T;
-  aggregate: <T = AggregateCustomerPromise>() => T;
-}
-
-export interface CustomerConnectionSubscription
-  extends Promise<AsyncIterator<CustomerConnection>>,
-    Fragmentable {
-  pageInfo: <T = PageInfoSubscription>() => T;
-  edges: <T = Promise<AsyncIterator<CustomerEdgeSubscription>>>() => T;
-  aggregate: <T = AggregateCustomerSubscription>() => T;
-}
-
-export interface UserAccountEdge {
-  node: UserAccount;
-  cursor: String;
-}
-
-export interface UserAccountEdgePromise
-  extends Promise<UserAccountEdge>,
-    Fragmentable {
-  node: <T = UserAccountPromise>() => T;
-  cursor: () => Promise<String>;
-}
-
-export interface UserAccountEdgeSubscription
-  extends Promise<AsyncIterator<UserAccountEdge>>,
-    Fragmentable {
-  node: <T = UserAccountSubscription>() => T;
-  cursor: () => Promise<AsyncIterator<String>>;
-}
-
-export interface UserAccountConnection {
-  pageInfo: PageInfo;
-  edges: UserAccountEdge[];
-}
-
-export interface UserAccountConnectionPromise
-  extends Promise<UserAccountConnection>,
-    Fragmentable {
-  pageInfo: <T = PageInfoPromise>() => T;
-  edges: <T = FragmentableArray<UserAccountEdge>>() => T;
-  aggregate: <T = AggregateUserAccountPromise>() => T;
-}
-
-export interface UserAccountConnectionSubscription
-  extends Promise<AsyncIterator<UserAccountConnection>>,
-    Fragmentable {
-  pageInfo: <T = PageInfoSubscription>() => T;
-  edges: <T = Promise<AsyncIterator<UserAccountEdgeSubscription>>>() => T;
-  aggregate: <T = AggregateUserAccountSubscription>() => T;
-}
-
-export interface Customer {
-  id: ID_Output;
-  stripeId: String;
-  updatedAt: DateTimeOutput;
-  createdAt: DateTimeOutput;
-  deletedAt?: DateTimeOutput;
-}
-
-export interface CustomerPromise extends Promise<Customer>, Fragmentable {
-  id: () => Promise<ID_Output>;
-  user: <T = UserPromise>() => T;
-  stripeId: () => Promise<String>;
-  updatedAt: () => Promise<DateTimeOutput>;
-  createdAt: () => Promise<DateTimeOutput>;
-  deletedAt: () => Promise<DateTimeOutput>;
-}
-
-export interface CustomerSubscription
-  extends Promise<AsyncIterator<Customer>>,
-    Fragmentable {
-  id: () => Promise<AsyncIterator<ID_Output>>;
-  user: <T = UserSubscription>() => T;
-  stripeId: () => Promise<AsyncIterator<String>>;
-  updatedAt: () => Promise<AsyncIterator<DateTimeOutput>>;
-  createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
-  deletedAt: () => Promise<AsyncIterator<DateTimeOutput>>;
-}
-
-export interface CustomerNullablePromise
-  extends Promise<Customer | null>,
-    Fragmentable {
-  id: () => Promise<ID_Output>;
-  user: <T = UserPromise>() => T;
-  stripeId: () => Promise<String>;
-  updatedAt: () => Promise<DateTimeOutput>;
-  createdAt: () => Promise<DateTimeOutput>;
-  deletedAt: () => Promise<DateTimeOutput>;
-}
-
-export interface UserEdge {
-  node: User;
-  cursor: String;
-}
-
-export interface UserEdgePromise extends Promise<UserEdge>, Fragmentable {
-  node: <T = UserPromise>() => T;
-  cursor: () => Promise<String>;
-}
-
-export interface UserEdgeSubscription
-  extends Promise<AsyncIterator<UserEdge>>,
-    Fragmentable {
-  node: <T = UserSubscription>() => T;
-  cursor: () => Promise<AsyncIterator<String>>;
-}
-
-export interface UserSubscriptionPayload {
-  mutation: MutationType;
-  node: User;
-  updatedFields: String[];
-  previousValues: UserPreviousValues;
-}
-
-export interface UserSubscriptionPayloadPromise
-  extends Promise<UserSubscriptionPayload>,
-    Fragmentable {
-  mutation: () => Promise<MutationType>;
-  node: <T = UserPromise>() => T;
-  updatedFields: () => Promise<String[]>;
-  previousValues: <T = UserPreviousValuesPromise>() => T;
-}
-
-export interface UserSubscriptionPayloadSubscription
-  extends Promise<AsyncIterator<UserSubscriptionPayload>>,
-    Fragmentable {
-  mutation: () => Promise<AsyncIterator<MutationType>>;
-  node: <T = UserSubscription>() => T;
-  updatedFields: () => Promise<AsyncIterator<String[]>>;
-  previousValues: <T = UserPreviousValuesSubscription>() => T;
-}
-
-export interface User {
-  id: ID_Output;
-  firstName?: String;
-  lastName?: String;
-  email: String;
-  password?: String;
-  phoneCountryCode?: String;
-  phone?: String;
-  country?: String;
-  address1?: String;
-  address2?: String;
-  city?: String;
-  state?: String;
-  postalCode?: String;
-  updatedAt: DateTimeOutput;
-  createdAt: DateTimeOutput;
-  deletedAt?: DateTimeOutput;
-}
-
-export interface UserPromise extends Promise<User>, Fragmentable {
-  id: () => Promise<ID_Output>;
-  role: <T = RolePromise>() => T;
-  userAccount: <T = UserAccountPromise>() => T;
-  customerAccount: <T = CustomerPromise>() => T;
-  firstName: () => Promise<String>;
-  lastName: () => Promise<String>;
-  email: () => Promise<String>;
-  password: () => Promise<String>;
-  phoneCountryCode: () => Promise<String>;
-  phone: () => Promise<String>;
-  country: () => Promise<String>;
-  address1: () => Promise<String>;
-  address2: () => Promise<String>;
-  city: () => Promise<String>;
-  state: () => Promise<String>;
-  postalCode: () => Promise<String>;
-  updatedAt: () => Promise<DateTimeOutput>;
-  createdAt: () => Promise<DateTimeOutput>;
-  deletedAt: () => Promise<DateTimeOutput>;
-}
-
-export interface UserSubscription
-  extends Promise<AsyncIterator<User>>,
-    Fragmentable {
-  id: () => Promise<AsyncIterator<ID_Output>>;
-  role: <T = RoleSubscription>() => T;
-  userAccount: <T = UserAccountSubscription>() => T;
-  customerAccount: <T = CustomerSubscription>() => T;
-  firstName: () => Promise<AsyncIterator<String>>;
-  lastName: () => Promise<AsyncIterator<String>>;
-  email: () => Promise<AsyncIterator<String>>;
-  password: () => Promise<AsyncIterator<String>>;
-  phoneCountryCode: () => Promise<AsyncIterator<String>>;
-  phone: () => Promise<AsyncIterator<String>>;
-  country: () => Promise<AsyncIterator<String>>;
-  address1: () => Promise<AsyncIterator<String>>;
-  address2: () => Promise<AsyncIterator<String>>;
-  city: () => Promise<AsyncIterator<String>>;
-  state: () => Promise<AsyncIterator<String>>;
-  postalCode: () => Promise<AsyncIterator<String>>;
-  updatedAt: () => Promise<AsyncIterator<DateTimeOutput>>;
-  createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
-  deletedAt: () => Promise<AsyncIterator<DateTimeOutput>>;
-}
-
-export interface UserNullablePromise
-  extends Promise<User | null>,
-    Fragmentable {
-  id: () => Promise<ID_Output>;
-  role: <T = RolePromise>() => T;
-  userAccount: <T = UserAccountPromise>() => T;
-  customerAccount: <T = CustomerPromise>() => T;
-  firstName: () => Promise<String>;
-  lastName: () => Promise<String>;
-  email: () => Promise<String>;
-  password: () => Promise<String>;
-  phoneCountryCode: () => Promise<String>;
-  phone: () => Promise<String>;
-  country: () => Promise<String>;
-  address1: () => Promise<String>;
-  address2: () => Promise<String>;
-  city: () => Promise<String>;
-  state: () => Promise<String>;
-  postalCode: () => Promise<String>;
-  updatedAt: () => Promise<DateTimeOutput>;
-  createdAt: () => Promise<DateTimeOutput>;
-  deletedAt: () => Promise<DateTimeOutput>;
-}
-
-export interface CustomerSubscriptionPayload {
-  mutation: MutationType;
-  node: Customer;
-  updatedFields: String[];
-  previousValues: CustomerPreviousValues;
-}
-
-export interface CustomerSubscriptionPayloadPromise
-  extends Promise<CustomerSubscriptionPayload>,
-    Fragmentable {
-  mutation: () => Promise<MutationType>;
-  node: <T = CustomerPromise>() => T;
-  updatedFields: () => Promise<String[]>;
-  previousValues: <T = CustomerPreviousValuesPromise>() => T;
-}
-
-export interface CustomerSubscriptionPayloadSubscription
-  extends Promise<AsyncIterator<CustomerSubscriptionPayload>>,
-    Fragmentable {
-  mutation: () => Promise<AsyncIterator<MutationType>>;
-  node: <T = CustomerSubscription>() => T;
-  updatedFields: () => Promise<AsyncIterator<String[]>>;
-  previousValues: <T = CustomerPreviousValuesSubscription>() => T;
-}
-
-export interface SecurityQuestionAnswerEdge {
-  node: SecurityQuestionAnswer;
-  cursor: String;
-}
-
-export interface SecurityQuestionAnswerEdgePromise
-  extends Promise<SecurityQuestionAnswerEdge>,
-    Fragmentable {
-  node: <T = SecurityQuestionAnswerPromise>() => T;
-  cursor: () => Promise<String>;
-}
-
-export interface SecurityQuestionAnswerEdgeSubscription
-  extends Promise<AsyncIterator<SecurityQuestionAnswerEdge>>,
-    Fragmentable {
-  node: <T = SecurityQuestionAnswerSubscription>() => T;
-  cursor: () => Promise<AsyncIterator<String>>;
-}
-
-export interface CustomerPreviousValues {
-  id: ID_Output;
-  stripeId: String;
-  updatedAt: DateTimeOutput;
-  createdAt: DateTimeOutput;
-  deletedAt?: DateTimeOutput;
-}
-
-export interface CustomerPreviousValuesPromise
-  extends Promise<CustomerPreviousValues>,
-    Fragmentable {
-  id: () => Promise<ID_Output>;
-  stripeId: () => Promise<String>;
-  updatedAt: () => Promise<DateTimeOutput>;
-  createdAt: () => Promise<DateTimeOutput>;
-  deletedAt: () => Promise<DateTimeOutput>;
-}
-
-export interface CustomerPreviousValuesSubscription
-  extends Promise<AsyncIterator<CustomerPreviousValues>>,
-    Fragmentable {
-  id: () => Promise<AsyncIterator<ID_Output>>;
-  stripeId: () => Promise<AsyncIterator<String>>;
-  updatedAt: () => Promise<AsyncIterator<DateTimeOutput>>;
-  createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
-  deletedAt: () => Promise<AsyncIterator<DateTimeOutput>>;
-}
-
-export interface AggregateSecurityQuestion {
-  count: Int;
-}
-
-export interface AggregateSecurityQuestionPromise
-  extends Promise<AggregateSecurityQuestion>,
-    Fragmentable {
-  count: () => Promise<Int>;
-}
-
-export interface AggregateSecurityQuestionSubscription
-  extends Promise<AsyncIterator<AggregateSecurityQuestion>>,
-    Fragmentable {
-  count: () => Promise<AsyncIterator<Int>>;
-}
-
-export interface OpenAuth {
-  id: ID_Output;
-  provider: ProviderName;
-  accessToken: String;
-  refreshToken?: String;
-  expiresAt: DateTimeOutput;
-  updatedAt: DateTimeOutput;
-  createdAt: DateTimeOutput;
-  deletedAt?: DateTimeOutput;
-}
-
-export interface OpenAuthPromise extends Promise<OpenAuth>, Fragmentable {
-  id: () => Promise<ID_Output>;
-  user: <T = UserPromise>() => T;
-  provider: () => Promise<ProviderName>;
-  accessToken: () => Promise<String>;
-  refreshToken: () => Promise<String>;
-  expiresAt: () => Promise<DateTimeOutput>;
-  updatedAt: () => Promise<DateTimeOutput>;
-  createdAt: () => Promise<DateTimeOutput>;
-  deletedAt: () => Promise<DateTimeOutput>;
-}
-
-export interface OpenAuthSubscription
-  extends Promise<AsyncIterator<OpenAuth>>,
-    Fragmentable {
-  id: () => Promise<AsyncIterator<ID_Output>>;
-  user: <T = UserSubscription>() => T;
-  provider: () => Promise<AsyncIterator<ProviderName>>;
-  accessToken: () => Promise<AsyncIterator<String>>;
-  refreshToken: () => Promise<AsyncIterator<String>>;
-  expiresAt: () => Promise<AsyncIterator<DateTimeOutput>>;
-  updatedAt: () => Promise<AsyncIterator<DateTimeOutput>>;
-  createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
-  deletedAt: () => Promise<AsyncIterator<DateTimeOutput>>;
-}
-
-export interface OpenAuthNullablePromise
-  extends Promise<OpenAuth | null>,
-    Fragmentable {
-  id: () => Promise<ID_Output>;
-  user: <T = UserPromise>() => T;
-  provider: () => Promise<ProviderName>;
-  accessToken: () => Promise<String>;
-  refreshToken: () => Promise<String>;
-  expiresAt: () => Promise<DateTimeOutput>;
-  updatedAt: () => Promise<DateTimeOutput>;
-  createdAt: () => Promise<DateTimeOutput>;
-  deletedAt: () => Promise<DateTimeOutput>;
-}
-
-export interface SecurityQuestionConnection {
-  pageInfo: PageInfo;
-  edges: SecurityQuestionEdge[];
-}
-
-export interface SecurityQuestionConnectionPromise
-  extends Promise<SecurityQuestionConnection>,
-    Fragmentable {
-  pageInfo: <T = PageInfoPromise>() => T;
-  edges: <T = FragmentableArray<SecurityQuestionEdge>>() => T;
-  aggregate: <T = AggregateSecurityQuestionPromise>() => T;
-}
-
-export interface SecurityQuestionConnectionSubscription
-  extends Promise<AsyncIterator<SecurityQuestionConnection>>,
-    Fragmentable {
-  pageInfo: <T = PageInfoSubscription>() => T;
-  edges: <T = Promise<AsyncIterator<SecurityQuestionEdgeSubscription>>>() => T;
-  aggregate: <T = AggregateSecurityQuestionSubscription>() => T;
-}
-
-export interface OpenAuthSubscriptionPayload {
-  mutation: MutationType;
+export interface OpenAuthEdge {
   node: OpenAuth;
-  updatedFields: String[];
-  previousValues: OpenAuthPreviousValues;
+  cursor: String;
 }
 
-export interface OpenAuthSubscriptionPayloadPromise
-  extends Promise<OpenAuthSubscriptionPayload>,
+export interface OpenAuthEdgePromise
+  extends Promise<OpenAuthEdge>,
     Fragmentable {
-  mutation: () => Promise<MutationType>;
   node: <T = OpenAuthPromise>() => T;
-  updatedFields: () => Promise<String[]>;
-  previousValues: <T = OpenAuthPreviousValuesPromise>() => T;
+  cursor: () => Promise<String>;
 }
 
-export interface OpenAuthSubscriptionPayloadSubscription
-  extends Promise<AsyncIterator<OpenAuthSubscriptionPayload>>,
+export interface OpenAuthEdgeSubscription
+  extends Promise<AsyncIterator<OpenAuthEdge>>,
     Fragmentable {
-  mutation: () => Promise<AsyncIterator<MutationType>>;
   node: <T = OpenAuthSubscription>() => T;
-  updatedFields: () => Promise<AsyncIterator<String[]>>;
-  previousValues: <T = OpenAuthPreviousValuesSubscription>() => T;
-}
-
-export interface AggregateRole {
-  count: Int;
-}
-
-export interface AggregateRolePromise
-  extends Promise<AggregateRole>,
-    Fragmentable {
-  count: () => Promise<Int>;
-}
-
-export interface AggregateRoleSubscription
-  extends Promise<AsyncIterator<AggregateRole>>,
-    Fragmentable {
-  count: () => Promise<AsyncIterator<Int>>;
-}
-
-export interface OpenAuthPreviousValues {
-  id: ID_Output;
-  provider: ProviderName;
-  accessToken: String;
-  refreshToken?: String;
-  expiresAt: DateTimeOutput;
-  updatedAt: DateTimeOutput;
-  createdAt: DateTimeOutput;
-  deletedAt?: DateTimeOutput;
-}
-
-export interface OpenAuthPreviousValuesPromise
-  extends Promise<OpenAuthPreviousValues>,
-    Fragmentable {
-  id: () => Promise<ID_Output>;
-  provider: () => Promise<ProviderName>;
-  accessToken: () => Promise<String>;
-  refreshToken: () => Promise<String>;
-  expiresAt: () => Promise<DateTimeOutput>;
-  updatedAt: () => Promise<DateTimeOutput>;
-  createdAt: () => Promise<DateTimeOutput>;
-  deletedAt: () => Promise<DateTimeOutput>;
-}
-
-export interface OpenAuthPreviousValuesSubscription
-  extends Promise<AsyncIterator<OpenAuthPreviousValues>>,
-    Fragmentable {
-  id: () => Promise<AsyncIterator<ID_Output>>;
-  provider: () => Promise<AsyncIterator<ProviderName>>;
-  accessToken: () => Promise<AsyncIterator<String>>;
-  refreshToken: () => Promise<AsyncIterator<String>>;
-  expiresAt: () => Promise<AsyncIterator<DateTimeOutput>>;
-  updatedAt: () => Promise<AsyncIterator<DateTimeOutput>>;
-  createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
-  deletedAt: () => Promise<AsyncIterator<DateTimeOutput>>;
-}
-
-export interface RoleConnection {
-  pageInfo: PageInfo;
-  edges: RoleEdge[];
-}
-
-export interface RoleConnectionPromise
-  extends Promise<RoleConnection>,
-    Fragmentable {
-  pageInfo: <T = PageInfoPromise>() => T;
-  edges: <T = FragmentableArray<RoleEdge>>() => T;
-  aggregate: <T = AggregateRolePromise>() => T;
-}
-
-export interface RoleConnectionSubscription
-  extends Promise<AsyncIterator<RoleConnection>>,
-    Fragmentable {
-  pageInfo: <T = PageInfoSubscription>() => T;
-  edges: <T = Promise<AsyncIterator<RoleEdgeSubscription>>>() => T;
-  aggregate: <T = AggregateRoleSubscription>() => T;
-}
-
-export interface AggregateCustomer {
-  count: Int;
-}
-
-export interface AggregateCustomerPromise
-  extends Promise<AggregateCustomer>,
-    Fragmentable {
-  count: () => Promise<Int>;
-}
-
-export interface AggregateCustomerSubscription
-  extends Promise<AsyncIterator<AggregateCustomer>>,
-    Fragmentable {
-  count: () => Promise<AsyncIterator<Int>>;
-}
-
-export interface AggregateOpenAuth {
-  count: Int;
-}
-
-export interface AggregateOpenAuthPromise
-  extends Promise<AggregateOpenAuth>,
-    Fragmentable {
-  count: () => Promise<Int>;
-}
-
-export interface AggregateOpenAuthSubscription
-  extends Promise<AsyncIterator<AggregateOpenAuth>>,
-    Fragmentable {
-  count: () => Promise<AsyncIterator<Int>>;
-}
-
-export interface RoleSubscriptionPayload {
-  mutation: MutationType;
-  node: Role;
-  updatedFields: String[];
-  previousValues: RolePreviousValues;
-}
-
-export interface RoleSubscriptionPayloadPromise
-  extends Promise<RoleSubscriptionPayload>,
-    Fragmentable {
-  mutation: () => Promise<MutationType>;
-  node: <T = RolePromise>() => T;
-  updatedFields: () => Promise<String[]>;
-  previousValues: <T = RolePreviousValuesPromise>() => T;
-}
-
-export interface RoleSubscriptionPayloadSubscription
-  extends Promise<AsyncIterator<RoleSubscriptionPayload>>,
-    Fragmentable {
-  mutation: () => Promise<AsyncIterator<MutationType>>;
-  node: <T = RoleSubscription>() => T;
-  updatedFields: () => Promise<AsyncIterator<String[]>>;
-  previousValues: <T = RolePreviousValuesSubscription>() => T;
-}
-
-export interface AggregateUser {
-  count: Int;
-}
-
-export interface AggregateUserPromise
-  extends Promise<AggregateUser>,
-    Fragmentable {
-  count: () => Promise<Int>;
-}
-
-export interface AggregateUserSubscription
-  extends Promise<AsyncIterator<AggregateUser>>,
-    Fragmentable {
-  count: () => Promise<AsyncIterator<Int>>;
-}
-
-export interface RolePreviousValues {
-  id: ID_Output;
-  name: RoleName;
-  updatedAt: DateTimeOutput;
-  createdAt: DateTimeOutput;
-  deletedAt?: DateTimeOutput;
-}
-
-export interface RolePreviousValuesPromise
-  extends Promise<RolePreviousValues>,
-    Fragmentable {
-  id: () => Promise<ID_Output>;
-  name: () => Promise<RoleName>;
-  updatedAt: () => Promise<DateTimeOutput>;
-  createdAt: () => Promise<DateTimeOutput>;
-  deletedAt: () => Promise<DateTimeOutput>;
-}
-
-export interface RolePreviousValuesSubscription
-  extends Promise<AsyncIterator<RolePreviousValues>>,
-    Fragmentable {
-  id: () => Promise<AsyncIterator<ID_Output>>;
-  name: () => Promise<AsyncIterator<RoleName>>;
-  updatedAt: () => Promise<AsyncIterator<DateTimeOutput>>;
-  createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
-  deletedAt: () => Promise<AsyncIterator<DateTimeOutput>>;
-}
-
-export interface AggregateSecurityQuestionAnswer {
-  count: Int;
-}
-
-export interface AggregateSecurityQuestionAnswerPromise
-  extends Promise<AggregateSecurityQuestionAnswer>,
-    Fragmentable {
-  count: () => Promise<Int>;
-}
-
-export interface AggregateSecurityQuestionAnswerSubscription
-  extends Promise<AsyncIterator<AggregateSecurityQuestionAnswer>>,
-    Fragmentable {
-  count: () => Promise<AsyncIterator<Int>>;
-}
-
-export interface CustomerEdge {
-  node: Customer;
-  cursor: String;
-}
-
-export interface CustomerEdgePromise
-  extends Promise<CustomerEdge>,
-    Fragmentable {
-  node: <T = CustomerPromise>() => T;
-  cursor: () => Promise<String>;
-}
-
-export interface CustomerEdgeSubscription
-  extends Promise<AsyncIterator<CustomerEdge>>,
-    Fragmentable {
-  node: <T = CustomerSubscription>() => T;
   cursor: () => Promise<AsyncIterator<String>>;
-}
-
-export interface SecurityQuestionEdge {
-  node: SecurityQuestion;
-  cursor: String;
-}
-
-export interface SecurityQuestionEdgePromise
-  extends Promise<SecurityQuestionEdge>,
-    Fragmentable {
-  node: <T = SecurityQuestionPromise>() => T;
-  cursor: () => Promise<String>;
-}
-
-export interface SecurityQuestionEdgeSubscription
-  extends Promise<AsyncIterator<SecurityQuestionEdge>>,
-    Fragmentable {
-  node: <T = SecurityQuestionSubscription>() => T;
-  cursor: () => Promise<AsyncIterator<String>>;
-}
-
-export interface SecurityQuestionSubscriptionPayload {
-  mutation: MutationType;
-  node: SecurityQuestion;
-  updatedFields: String[];
-  previousValues: SecurityQuestionPreviousValues;
-}
-
-export interface SecurityQuestionSubscriptionPayloadPromise
-  extends Promise<SecurityQuestionSubscriptionPayload>,
-    Fragmentable {
-  mutation: () => Promise<MutationType>;
-  node: <T = SecurityQuestionPromise>() => T;
-  updatedFields: () => Promise<String[]>;
-  previousValues: <T = SecurityQuestionPreviousValuesPromise>() => T;
-}
-
-export interface SecurityQuestionSubscriptionPayloadSubscription
-  extends Promise<AsyncIterator<SecurityQuestionSubscriptionPayload>>,
-    Fragmentable {
-  mutation: () => Promise<AsyncIterator<MutationType>>;
-  node: <T = SecurityQuestionSubscription>() => T;
-  updatedFields: () => Promise<AsyncIterator<String[]>>;
-  previousValues: <T = SecurityQuestionPreviousValuesSubscription>() => T;
 }
 
 export interface RoleEdge {
@@ -3073,240 +3606,16 @@ export interface RoleEdgeSubscription
   cursor: () => Promise<AsyncIterator<String>>;
 }
 
-export interface BatchPayload {
-  count: Long;
-}
-
-export interface BatchPayloadPromise
-  extends Promise<BatchPayload>,
-    Fragmentable {
-  count: () => Promise<Long>;
-}
-
-export interface BatchPayloadSubscription
-  extends Promise<AsyncIterator<BatchPayload>>,
-    Fragmentable {
-  count: () => Promise<AsyncIterator<Long>>;
-}
-
-export interface SecurityQuestionAnswerPreviousValues {
-  id: ID_Output;
-  answer: String;
-  updatedAt: DateTimeOutput;
-  createdAt: DateTimeOutput;
-  deletedAt?: DateTimeOutput;
-}
-
-export interface SecurityQuestionAnswerPreviousValuesPromise
-  extends Promise<SecurityQuestionAnswerPreviousValues>,
-    Fragmentable {
-  id: () => Promise<ID_Output>;
-  answer: () => Promise<String>;
-  updatedAt: () => Promise<DateTimeOutput>;
-  createdAt: () => Promise<DateTimeOutput>;
-  deletedAt: () => Promise<DateTimeOutput>;
-}
-
-export interface SecurityQuestionAnswerPreviousValuesSubscription
-  extends Promise<AsyncIterator<SecurityQuestionAnswerPreviousValues>>,
-    Fragmentable {
-  id: () => Promise<AsyncIterator<ID_Output>>;
-  answer: () => Promise<AsyncIterator<String>>;
-  updatedAt: () => Promise<AsyncIterator<DateTimeOutput>>;
-  createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
-  deletedAt: () => Promise<AsyncIterator<DateTimeOutput>>;
-}
-
-export interface SecurityQuestionAnswerSubscriptionPayload {
-  mutation: MutationType;
-  node: SecurityQuestionAnswer;
-  updatedFields: String[];
-  previousValues: SecurityQuestionAnswerPreviousValues;
-}
-
-export interface SecurityQuestionAnswerSubscriptionPayloadPromise
-  extends Promise<SecurityQuestionAnswerSubscriptionPayload>,
-    Fragmentable {
-  mutation: () => Promise<MutationType>;
-  node: <T = SecurityQuestionAnswerPromise>() => T;
-  updatedFields: () => Promise<String[]>;
-  previousValues: <T = SecurityQuestionAnswerPreviousValuesPromise>() => T;
-}
-
-export interface SecurityQuestionAnswerSubscriptionPayloadSubscription
-  extends Promise<AsyncIterator<SecurityQuestionAnswerSubscriptionPayload>>,
-    Fragmentable {
-  mutation: () => Promise<AsyncIterator<MutationType>>;
-  node: <T = SecurityQuestionAnswerSubscription>() => T;
-  updatedFields: () => Promise<AsyncIterator<String[]>>;
-  previousValues: <T = SecurityQuestionAnswerPreviousValuesSubscription>() => T;
-}
-
-export interface PageInfo {
-  hasNextPage: Boolean;
-  hasPreviousPage: Boolean;
-  startCursor?: String;
-  endCursor?: String;
-}
-
-export interface PageInfoPromise extends Promise<PageInfo>, Fragmentable {
-  hasNextPage: () => Promise<Boolean>;
-  hasPreviousPage: () => Promise<Boolean>;
-  startCursor: () => Promise<String>;
-  endCursor: () => Promise<String>;
-}
-
-export interface PageInfoSubscription
-  extends Promise<AsyncIterator<PageInfo>>,
-    Fragmentable {
-  hasNextPage: () => Promise<AsyncIterator<Boolean>>;
-  hasPreviousPage: () => Promise<AsyncIterator<Boolean>>;
-  startCursor: () => Promise<AsyncIterator<String>>;
-  endCursor: () => Promise<AsyncIterator<String>>;
-}
-
-export interface SecurityQuestionPreviousValues {
-  id: ID_Output;
-  shortName: String;
-  question: String;
-  updatedAt: DateTimeOutput;
-  createdAt: DateTimeOutput;
-  deletedAt?: DateTimeOutput;
-}
-
-export interface SecurityQuestionPreviousValuesPromise
-  extends Promise<SecurityQuestionPreviousValues>,
-    Fragmentable {
-  id: () => Promise<ID_Output>;
-  shortName: () => Promise<String>;
-  question: () => Promise<String>;
-  updatedAt: () => Promise<DateTimeOutput>;
-  createdAt: () => Promise<DateTimeOutput>;
-  deletedAt: () => Promise<DateTimeOutput>;
-}
-
-export interface SecurityQuestionPreviousValuesSubscription
-  extends Promise<AsyncIterator<SecurityQuestionPreviousValues>>,
-    Fragmentable {
-  id: () => Promise<AsyncIterator<ID_Output>>;
-  shortName: () => Promise<AsyncIterator<String>>;
-  question: () => Promise<AsyncIterator<String>>;
-  updatedAt: () => Promise<AsyncIterator<DateTimeOutput>>;
-  createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
-  deletedAt: () => Promise<AsyncIterator<DateTimeOutput>>;
-}
-
-export interface UserConnection {
-  pageInfo: PageInfo;
-  edges: UserEdge[];
-}
-
-export interface UserConnectionPromise
-  extends Promise<UserConnection>,
-    Fragmentable {
-  pageInfo: <T = PageInfoPromise>() => T;
-  edges: <T = FragmentableArray<UserEdge>>() => T;
-  aggregate: <T = AggregateUserPromise>() => T;
-}
-
-export interface UserConnectionSubscription
-  extends Promise<AsyncIterator<UserConnection>>,
-    Fragmentable {
-  pageInfo: <T = PageInfoSubscription>() => T;
-  edges: <T = Promise<AsyncIterator<UserEdgeSubscription>>>() => T;
-  aggregate: <T = AggregateUserSubscription>() => T;
-}
-
-export interface UserAccountSubscriptionPayload {
-  mutation: MutationType;
-  node: UserAccount;
-  updatedFields: String[];
-  previousValues: UserAccountPreviousValues;
-}
-
-export interface UserAccountSubscriptionPayloadPromise
-  extends Promise<UserAccountSubscriptionPayload>,
-    Fragmentable {
-  mutation: () => Promise<MutationType>;
-  node: <T = UserAccountPromise>() => T;
-  updatedFields: () => Promise<String[]>;
-  previousValues: <T = UserAccountPreviousValuesPromise>() => T;
-}
-
-export interface UserAccountSubscriptionPayloadSubscription
-  extends Promise<AsyncIterator<UserAccountSubscriptionPayload>>,
-    Fragmentable {
-  mutation: () => Promise<AsyncIterator<MutationType>>;
-  node: <T = UserAccountSubscription>() => T;
-  updatedFields: () => Promise<AsyncIterator<String[]>>;
-  previousValues: <T = UserAccountPreviousValuesSubscription>() => T;
-}
-
-export interface Role {
-  id: ID_Output;
-  name: RoleName;
-  updatedAt: DateTimeOutput;
-  createdAt: DateTimeOutput;
-  deletedAt?: DateTimeOutput;
-}
-
-export interface RolePromise extends Promise<Role>, Fragmentable {
-  id: () => Promise<ID_Output>;
-  name: () => Promise<RoleName>;
-  updatedAt: () => Promise<DateTimeOutput>;
-  createdAt: () => Promise<DateTimeOutput>;
-  deletedAt: () => Promise<DateTimeOutput>;
-}
-
-export interface RoleSubscription
-  extends Promise<AsyncIterator<Role>>,
-    Fragmentable {
-  id: () => Promise<AsyncIterator<ID_Output>>;
-  name: () => Promise<AsyncIterator<RoleName>>;
-  updatedAt: () => Promise<AsyncIterator<DateTimeOutput>>;
-  createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
-  deletedAt: () => Promise<AsyncIterator<DateTimeOutput>>;
-}
-
-export interface RoleNullablePromise
-  extends Promise<Role | null>,
-    Fragmentable {
-  id: () => Promise<ID_Output>;
-  name: () => Promise<RoleName>;
-  updatedAt: () => Promise<DateTimeOutput>;
-  createdAt: () => Promise<DateTimeOutput>;
-  deletedAt: () => Promise<DateTimeOutput>;
-}
-
-export interface SecurityQuestionAnswerConnection {
-  pageInfo: PageInfo;
-  edges: SecurityQuestionAnswerEdge[];
-}
-
-export interface SecurityQuestionAnswerConnectionPromise
-  extends Promise<SecurityQuestionAnswerConnection>,
-    Fragmentable {
-  pageInfo: <T = PageInfoPromise>() => T;
-  edges: <T = FragmentableArray<SecurityQuestionAnswerEdge>>() => T;
-  aggregate: <T = AggregateSecurityQuestionAnswerPromise>() => T;
-}
-
-export interface SecurityQuestionAnswerConnectionSubscription
-  extends Promise<AsyncIterator<SecurityQuestionAnswerConnection>>,
-    Fragmentable {
-  pageInfo: <T = PageInfoSubscription>() => T;
-  edges: <
-    T = Promise<AsyncIterator<SecurityQuestionAnswerEdgeSubscription>>
-  >() => T;
-  aggregate: <T = AggregateSecurityQuestionAnswerSubscription>() => T;
-}
+/*
+The `String` scalar type represents textual data, represented as UTF-8 character sequences. The String type is most often used by GraphQL to represent free-form human-readable text.
+*/
+export type String = string;
 
 /*
-The `Boolean` scalar type represents `true` or `false`.
+The `ID` scalar type represents a unique identifier, often used to refetch an object or as key for a cache. The ID type appears in a JSON response as a String; however, it is not intended to be human-readable. When expected as an input type, any string (such as `"4"`) or integer (such as `4`) input value will be accepted as an ID.
 */
-export type Boolean = boolean;
-
-export type Long = string;
+export type ID_Input = string | number;
+export type ID_Output = string;
 
 /*
 DateTime scalar input type, allowing Date
@@ -3323,16 +3632,12 @@ The `Int` scalar type represents non-fractional signed whole numeric values. Int
 */
 export type Int = number;
 
-/*
-The `ID` scalar type represents a unique identifier, often used to refetch an object or as key for a cache. The ID type appears in a JSON response as a String; however, it is not intended to be human-readable. When expected as an input type, any string (such as `"4"`) or integer (such as `4`) input value will be accepted as an ID.
-*/
-export type ID_Input = string | number;
-export type ID_Output = string;
+export type Long = string;
 
 /*
-The `String` scalar type represents textual data, represented as UTF-8 character sequences. The String type is most often used by GraphQL to represent free-form human-readable text.
+The `Boolean` scalar type represents `true` or `false`.
 */
-export type String = string;
+export type Boolean = boolean;
 
 /**
  * Model Metadata
@@ -3373,6 +3678,10 @@ export const models: Model[] = [
   },
   {
     name: 'Customer',
+    embedded: false,
+  },
+  {
+    name: 'BlacklistedTokens',
     embedded: false,
   },
 ];

@@ -437,6 +437,26 @@ const sendAuthEmail = async (parent, args, context, info): Promise<any> => {
 };
 
 /**
+ * Logout a user
+ *
+ * @async
+ * @function
+ * @param {Object} parent - Parent resolver
+ * @param {Object} args - User input arguments
+ * @param {Object} context - Global resolver store
+ * @param {AST} info - GraphQL metadata
+ * @returns null
+ */
+const logoutUser = async (parent, args, context, info): Promise<any> => {
+  logger.info('AUTH-RESOLVER: Logging out user');
+  await context.prisma.createBlacklistedTokens({
+    token: args.input.token,
+  });
+
+  return null;
+};
+
+/**
  * Checks if a user is authenticated
  *
  * @async
@@ -448,6 +468,15 @@ const sendAuthEmail = async (parent, args, context, info): Promise<any> => {
  * @returns {Boolean}
  */
 const isAuthenticated = async (parent, args, context, info): Promise<any> => {
+  const blacklistedToken = await context.prisma.blacklistedTokens({
+    token: args.input.token,
+  });
+
+  if (blacklistedToken) {
+    logger.info('AUTH-RESOLVER: Received blacklisted auth token');
+    return false;
+  }
+
   return jwt.verify(
     args.input.token,
     config.server.auth.jwt.secret,
@@ -473,5 +502,6 @@ export default {
     changePassword,
     unlockAccount,
     sendAuthEmail,
+    logoutUser,
   },
 };

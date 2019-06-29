@@ -15,4 +15,5 @@ extend type Mutation {
   changePassword(input: ChangePasswordInput!): String
   unlockAccount(input: UnlockAccountInput!): String
   sendAuthEmail(input: SendAuthEmail!): String
+  logoutUser(input: LogoutUserInput!): String
 }

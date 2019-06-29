@@ -22,6 +22,7 @@ export const checkAuthentication = async (ctx): Promise<any> => {
   } = await apolloClient.query({
     query: IS_AUTHENTICATED,
     variables: { input: { token } },
+    fetchPolicy: 'no-cache',
   });
 
   if (urlPathname === '/login' && isAuthenticated) {

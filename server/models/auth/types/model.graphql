@@ -10,6 +10,14 @@ type OpenAuth {
   deletedAt: String
 }
 
+type BlacklistedTokens {
+  id: ID!
+  token: String!
+  updatedAt: String!
+  createdAt: String!
+  deletedAt: String
+}
+
 # Enums
 enum ProviderName {
   GOOGLE
