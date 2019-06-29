@@ -1,4 +1,4 @@
-import { oauth } from '../../middleware';
+import { oauth } from '@server/middleware';
 
 export default [
   {

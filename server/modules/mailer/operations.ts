@@ -1,6 +1,6 @@
 import SparkPost from 'sparkpost';
-import config from '../../../config';
-import logger from '../logger';
+import config from '@config';
+import logger from '@server/modules/logger';
 import { ExternalError } from '../errors';
 
 const emailClient = new SparkPost(process.env.SPARKPOST);

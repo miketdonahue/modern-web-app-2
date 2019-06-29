@@ -1,5 +1,5 @@
-import config from '../../config';
-import logger from '../modules/logger';
+import config from '@config';
+import logger from '@server/modules/logger';
 
 /**
  * Logs metadata for each resolver request via middleware

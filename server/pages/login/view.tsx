@@ -3,9 +3,9 @@ import Router from 'next/router';
 import { withFormik } from 'formik';
 import { Button, Form } from 'semantic-ui-react';
 import { withApollo, compose } from 'react-apollo';
-import ServerError from '../../../client/components/server-error';
-import withServerErrors from '../../../client/components/hoc/with-server-errors';
-// import { loginSchema } from './validations';
+import ServerError from '@client/components/server-error';
+import withServerErrors from '@client/components/hoc/with-server-errors';
+import { loginSchema } from './validations';
 import * as mutations from './graphql/mutations.graphql';
 
 interface Props {
@@ -71,7 +71,7 @@ export default compose(
       email: '',
       password: '',
     }),
-    validationSchema: {},
+    validationSchema: loginSchema,
     handleSubmit: (
       values,
       { setSubmitting, props: { client, formatServerErrors } }

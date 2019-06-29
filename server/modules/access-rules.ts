@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken';
 import { rule } from 'graphql-shield';
-import config from '../../config';
+import config from '@config';
 import { ExternalError } from './errors';
 
 /**

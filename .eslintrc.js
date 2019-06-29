@@ -36,6 +36,7 @@ module.exports = {
     plugins: ['import'],
     'import/resolver': {
       typescript: {},
+      'babel-module': {},
     },
   },
   overrides: [

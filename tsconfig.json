@@ -7,7 +7,15 @@
     "isolatedModules": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
-    "jsx": "preserve"
+    "jsx": "preserve",
+    "baseUrl": ".",
+    "paths": {
+      "@client/*": ["client/*"],
+      "@config": ["config"],
+      "@pages/*": ["pages/*"],
+      "@server/*": ["server/*"],
+      "@utils/*": ["utils/*"]
+    }
   },
   "exclude": ["node_modules", "server/**/*.ts"]
 }

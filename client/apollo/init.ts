@@ -1,9 +1,9 @@
 import { ApolloClient } from 'apollo-client';
 import { from } from 'apollo-link';
 import { InMemoryCache } from 'apollo-cache-inmemory';
-import { httpMiddleware, authMiddleware } from '../middleware';
-import fileLoader from '../../utils/webpack-file-loader';
-import mergeResolvers from '../../utils/merge-resolvers';
+import fileLoader from '@utils/webpack-file-loader';
+import mergeResolvers from '@utils/merge-resolvers';
+import { httpMiddleware, authMiddleware } from '@client/middleware';
 
 // Register types and resolvers
 const typeFiles = require.context('../models', true, /types\/.*.graphql$/);

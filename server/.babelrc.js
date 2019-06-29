@@ -1,4 +1,5 @@
 module.exports = {
+  extends: '../.babelrc.js',
   presets: [
     [
       'next/babel',

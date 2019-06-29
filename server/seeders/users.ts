@@ -1,9 +1,9 @@
 /* eslint-disable no-await-in-loop */
 import argon2 from 'argon2';
 import { Chance } from 'chance';
-import config from '../../config';
-import { prisma } from '../prisma/generated/prisma-client';
-import generateCode from '../modules/code';
+import config from '@config';
+import { prisma } from '@server/prisma/generated/prisma-client';
+import generateCode from '@server/modules/code';
 
 const chance = new Chance();
 const numberOfUsers = 5;

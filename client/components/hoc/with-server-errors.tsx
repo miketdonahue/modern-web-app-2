@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import errorMap from '../../modules/errors/map';
+import errorMap from '@client/modules/errors/map';
 
 interface State {
   errors: string[];

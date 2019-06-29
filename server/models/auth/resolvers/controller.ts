@@ -1,15 +1,15 @@
 import argon2 from 'argon2';
 import jwt from 'jsonwebtoken';
 import addHours from 'date-fns/add_hours';
-import config from '../../../../config';
-import generateCode from '../../../modules/code';
-import { InternalError } from '../../../modules/errors';
-import logger from '../../../modules/logger';
+import config from '@config';
+import generateCode from '@server/modules/code';
+import { InternalError } from '@server/modules/errors';
+import logger from '@server/modules/logger';
 import mailer, {
   WELCOME_EMAIL,
   CONFIRMATION_EMAIL,
   UNLOCK_ACCOUNT_EMAIL,
-} from '../../../modules/mailer';
+} from '@server/modules/mailer';
 import * as fragments from '../fragments';
 
 /**
@@ -120,11 +120,12 @@ const loginUser = async (parent, args, context, info): Promise<any> => {
   const user = await context.prisma
     .user({ email: args.input.email })
     .$fragment(fragments.loginUserFragment);
-  const passwordMatch = await argon2.verify(user.password, args.input.password);
 
   if (!user) {
     throw new InternalError('INVALID_CREDENTIALS');
   }
+
+  const passwordMatch = await argon2.verify(user.password, args.input.password);
 
   await context.prisma.updateUserAccount({
     data: !passwordMatch

@@ -1,7 +1,7 @@
 import { rule } from 'graphql-shield';
 import isBefore from 'date-fns/is_before';
-import { InternalError } from '../../../modules/errors';
-import config from '../../../../config';
+import { InternalError } from '@server/modules/errors';
+import config from '@config';
 
 /**
  * Checks if user account has been locked

@@ -1,8 +1,8 @@
 import path from 'path';
 import { shield } from 'graphql-shield';
 import assign from 'assign-deep';
-import config from '../../config';
-import fileLoader from '../utils/node-file-loader';
+import config from '@config';
+import fileLoader from '@utils/node-file-loader';
 
 const validationsArray = fileLoader(
   path.join(process.cwd(), config.server.dirs.validations)

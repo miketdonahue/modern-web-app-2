@@ -4,8 +4,8 @@ import {
   alphaNumeric,
   code,
   email,
-} from '../../modules/validation-rules';
-import config from '../../../config';
+} from '@server/modules/validation-rules';
+import config from '@config';
 
 const answers = (yup): any =>
   yup

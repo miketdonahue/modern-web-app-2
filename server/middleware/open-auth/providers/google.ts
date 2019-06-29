@@ -1,10 +1,10 @@
 import { google } from 'googleapis';
 import jwt from 'jsonwebtoken';
 import uuid from 'uuid/v4';
-import { prisma } from '../../../prisma/generated/prisma-client';
-import config from '../../../../config';
-import generateCode from '../../../modules/code';
-import logger from '../../../modules/logger';
+import { prisma } from '@server/prisma/generated/prisma-client';
+import config from '@config';
+import generateCode from '@server/modules/code';
+import logger from '@server/modules/logger';
 import { jwtUserFragment, userAccountFragment } from '../fragments';
 
 const oauthConfig = {
