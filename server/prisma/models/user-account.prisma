@@ -11,7 +11,7 @@ type UserAccount {
   securityQuestions: [SecurityQuestionAnswer]
   loginAttempts: Int! @default(value: 0)
   securityQuestionAttempts: Int! @default(value: 0)
-  refreshToken: String! @unique
+  refreshToken: String @unique
   lastVisit: DateTime
   ip: String
   updatedAt: DateTime!

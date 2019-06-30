@@ -1022,7 +1022,7 @@ export interface UserAccountCreateInput {
   >;
   loginAttempts?: Maybe<Int>;
   securityQuestionAttempts?: Maybe<Int>;
-  refreshToken: String;
+  refreshToken?: Maybe<String>;
   lastVisit?: Maybe<DateTimeInput>;
   ip?: Maybe<String>;
   deletedAt?: Maybe<DateTimeInput>;
@@ -1143,7 +1143,7 @@ export interface UserAccountCreateWithoutUserInput {
   >;
   loginAttempts?: Maybe<Int>;
   securityQuestionAttempts?: Maybe<Int>;
-  refreshToken: String;
+  refreshToken?: Maybe<String>;
   lastVisit?: Maybe<DateTimeInput>;
   ip?: Maybe<String>;
   deletedAt?: Maybe<DateTimeInput>;
@@ -1255,7 +1255,7 @@ export interface UserAccountCreateWithoutSecurityQuestionsInput {
   resetPasswordExpires?: Maybe<String>;
   loginAttempts?: Maybe<Int>;
   securityQuestionAttempts?: Maybe<Int>;
-  refreshToken: String;
+  refreshToken?: Maybe<String>;
   lastVisit?: Maybe<DateTimeInput>;
   ip?: Maybe<String>;
   deletedAt?: Maybe<DateTimeInput>;
@@ -2210,7 +2210,7 @@ export interface UserAccountPreviousValues {
   resetPasswordExpires?: String;
   loginAttempts: Int;
   securityQuestionAttempts: Int;
-  refreshToken: String;
+  refreshToken?: String;
   lastVisit?: DateTimeOutput;
   ip?: String;
   updatedAt: DateTimeOutput;
@@ -2556,7 +2556,7 @@ export interface UserAccount {
   resetPasswordExpires?: String;
   loginAttempts: Int;
   securityQuestionAttempts: Int;
-  refreshToken: String;
+  refreshToken?: String;
   lastVisit?: DateTimeOutput;
   ip?: String;
   updatedAt: DateTimeOutput;

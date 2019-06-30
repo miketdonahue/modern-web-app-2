@@ -33,7 +33,7 @@ type UserAccount {
   securityQuestions: [SecurityQuestionAnswer]
   loginAttempts: Int!
   securityQuestionAttempts: Int!
-  refreshToken: String!
+  refreshToken: String
   lastVisit: String
   ip: String
   updatedAt: String!
