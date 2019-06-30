@@ -1,4 +1,32 @@
 module.exports = {
   extends: ['@commitlint/config-conventional'],
-  rules: {},
+  parserPreset: {
+    parserOpts: {
+      issuePrefixes: ['#'],
+      referenceActions: ['closes', 'fixes'],
+    },
+  },
+  rules: {
+    'body-leading-blank': [2, 'always'],
+    'body-max-length': [2, 'always', Infinity],
+    'body-max-line-length': [2, 'always', Infinity],
+    'body-min-length': [2, 'always', 0],
+    'footer-leading-blank': [2, 'always'],
+    'footer-max-length': [2, 'always', 72],
+    'footer-max-line-length': [2, 'always', 72],
+    'footer-min-length': [2, 'always', 0],
+    'header-case': [2, 'always', 'lowerCase'],
+    'header-full-stop': [2, 'never', '.'],
+    'header-min-length': [2, 'always', 0],
+    'references-empty': [0],
+    'scope-enum': [2, 'always', []],
+    'scope-empty': [2, 'always'],
+    'scope-max-length': [2, 'always', 25],
+    'scope-min-length': [2, 'always', 0],
+    'subject-max-length': [2, 'always', Infinity],
+    'subject-min-length': [2, 'always', 0],
+    'type-max-length': [2, 'always', 15],
+    'type-min-length': [2, 'always', 0],
+    'signed-off-by': [2, 'never', 'Signed-off-by:'],
+  },
 };
