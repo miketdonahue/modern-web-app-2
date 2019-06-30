@@ -1,6 +1,7 @@
 import argon2 from 'argon2';
 import jwt from 'jsonwebtoken';
 import addHours from 'date-fns/add_hours';
+import uuid from 'uuid/v4';
 import config from '@config';
 import generateCode from '@server/modules/code';
 import { InternalError } from '@server/modules/errors';
@@ -126,6 +127,13 @@ const loginUser = async (parent, args, context, info): Promise<any> => {
   }
 
   const passwordMatch = await argon2.verify(user.password, args.input.password);
+  const refreshToken = jwt.sign(
+    { hash: uuid() },
+    config.server.auth.jwt.refreshSecret,
+    {
+      expiresIn: config.server.auth.jwt.refreshExpiresIn,
+    }
+  );
 
   await context.prisma.updateUserAccount({
     data: !passwordMatch
@@ -146,6 +154,7 @@ const loginUser = async (parent, args, context, info): Promise<any> => {
           ip: context.req.ip,
           loginAttempts: 0,
           securityQuestionAttempts: 0,
+          refreshToken,
         },
     where: {
       id: user.userAccount.id,
@@ -458,6 +467,7 @@ const logoutUser = async (parent, args, context, info): Promise<any> => {
 
 /**
  * Checks if a user is authenticated
+ * Will issue a new token based on a valid refresh token
  *
  * @async
  * @function
@@ -468,8 +478,9 @@ const logoutUser = async (parent, args, context, info): Promise<any> => {
  * @returns {Boolean}
  */
 const isAuthenticated = async (parent, args, context, info): Promise<any> => {
+  const decoded = jwt.decode(context.user.token);
   const blacklistedToken = await context.prisma.blacklistedTokens({
-    token: args.input.token,
+    token: context.user.token,
   });
 
   if (blacklistedToken) {
@@ -477,14 +488,50 @@ const isAuthenticated = async (parent, args, context, info): Promise<any> => {
     return false;
   }
 
-  return jwt.verify(
-    args.input.token,
-    config.server.auth.jwt.secret,
-    (err, decoded) => {
-      if (decoded) return true;
-      return false;
+  try {
+    jwt.verify(context.user.token, config.server.auth.jwt.secret);
+  } catch (err) {
+    if (err.name === 'TokenExpiredError') {
+      logger.info('AUTH-RESOLVER: Auth token has expired');
+
+      const user = await context.prisma
+        .user({ id: decoded.cuid })
+        .$fragment(fragments.isAuthenticatedFragment);
+
+      if (!user) {
+        throw new InternalError('USER_NOT_FOUND');
+      }
+
+      try {
+        await jwt.verify(
+          user.userAccount.refreshToken,
+          config.server.auth.jwt.refreshSecret
+        );
+      } catch (error) {
+        return false;
+      }
+
+      logger.info(
+        { userId: user.id },
+        'AUTH-RESOLVER: Found valid refresh token'
+      );
+
+      const newToken = jwt.sign(
+        { cuid: user.id, role: user.role.name },
+        config.server.auth.jwt.secret,
+        { expiresIn: config.server.auth.jwt.expiresIn }
+      );
+
+      logger.info({ userId: user.id }, 'AUTH-RESOLVER: Issuing new auth token');
+
+      context.res.cookie('usr', newToken);
+      return true;
     }
-  );
+
+    return false;
+  }
+
+  return true;
 };
 
 export default {

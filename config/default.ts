@@ -18,7 +18,9 @@ export default {
       confirmable: true,
       jwt: {
         secret: process.env.JWT_SECRET,
-        expiresIn: '30m',
+        refreshSecret: process.env.JWT_REFRESH_SECRET,
+        expiresIn: '15m',
+        refreshExpiresIn: '7d',
       },
       codes: {
         // time in minutes

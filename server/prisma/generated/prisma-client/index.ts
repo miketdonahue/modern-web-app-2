@@ -545,6 +545,8 @@ export type UserAccountOrderByInput =
   | 'loginAttempts_DESC'
   | 'securityQuestionAttempts_ASC'
   | 'securityQuestionAttempts_DESC'
+  | 'refreshToken_ASC'
+  | 'refreshToken_DESC'
   | 'lastVisit_ASC'
   | 'lastVisit_DESC'
   | 'ip_ASC'
@@ -611,6 +613,7 @@ export interface UserAccountUpdateWithoutUserDataInput {
   >;
   loginAttempts?: Maybe<Int>;
   securityQuestionAttempts?: Maybe<Int>;
+  refreshToken?: Maybe<String>;
   lastVisit?: Maybe<DateTimeInput>;
   ip?: Maybe<String>;
   deletedAt?: Maybe<DateTimeInput>;
@@ -723,6 +726,20 @@ export interface UserAccountWhereInput {
   securityQuestionAttempts_lte?: Maybe<Int>;
   securityQuestionAttempts_gt?: Maybe<Int>;
   securityQuestionAttempts_gte?: Maybe<Int>;
+  refreshToken?: Maybe<String>;
+  refreshToken_not?: Maybe<String>;
+  refreshToken_in?: Maybe<String[] | String>;
+  refreshToken_not_in?: Maybe<String[] | String>;
+  refreshToken_lt?: Maybe<String>;
+  refreshToken_lte?: Maybe<String>;
+  refreshToken_gt?: Maybe<String>;
+  refreshToken_gte?: Maybe<String>;
+  refreshToken_contains?: Maybe<String>;
+  refreshToken_not_contains?: Maybe<String>;
+  refreshToken_starts_with?: Maybe<String>;
+  refreshToken_not_starts_with?: Maybe<String>;
+  refreshToken_ends_with?: Maybe<String>;
+  refreshToken_not_ends_with?: Maybe<String>;
   lastVisit?: Maybe<DateTimeInput>;
   lastVisit_not?: Maybe<DateTimeInput>;
   lastVisit_in?: Maybe<DateTimeInput[] | DateTimeInput>;
@@ -1005,6 +1022,7 @@ export interface UserAccountCreateInput {
   >;
   loginAttempts?: Maybe<Int>;
   securityQuestionAttempts?: Maybe<Int>;
+  refreshToken: String;
   lastVisit?: Maybe<DateTimeInput>;
   ip?: Maybe<String>;
   deletedAt?: Maybe<DateTimeInput>;
@@ -1105,6 +1123,7 @@ export interface UserAccountUpdateWithoutSecurityQuestionsDataInput {
   resetPasswordExpires?: Maybe<String>;
   loginAttempts?: Maybe<Int>;
   securityQuestionAttempts?: Maybe<Int>;
+  refreshToken?: Maybe<String>;
   lastVisit?: Maybe<DateTimeInput>;
   ip?: Maybe<String>;
   deletedAt?: Maybe<DateTimeInput>;
@@ -1124,6 +1143,7 @@ export interface UserAccountCreateWithoutUserInput {
   >;
   loginAttempts?: Maybe<Int>;
   securityQuestionAttempts?: Maybe<Int>;
+  refreshToken: String;
   lastVisit?: Maybe<DateTimeInput>;
   ip?: Maybe<String>;
   deletedAt?: Maybe<DateTimeInput>;
@@ -1235,6 +1255,7 @@ export interface UserAccountCreateWithoutSecurityQuestionsInput {
   resetPasswordExpires?: Maybe<String>;
   loginAttempts?: Maybe<Int>;
   securityQuestionAttempts?: Maybe<Int>;
+  refreshToken: String;
   lastVisit?: Maybe<DateTimeInput>;
   ip?: Maybe<String>;
   deletedAt?: Maybe<DateTimeInput>;
@@ -1482,6 +1503,7 @@ export interface UserAccountUpdateManyMutationInput {
   resetPasswordExpires?: Maybe<String>;
   loginAttempts?: Maybe<Int>;
   securityQuestionAttempts?: Maybe<Int>;
+  refreshToken?: Maybe<String>;
   lastVisit?: Maybe<DateTimeInput>;
   ip?: Maybe<String>;
   deletedAt?: Maybe<DateTimeInput>;
@@ -1686,6 +1708,7 @@ export type UserAccountWhereUniqueInput = AtLeastOne<{
   confirmedCode?: Maybe<Int>;
   lockedCode?: Maybe<Int>;
   resetPasswordCode?: Maybe<Int>;
+  refreshToken?: Maybe<String>;
 }>;
 
 export interface SecurityQuestionAnswerUpsertWithWhereUniqueWithoutUserAccountInput {
@@ -2076,6 +2099,7 @@ export interface UserAccountUpdateInput {
   >;
   loginAttempts?: Maybe<Int>;
   securityQuestionAttempts?: Maybe<Int>;
+  refreshToken?: Maybe<String>;
   lastVisit?: Maybe<DateTimeInput>;
   ip?: Maybe<String>;
   deletedAt?: Maybe<DateTimeInput>;
@@ -2186,6 +2210,7 @@ export interface UserAccountPreviousValues {
   resetPasswordExpires?: String;
   loginAttempts: Int;
   securityQuestionAttempts: Int;
+  refreshToken: String;
   lastVisit?: DateTimeOutput;
   ip?: String;
   updatedAt: DateTimeOutput;
@@ -2206,6 +2231,7 @@ export interface UserAccountPreviousValuesPromise
   resetPasswordExpires: () => Promise<String>;
   loginAttempts: () => Promise<Int>;
   securityQuestionAttempts: () => Promise<Int>;
+  refreshToken: () => Promise<String>;
   lastVisit: () => Promise<DateTimeOutput>;
   ip: () => Promise<String>;
   updatedAt: () => Promise<DateTimeOutput>;
@@ -2226,6 +2252,7 @@ export interface UserAccountPreviousValuesSubscription
   resetPasswordExpires: () => Promise<AsyncIterator<String>>;
   loginAttempts: () => Promise<AsyncIterator<Int>>;
   securityQuestionAttempts: () => Promise<AsyncIterator<Int>>;
+  refreshToken: () => Promise<AsyncIterator<String>>;
   lastVisit: () => Promise<AsyncIterator<DateTimeOutput>>;
   ip: () => Promise<AsyncIterator<String>>;
   updatedAt: () => Promise<AsyncIterator<DateTimeOutput>>;
@@ -2529,6 +2556,7 @@ export interface UserAccount {
   resetPasswordExpires?: String;
   loginAttempts: Int;
   securityQuestionAttempts: Int;
+  refreshToken: String;
   lastVisit?: DateTimeOutput;
   ip?: String;
   updatedAt: DateTimeOutput;
@@ -2557,6 +2585,7 @@ export interface UserAccountPromise extends Promise<UserAccount>, Fragmentable {
   }) => T;
   loginAttempts: () => Promise<Int>;
   securityQuestionAttempts: () => Promise<Int>;
+  refreshToken: () => Promise<String>;
   lastVisit: () => Promise<DateTimeOutput>;
   ip: () => Promise<String>;
   updatedAt: () => Promise<DateTimeOutput>;
@@ -2589,6 +2618,7 @@ export interface UserAccountSubscription
   }) => T;
   loginAttempts: () => Promise<AsyncIterator<Int>>;
   securityQuestionAttempts: () => Promise<AsyncIterator<Int>>;
+  refreshToken: () => Promise<AsyncIterator<String>>;
   lastVisit: () => Promise<AsyncIterator<DateTimeOutput>>;
   ip: () => Promise<AsyncIterator<String>>;
   updatedAt: () => Promise<AsyncIterator<DateTimeOutput>>;
@@ -2619,6 +2649,7 @@ export interface UserAccountNullablePromise
   }) => T;
   loginAttempts: () => Promise<Int>;
   securityQuestionAttempts: () => Promise<Int>;
+  refreshToken: () => Promise<String>;
   lastVisit: () => Promise<DateTimeOutput>;
   ip: () => Promise<String>;
   updatedAt: () => Promise<DateTimeOutput>;

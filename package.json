@@ -23,6 +23,7 @@
     "test:coverage": "jest --coverage",
     "db:deploy": "prisma deploy",
     "db:seed": "prisma seed",
+    "db:seed:run": "babel-node --extensions '.ts' ./server/seeders/seed.ts",
     "db:seed:reset": "yarn db:seed --reset",
     "db:reset": "prisma reset",
     "db:admin": "prisma admin"

@@ -5,7 +5,7 @@
  * @param {Error} error - GraphQL Error object from Apollo Server
  * @returns {Object} - { code, level } - A standardized error code and logger level
  */ export default error => {
-  const errorInfo = { code: 'JWT', level: 'error' };
+  const errorInfo = { code: 'JWT', level: 'warn' };
 
   switch (error.extensions.exception.name) {
     case 'JsonWebTokenError':
@@ -13,7 +13,6 @@
       break;
     case 'TokenExpiredError':
       errorInfo.code = 'JWT_EXPIRED';
-      errorInfo.level = 'warn';
       break;
     default:
       break;

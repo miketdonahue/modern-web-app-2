@@ -1511,6 +1511,7 @@ export const typeDefs = /* GraphQL */ `
     ): [SecurityQuestionAnswer!]
     loginAttempts: Int!
     securityQuestionAttempts: Int!
+    refreshToken: String!
     lastVisit: DateTime
     ip: String
     updatedAt: DateTime!
@@ -1537,6 +1538,7 @@ export const typeDefs = /* GraphQL */ `
     securityQuestions: SecurityQuestionAnswerCreateManyWithoutUserAccountInput
     loginAttempts: Int
     securityQuestionAttempts: Int
+    refreshToken: String!
     lastVisit: DateTime
     ip: String
     deletedAt: DateTime
@@ -1564,6 +1566,7 @@ export const typeDefs = /* GraphQL */ `
     resetPasswordExpires: String
     loginAttempts: Int
     securityQuestionAttempts: Int
+    refreshToken: String!
     lastVisit: DateTime
     ip: String
     deletedAt: DateTime
@@ -1581,6 +1584,7 @@ export const typeDefs = /* GraphQL */ `
     securityQuestions: SecurityQuestionAnswerCreateManyWithoutUserAccountInput
     loginAttempts: Int
     securityQuestionAttempts: Int
+    refreshToken: String!
     lastVisit: DateTime
     ip: String
     deletedAt: DateTime
@@ -1612,6 +1616,8 @@ export const typeDefs = /* GraphQL */ `
     loginAttempts_DESC
     securityQuestionAttempts_ASC
     securityQuestionAttempts_DESC
+    refreshToken_ASC
+    refreshToken_DESC
     lastVisit_ASC
     lastVisit_DESC
     ip_ASC
@@ -1635,6 +1641,7 @@ export const typeDefs = /* GraphQL */ `
     resetPasswordExpires: String
     loginAttempts: Int!
     securityQuestionAttempts: Int!
+    refreshToken: String!
     lastVisit: DateTime
     ip: String
     updatedAt: DateTime!
@@ -1672,6 +1679,7 @@ export const typeDefs = /* GraphQL */ `
     securityQuestions: SecurityQuestionAnswerUpdateManyWithoutUserAccountInput
     loginAttempts: Int
     securityQuestionAttempts: Int
+    refreshToken: String
     lastVisit: DateTime
     ip: String
     deletedAt: DateTime
@@ -1687,6 +1695,7 @@ export const typeDefs = /* GraphQL */ `
     resetPasswordExpires: String
     loginAttempts: Int
     securityQuestionAttempts: Int
+    refreshToken: String
     lastVisit: DateTime
     ip: String
     deletedAt: DateTime
@@ -1717,6 +1726,7 @@ export const typeDefs = /* GraphQL */ `
     resetPasswordExpires: String
     loginAttempts: Int
     securityQuestionAttempts: Int
+    refreshToken: String
     lastVisit: DateTime
     ip: String
     deletedAt: DateTime
@@ -1733,6 +1743,7 @@ export const typeDefs = /* GraphQL */ `
     securityQuestions: SecurityQuestionAnswerUpdateManyWithoutUserAccountInput
     loginAttempts: Int
     securityQuestionAttempts: Int
+    refreshToken: String
     lastVisit: DateTime
     ip: String
     deletedAt: DateTime
@@ -1839,6 +1850,20 @@ export const typeDefs = /* GraphQL */ `
     securityQuestionAttempts_lte: Int
     securityQuestionAttempts_gt: Int
     securityQuestionAttempts_gte: Int
+    refreshToken: String
+    refreshToken_not: String
+    refreshToken_in: [String!]
+    refreshToken_not_in: [String!]
+    refreshToken_lt: String
+    refreshToken_lte: String
+    refreshToken_gt: String
+    refreshToken_gte: String
+    refreshToken_contains: String
+    refreshToken_not_contains: String
+    refreshToken_starts_with: String
+    refreshToken_not_starts_with: String
+    refreshToken_ends_with: String
+    refreshToken_not_ends_with: String
     lastVisit: DateTime
     lastVisit_not: DateTime
     lastVisit_in: [DateTime!]
@@ -1895,6 +1920,7 @@ export const typeDefs = /* GraphQL */ `
     confirmedCode: Int
     lockedCode: Int
     resetPasswordCode: Int
+    refreshToken: String
   }
 
   type UserConnection {

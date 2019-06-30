@@ -57,3 +57,15 @@ export const accountLockedFragment = `
     }
   }
 `;
+
+export const isAuthenticatedFragment = `
+  {
+    id
+    role {
+      name
+    }
+    userAccount {
+      refreshToken
+    }
+  }
+`;

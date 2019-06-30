@@ -3,6 +3,7 @@ import Router from 'next/router';
 import { withFormik } from 'formik';
 import { Button, Form } from 'semantic-ui-react';
 import { withApollo, compose } from 'react-apollo';
+import Cookies from 'universal-cookie';
 import ServerError from '@client/components/server-error';
 import withServerErrors from '@client/components/hoc/with-server-errors';
 import { loginSchema } from './validations';
@@ -11,7 +12,6 @@ import * as mutations from './graphql/mutations.graphql';
 interface Props {
   client: any;
   formatServerErrors: (array) => void;
-  setIsLoggedIn: (object) => void;
 }
 
 interface State {
@@ -83,13 +83,11 @@ export default compose(
             input: { email: values.email, password: values.password },
           },
         })
-        .then(async ({ data }) => {
-          await client.mutate({
-            mutation: mutations.setIsLoggedIn,
-            variables: { input: { token: data.user.token } },
-          });
+        .then(({ data }) => {
+          const cookie = new Cookies();
 
-          return Router.push('/');
+          cookie.set('usr', data.user.token);
+          Router.push('/');
         })
         .catch(({ graphQLErrors }) => {
           return formatServerErrors(graphQLErrors);

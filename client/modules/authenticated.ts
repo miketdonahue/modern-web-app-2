@@ -12,8 +12,8 @@ export const checkAuthentication = async (ctx): Promise<any> => {
   const token = cookies.get('usr') || '';
 
   const IS_AUTHENTICATED = gql`
-    query isAuthenticated($input: IsAuthenticatedInput!) {
-      isAuthenticated(input: $input)
+    query {
+      isAuthenticated
     }
   `;
 

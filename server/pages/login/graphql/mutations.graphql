@@ -3,7 +3,3 @@ mutation loginUser($input: LoginUserInput!) {
     token
   }
 }
-
-mutation setIsLoggedIn($input: AuthPayload!) {
-  setIsLoggedIn(input: $input) @client
-}

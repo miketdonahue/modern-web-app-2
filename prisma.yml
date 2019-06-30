@@ -19,7 +19,7 @@ generate:
 
 # Seed the database with initial data
 seed:
-  run: ts-node -r tsconfig-paths/register --project tsconfig.server.json ./server/seeders/seed.ts
+  run: yarn db:seed:run
 
 # Setup hooks for different stages of deployment
 hooks:

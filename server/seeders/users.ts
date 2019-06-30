@@ -1,6 +1,8 @@
 /* eslint-disable no-await-in-loop */
 import argon2 from 'argon2';
 import { Chance } from 'chance';
+import jwt from 'jsonwebtoken';
+import uuid from 'uuid/v4';
 import config from '@config';
 import { prisma } from '@server/prisma/generated/prisma-client';
 import generateCode from '@server/modules/code';
@@ -24,6 +26,13 @@ export default async () => {
   for (let i = 0; i < numberOfUsers; i++) {
     const email = chance.email();
     const role = await prisma.role({ name: 'USER' });
+    const refreshToken = jwt.sign(
+      { hash: uuid() },
+      config.server.auth.jwt.secret,
+      {
+        expiresIn: config.server.auth.jwt.refreshExpiresIn,
+      }
+    );
 
     await prisma.createUser({
       role: { connect: { id: role && role.id } },
@@ -39,11 +48,10 @@ export default async () => {
       state: chance.state(),
       postalCode: chance.zip(),
       userAccount: {
-        create: config.server.auth.confirmable
-          ? {
-              confirmedCode: generateCode(),
-            }
-          : {},
+        create: {
+          confirmedCode: config.server.auth.confirmable ? generateCode() : null,
+          refreshToken,
+        },
       },
     });
   }

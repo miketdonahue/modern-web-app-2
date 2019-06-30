@@ -16,6 +16,7 @@ import mergeResolvers from '@utils/merge-resolvers';
 import config from '@config';
 import {
   access,
+  authenticate as isAuthenticated,
   validations,
   requestLogger,
   resolverLogger,
@@ -56,9 +57,10 @@ const schema = applyMiddleware(
 
 const apollo = new ApolloServer({
   schema,
-  context: ({ req, res }) => ({
+  context: async ({ req, res }) => ({
     req,
     res,
+    user: isAuthenticated(req.headers),
     prisma,
   }),
   playground: config.server.graphql.playground,

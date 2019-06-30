@@ -1,3 +1,0 @@
-input SetIsLoggedInInput {
-  token: String!
-}

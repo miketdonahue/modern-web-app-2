@@ -1,3 +1,0 @@
-extend type Mutation {
-  setIsLoggedIn(input: SetIsLoggedInInput!): String!
-}
