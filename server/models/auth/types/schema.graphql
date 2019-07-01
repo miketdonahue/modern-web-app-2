@@ -3,6 +3,7 @@ extend type Query {
     input: UserSecurityQuestionAnswerInput!
   ): [SecurityQuestionAnswer!]!
   isAuthenticated: Boolean!
+  isValidToken: TokenPayload!
 }
 
 extend type Mutation {

@@ -1,3 +1,7 @@
 type AuthPayload {
   token: String!
 }
+
+type TokenPayload {
+  token: String
+}

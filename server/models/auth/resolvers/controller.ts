@@ -534,10 +534,40 @@ const isAuthenticated = async (parent, args, context, info): Promise<any> => {
   return true;
 };
 
+/**
+ * Checks if an access token is valid
+ *
+ * @async
+ * @function
+ * @param {Object} parent - Parent resolver
+ * @param {Object} args - User input arguments
+ * @param {Object} context - Global resolver store
+ * @param {AST} info - GraphQL metadata
+ * @returns {Boolean}
+ */
+const isValidToken = async (parent, args, context, info): Promise<any> => {
+  return jwt.verify(
+    context.user.token,
+    config.server.auth.jwt.secret,
+    (err, decoded) => {
+      if (err) {
+        return {
+          token: null,
+        };
+      }
+
+      return {
+        token: context.user.token,
+      };
+    }
+  );
+};
+
 export default {
   Query: {
     getUserSecurityQuestionAnswers,
     isAuthenticated,
+    isValidToken,
   },
   Mutation: {
     registerUser,

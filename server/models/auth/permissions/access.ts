@@ -14,6 +14,7 @@ export default {
   Query: {
     getUserSecurityQuestionAnswers: allow,
     isAuthenticated: allow,
+    isValidToken: allow,
   },
   Mutation: {
     registerUser: allow,
@@ -27,6 +28,9 @@ export default {
     sendAuthEmail: allow,
   },
   AuthPayload: {
+    '*': allow,
+  },
+  TokenPayload: {
     '*': allow,
   },
 };
