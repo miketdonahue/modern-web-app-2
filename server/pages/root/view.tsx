@@ -19,7 +19,7 @@ class Index extends Component {
   private logout = () => {
     const { client } = this.props;
     const cookies = new Cookies();
-    const token = cookies.get('usr');
+    const token = cookies.get('token');
 
     client
       .mutate({
@@ -29,7 +29,7 @@ class Index extends Component {
         },
       })
       .then(() => {
-        cookies.remove('usr', { path: '/' });
+        cookies.remove('token', { path: '/' });
         return Router.push('/login');
       });
   };

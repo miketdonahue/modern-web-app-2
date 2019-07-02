@@ -172,6 +172,7 @@ const loginUser = async (parent, args, context, info): Promise<any> => {
     { expiresIn: config.server.auth.jwt.expiresIn }
   );
 
+  context.res.cookie('token', token, { path: '/' });
   return {
     token,
   };
@@ -524,7 +525,7 @@ const isAuthenticated = async (parent, args, context, info): Promise<any> => {
 
       logger.info({ userId: user.id }, 'AUTH-RESOLVER: Issuing new auth token');
 
-      context.res.cookie('usr', newToken);
+      context.res.cookie('token', newToken);
       return true;
     }
 

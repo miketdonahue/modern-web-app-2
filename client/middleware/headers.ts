@@ -14,7 +14,7 @@ export const headersMiddleware = (cookies): any =>
   new ApolloLink((operation, forward) => {
     operation.setContext(({ headers = {} }) => {
       const cookie = new Cookies(cookies());
-      const jwtToken = cookie.get('usr');
+      const jwtToken = cookie.get('token');
       const csrfToken = cookie.get('csrf');
 
       return {

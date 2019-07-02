@@ -83,10 +83,7 @@ export default compose(
             input: { email: values.email, password: values.password },
           },
         })
-        .then(({ data }) => {
-          const cookie = new Cookies();
-
-          cookie.set('usr', data.user.token);
+        .then(() => {
           Router.push('/');
         })
         .catch(({ graphQLErrors }) => {
