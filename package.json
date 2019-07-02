@@ -8,11 +8,7 @@
   "private": false,
   "main": "index.js",
   "scripts": {
-    "build": "rm -rf .build && yarn build:client && yarn build:server && yarn build:config && yarn build:utils",
-    "build:client": "next build",
-    "build:server": "babel server --out-dir .build/server --presets @babel/preset-typescript --extensions '.ts' --copy-files",
-    "build:config": "babel config --out-dir .build/config --presets @babel/preset-typescript --extensions '.ts'",
-    "build:utils": "babel utils --out-dir .build/utils --presets @babel/preset-typescript --extensions '.ts'",
+    "build": "./scripts/build.sh",
     "start": "NODE_ENV=production node .build/server/index.js",
     "dev": "nodemon",
     "lint": "eslint pages --ext '.ts,.tsx'",
