@@ -10,6 +10,15 @@ interface Error {
   message?: string;
 }
 
+/**
+ * Attach server errors to a React component
+ *
+ * @remarks
+ * This is a higher-order React component
+ *
+ * @param WrappedComponent - The wrapped React component
+ * @returns Renders a new component wrapped with Apollo Client
+ */
 const withServerErrors = (WrappedComponent): any => {
   const displayName =
     WrappedComponent.displayName || WrappedComponent.name || 'Component';

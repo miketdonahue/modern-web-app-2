@@ -2,15 +2,17 @@ import config from '@config';
 import logger from '@server/modules/logger';
 
 /**
- * Logs metadata for each resolver request via middleware
+ * Logs metadata for each GraphQL resolver request
  *
- * @function
- * @param {Function} resolve - Promise
- * @param {Object} parent - Parent resolver
- * @param {Object} args - User input arguments
- * @param {Object} context - Global resolver store
- * @param {AST} info - GraphQL metadata
- * @returns {Promise} - Resolves middleware function
+ * @remarks
+ * This is a GraphQL middleware
+ *
+ * @param resolve - Promise resolve() method
+ * @param parent - The parent resolver
+ * @param args - User input arguments
+ * @param context - GraphQL context object
+ * @param info - GraphQL metadata
+ * @returns A resolved Promise
  */
 const resolverLogger = (resolve, parent, args, context, info): any => {
   const cuid =

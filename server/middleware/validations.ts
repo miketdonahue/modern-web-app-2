@@ -11,7 +11,10 @@ const validationsArray = fileLoader(
 /**
  * Create input validations
  *
- * @function
- * @returns {Function} - A Shield function generator to be used as middleware
+ * @remarks
+ * This function uses GraphQL Shield to create input validations for GraphQL requests
+ *
+ * @param validations - An object of validations
+ * @returns A Shield function generator to be used as middleware
  */
 export default shield(assign(...validationsArray));

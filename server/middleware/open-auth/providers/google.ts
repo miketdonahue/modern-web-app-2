@@ -13,6 +13,16 @@ const oauthConfig = {
   failureRedirect: '/login',
 };
 
+/**
+ * Send user to OAuth provider login page
+ *
+ * @remarks
+ * This is an Express.js route callback function signature.
+ *
+ * @param req - Express.js request objet
+ * @param res - Express.js response object
+ * @returns Redirect to provider login
+ */
 export const authorize = (req, res): any => {
   const oauth2Client = new google.auth.OAuth2(
     process.env.GOOGLE_CLIENT_ID,
@@ -39,6 +49,19 @@ export const authorize = (req, res): any => {
   return res.redirect(302, url);
 };
 
+/**
+ * Verify an OAuth user coming back from the provider's login flow
+ *
+ * @remarks
+ * This function will do the following:
+ *    - Verify the state param for CSRF protection
+ *    - If not user currently exists in the DB, create one
+ *    - Exchange the access code for an access token
+ *    - Create an OAuth DB entry
+ *    - Attach the user to req.user and move forward to next middleware in the chain
+ *
+ * @returns An Express.js middleware closure
+ */
 export const verify = (): any => {
   const oauth2Client = new google.auth.OAuth2(
     process.env.GOOGLE_CLIENT_ID,
@@ -140,6 +163,18 @@ export const verify = (): any => {
   };
 };
 
+/**
+ * Authenticates a user coming back from a provider flow
+ *
+ * @remarks
+ * This function is called after a user successfully authenticates with an OAuth provider.
+ * It will update a few properties on the user account, sign a new token, and set the token cookie
+ * This is an Express.js route callback function signature.
+ *
+ * @param req - Express.js request objet
+ * @param res - Express.js response object
+ * @returns Redirect to the "success" route, usually the root path
+ */
 export const authenticate = async (req, res): Promise<any> => {
   const { user } = req;
 

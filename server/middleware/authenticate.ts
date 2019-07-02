@@ -5,13 +5,11 @@ import logger from '@server/modules/logger';
 /**
  * Checks if a user is authenticated
  *
- * @async
- * @function
- * @param {Object} parent - Parent resolver
- * @param {Object} args - User input arguments
- * @param {Object} context - Global resolver store
- * @param {AST} info - GraphQL metadata
- * @returns {Boolean} - If authenticated or not
+ * @remarks
+ * This function verifies a token and attaches the user to req.user
+ *
+ * @param headers - The application request headers
+ * @returns A user object
  */
 const authenticate = (headers): any => {
   // Skip authentication if auth is turned off

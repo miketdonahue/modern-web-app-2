@@ -3,6 +3,15 @@ import Head from 'next/head';
 import { getDataFromTree } from 'react-apollo';
 import initApollo from './init';
 
+/**
+ * Attach the Apollo Client to a React component
+ *
+ * @remarks
+ * This is a higher-order React component
+ *
+ * @param App - The wrapped React component
+ * @returns Renders a new component wrapped with Apollo Client
+ */
 export default function withApolloClient(App): any {
   const displayName = App.displayName || App.name || 'Component';
   const getCookies = (req?): any => {
