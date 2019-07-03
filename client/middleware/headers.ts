@@ -12,16 +12,16 @@ import Cookies from 'universal-cookie';
  */
 export const headersMiddleware = (cookies): any =>
   new ApolloLink((operation, forward) => {
-    operation.setContext(({ headers = {} }) => {
+    operation.setContext(() => {
       const cookie = new Cookies(cookies());
       const jwtToken = cookie.get('token');
       const csrfToken = cookie.get('csrf');
 
       return {
         headers: {
-          ...headers,
           authorization: jwtToken ? `Bearer ${jwtToken}` : null,
           'CSRF-Token': csrfToken,
+          Cookie: cookies(),
         },
       };
     });

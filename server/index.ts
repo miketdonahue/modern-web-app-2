@@ -1,6 +1,7 @@
 import path from 'path';
 import express from 'express';
 import next from 'next';
+import cors from 'cors';
 import helmet from 'helmet';
 import cookieParser from 'cookie-parser';
 import bodyParser from 'body-parser';
@@ -83,13 +84,20 @@ app
     const server = express();
     const { host, port } = config.server;
 
+    server.use(
+      cors({
+        origin: '*',
+        credentials: true,
+        optionsSuccessStatus: 200,
+      })
+    );
     server.use(helmet());
     server.use(helmet.referrerPolicy({ policy: 'same-origin' }));
     server.use(requestLogger());
     // server.use('/health-check', healthCheck());
     server.use(cookieParser());
     server.use(bodyParser.urlencoded({ extended: false }));
-    server.use(csrf({ cookie: { key: 'xxcsrf' } }));
+    server.use(csrf({ cookie: { key: 'ds_csrf' } }));
     server.use(
       helmet.contentSecurityPolicy({
         directives: config.server.contentSecurityPolicy,
@@ -101,7 +109,7 @@ app
       app: server,
       path: config.server.graphql.path,
       cors: {
-        origin: 'http://localhost:8080',
+        origin: '*',
         credentials: true,
         optionsSuccessStatus: 200,
       },

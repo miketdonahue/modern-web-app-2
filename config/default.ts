@@ -18,6 +18,7 @@ export default {
       confirmable: true,
       jwt: {
         secret: process.env.JWT_SECRET,
+        dsSecret: process.env.JWT_DS_SECRET,
         refreshSecret: process.env.JWT_REFRESH_SECRET,
         expiresIn: '15m',
         refreshExpiresIn: '7d',

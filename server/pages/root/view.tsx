@@ -30,6 +30,8 @@ class Index extends Component {
       })
       .then(() => {
         cookies.remove('token', { path: '/' });
+        cookies.remove('ds_token', { path: '/' });
+
         return Router.push('/login');
       });
   };

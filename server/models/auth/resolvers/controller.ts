@@ -1,6 +1,7 @@
 import argon2 from 'argon2';
 import jwt from 'jsonwebtoken';
 import addHours from 'date-fns/add_hours';
+import cookie from 'cookie';
 import uuid from 'uuid/v4';
 import config from '@config';
 import generateCode from '@server/modules/code';
@@ -165,14 +166,25 @@ const loginUser = async (parent, args, context, info): Promise<any> => {
     throw new InternalError('INVALID_CREDENTIALS');
   }
 
-  logger.info('AUTH-RESOLVER: Signing token');
+  logger.info('AUTH-RESOLVER: Signing auth tokens');
   const token = jwt.sign(
     { cuid: user.id, role: user.role.name },
     config.server.auth.jwt.secret,
     { expiresIn: config.server.auth.jwt.expiresIn }
   );
 
-  context.res.cookie('token', token, { path: '/' });
+  const dsToken = jwt.sign({ hash: uuid() }, config.server.auth.jwt.dsSecret, {
+    expiresIn: config.server.auth.jwt.expiresIn,
+  });
+
+  // TODO: change to `secure: true` when HTTPS
+  context.res.cookie('token', token, { path: '/', secure: false });
+  context.res.cookie('ds_token', dsToken, {
+    path: '/',
+    httpOnly: true,
+    secure: false,
+  });
+
   return {
     token,
   };
@@ -491,6 +503,7 @@ const isAuthenticated = async (parent, args, context, info): Promise<any> => {
 
   try {
     jwt.verify(context.user.token, config.server.auth.jwt.secret);
+    jwt.verify(context.req.cookies.ds_token, config.server.auth.jwt.dsSecret);
   } catch (err) {
     if (err.name === 'TokenExpiredError') {
       logger.info('AUTH-RESOLVER: Auth token has expired');
@@ -523,9 +536,26 @@ const isAuthenticated = async (parent, args, context, info): Promise<any> => {
         { expiresIn: config.server.auth.jwt.expiresIn }
       );
 
-      logger.info({ userId: user.id }, 'AUTH-RESOLVER: Issuing new auth token');
+      const newDsToken = jwt.sign(
+        { hash: uuid() },
+        config.server.auth.jwt.dsSecret,
+        {
+          expiresIn: config.server.auth.jwt.expiresIn,
+        }
+      );
 
-      context.res.cookie('token', newToken);
+      logger.info(
+        { userId: user.id },
+        'AUTH-RESOLVER: Issuing new auth tokens'
+      );
+
+      context.res.cookie('token', newToken, { path: '/', secure: false });
+      context.res.cookie('ds_token', newDsToken, {
+        path: '/',
+        httpOnly: true,
+        secure: false,
+      });
+
       return true;
     }
 
