@@ -1,5 +1,6 @@
 import gql from 'graphql-tag';
 import { redirectTo } from './redirect';
+import { IGNORE_ROUTES } from './ignore-routes';
 
 /**
  * Checks is a user is authenticated
@@ -13,6 +14,9 @@ import { redirectTo } from './redirect';
 export const checkAuthentication = async (ctx): Promise<any> => {
   const { apolloClient, req, pathname } = ctx;
   const urlPathname = process.browser ? pathname : req.url;
+
+  // Ignore public routes
+  if (IGNORE_ROUTES.includes(urlPathname)) return true;
 
   const IS_AUTHENTICATED = gql`
     query {

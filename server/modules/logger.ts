@@ -47,6 +47,7 @@ const logger = defaultLogger.child({
           delete headers.authorization;
           delete headers.cookie;
           delete headers['csrf-token'];
+          delete headers['apollographql-client-name'];
         }
 
         return headers;

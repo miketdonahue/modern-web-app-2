@@ -6,11 +6,11 @@ import helmet from 'helmet';
 import cookieParser from 'cookie-parser';
 import bodyParser from 'body-parser';
 import csrf from 'csurf';
-// import healthCheck from 'express-healthcheck';
 import { ApolloServer, makeExecutableSchema } from 'apollo-server-express';
 import { applyMiddleware } from 'graphql-middleware';
 import { prisma } from '@server/prisma/generated/prisma-client';
 import { normalizeError } from '@server/modules/errors';
+import { HealthCheck } from '@server/modules/health-check';
 import logger from '@server/modules/logger';
 import fileLoader from '@utils/node-file-loader';
 import mergeResolvers from '@utils/merge-resolvers';
@@ -24,6 +24,7 @@ import {
 } from '@server/middleware';
 
 const dev = process.env.NODE_ENV !== 'production';
+const healthCheck = new HealthCheck();
 const app = next({ dev });
 const handle = app.getRequestHandler();
 const typesDir = path.join(process.cwd(), config.server.dirs.types);
@@ -94,7 +95,6 @@ app
     server.use(helmet());
     server.use(helmet.referrerPolicy({ policy: 'same-origin' }));
     server.use(requestLogger());
-    // server.use('/health-check', healthCheck());
     server.use(cookieParser());
     server.use(bodyParser.urlencoded({ extended: false }));
     server.use(csrf({ cookie: { key: 'ds_csrf' } }));
@@ -109,7 +109,7 @@ app
       app: server,
       path: config.server.graphql.path,
       cors: {
-        origin: '*',
+        origin: 'same-origin',
         credentials: true,
         optionsSuccessStatus: 200,
       },
@@ -133,6 +133,16 @@ app
       );
     });
 
+    // Health & graceful shutdown
+    server.get('/health/liveness', (req, res) => res.status(200).end());
+    server.get('/health/readiness', async (req, res) => {
+      const dbReady = await healthCheck.isReady();
+
+      if (!dbReady) return res.status(500).end();
+      return res.status(200).json({ status: 'ready' });
+    });
+
+    // Catch all requests
     server.get('*', (req, res) => {
       return handle(req, res);
     });
@@ -146,6 +156,21 @@ app
         },
         `Server has been started @ ${host}:${port}`
       );
+    });
+
+    process.on('SIGTERM', () => {
+      logger.info('SERVER: Server shutting down');
+      healthCheck.setShuttingDown();
+
+      serverInstance.close(err => {
+        if (err) {
+          logger.error({ err }, 'SERVER: Error closing server');
+          process.exit(1);
+        }
+
+        logger.info('SERVER: Server closed');
+        process.exit(0);
+      });
     });
 
     server.on('error', (err: any) => {
