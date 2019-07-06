@@ -1,9 +1,8 @@
 /**
  * Generates a random length integer
  *
- * @function
- * @param {Integer} - The length of the generated integer
- * @returns {Integer}
+ * @param length - The length of the generated integer
+ * @returns integer
  */
 export default (length = 8) => {
   const date = +new Date();

@@ -1,15 +1,13 @@
 import logger from '@server/modules/logger';
 
 /**
- * Resolver the "user account" relation
+ * Resolves "user account" relation
  *
- * @async
- * @function
- * @param {Object} parent - Parent resolver
- * @param {Object} args - User input arguments
- * @param {Object} context - Global resolver store
- * @param {AST} info - GraphQL metadata
- * @returns {undefined} - User account relation was resolved
+ * @param parent - The parent resolver
+ * @param args - User input arguments
+ * @param context - GraphQL context object
+ * @param info - GraphQL metadata
+ * @returns undefined
  */
 const userAccount = async (parent, args, context, info): Promise<any> => {
   logger.info('USER-RESOLVER: Retrieving user account relation');
@@ -17,15 +15,13 @@ const userAccount = async (parent, args, context, info): Promise<any> => {
 };
 
 /**
- * Resolver the "user" relation
+ * Resolves "user" relation
  *
- * @async
- * @function
- * @param {Object} parent - Parent resolver
- * @param {Object} args - User input arguments
- * @param {Object} context - Global resolver store
- * @param {AST} info - GraphQL metadata
- * @returns {undefined} - User relation was resolved
+ * @param parent - The parent resolver
+ * @param args - User input arguments
+ * @param context - GraphQL context object
+ * @param info - GraphQL metadata
+ * @returns undefined
  */
 const user = async (parent, args, context, info): Promise<any> => {
   logger.info('USER-RESOLVER: Retrieving user relation');
@@ -33,15 +29,13 @@ const user = async (parent, args, context, info): Promise<any> => {
 };
 
 /**
- * Resolver the "security questions" relation
+ * Resolves "security questions" relation
  *
- * @async
- * @function
- * @param {Object} parent - Parent resolver
- * @param {Object} args - User input arguments
- * @param {Object} context - Global resolver store
- * @param {AST} info - GraphQL metadata
- * @returns {undefined} - Security questions relation was resolved
+ * @param parent - The parent resolver
+ * @param args - User input arguments
+ * @param context - GraphQL context object
+ * @param info - GraphQL metadata
+ * @returns undefined
  */
 const securityQuestions = async (parent, args, context, info): Promise<any> => {
   logger.info('USER-RESOLVER: Retrieving security questions relation');

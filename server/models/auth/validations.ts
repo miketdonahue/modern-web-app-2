@@ -13,11 +13,6 @@ const answers = (yup): any =>
     .of(yup.object())
     .min(config.server.auth.securityQuestions.number);
 
-/**
- * Input validations for types and resolvers
- *
- * @returns {Object} - A Shield object for validation middleware
- */
 export default {
   Query: {
     getUserSecurityQuestionAnswers: inputRule(yup =>

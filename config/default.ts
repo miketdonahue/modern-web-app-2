@@ -1,10 +1,4 @@
 export default {
-  client: {
-    dirs: {
-      types: 'pages/**/types/*.graphql',
-      resolvers: 'pages/**/resolvers/*.ts',
-    },
-  },
   server: {
     port: process.env.PORT || 8080,
     graphql: {

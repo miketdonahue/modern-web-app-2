@@ -1,10 +1,10 @@
 /**
  * JsonWebToken error normalizer
  *
- * @function
- * @param {Error} error - GraphQL Error object from Apollo Server
- * @returns {Object} - { code, level } - A standardized error code and logger level
- */ export default error => {
+ * @param error - GraphQL Error object from Apollo Server
+ * @returns A standardized error code and logger level
+ */
+export default error => {
   const errorInfo = { code: 'JWT', level: 'warn' };
 
   switch (error.extensions.exception.name) {

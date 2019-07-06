@@ -3,13 +3,11 @@ import logger from '@server/modules/logger';
 /**
  * Updates a user
  *
- * @async
- * @function
- * @param {Object} parent - Parent resolver
- * @param {Object} args - User input arguments
- * @param {Object} context - Global resolver store
- * @param {AST} info - GraphQL metadata
- * @returns {Object} - A user object
+ * @param parent - The parent resolver
+ * @param args - User input arguments
+ * @param context - GraphQL context object
+ * @param info - GraphQL metadata
+ * @returns A user object
  */
 const updateUser = async (parent, args, context, info): Promise<any> => {
   logger.info('USER-RESOLVER: Updating user');

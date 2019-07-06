@@ -4,13 +4,11 @@ import config from '@config';
 /**
  * Checks if a user is authenticated
  *
- * @async
- * @function
- * @param {Object} parent - Parent resolver
- * @param {Object} args - User input arguments
- * @param {Object} context - Global resolver store
- * @param {AST} info - GraphQL metadata
- * @returns {Boolean} - If authenticated or not
+ * @param parent - The parent resolver
+ * @param args - User input arguments
+ * @param context - GraphQL context object
+ * @param info - GraphQL metadata
+ * @returns boolean
  */
 export const isAuthenticated = rule()(
   async (parent, args, context, info) => !!context.user

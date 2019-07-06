@@ -1,7 +1,6 @@
 import argon2 from 'argon2';
 import jwt from 'jsonwebtoken';
 import addHours from 'date-fns/add_hours';
-import cookie from 'cookie';
 import uuid from 'uuid/v4';
 import config from '@config';
 import generateCode from '@server/modules/code';
@@ -17,13 +16,11 @@ import * as fragments from '../fragments';
 /**
  * Registers a new user
  *
- * @async
- * @function
- * @param {Object} parent - Parent resolver
- * @param {Object} args - User input arguments
- * @param {Object} context - Global resolver store
- * @param {AST} info - GraphQL metadata
- * @returns {Object} - { token }
+ * @param parent - The parent resolver
+ * @param args - User input arguments
+ * @param context - GraphQL context object
+ * @param info - GraphQL metadata
+ * @returns token
  */
 const registerUser = async (parent, args, context, info): Promise<any> => {
   const role = await context.prisma.role({ name: 'USER' });
@@ -79,13 +76,11 @@ const registerUser = async (parent, args, context, info): Promise<any> => {
 /**
  * Confirms a new user's account
  *
- * @async
- * @function
- * @param {Object} parent - Parent resolver
- * @param {Object} args - User input arguments
- * @param {Object} context - Global resolver store
- * @param {AST} info - GraphQL metadata
- * @returns {null}
+ * @param parent - The parent resolver
+ * @param args - User input arguments
+ * @param context - GraphQL context object
+ * @param info - GraphQL metadata
+ * @returns null
  */
 const confirmUser = async (parent, args, context, info): Promise<any> => {
   logger.info('AUTH-RESOLVER: Confirming account');
@@ -110,13 +105,11 @@ const confirmUser = async (parent, args, context, info): Promise<any> => {
 /**
  * Logs in a user
  *
- * @async
- * @function
- * @param {Object} parent - Parent resolver
- * @param {Object} args - User input arguments
- * @param {Object} context - Global resolver store
- * @param {AST} info - GraphQL metadata
- * @returns {Object} - { token }
+ * @param parent - The parent resolver
+ * @param args - User input arguments
+ * @param context - GraphQL context object
+ * @param info - GraphQL metadata
+ * @returns token
  */
 const loginUser = async (parent, args, context, info): Promise<any> => {
   const user = await context.prisma
@@ -193,13 +186,11 @@ const loginUser = async (parent, args, context, info): Promise<any> => {
 /**
  * Sets a user's security question answers
  *
- * @async
- * @function
- * @param {Object} parent - Parent resolver
- * @param {Object} args - User input arguments
- * @param {Object} context - Global resolver store
- * @param {AST} info - GraphQL metadata
- * @returns {null}
+ * @param parent - The parent resolver
+ * @param args - User input arguments
+ * @param context - GraphQL context object
+ * @param info - GraphQL metadata
+ * @returns null
  */
 const setUserSecurityQuestionAnswers = async (
   parent,
@@ -235,13 +226,11 @@ const setUserSecurityQuestionAnswers = async (
 /**
  * Retrieve a user's security question answers
  *
- * @async
- * @function
- * @param {Object} parent - Parent resolver
- * @param {Object} args - User input arguments
- * @param {Object} context - Global resolver store
- * @param {AST} info - GraphQL metadata
- * @returns {Array} - Answers array of answer objects
+ * @param parent - The parent resolver
+ * @param args - User input arguments
+ * @param context - GraphQL context object
+ * @param info - GraphQL metadata
+ * @returns An array of answer objects
  */
 const getUserSecurityQuestionAnswers = async (
   parent,
@@ -267,13 +256,11 @@ const getUserSecurityQuestionAnswers = async (
 /**
  * Verify a user's security question answers
  *
- * @async
- * @function
- * @param {Object} parent - Parent resolver
- * @param {Object} args - User input arguments
- * @param {Object} context - Global resolver store
- * @param {AST} info - GraphQL metadata
- * @returns {null}
+ * @param parent - The parent resolver
+ * @param args - User input arguments
+ * @param context - GraphQL context object
+ * @param info - GraphQL metadata
+ * @returns null
  */
 const verifyUserSecurityQuestionAnswers = async (
   parent,
@@ -333,15 +320,13 @@ const verifyUserSecurityQuestionAnswers = async (
 };
 
 /**
- * Generate a reset of a user's password
+ * Generate a reset token so a user can reset their password
  *
- * @async
- * @function
- * @param {Object} parent - Parent resolver
- * @param {Object} args - User input arguments
- * @param {Object} context - Global resolver store
- * @param {AST} info - GraphQL metadata
- * @returns {null}
+ * @param parent - The parent resolver
+ * @param args - User input arguments
+ * @param context - GraphQL context object
+ * @param info - GraphQL metadata
+ * @returns null
  */
 const resetPassword = async (parent, args, context, info): Promise<any> => {
   const userAccount = await context.prisma
@@ -370,15 +355,13 @@ const resetPassword = async (parent, args, context, info): Promise<any> => {
 };
 
 /**
- * Change a user's password
+ * Change password
  *
- * @async
- * @function
- * @param {Object} parent - Parent resolver
- * @param {Object} args - User input arguments
- * @param {Object} context - Global resolver store
- * @param {AST} info - GraphQL metadata
- * @returns {null}
+ * @param parent - The parent resolver
+ * @param args - User input arguments
+ * @param context - GraphQL context object
+ * @param info - GraphQL metadata
+ * @returns null
  */
 const changePassword = async (parent, args, context, info): Promise<any> => {
   logger.info("AUTH-RESOLVER: Changing user's password");
@@ -408,15 +391,13 @@ const changePassword = async (parent, args, context, info): Promise<any> => {
 };
 
 /**
- * Unlock a user's account
+ * Unlock account
  *
- * @async
- * @function
- * @param {Object} parent - Parent resolver
- * @param {Object} args - User input arguments
- * @param {Object} context - Global resolver store
- * @param {AST} info - GraphQL metadata
- * @returns {null}
+ * @param parent - The parent resolver
+ * @param args - User input arguments
+ * @param context - GraphQL context object
+ * @param info - GraphQL metadata
+ * @returns null
  */
 const unlockAccount = async (parent, args, context, info): Promise<any> => {
   logger.info('AUTH-RESOLVER: Unlocking account');
@@ -435,15 +416,16 @@ const unlockAccount = async (parent, args, context, info): Promise<any> => {
 };
 
 /**
- * Send a specific kind of authentication-related email to a user
+ * Send an authentication-related email
  *
- * @async
- * @function
- * @param {Object} parent - Parent resolver
- * @param {Object} args - User input arguments
- * @param {Object} context - Global resolver store
- * @param {AST} info - GraphQL metadata
- * @returns {null}
+ * @remarks
+ * This is used to resend auth emails
+ *
+ * @param parent - The parent resolver
+ * @param args - User input arguments
+ * @param context - GraphQL context object
+ * @param info - GraphQL metadata
+ * @returns null
  */
 const sendAuthEmail = async (parent, args, context, info): Promise<any> => {
   const user = await context.prisma.user({ email: args.input.email });
@@ -461,12 +443,10 @@ const sendAuthEmail = async (parent, args, context, info): Promise<any> => {
 /**
  * Logout a user
  *
- * @async
- * @function
- * @param {Object} parent - Parent resolver
- * @param {Object} args - User input arguments
- * @param {Object} context - Global resolver store
- * @param {AST} info - GraphQL metadata
+ * @param parent - The parent resolver
+ * @param args - User input arguments
+ * @param context - GraphQL context object
+ * @param info - GraphQL metadata
  * @returns null
  */
 const logoutUser = async (parent, args, context, info): Promise<any> => {
@@ -480,15 +460,15 @@ const logoutUser = async (parent, args, context, info): Promise<any> => {
 
 /**
  * Checks if a user is authenticated
+ *
+ * @remarks
  * Will issue a new token based on a valid refresh token
  *
- * @async
- * @function
- * @param {Object} parent - Parent resolver
- * @param {Object} args - User input arguments
- * @param {Object} context - Global resolver store
- * @param {AST} info - GraphQL metadata
- * @returns {Boolean}
+ * @param parent - The parent resolver
+ * @param args - User input arguments
+ * @param context - GraphQL context object
+ * @param info - GraphQL metadata
+ * @returns boolean
  */
 const isAuthenticated = async (parent, args, context, info): Promise<any> => {
   const decoded = jwt.decode(context.user.token);
@@ -568,13 +548,11 @@ const isAuthenticated = async (parent, args, context, info): Promise<any> => {
 /**
  * Checks if an access token is valid
  *
- * @async
- * @function
- * @param {Object} parent - Parent resolver
- * @param {Object} args - User input arguments
- * @param {Object} context - Global resolver store
- * @param {AST} info - GraphQL metadata
- * @returns {Boolean}
+ * @param parent - The parent resolver
+ * @param args - User input arguments
+ * @param context - GraphQL context object
+ * @param info - GraphQL metadata
+ * @returns boolean
  */
 const isValidToken = async (parent, args, context, info): Promise<any> => {
   return jwt.verify(

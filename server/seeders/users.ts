@@ -12,10 +12,6 @@ const numberOfUsers = 5;
 
 /**
  * Seed users
- *
- * @async
- * @function
- * @returns {undefined} - Users were inserted into DB
  */
 export default async () => {
   const password = await argon2.hash('Prisma123', {

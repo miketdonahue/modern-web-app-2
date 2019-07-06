@@ -67,10 +67,6 @@ const questions = [
 
 /**
  * Seed security questions
- *
- * @async
- * @function
- * @returns {undefined} - Security question was inserted into DB
  */
 export default async () => {
   for (const question of questions) {

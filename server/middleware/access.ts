@@ -1,13 +1,10 @@
-import path from 'path';
 import { shield, deny } from 'graphql-shield';
 import assign from 'assign-deep';
 import config from '@config';
 import { InternalError } from '@server/modules/errors';
-import fileLoader from '@utils/node-file-loader';
+import { fileLoader } from '@utils/file-loaders/node';
 
-const permissionsArray = fileLoader(
-  path.join(process.cwd(), config.server.dirs.access)
-);
+const permissionsArray = fileLoader('permissions');
 
 /**
  * Create access permissions

@@ -1,16 +1,13 @@
 import { ApolloClient } from 'apollo-client';
 import { from } from 'apollo-link';
 import { InMemoryCache } from 'apollo-cache-inmemory';
-import fileLoader from '@utils/webpack-file-loader';
-import mergeResolvers from '@utils/merge-resolvers';
+import { fileLoader } from '@utils/file-loaders/webpack';
+import { mergeResolvers } from '@utils/merge-resolvers/client';
 import { httpMiddleware, headersMiddleware } from '@client/middleware';
 
 // Register types and resolvers
-const typeFiles = require.context('../models', true, /types\/.*.graphql$/);
-const resolverFiles = require.context('../models', true, /resolvers\/.*.ts$/);
-const typesArray = fileLoader(typeFiles);
-const resolversArray = fileLoader(resolverFiles);
-const resolvers = mergeResolvers(resolversArray);
+const typesArray = fileLoader('typeDefs');
+const resolvers = mergeResolvers();
 
 let apolloClient = null;
 

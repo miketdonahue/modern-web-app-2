@@ -3,13 +3,11 @@ import logger from '@server/modules/logger';
 /**
  * Retrieves available security questions
  *
- * @async
- * @function
- * @param {Object} parent - Parent resolver
- * @param {Object} args - User input arguments
- * @param {Object} context - Global resolver store
- * @param {AST} info - GraphQL metadata
- * @returns {Array} - Array of security question objects
+ * @param parent - The parent resolver
+ * @param args - User input arguments
+ * @param context - GraphQL context object
+ * @param info - GraphQL metadata
+ * @returns An array of security question objects
  */
 const getSecurityQuestions = async (
   parent,

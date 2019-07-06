@@ -6,13 +6,11 @@ const stripe = stripeSdk(process.env.STRIPE);
 /**
  * Create a new payment charge
  *
- * @async
- * @function
- * @param {Object} parent - Parent resolver
- * @param {Object} args - User input arguments
- * @param {Object} context - Global resolver store
- * @param {AST} info - GraphQL metadata
- * @returns {null}
+ * @param parent - The parent resolver
+ * @param args - User input arguments
+ * @param context - GraphQL context object
+ * @param info - GraphQL metadata
+ * @returns null
  */
 const createCharge = async (parent, args, context, info): Promise<any> => {
   // TODO: based on UI, fill in the inputs

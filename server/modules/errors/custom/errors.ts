@@ -13,10 +13,9 @@ interface ExternalMeta {
 /**
  * Error class for application sourced errors
  *
- * @class
- * @param {String} type - A internal error constant
- * @param {Object} meta - Additional useful error metadata
- * @returns {Error} - ApolloError
+ * @param type - A internal error constant
+ * @param meta - Additional useful error metadata
+ * @returns ApolloError
  */
 export class InternalError extends ApolloError {
   public constructor(type, meta?: InternalMeta) {
@@ -33,10 +32,9 @@ export class InternalError extends ApolloError {
 /**
  * Error class for third-party sourced errors
  *
- * @class
- * @param {Error} error - The third-party Error object
- * @param {Object} meta - Additional useful error metadata
- * @returns {Error} - ApolloError
+ * @param error - The third-party Error object
+ * @param meta - Additional useful error metadata
+ * @returns ApolloError
  */
 export class ExternalError extends ApolloError {
   public constructor(error, meta: ExternalMeta) {

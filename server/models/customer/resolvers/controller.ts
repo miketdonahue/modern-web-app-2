@@ -7,13 +7,11 @@ const stripe = stripeSdk(process.env.STRIPE);
 /**
  * Create a new customer
  *
- * @async
- * @function
- * @param {Object} parent - Parent resolver
- * @param {Object} args - User input arguments
- * @param {Object} context - Global resolver store
- * @param {AST} info - GraphQL metadata
- * @returns {null}
+ * @param parent - The parent resolver
+ * @param args - User input arguments
+ * @param context - GraphQL context object
+ * @param info - GraphQL metadata
+ * @returns null
  */
 const createCustomer = async (parent, args, context, info): Promise<any> => {
   const user = await context.prisma.user({ id: args.input.userId });
@@ -48,13 +46,11 @@ const createCustomer = async (parent, args, context, info): Promise<any> => {
 /**
  * Update an existing customer
  *
- * @async
- * @function
- * @param {Object} parent - Parent resolver
- * @param {Object} args - User input arguments
- * @param {Object} context - Global resolver store
- * @param {AST} info - GraphQL metadata
- * @returns {null}
+ * @param parent - The parent resolver
+ * @param args - User input arguments
+ * @param context - GraphQL context object
+ * @param info - GraphQL metadata
+ * @returns null
  */
 const updateCustomer = async (parent, args, context, info): Promise<any> => {
   const customer = await context.prisma

@@ -3,9 +3,8 @@ import normalizers from './normalizers';
 /**
  * Normalizes errors based on the incoming source
  *
- * @function
- * @param {Error} error - GraphQL error from Apollo Server
- * @returns {Function} - A normalizing function
+ * @param error - GraphQL Error object from Apollo Server
+ * @returns A normalizing function
  */
 const normalizeError = (error): any => {
   let { source } = error.extensions.exception;

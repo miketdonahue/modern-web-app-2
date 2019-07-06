@@ -6,16 +6,14 @@ import { ExternalError } from '../errors';
 const emailClient = new SparkPost(process.env.SPARKPOST);
 
 /**
- * Send email trasmission
+ * Send email transmission
  *
- * @async
- * @function
- * @param {Object} user - Information about the user
- * @param {Object} options - SparkPost transmission options
- * @param {String} options.campaignId - SparkPost campaign_id
- * @param {String} options.templateId - SparkPost template_id
- * @param {Object} options.substitutionData - SparkPost email template data
- * @returns {Promise}
+ * @param user - Information about the user
+ * @param options - SparkPost transmission options
+ * @param options.campaignId - SparkPost campaign_id
+ * @param options.templateId - SparkPost template_id
+ * @param options.substitutionData - SparkPost email template data
+ * @returns Promise
  */
 export const send = async (user, options): Promise<any> => {
   if (!config.server.mailer.sendEmails) {

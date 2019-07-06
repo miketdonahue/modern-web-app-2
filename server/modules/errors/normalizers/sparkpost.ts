@@ -1,9 +1,8 @@
 /**
- * SparkPost error normalizer
+ * Sparkpost error normalizer
  *
- * @function
- * @param {Error} error - GraphQL Error object from Apollo Server
- * @returns {Object} - { code, level } - A standardized error code and logger level
+ * @param error - GraphQL Error object from Apollo Server
+ * @returns A standardized error code and logger level
  */
 export default error => {
   const errorInfo = { code: 'SPARKPOST', level: 'error' };

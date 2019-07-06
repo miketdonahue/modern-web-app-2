@@ -1,4 +1,3 @@
-import path from 'path';
 import express from 'express';
 import next from 'next';
 import cors from 'cors';
@@ -12,8 +11,8 @@ import { prisma } from '@server/prisma/generated/prisma-client';
 import { normalizeError } from '@server/modules/errors';
 import { HealthCheck } from '@server/modules/health-check';
 import logger from '@server/modules/logger';
-import fileLoader from '@utils/node-file-loader';
-import mergeResolvers from '@utils/merge-resolvers';
+import { fileLoader } from '@utils/file-loaders/node';
+import { mergeResolvers } from '@utils/merge-resolvers/server';
 import config from '@config';
 import {
   access,
@@ -27,15 +26,11 @@ const dev = process.env.NODE_ENV !== 'production';
 const healthCheck = new HealthCheck();
 const app = next({ dev });
 const handle = app.getRequestHandler();
-const typesDir = path.join(process.cwd(), config.server.dirs.types);
-const resolversDir = path.join(process.cwd(), config.server.dirs.resolvers);
-const routesDir = path.join(process.cwd(), config.server.dirs.routes);
 
 // Register types and resolvers
-const typesArray = fileLoader(typesDir);
-const resolversArray = fileLoader(resolversDir);
-const resolvers = mergeResolvers(resolversArray);
-const routes = fileLoader(routesDir, { flatten: true });
+const typesArray = fileLoader('typeDefs');
+const resolvers = mergeResolvers();
+const routes = fileLoader('routes', { flatten: true });
 
 // Set up root types
 const rootTypes = `

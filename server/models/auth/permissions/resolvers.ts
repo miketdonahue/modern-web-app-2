@@ -6,13 +6,14 @@ import config from '@config';
 /**
  * Checks if user account has been locked
  *
- * @async
- * @function
- * @param {Object} parent - Parent resolver
- * @param {Object} args - User input arguments
- * @param {Object} context - Global resolver store
- * @param {AST} info - GraphQL metadata
- * @returns {Error|Boolean}
+ * @remarks
+ * This is a rule for GraphQL Shield
+ *
+ * @param parent - The parent resolver
+ * @param args - User input arguments
+ * @param context - GraphQL context object
+ * @param info - GraphQL metadata
+ * @returns A boolean
  */
 export const accountUnlocked = rule()(async (parent, args, context, info) => {
   if (!config.server.auth.lockable.enabled) {
@@ -39,13 +40,14 @@ export const accountUnlocked = rule()(async (parent, args, context, info) => {
 /**
  * Checks if user account locked code has expired
  *
- * @async
- * @function
- * @param {Object} parent - Parent resolver
- * @param {Object} args - User input arguments
- * @param {Object} context - Global resolver store
- * @param {AST} info - GraphQL metadata
- * @returns {Error|Boolean}
+ * @remarks
+ * This is a rule for GraphQL Shield
+ *
+ * @param parent - The parent resolver
+ * @param args - User input arguments
+ * @param context - GraphQL context object
+ * @param info - GraphQL metadata
+ * @returns A boolean
  */
 export const lockedCodeNotExpired = rule()(
   async (parent, args, context, info) => {
@@ -68,13 +70,14 @@ export const lockedCodeNotExpired = rule()(
 /**
  * Checks if user account reset password code has expired
  *
- * @async
- * @function
- * @param {Object} parent - Parent resolver
- * @param {Object} args - User input arguments
- * @param {Object} context - Global resolver store
- * @param {AST} info - GraphQL metadata
- * @returns {Error|Boolean}
+ * @remarks
+ * This is a rule for GraphQL Shield
+ *
+ * @param parent - The parent resolver
+ * @param args - User input arguments
+ * @param context - GraphQL context object
+ * @param info - GraphQL metadata
+ * @returns A boolean
  */
 export const resetPasswordCodeNotExpired = rule()(
   async (parent, args, context, info) => {

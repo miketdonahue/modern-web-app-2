@@ -10,9 +10,7 @@ if (process.env.NODE_ENV !== 'production') {
 }
 
 /**
- * Creates a default logger instance
- *
- * @returns {Function} - Pino logger instance
+ * Creates a server-side logger instance
  */
 const defaultLogger = pino(
   {

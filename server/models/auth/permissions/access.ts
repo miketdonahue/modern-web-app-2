@@ -5,11 +5,6 @@ import {
   lockedCodeNotExpired,
 } from './resolvers';
 
-/**
- * Access permissions for types and resolvers
- *
- * @returns {Object} - A Shield object for permission middleware
- */
 export default {
   Query: {
     getUserSecurityQuestionAnswers: allow,
