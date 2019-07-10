@@ -2,7 +2,7 @@ export default {
   server: {
     port: process.env.PORT || 8080,
     graphql: {
-      path: '/graphql',
+      path: '/playground',
       playground: false,
       debug: false,
       logger: false,

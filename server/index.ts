@@ -4,7 +4,6 @@ import cors from 'cors';
 import helmet from 'helmet';
 import cookieParser from 'cookie-parser';
 import bodyParser from 'body-parser';
-import csrf from 'csurf';
 import { ApolloServer, makeExecutableSchema } from 'apollo-server-express';
 import { applyMiddleware } from 'graphql-middleware';
 import { prisma } from '@server/prisma/generated/prisma-client';
@@ -17,6 +16,7 @@ import config from '@config';
 import {
   access,
   authenticate as isAuthenticated,
+  csrf,
   validations,
   requestLogger,
   resolverLogger,
@@ -92,7 +92,9 @@ app
     server.use(requestLogger());
     server.use(cookieParser());
     server.use(bodyParser.urlencoded({ extended: false }));
-    server.use(csrf({ cookie: { key: 'ds_csrf' } }));
+    server.use(
+      csrf({ cookie: { key: 'ds_csrf' }, ignoreUrls: ['/playground'] })
+    );
     server.use(
       helmet.contentSecurityPolicy({
         directives: config.server.contentSecurityPolicy,

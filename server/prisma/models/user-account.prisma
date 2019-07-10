@@ -1,9 +1,9 @@
 type UserAccount {
   id: ID! @id @unique
   user: User!
-  confirmed: Boolean! @default(value: "false")
+  confirmed: Boolean! @default(value: false)
   confirmedCode: Int @unique
-  locked: Boolean! @default(value: "false")
+  locked: Boolean! @default(value: false)
   lockedCode: Int @unique
   lockedExpires: String
   resetPasswordCode: Int @unique
@@ -14,7 +14,7 @@ type UserAccount {
   refreshToken: String @unique
   lastVisit: DateTime
   ip: String
-  updatedAt: DateTime!
-  createdAt: DateTime!
+  updatedAt: DateTime! @updatedAt
+  createdAt: DateTime! @createdAt
   deletedAt: DateTime
 }

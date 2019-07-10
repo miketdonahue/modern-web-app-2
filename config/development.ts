@@ -14,7 +14,7 @@ export default merge(defaultConfig, {
       logger: true,
     },
     auth: {
-      enabled: true,
+      enabled: false,
       confirmable: true,
       lockable: {
         enabled: false,

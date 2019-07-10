@@ -3,7 +3,6 @@ import Router from 'next/router';
 import { withFormik } from 'formik';
 import { Button, Form } from 'semantic-ui-react';
 import { withApollo, compose } from 'react-apollo';
-import Cookies from 'universal-cookie';
 import ServerError from '@client/components/server-error';
 import withServerErrors from '@client/components/hoc/with-server-errors';
 import { loginSchema } from './validations';

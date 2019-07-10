@@ -10,7 +10,8 @@ datamodel:
   - server/prisma/models/security-question.prisma
   - server/prisma/models/security-question-answer.prisma
   - server/prisma/models/customer.prisma
-  - server/prisma/models/blacklisted-tokens.prisma
+  - server/prisma/models/blacklisted-token.prisma
+  - server/prisma/models/permission.prisma
 
 # Specifies language & location for the generated Prisma client
 generate:

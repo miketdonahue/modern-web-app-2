@@ -12,11 +12,6 @@ import logger from '@server/modules/logger';
  * @returns A user object
  */
 const authenticate = (headers): any => {
-  // Skip authentication if auth is turned off
-  if (!config.server.auth.enabled) {
-    return true;
-  }
-
   let token = '';
   const headerParts =
     (headers.authorization && headers.authorization.split(' ')) || [];

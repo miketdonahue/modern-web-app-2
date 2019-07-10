@@ -15,6 +15,10 @@ export const typeDefs = /* GraphQL */ `
     count: Int!
   }
 
+  type AggregatePermission {
+    count: Int!
+  }
+
   type AggregateRole {
     count: Int!
   }
@@ -349,6 +353,8 @@ export const typeDefs = /* GraphQL */ `
 
   scalar DateTime
 
+  scalar Json
+
   scalar Long
 
   type Mutation {
@@ -406,6 +412,22 @@ export const typeDefs = /* GraphQL */ `
     ): OpenAuth!
     deleteOpenAuth(where: OpenAuthWhereUniqueInput!): OpenAuth
     deleteManyOpenAuths(where: OpenAuthWhereInput): BatchPayload!
+    createPermission(data: PermissionCreateInput!): Permission!
+    updatePermission(
+      data: PermissionUpdateInput!
+      where: PermissionWhereUniqueInput!
+    ): Permission
+    updateManyPermissions(
+      data: PermissionUpdateManyMutationInput!
+      where: PermissionWhereInput
+    ): BatchPayload!
+    upsertPermission(
+      where: PermissionWhereUniqueInput!
+      create: PermissionCreateInput!
+      update: PermissionUpdateInput!
+    ): Permission!
+    deletePermission(where: PermissionWhereUniqueInput!): Permission
+    deleteManyPermissions(where: PermissionWhereInput): BatchPayload!
     createRole(data: RoleCreateInput!): Role!
     updateRole(data: RoleUpdateInput!, where: RoleWhereUniqueInput!): Role
     updateManyRoles(
@@ -698,6 +720,303 @@ export const typeDefs = /* GraphQL */ `
     endCursor: String
   }
 
+  type Permission {
+    id: ID!
+    name: String!
+    key: String!
+    roles(
+      where: RoleWhereInput
+      orderBy: RoleOrderByInput
+      skip: Int
+      after: String
+      before: String
+      first: Int
+      last: Int
+    ): [Role!]
+    updatedAt: DateTime!
+    createdAt: DateTime!
+    deletedAt: DateTime
+  }
+
+  type PermissionConnection {
+    pageInfo: PageInfo!
+    edges: [PermissionEdge]!
+    aggregate: AggregatePermission!
+  }
+
+  input PermissionCreateInput {
+    id: ID
+    name: String!
+    key: String!
+    roles: RoleCreateManyWithoutPermissionsInput
+    deletedAt: DateTime
+  }
+
+  input PermissionCreateManyWithoutRolesInput {
+    create: [PermissionCreateWithoutRolesInput!]
+    connect: [PermissionWhereUniqueInput!]
+  }
+
+  input PermissionCreateWithoutRolesInput {
+    id: ID
+    name: String!
+    key: String!
+    deletedAt: DateTime
+  }
+
+  type PermissionEdge {
+    node: Permission!
+    cursor: String!
+  }
+
+  enum PermissionOrderByInput {
+    id_ASC
+    id_DESC
+    name_ASC
+    name_DESC
+    key_ASC
+    key_DESC
+    updatedAt_ASC
+    updatedAt_DESC
+    createdAt_ASC
+    createdAt_DESC
+    deletedAt_ASC
+    deletedAt_DESC
+  }
+
+  type PermissionPreviousValues {
+    id: ID!
+    name: String!
+    key: String!
+    updatedAt: DateTime!
+    createdAt: DateTime!
+    deletedAt: DateTime
+  }
+
+  input PermissionScalarWhereInput {
+    id: ID
+    id_not: ID
+    id_in: [ID!]
+    id_not_in: [ID!]
+    id_lt: ID
+    id_lte: ID
+    id_gt: ID
+    id_gte: ID
+    id_contains: ID
+    id_not_contains: ID
+    id_starts_with: ID
+    id_not_starts_with: ID
+    id_ends_with: ID
+    id_not_ends_with: ID
+    name: String
+    name_not: String
+    name_in: [String!]
+    name_not_in: [String!]
+    name_lt: String
+    name_lte: String
+    name_gt: String
+    name_gte: String
+    name_contains: String
+    name_not_contains: String
+    name_starts_with: String
+    name_not_starts_with: String
+    name_ends_with: String
+    name_not_ends_with: String
+    key: String
+    key_not: String
+    key_in: [String!]
+    key_not_in: [String!]
+    key_lt: String
+    key_lte: String
+    key_gt: String
+    key_gte: String
+    key_contains: String
+    key_not_contains: String
+    key_starts_with: String
+    key_not_starts_with: String
+    key_ends_with: String
+    key_not_ends_with: String
+    updatedAt: DateTime
+    updatedAt_not: DateTime
+    updatedAt_in: [DateTime!]
+    updatedAt_not_in: [DateTime!]
+    updatedAt_lt: DateTime
+    updatedAt_lte: DateTime
+    updatedAt_gt: DateTime
+    updatedAt_gte: DateTime
+    createdAt: DateTime
+    createdAt_not: DateTime
+    createdAt_in: [DateTime!]
+    createdAt_not_in: [DateTime!]
+    createdAt_lt: DateTime
+    createdAt_lte: DateTime
+    createdAt_gt: DateTime
+    createdAt_gte: DateTime
+    deletedAt: DateTime
+    deletedAt_not: DateTime
+    deletedAt_in: [DateTime!]
+    deletedAt_not_in: [DateTime!]
+    deletedAt_lt: DateTime
+    deletedAt_lte: DateTime
+    deletedAt_gt: DateTime
+    deletedAt_gte: DateTime
+    AND: [PermissionScalarWhereInput!]
+    OR: [PermissionScalarWhereInput!]
+    NOT: [PermissionScalarWhereInput!]
+  }
+
+  type PermissionSubscriptionPayload {
+    mutation: MutationType!
+    node: Permission
+    updatedFields: [String!]
+    previousValues: PermissionPreviousValues
+  }
+
+  input PermissionSubscriptionWhereInput {
+    mutation_in: [MutationType!]
+    updatedFields_contains: String
+    updatedFields_contains_every: [String!]
+    updatedFields_contains_some: [String!]
+    node: PermissionWhereInput
+    AND: [PermissionSubscriptionWhereInput!]
+    OR: [PermissionSubscriptionWhereInput!]
+    NOT: [PermissionSubscriptionWhereInput!]
+  }
+
+  input PermissionUpdateInput {
+    name: String
+    key: String
+    roles: RoleUpdateManyWithoutPermissionsInput
+    deletedAt: DateTime
+  }
+
+  input PermissionUpdateManyDataInput {
+    name: String
+    key: String
+    deletedAt: DateTime
+  }
+
+  input PermissionUpdateManyMutationInput {
+    name: String
+    key: String
+    deletedAt: DateTime
+  }
+
+  input PermissionUpdateManyWithoutRolesInput {
+    create: [PermissionCreateWithoutRolesInput!]
+    delete: [PermissionWhereUniqueInput!]
+    connect: [PermissionWhereUniqueInput!]
+    set: [PermissionWhereUniqueInput!]
+    disconnect: [PermissionWhereUniqueInput!]
+    update: [PermissionUpdateWithWhereUniqueWithoutRolesInput!]
+    upsert: [PermissionUpsertWithWhereUniqueWithoutRolesInput!]
+    deleteMany: [PermissionScalarWhereInput!]
+    updateMany: [PermissionUpdateManyWithWhereNestedInput!]
+  }
+
+  input PermissionUpdateManyWithWhereNestedInput {
+    where: PermissionScalarWhereInput!
+    data: PermissionUpdateManyDataInput!
+  }
+
+  input PermissionUpdateWithoutRolesDataInput {
+    name: String
+    key: String
+    deletedAt: DateTime
+  }
+
+  input PermissionUpdateWithWhereUniqueWithoutRolesInput {
+    where: PermissionWhereUniqueInput!
+    data: PermissionUpdateWithoutRolesDataInput!
+  }
+
+  input PermissionUpsertWithWhereUniqueWithoutRolesInput {
+    where: PermissionWhereUniqueInput!
+    update: PermissionUpdateWithoutRolesDataInput!
+    create: PermissionCreateWithoutRolesInput!
+  }
+
+  input PermissionWhereInput {
+    id: ID
+    id_not: ID
+    id_in: [ID!]
+    id_not_in: [ID!]
+    id_lt: ID
+    id_lte: ID
+    id_gt: ID
+    id_gte: ID
+    id_contains: ID
+    id_not_contains: ID
+    id_starts_with: ID
+    id_not_starts_with: ID
+    id_ends_with: ID
+    id_not_ends_with: ID
+    name: String
+    name_not: String
+    name_in: [String!]
+    name_not_in: [String!]
+    name_lt: String
+    name_lte: String
+    name_gt: String
+    name_gte: String
+    name_contains: String
+    name_not_contains: String
+    name_starts_with: String
+    name_not_starts_with: String
+    name_ends_with: String
+    name_not_ends_with: String
+    key: String
+    key_not: String
+    key_in: [String!]
+    key_not_in: [String!]
+    key_lt: String
+    key_lte: String
+    key_gt: String
+    key_gte: String
+    key_contains: String
+    key_not_contains: String
+    key_starts_with: String
+    key_not_starts_with: String
+    key_ends_with: String
+    key_not_ends_with: String
+    roles_every: RoleWhereInput
+    roles_some: RoleWhereInput
+    roles_none: RoleWhereInput
+    updatedAt: DateTime
+    updatedAt_not: DateTime
+    updatedAt_in: [DateTime!]
+    updatedAt_not_in: [DateTime!]
+    updatedAt_lt: DateTime
+    updatedAt_lte: DateTime
+    updatedAt_gt: DateTime
+    updatedAt_gte: DateTime
+    createdAt: DateTime
+    createdAt_not: DateTime
+    createdAt_in: [DateTime!]
+    createdAt_not_in: [DateTime!]
+    createdAt_lt: DateTime
+    createdAt_lte: DateTime
+    createdAt_gt: DateTime
+    createdAt_gte: DateTime
+    deletedAt: DateTime
+    deletedAt_not: DateTime
+    deletedAt_in: [DateTime!]
+    deletedAt_not_in: [DateTime!]
+    deletedAt_lt: DateTime
+    deletedAt_lte: DateTime
+    deletedAt_gt: DateTime
+    deletedAt_gte: DateTime
+    AND: [PermissionWhereInput!]
+    OR: [PermissionWhereInput!]
+    NOT: [PermissionWhereInput!]
+  }
+
+  input PermissionWhereUniqueInput {
+    id: ID
+    name: String
+    key: String
+  }
+
   enum ProviderName {
     GOOGLE
   }
@@ -762,6 +1081,25 @@ export const typeDefs = /* GraphQL */ `
       first: Int
       last: Int
     ): OpenAuthConnection!
+    permission(where: PermissionWhereUniqueInput!): Permission
+    permissions(
+      where: PermissionWhereInput
+      orderBy: PermissionOrderByInput
+      skip: Int
+      after: String
+      before: String
+      first: Int
+      last: Int
+    ): [Permission]!
+    permissionsConnection(
+      where: PermissionWhereInput
+      orderBy: PermissionOrderByInput
+      skip: Int
+      after: String
+      before: String
+      first: Int
+      last: Int
+    ): PermissionConnection!
     role(where: RoleWhereUniqueInput!): Role
     roles(
       where: RoleWhereInput
@@ -865,6 +1203,16 @@ export const typeDefs = /* GraphQL */ `
   type Role {
     id: ID!
     name: RoleName!
+    permissions(
+      where: PermissionWhereInput
+      orderBy: PermissionOrderByInput
+      skip: Int
+      after: String
+      before: String
+      first: Int
+      last: Int
+    ): [Permission!]
+    prohibitedRoutes: Json
     updatedAt: DateTime!
     createdAt: DateTime!
     deletedAt: DateTime
@@ -879,12 +1227,26 @@ export const typeDefs = /* GraphQL */ `
   input RoleCreateInput {
     id: ID
     name: RoleName!
+    permissions: PermissionCreateManyWithoutRolesInput
+    prohibitedRoutes: Json
     deletedAt: DateTime
+  }
+
+  input RoleCreateManyWithoutPermissionsInput {
+    create: [RoleCreateWithoutPermissionsInput!]
+    connect: [RoleWhereUniqueInput!]
   }
 
   input RoleCreateOneInput {
     create: RoleCreateInput
     connect: RoleWhereUniqueInput
+  }
+
+  input RoleCreateWithoutPermissionsInput {
+    id: ID
+    name: RoleName!
+    prohibitedRoutes: Json
+    deletedAt: DateTime
   }
 
   type RoleEdge {
@@ -893,6 +1255,7 @@ export const typeDefs = /* GraphQL */ `
   }
 
   enum RoleName {
+    ADMIN
     USER
   }
 
@@ -901,6 +1264,8 @@ export const typeDefs = /* GraphQL */ `
     id_DESC
     name_ASC
     name_DESC
+    prohibitedRoutes_ASC
+    prohibitedRoutes_DESC
     updatedAt_ASC
     updatedAt_DESC
     createdAt_ASC
@@ -912,9 +1277,58 @@ export const typeDefs = /* GraphQL */ `
   type RolePreviousValues {
     id: ID!
     name: RoleName!
+    prohibitedRoutes: Json
     updatedAt: DateTime!
     createdAt: DateTime!
     deletedAt: DateTime
+  }
+
+  input RoleScalarWhereInput {
+    id: ID
+    id_not: ID
+    id_in: [ID!]
+    id_not_in: [ID!]
+    id_lt: ID
+    id_lte: ID
+    id_gt: ID
+    id_gte: ID
+    id_contains: ID
+    id_not_contains: ID
+    id_starts_with: ID
+    id_not_starts_with: ID
+    id_ends_with: ID
+    id_not_ends_with: ID
+    name: RoleName
+    name_not: RoleName
+    name_in: [RoleName!]
+    name_not_in: [RoleName!]
+    updatedAt: DateTime
+    updatedAt_not: DateTime
+    updatedAt_in: [DateTime!]
+    updatedAt_not_in: [DateTime!]
+    updatedAt_lt: DateTime
+    updatedAt_lte: DateTime
+    updatedAt_gt: DateTime
+    updatedAt_gte: DateTime
+    createdAt: DateTime
+    createdAt_not: DateTime
+    createdAt_in: [DateTime!]
+    createdAt_not_in: [DateTime!]
+    createdAt_lt: DateTime
+    createdAt_lte: DateTime
+    createdAt_gt: DateTime
+    createdAt_gte: DateTime
+    deletedAt: DateTime
+    deletedAt_not: DateTime
+    deletedAt_in: [DateTime!]
+    deletedAt_not_in: [DateTime!]
+    deletedAt_lt: DateTime
+    deletedAt_lte: DateTime
+    deletedAt_gt: DateTime
+    deletedAt_gte: DateTime
+    AND: [RoleScalarWhereInput!]
+    OR: [RoleScalarWhereInput!]
+    NOT: [RoleScalarWhereInput!]
   }
 
   type RoleSubscriptionPayload {
@@ -937,17 +1351,45 @@ export const typeDefs = /* GraphQL */ `
 
   input RoleUpdateDataInput {
     name: RoleName
+    permissions: PermissionUpdateManyWithoutRolesInput
+    prohibitedRoutes: Json
     deletedAt: DateTime
   }
 
   input RoleUpdateInput {
     name: RoleName
+    permissions: PermissionUpdateManyWithoutRolesInput
+    prohibitedRoutes: Json
+    deletedAt: DateTime
+  }
+
+  input RoleUpdateManyDataInput {
+    name: RoleName
+    prohibitedRoutes: Json
     deletedAt: DateTime
   }
 
   input RoleUpdateManyMutationInput {
     name: RoleName
+    prohibitedRoutes: Json
     deletedAt: DateTime
+  }
+
+  input RoleUpdateManyWithoutPermissionsInput {
+    create: [RoleCreateWithoutPermissionsInput!]
+    delete: [RoleWhereUniqueInput!]
+    connect: [RoleWhereUniqueInput!]
+    set: [RoleWhereUniqueInput!]
+    disconnect: [RoleWhereUniqueInput!]
+    update: [RoleUpdateWithWhereUniqueWithoutPermissionsInput!]
+    upsert: [RoleUpsertWithWhereUniqueWithoutPermissionsInput!]
+    deleteMany: [RoleScalarWhereInput!]
+    updateMany: [RoleUpdateManyWithWhereNestedInput!]
+  }
+
+  input RoleUpdateManyWithWhereNestedInput {
+    where: RoleScalarWhereInput!
+    data: RoleUpdateManyDataInput!
   }
 
   input RoleUpdateOneRequiredInput {
@@ -957,9 +1399,26 @@ export const typeDefs = /* GraphQL */ `
     connect: RoleWhereUniqueInput
   }
 
+  input RoleUpdateWithoutPermissionsDataInput {
+    name: RoleName
+    prohibitedRoutes: Json
+    deletedAt: DateTime
+  }
+
+  input RoleUpdateWithWhereUniqueWithoutPermissionsInput {
+    where: RoleWhereUniqueInput!
+    data: RoleUpdateWithoutPermissionsDataInput!
+  }
+
   input RoleUpsertNestedInput {
     update: RoleUpdateDataInput!
     create: RoleCreateInput!
+  }
+
+  input RoleUpsertWithWhereUniqueWithoutPermissionsInput {
+    where: RoleWhereUniqueInput!
+    update: RoleUpdateWithoutPermissionsDataInput!
+    create: RoleCreateWithoutPermissionsInput!
   }
 
   input RoleWhereInput {
@@ -981,6 +1440,9 @@ export const typeDefs = /* GraphQL */ `
     name_not: RoleName
     name_in: [RoleName!]
     name_not_in: [RoleName!]
+    permissions_every: PermissionWhereInput
+    permissions_some: PermissionWhereInput
+    permissions_none: PermissionWhereInput
     updatedAt: DateTime
     updatedAt_not: DateTime
     updatedAt_in: [DateTime!]
@@ -1455,6 +1917,9 @@ export const typeDefs = /* GraphQL */ `
     ): BlacklistedTokensSubscriptionPayload
     customer(where: CustomerSubscriptionWhereInput): CustomerSubscriptionPayload
     openAuth(where: OpenAuthSubscriptionWhereInput): OpenAuthSubscriptionPayload
+    permission(
+      where: PermissionSubscriptionWhereInput
+    ): PermissionSubscriptionPayload
     role(where: RoleSubscriptionWhereInput): RoleSubscriptionPayload
     securityQuestion(
       where: SecurityQuestionSubscriptionWhereInput

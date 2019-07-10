@@ -1,6 +1,8 @@
 type Role {
   id: ID! @id @unique
   name: RoleName! @unique
+  permissions: [Permission!]
+  prohibitedRoutes: Json
   updatedAt: DateTime! @updatedAt
   createdAt: DateTime! @createdAt
   deletedAt: DateTime
@@ -8,5 +10,6 @@ type Role {
 
 # Enums
 enum RoleName {
+  ADMIN
   USER
 }

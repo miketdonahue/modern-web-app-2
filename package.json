@@ -21,7 +21,7 @@
     "db:seed": "prisma seed",
     "db:seed:run": "babel-node --extensions '.ts' ./server/seeders/seed.ts",
     "db:seed:reset": "yarn db:seed --reset",
-    "db:reset": "prisma reset",
+    "db:reset": "prisma reset --force",
     "db:admin": "prisma admin"
   },
   "dependencies": {

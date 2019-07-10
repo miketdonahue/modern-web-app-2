@@ -120,6 +120,10 @@ const loginUser = async (parent, args, context, info): Promise<any> => {
     throw new InternalError('INVALID_CREDENTIALS');
   }
 
+  // Transform role data
+  user.role.permissions = user.role.permissions.map(role => role.key);
+  user.role.prohibitedRoutes = user.role.prohibitedRoutes.paths;
+
   const passwordMatch = await argon2.verify(user.password, args.input.password);
   const refreshToken = jwt.sign(
     { hash: uuid() },
@@ -161,7 +165,7 @@ const loginUser = async (parent, args, context, info): Promise<any> => {
 
   logger.info('AUTH-RESOLVER: Signing auth tokens');
   const token = jwt.sign(
-    { cuid: user.id, role: user.role.name },
+    { cuid: user.id, role: user.role },
     config.server.auth.jwt.secret,
     { expiresIn: config.server.auth.jwt.expiresIn }
   );
@@ -471,6 +475,11 @@ const logoutUser = async (parent, args, context, info): Promise<any> => {
  * @returns boolean
  */
 const isAuthenticated = async (parent, args, context, info): Promise<any> => {
+  // Skip authentication if auth is turned off
+  if (!config.server.auth.enabled) {
+    return true;
+  }
+
   const decoded = jwt.decode(context.user.token);
   const blacklistedToken = await context.prisma.blacklistedTokens({
     token: context.user.token,

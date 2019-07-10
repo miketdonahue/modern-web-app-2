@@ -18,6 +18,10 @@ export const loginUserFragment = `
     password
     role {
       name
+      permissions {
+        key
+      }
+      prohibitedRoutes
     }
     userAccount {
       id

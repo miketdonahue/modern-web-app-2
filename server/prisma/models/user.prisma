@@ -1,8 +1,8 @@
 type User {
   id: ID! @id @unique
   role: Role!
-  userAccount: UserAccount!
-  customerAccount: Customer
+  userAccount: UserAccount! @relation(link: INLINE)
+  customerAccount: Customer @relation(link: INLINE)
   firstName: String
   lastName: String
   email: String! @unique
@@ -15,7 +15,7 @@ type User {
   city: String
   state: String
   postalCode: String
-  updatedAt: DateTime!
-  createdAt: DateTime!
+  updatedAt: DateTime! @updatedAt
+  createdAt: DateTime! @createdAt
   deletedAt: DateTime
 }

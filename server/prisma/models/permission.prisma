@@ -1,6 +1,8 @@
-type BlacklistedTokens {
+type Permission {
   id: ID! @id @unique
-  token: String! @unique
+  name: String! @unique
+  key: String! @unique
+  roles: [Role!]
   updatedAt: DateTime! @updatedAt
   createdAt: DateTime! @createdAt
   deletedAt: DateTime
