@@ -31,7 +31,7 @@ export const checkAccess = async (ctx): Promise<any> => {
     data: { payload },
   } = await apolloClient.query({
     query: VALIDATE_ACCESS,
-    fetchPolicy: 'no-cache',
+    fetchPolicy: 'network-only',
   });
 
   const { token } = payload;

@@ -3,6 +3,7 @@ import Link from 'next/link';
 import Router, { withRouter } from 'next/router';
 import { withApollo, compose } from 'react-apollo';
 import Cookies from 'universal-cookie';
+import Policy from '@client/components/policy';
 import * as mutations from './graphql/mutations.graphql';
 
 const PostLink = (props): any => {
@@ -40,6 +41,9 @@ class Index extends Component {
     return (
       <div>
         <h2>Pages</h2>
+        <Policy can="post:read:any">
+          <div>Policy</div>
+        </Policy>
         <ul>
           <li>
             <Link href="/about">
