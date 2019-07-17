@@ -2,14 +2,13 @@ extend type Query {
   getUserSecurityQuestionAnswers(
     input: UserSecurityQuestionAnswerInput!
   ): [SecurityQuestionAnswer!]!
-  isAuthenticated: Boolean!
-  isValidToken: TokenPayload!
+  validateAccess: TokenPayload
 }
 
 extend type Mutation {
-  registerUser(input: RegisterUserInput!): AuthPayload!
+  registerUser(input: RegisterUserInput!): TokenPayload!
   confirmUser(input: ConfirmUserInput!): String
-  loginUser(input: LoginUserInput!): AuthPayload!
+  loginUser(input: LoginUserInput!): TokenPayload!
   setUserSecurityQuestionAnswers(input: UserSecurityQuestionInput!): String
   verifyUserSecurityQuestionAnswers(input: UserSecurityQuestionInput!): String
   resetPassword(input: ResetPasswordInput!): String

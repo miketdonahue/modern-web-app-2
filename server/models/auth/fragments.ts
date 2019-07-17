@@ -5,6 +5,10 @@ export const registerUserFragment = `
     email
     role {
       name
+      permissions {
+        key
+      }
+      prohibitedRoutes
     }
     userAccount {
       confirmedCode
@@ -62,11 +66,15 @@ export const accountLockedFragment = `
   }
 `;
 
-export const isAuthenticatedFragment = `
+export const validateAccessFragment = `
   {
     id
     role {
       name
+      permissions {
+        key
+      }
+      prohibitedRoutes
     }
     userAccount {
       refreshToken

@@ -3,7 +3,7 @@ import { isAuthenticated } from '@server/modules/access-rules';
 
 export default {
   Query: {
-    getSecurityQuestions: isAuthenticated,
+    getSecurityQuestions: allow,
   },
   SecurityQuestion: {
     '*': allow,

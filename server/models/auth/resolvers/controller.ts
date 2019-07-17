@@ -11,6 +11,7 @@ import mailer, {
   CONFIRMATION_EMAIL,
   UNLOCK_ACCOUNT_EMAIL,
 } from '@server/modules/mailer';
+import { transformRole } from '../utilities';
 import * as fragments from '../fragments';
 
 /**
@@ -24,6 +25,9 @@ import * as fragments from '../fragments';
  */
 const registerUser = async (parent, args, context, info): Promise<any> => {
   const role = await context.prisma.role({ name: 'USER' });
+
+  // Transform role data
+  transformRole(role);
 
   logger.info('AUTH-RESOLVER: Hashing password');
   const password = await argon2.hash(args.input.password, {
@@ -56,7 +60,7 @@ const registerUser = async (parent, args, context, info): Promise<any> => {
 
   logger.info('AUTH-RESOLVER: Signing token');
   const token = jwt.sign(
-    { cuid: user.id, role: user.role.name },
+    { cuid: user.id, role: user.role },
     config.server.auth.jwt.secret,
     { expiresIn: config.server.auth.jwt.expiresIn }
   );
@@ -121,8 +125,7 @@ const loginUser = async (parent, args, context, info): Promise<any> => {
   }
 
   // Transform role data
-  user.role.permissions = user.role.permissions.map(role => role.key);
-  user.role.prohibitedRoutes = user.role.prohibitedRoutes.paths;
+  transformRole(user.role);
 
   const passwordMatch = await argon2.verify(user.password, args.input.password);
   const refreshToken = jwt.sign(
@@ -463,7 +466,7 @@ const logoutUser = async (parent, args, context, info): Promise<any> => {
 };
 
 /**
- * Checks if a user is authenticated
+ * Validates a user's access
  *
  * @remarks
  * Will issue a new token based on a valid refresh token
@@ -472,9 +475,9 @@ const logoutUser = async (parent, args, context, info): Promise<any> => {
  * @param args - User input arguments
  * @param context - GraphQL context object
  * @param info - GraphQL metadata
- * @returns boolean
+ * @returns decoded token
  */
-const isAuthenticated = async (parent, args, context, info): Promise<any> => {
+const validateAccess = async (parent, args, context, info): Promise<any> => {
   // Skip authentication if auth is turned off
   if (!config.server.auth.enabled) {
     return true;
@@ -487,7 +490,7 @@ const isAuthenticated = async (parent, args, context, info): Promise<any> => {
 
   if (blacklistedToken) {
     logger.info('AUTH-RESOLVER: Received blacklisted auth token');
-    return false;
+    return { token: null };
   }
 
   try {
@@ -499,11 +502,14 @@ const isAuthenticated = async (parent, args, context, info): Promise<any> => {
 
       const user = await context.prisma
         .user({ id: decoded.cuid })
-        .$fragment(fragments.isAuthenticatedFragment);
+        .$fragment(fragments.validateAccessFragment);
 
       if (!user) {
         throw new InternalError('USER_NOT_FOUND');
       }
+
+      // Transform role data
+      transformRole(user.role);
 
       try {
         await jwt.verify(
@@ -511,7 +517,7 @@ const isAuthenticated = async (parent, args, context, info): Promise<any> => {
           config.server.auth.jwt.refreshSecret
         );
       } catch (error) {
-        return false;
+        return { token: null };
       }
 
       logger.info(
@@ -520,7 +526,7 @@ const isAuthenticated = async (parent, args, context, info): Promise<any> => {
       );
 
       const newToken = jwt.sign(
-        { cuid: user.id, role: user.role.name },
+        { cuid: user.id, role: user.role },
         config.server.auth.jwt.secret,
         { expiresIn: config.server.auth.jwt.expiresIn }
       );
@@ -545,47 +551,19 @@ const isAuthenticated = async (parent, args, context, info): Promise<any> => {
         secure: false,
       });
 
-      return true;
+      return { token: newToken };
     }
 
-    return false;
+    return { token: null };
   }
 
-  return true;
-};
-
-/**
- * Checks if an access token is valid
- *
- * @param parent - The parent resolver
- * @param args - User input arguments
- * @param context - GraphQL context object
- * @param info - GraphQL metadata
- * @returns boolean
- */
-const isValidToken = async (parent, args, context, info): Promise<any> => {
-  return jwt.verify(
-    context.user.token,
-    config.server.auth.jwt.secret,
-    (err, decoded) => {
-      if (err) {
-        return {
-          token: null,
-        };
-      }
-
-      return {
-        token: context.user.token,
-      };
-    }
-  );
+  return { token: context.user.token };
 };
 
 export default {
   Query: {
     getUserSecurityQuestionAnswers,
-    isAuthenticated,
-    isValidToken,
+    validateAccess,
   },
   Mutation: {
     registerUser,

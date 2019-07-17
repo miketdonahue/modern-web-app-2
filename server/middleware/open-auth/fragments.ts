@@ -3,6 +3,10 @@ export const jwtUserFragment = `
     id
     role {
       name
+      permissions {
+        key
+      }
+      prohibitedRoutes
     }
   }
 `;

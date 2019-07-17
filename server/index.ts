@@ -4,7 +4,9 @@ import cors from 'cors';
 import helmet from 'helmet';
 import cookieParser from 'cookie-parser';
 import bodyParser from 'body-parser';
+import csrf from 'csurf';
 import { ApolloServer, makeExecutableSchema } from 'apollo-server-express';
+import graphqlPlayground from 'express-graphql';
 import { applyMiddleware } from 'graphql-middleware';
 import { prisma } from '@server/prisma/generated/prisma-client';
 import { normalizeError } from '@server/modules/errors';
@@ -15,8 +17,7 @@ import { mergeResolvers } from '@utils/merge-resolvers/server';
 import config from '@config';
 import {
   access,
-  authenticate as isAuthenticated,
-  csrf,
+  authenticate,
   validations,
   requestLogger,
   resolverLogger,
@@ -57,10 +58,10 @@ const apollo = new ApolloServer({
   context: async ({ req, res }) => ({
     req,
     res,
-    user: isAuthenticated(req.headers),
+    user: authenticate(req.headers),
     prisma,
   }),
-  playground: config.server.graphql.playground,
+  playground: false,
   debug: config.server.graphql.debug,
   formatError: error => {
     const err = error;
@@ -91,15 +92,21 @@ app
     server.use(helmet.referrerPolicy({ policy: 'same-origin' }));
     server.use(requestLogger());
     server.use(cookieParser());
-    server.use(bodyParser.urlencoded({ extended: false }));
-    server.use(
-      csrf({ cookie: { key: 'ds_csrf' }, ignoreUrls: ['/playground'] })
-    );
     server.use(
       helmet.contentSecurityPolicy({
         directives: config.server.contentSecurityPolicy,
       })
     );
+    server.use(
+      config.server.graphql.playground.endpoint,
+      graphqlPlayground({
+        schema,
+        context: { prisma },
+        graphiql: config.server.graphql.playground.enabled,
+      })
+    );
+    server.use(bodyParser.urlencoded({ extended: false }));
+    server.use(csrf({ cookie: { key: 'ds_csrf' } }));
 
     // Apply Express middleware to GraphQL server
     apollo.applyMiddleware({

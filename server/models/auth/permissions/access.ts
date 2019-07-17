@@ -8,8 +8,7 @@ import {
 export default {
   Query: {
     getUserSecurityQuestionAnswers: allow,
-    isAuthenticated: allow,
-    isValidToken: allow,
+    validateAccess: allow,
   },
   Mutation: {
     registerUser: allow,
@@ -21,9 +20,6 @@ export default {
     changePassword: resetPasswordCodeNotExpired,
     unlockAccount: lockedCodeNotExpired,
     sendAuthEmail: allow,
-  },
-  AuthPayload: {
-    '*': allow,
   },
   TokenPayload: {
     '*': allow,

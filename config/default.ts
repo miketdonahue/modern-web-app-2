@@ -2,8 +2,11 @@ export default {
   server: {
     port: process.env.PORT || 8080,
     graphql: {
-      path: '/playground',
-      playground: false,
+      path: '/graphql',
+      playground: {
+        enabled: false,
+        endpoint: '/playground',
+      },
       debug: false,
       logger: false,
     },
@@ -14,7 +17,7 @@ export default {
         secret: process.env.JWT_SECRET,
         dsSecret: process.env.JWT_DS_SECRET,
         refreshSecret: process.env.JWT_REFRESH_SECRET,
-        expiresIn: '15m',
+        expiresIn: '1m',
         refreshExpiresIn: '7d',
       },
       codes: {

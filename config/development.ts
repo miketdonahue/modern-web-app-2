@@ -9,12 +9,14 @@ export default merge(defaultConfig, {
       pretty: true,
     },
     graphql: {
-      playground: true,
+      playground: {
+        enabled: true,
+      },
       debug: true,
       logger: true,
     },
     auth: {
-      enabled: false,
+      enabled: true,
       confirmable: true,
       lockable: {
         enabled: false,
