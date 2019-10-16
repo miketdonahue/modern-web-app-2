@@ -1,0 +1,34 @@
+language: node_js
+node_js:
+  - '10'
+stages:
+  - lint
+  - test
+  - release
+before_install:
+  - chmod +x ./.ci/sync.sh
+git:
+  depth: false
+jobs:
+  include:
+    - stage: lint
+      script: commitlint-travis && yarn tsc && yarn lint
+    - stage: test
+      script: yarn test:coverage
+    - stage: release
+      if: (NOT type IN (pull_request)) AND (branch = master)
+      script: skip
+      deploy:
+        provider: script
+        skip_cleanup: true
+        github-token: $GH_TOKEN
+        script:
+          - yarn storybook:build &&
+            yarn storybook:deploy -r 'https://$GH_TOKEN@github.com/doc-kits/react.git' &&
+            yarn semantic-release
+        on:
+          branches:
+            only:
+              - master
+after_deploy:
+  - ./.ci/sync.sh
