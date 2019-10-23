@@ -10,7 +10,7 @@ type OpenAuth {
   deletedAt: String
 }
 
-type BlacklistedTokens {
+type BlacklistedToken {
   id: ID!
   token: String!
   updatedAt: String!

@@ -458,7 +458,7 @@ const sendAuthEmail = async (parent, args, context, info): Promise<any> => {
  */
 const logoutUser = async (parent, args, context, info): Promise<any> => {
   logger.info('AUTH-RESOLVER: Logging out user');
-  await context.prisma.createBlacklistedTokens({
+  await context.prisma.createBlacklistedToken({
     token: args.input.token,
   });
 
@@ -484,7 +484,7 @@ const validateAccess = async (parent, args, context, info): Promise<any> => {
   }
 
   const decoded = jwt.decode(context.user.token);
-  const blacklistedToken = await context.prisma.blacklistedTokens({
+  const blacklistedToken = await context.prisma.blacklistedToken({
     token: context.user.token,
   });
 

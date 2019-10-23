@@ -3,7 +3,7 @@
 // For more information, please read the docs: https://www.prisma.io/docs/prisma-client/
 
 export const typeDefs = /* GraphQL */ `
-  type AggregateBlacklistedTokens {
+  type AggregateBlacklistedToken {
     count: Int!
   }
 
@@ -43,32 +43,32 @@ export const typeDefs = /* GraphQL */ `
     count: Long!
   }
 
-  type BlacklistedTokens {
+  type BlacklistedToken {
     id: ID!
-    token: String!
+    token: String
     updatedAt: DateTime!
     createdAt: DateTime!
     deletedAt: DateTime
   }
 
-  type BlacklistedTokensConnection {
+  type BlacklistedTokenConnection {
     pageInfo: PageInfo!
-    edges: [BlacklistedTokensEdge]!
-    aggregate: AggregateBlacklistedTokens!
+    edges: [BlacklistedTokenEdge]!
+    aggregate: AggregateBlacklistedToken!
   }
 
-  input BlacklistedTokensCreateInput {
+  input BlacklistedTokenCreateInput {
     id: ID
-    token: String!
+    token: String
     deletedAt: DateTime
   }
 
-  type BlacklistedTokensEdge {
-    node: BlacklistedTokens!
+  type BlacklistedTokenEdge {
+    node: BlacklistedToken!
     cursor: String!
   }
 
-  enum BlacklistedTokensOrderByInput {
+  enum BlacklistedTokenOrderByInput {
     id_ASC
     id_DESC
     token_ASC
@@ -81,43 +81,43 @@ export const typeDefs = /* GraphQL */ `
     deletedAt_DESC
   }
 
-  type BlacklistedTokensPreviousValues {
+  type BlacklistedTokenPreviousValues {
     id: ID!
-    token: String!
+    token: String
     updatedAt: DateTime!
     createdAt: DateTime!
     deletedAt: DateTime
   }
 
-  type BlacklistedTokensSubscriptionPayload {
+  type BlacklistedTokenSubscriptionPayload {
     mutation: MutationType!
-    node: BlacklistedTokens
+    node: BlacklistedToken
     updatedFields: [String!]
-    previousValues: BlacklistedTokensPreviousValues
+    previousValues: BlacklistedTokenPreviousValues
   }
 
-  input BlacklistedTokensSubscriptionWhereInput {
+  input BlacklistedTokenSubscriptionWhereInput {
     mutation_in: [MutationType!]
     updatedFields_contains: String
     updatedFields_contains_every: [String!]
     updatedFields_contains_some: [String!]
-    node: BlacklistedTokensWhereInput
-    AND: [BlacklistedTokensSubscriptionWhereInput!]
-    OR: [BlacklistedTokensSubscriptionWhereInput!]
-    NOT: [BlacklistedTokensSubscriptionWhereInput!]
+    node: BlacklistedTokenWhereInput
+    AND: [BlacklistedTokenSubscriptionWhereInput!]
+    OR: [BlacklistedTokenSubscriptionWhereInput!]
+    NOT: [BlacklistedTokenSubscriptionWhereInput!]
   }
 
-  input BlacklistedTokensUpdateInput {
+  input BlacklistedTokenUpdateInput {
     token: String
     deletedAt: DateTime
   }
 
-  input BlacklistedTokensUpdateManyMutationInput {
+  input BlacklistedTokenUpdateManyMutationInput {
     token: String
     deletedAt: DateTime
   }
 
-  input BlacklistedTokensWhereInput {
+  input BlacklistedTokenWhereInput {
     id: ID
     id_not: ID
     id_in: [ID!]
@@ -170,12 +170,12 @@ export const typeDefs = /* GraphQL */ `
     deletedAt_lte: DateTime
     deletedAt_gt: DateTime
     deletedAt_gte: DateTime
-    AND: [BlacklistedTokensWhereInput!]
-    OR: [BlacklistedTokensWhereInput!]
-    NOT: [BlacklistedTokensWhereInput!]
+    AND: [BlacklistedTokenWhereInput!]
+    OR: [BlacklistedTokenWhereInput!]
+    NOT: [BlacklistedTokenWhereInput!]
   }
 
-  input BlacklistedTokensWhereUniqueInput {
+  input BlacklistedTokenWhereUniqueInput {
     id: ID
     token: String
   }
@@ -358,27 +358,27 @@ export const typeDefs = /* GraphQL */ `
   scalar Long
 
   type Mutation {
-    createBlacklistedTokens(
-      data: BlacklistedTokensCreateInput!
-    ): BlacklistedTokens!
-    updateBlacklistedTokens(
-      data: BlacklistedTokensUpdateInput!
-      where: BlacklistedTokensWhereUniqueInput!
-    ): BlacklistedTokens
-    updateManyBlacklistedTokenses(
-      data: BlacklistedTokensUpdateManyMutationInput!
-      where: BlacklistedTokensWhereInput
+    createBlacklistedToken(
+      data: BlacklistedTokenCreateInput!
+    ): BlacklistedToken!
+    updateBlacklistedToken(
+      data: BlacklistedTokenUpdateInput!
+      where: BlacklistedTokenWhereUniqueInput!
+    ): BlacklistedToken
+    updateManyBlacklistedTokens(
+      data: BlacklistedTokenUpdateManyMutationInput!
+      where: BlacklistedTokenWhereInput
     ): BatchPayload!
-    upsertBlacklistedTokens(
-      where: BlacklistedTokensWhereUniqueInput!
-      create: BlacklistedTokensCreateInput!
-      update: BlacklistedTokensUpdateInput!
-    ): BlacklistedTokens!
-    deleteBlacklistedTokens(
-      where: BlacklistedTokensWhereUniqueInput!
-    ): BlacklistedTokens
-    deleteManyBlacklistedTokenses(
-      where: BlacklistedTokensWhereInput
+    upsertBlacklistedToken(
+      where: BlacklistedTokenWhereUniqueInput!
+      create: BlacklistedTokenCreateInput!
+      update: BlacklistedTokenUpdateInput!
+    ): BlacklistedToken!
+    deleteBlacklistedToken(
+      where: BlacklistedTokenWhereUniqueInput!
+    ): BlacklistedToken
+    deleteManyBlacklistedTokens(
+      where: BlacklistedTokenWhereInput
     ): BatchPayload!
     createCustomer(data: CustomerCreateInput!): Customer!
     updateCustomer(
@@ -1022,27 +1022,25 @@ export const typeDefs = /* GraphQL */ `
   }
 
   type Query {
+    blacklistedToken(where: BlacklistedTokenWhereUniqueInput!): BlacklistedToken
     blacklistedTokens(
-      where: BlacklistedTokensWhereUniqueInput!
-    ): BlacklistedTokens
-    blacklistedTokenses(
-      where: BlacklistedTokensWhereInput
-      orderBy: BlacklistedTokensOrderByInput
+      where: BlacklistedTokenWhereInput
+      orderBy: BlacklistedTokenOrderByInput
       skip: Int
       after: String
       before: String
       first: Int
       last: Int
-    ): [BlacklistedTokens]!
-    blacklistedTokensesConnection(
-      where: BlacklistedTokensWhereInput
-      orderBy: BlacklistedTokensOrderByInput
+    ): [BlacklistedToken]!
+    blacklistedTokensConnection(
+      where: BlacklistedTokenWhereInput
+      orderBy: BlacklistedTokenOrderByInput
       skip: Int
       after: String
       before: String
       first: Int
       last: Int
-    ): BlacklistedTokensConnection!
+    ): BlacklistedTokenConnection!
     customer(where: CustomerWhereUniqueInput!): Customer
     customers(
       where: CustomerWhereInput
@@ -1912,9 +1910,9 @@ export const typeDefs = /* GraphQL */ `
   }
 
   type Subscription {
-    blacklistedTokens(
-      where: BlacklistedTokensSubscriptionWhereInput
-    ): BlacklistedTokensSubscriptionPayload
+    blacklistedToken(
+      where: BlacklistedTokenSubscriptionWhereInput
+    ): BlacklistedTokenSubscriptionPayload
     customer(where: CustomerSubscriptionWhereInput): CustomerSubscriptionPayload
     openAuth(where: OpenAuthSubscriptionWhereInput): OpenAuthSubscriptionPayload
     permission(

@@ -16,7 +16,7 @@ export type AtLeastOne<T, U = { [K in keyof T]: Pick<T, K> }> = Partial<T> &
 export type Maybe<T> = T | undefined | null;
 
 export interface Exists {
-  blacklistedTokens: (where?: BlacklistedTokensWhereInput) => Promise<boolean>;
+  blacklistedToken: (where?: BlacklistedTokenWhereInput) => Promise<boolean>;
   customer: (where?: CustomerWhereInput) => Promise<boolean>;
   openAuth: (where?: OpenAuthWhereInput) => Promise<boolean>;
   permission: (where?: PermissionWhereInput) => Promise<boolean>;
@@ -48,27 +48,27 @@ export interface Prisma {
    * Queries
    */
 
-  blacklistedTokens: (
-    where: BlacklistedTokensWhereUniqueInput
-  ) => BlacklistedTokensNullablePromise;
-  blacklistedTokenses: (args?: {
-    where?: BlacklistedTokensWhereInput;
-    orderBy?: BlacklistedTokensOrderByInput;
+  blacklistedToken: (
+    where: BlacklistedTokenWhereUniqueInput
+  ) => BlacklistedTokenNullablePromise;
+  blacklistedTokens: (args?: {
+    where?: BlacklistedTokenWhereInput;
+    orderBy?: BlacklistedTokenOrderByInput;
     skip?: Int;
     after?: String;
     before?: String;
     first?: Int;
     last?: Int;
-  }) => FragmentableArray<BlacklistedTokens>;
-  blacklistedTokensesConnection: (args?: {
-    where?: BlacklistedTokensWhereInput;
-    orderBy?: BlacklistedTokensOrderByInput;
+  }) => FragmentableArray<BlacklistedToken>;
+  blacklistedTokensConnection: (args?: {
+    where?: BlacklistedTokenWhereInput;
+    orderBy?: BlacklistedTokenOrderByInput;
     skip?: Int;
     after?: String;
     before?: String;
     first?: Int;
     last?: Int;
-  }) => BlacklistedTokensConnectionPromise;
+  }) => BlacklistedTokenConnectionPromise;
   customer: (where: CustomerWhereUniqueInput) => CustomerNullablePromise;
   customers: (args?: {
     where?: CustomerWhereInput;
@@ -233,27 +233,27 @@ export interface Prisma {
    * Mutations
    */
 
-  createBlacklistedTokens: (
-    data: BlacklistedTokensCreateInput
-  ) => BlacklistedTokensPromise;
-  updateBlacklistedTokens: (args: {
-    data: BlacklistedTokensUpdateInput;
-    where: BlacklistedTokensWhereUniqueInput;
-  }) => BlacklistedTokensPromise;
-  updateManyBlacklistedTokenses: (args: {
-    data: BlacklistedTokensUpdateManyMutationInput;
-    where?: BlacklistedTokensWhereInput;
+  createBlacklistedToken: (
+    data: BlacklistedTokenCreateInput
+  ) => BlacklistedTokenPromise;
+  updateBlacklistedToken: (args: {
+    data: BlacklistedTokenUpdateInput;
+    where: BlacklistedTokenWhereUniqueInput;
+  }) => BlacklistedTokenPromise;
+  updateManyBlacklistedTokens: (args: {
+    data: BlacklistedTokenUpdateManyMutationInput;
+    where?: BlacklistedTokenWhereInput;
   }) => BatchPayloadPromise;
-  upsertBlacklistedTokens: (args: {
-    where: BlacklistedTokensWhereUniqueInput;
-    create: BlacklistedTokensCreateInput;
-    update: BlacklistedTokensUpdateInput;
-  }) => BlacklistedTokensPromise;
-  deleteBlacklistedTokens: (
-    where: BlacklistedTokensWhereUniqueInput
-  ) => BlacklistedTokensPromise;
-  deleteManyBlacklistedTokenses: (
-    where?: BlacklistedTokensWhereInput
+  upsertBlacklistedToken: (args: {
+    where: BlacklistedTokenWhereUniqueInput;
+    create: BlacklistedTokenCreateInput;
+    update: BlacklistedTokenUpdateInput;
+  }) => BlacklistedTokenPromise;
+  deleteBlacklistedToken: (
+    where: BlacklistedTokenWhereUniqueInput
+  ) => BlacklistedTokenPromise;
+  deleteManyBlacklistedTokens: (
+    where?: BlacklistedTokenWhereInput
   ) => BatchPayloadPromise;
   createCustomer: (data: CustomerCreateInput) => CustomerPromise;
   updateCustomer: (args: {
@@ -406,9 +406,9 @@ export interface Prisma {
 }
 
 export interface Subscription {
-  blacklistedTokens: (
-    where?: BlacklistedTokensSubscriptionWhereInput
-  ) => BlacklistedTokensSubscriptionPayloadSubscription;
+  blacklistedToken: (
+    where?: BlacklistedTokenSubscriptionWhereInput
+  ) => BlacklistedTokenSubscriptionPayloadSubscription;
   customer: (
     where?: CustomerSubscriptionWhereInput
   ) => CustomerSubscriptionPayloadSubscription;
@@ -587,7 +587,7 @@ export type UserOrderByInput =
 
 export type MutationType = 'CREATED' | 'UPDATED' | 'DELETED';
 
-export type BlacklistedTokensOrderByInput =
+export type BlacklistedTokenOrderByInput =
   | 'id_ASC'
   | 'id_DESC'
   | 'token_ASC'
@@ -618,14 +618,14 @@ export interface PermissionUpdateWithWhereUniqueWithoutRolesInput {
   data: PermissionUpdateWithoutRolesDataInput;
 }
 
-export type BlacklistedTokensWhereUniqueInput = AtLeastOne<{
+export type BlacklistedTokenWhereUniqueInput = AtLeastOne<{
   id: Maybe<ID_Input>;
   token?: Maybe<String>;
 }>;
 
-export interface BlacklistedTokensCreateInput {
+export interface BlacklistedTokenCreateInput {
   id?: Maybe<ID_Input>;
-  token: String;
+  token?: Maybe<String>;
   deletedAt?: Maybe<DateTimeInput>;
 }
 
@@ -637,7 +637,7 @@ export interface OpenAuthUpdateManyMutationInput {
   deletedAt?: Maybe<DateTimeInput>;
 }
 
-export interface BlacklistedTokensUpdateInput {
+export interface BlacklistedTokenUpdateInput {
   token?: Maybe<String>;
   deletedAt?: Maybe<DateTimeInput>;
 }
@@ -649,7 +649,7 @@ export interface UserAccountUpdateOneRequiredWithoutUserInput {
   connect?: Maybe<UserAccountWhereUniqueInput>;
 }
 
-export interface BlacklistedTokensUpdateManyMutationInput {
+export interface BlacklistedTokenUpdateManyMutationInput {
   token?: Maybe<String>;
   deletedAt?: Maybe<DateTimeInput>;
 }
@@ -1754,23 +1754,23 @@ export interface SecurityQuestionAnswerUpdateWithWhereUniqueWithoutUserAccountIn
   data: SecurityQuestionAnswerUpdateWithoutUserAccountDataInput;
 }
 
-export interface BlacklistedTokensSubscriptionWhereInput {
+export interface BlacklistedTokenSubscriptionWhereInput {
   mutation_in?: Maybe<MutationType[] | MutationType>;
   updatedFields_contains?: Maybe<String>;
   updatedFields_contains_every?: Maybe<String[] | String>;
   updatedFields_contains_some?: Maybe<String[] | String>;
-  node?: Maybe<BlacklistedTokensWhereInput>;
+  node?: Maybe<BlacklistedTokenWhereInput>;
   AND?: Maybe<
-    | BlacklistedTokensSubscriptionWhereInput[]
-    | BlacklistedTokensSubscriptionWhereInput
+    | BlacklistedTokenSubscriptionWhereInput[]
+    | BlacklistedTokenSubscriptionWhereInput
   >;
   OR?: Maybe<
-    | BlacklistedTokensSubscriptionWhereInput[]
-    | BlacklistedTokensSubscriptionWhereInput
+    | BlacklistedTokenSubscriptionWhereInput[]
+    | BlacklistedTokenSubscriptionWhereInput
   >;
   NOT?: Maybe<
-    | BlacklistedTokensSubscriptionWhereInput[]
-    | BlacklistedTokensSubscriptionWhereInput
+    | BlacklistedTokenSubscriptionWhereInput[]
+    | BlacklistedTokenSubscriptionWhereInput
   >;
 }
 
@@ -2163,7 +2163,7 @@ export interface UserCreateInput {
   deletedAt?: Maybe<DateTimeInput>;
 }
 
-export interface BlacklistedTokensWhereInput {
+export interface BlacklistedTokenWhereInput {
   id?: Maybe<ID_Input>;
   id_not?: Maybe<ID_Input>;
   id_in?: Maybe<ID_Input[] | ID_Input>;
@@ -2216,9 +2216,9 @@ export interface BlacklistedTokensWhereInput {
   deletedAt_lte?: Maybe<DateTimeInput>;
   deletedAt_gt?: Maybe<DateTimeInput>;
   deletedAt_gte?: Maybe<DateTimeInput>;
-  AND?: Maybe<BlacklistedTokensWhereInput[] | BlacklistedTokensWhereInput>;
-  OR?: Maybe<BlacklistedTokensWhereInput[] | BlacklistedTokensWhereInput>;
-  NOT?: Maybe<BlacklistedTokensWhereInput[] | BlacklistedTokensWhereInput>;
+  AND?: Maybe<BlacklistedTokenWhereInput[] | BlacklistedTokenWhereInput>;
+  OR?: Maybe<BlacklistedTokenWhereInput[] | BlacklistedTokenWhereInput>;
+  NOT?: Maybe<BlacklistedTokenWhereInput[] | BlacklistedTokenWhereInput>;
 }
 
 export interface CustomerCreateOneWithoutUserInput {
@@ -3042,16 +3042,16 @@ export interface AggregateUserSubscription
   count: () => Promise<AsyncIterator<Int>>;
 }
 
-export interface BlacklistedTokens {
+export interface BlacklistedToken {
   id: ID_Output;
-  token: String;
+  token?: String;
   updatedAt: DateTimeOutput;
   createdAt: DateTimeOutput;
   deletedAt?: DateTimeOutput;
 }
 
-export interface BlacklistedTokensPromise
-  extends Promise<BlacklistedTokens>,
+export interface BlacklistedTokenPromise
+  extends Promise<BlacklistedToken>,
     Fragmentable {
   id: () => Promise<ID_Output>;
   token: () => Promise<String>;
@@ -3060,8 +3060,8 @@ export interface BlacklistedTokensPromise
   deletedAt: () => Promise<DateTimeOutput>;
 }
 
-export interface BlacklistedTokensSubscription
-  extends Promise<AsyncIterator<BlacklistedTokens>>,
+export interface BlacklistedTokenSubscription
+  extends Promise<AsyncIterator<BlacklistedToken>>,
     Fragmentable {
   id: () => Promise<AsyncIterator<ID_Output>>;
   token: () => Promise<AsyncIterator<String>>;
@@ -3070,8 +3070,8 @@ export interface BlacklistedTokensSubscription
   deletedAt: () => Promise<AsyncIterator<DateTimeOutput>>;
 }
 
-export interface BlacklistedTokensNullablePromise
-  extends Promise<BlacklistedTokens | null>,
+export interface BlacklistedTokenNullablePromise
+  extends Promise<BlacklistedToken | null>,
     Fragmentable {
   id: () => Promise<ID_Output>;
   token: () => Promise<String>;
@@ -3141,29 +3141,29 @@ export interface SecurityQuestionAnswerEdgeSubscription
   cursor: () => Promise<AsyncIterator<String>>;
 }
 
-export interface BlacklistedTokensSubscriptionPayload {
+export interface BlacklistedTokenSubscriptionPayload {
   mutation: MutationType;
-  node: BlacklistedTokens;
+  node: BlacklistedToken;
   updatedFields: String[];
-  previousValues: BlacklistedTokensPreviousValues;
+  previousValues: BlacklistedTokenPreviousValues;
 }
 
-export interface BlacklistedTokensSubscriptionPayloadPromise
-  extends Promise<BlacklistedTokensSubscriptionPayload>,
+export interface BlacklistedTokenSubscriptionPayloadPromise
+  extends Promise<BlacklistedTokenSubscriptionPayload>,
     Fragmentable {
   mutation: () => Promise<MutationType>;
-  node: <T = BlacklistedTokensPromise>() => T;
+  node: <T = BlacklistedTokenPromise>() => T;
   updatedFields: () => Promise<String[]>;
-  previousValues: <T = BlacklistedTokensPreviousValuesPromise>() => T;
+  previousValues: <T = BlacklistedTokenPreviousValuesPromise>() => T;
 }
 
-export interface BlacklistedTokensSubscriptionPayloadSubscription
-  extends Promise<AsyncIterator<BlacklistedTokensSubscriptionPayload>>,
+export interface BlacklistedTokenSubscriptionPayloadSubscription
+  extends Promise<AsyncIterator<BlacklistedTokenSubscriptionPayload>>,
     Fragmentable {
   mutation: () => Promise<AsyncIterator<MutationType>>;
-  node: <T = BlacklistedTokensSubscription>() => T;
+  node: <T = BlacklistedTokenSubscription>() => T;
   updatedFields: () => Promise<AsyncIterator<String[]>>;
-  previousValues: <T = BlacklistedTokensPreviousValuesSubscription>() => T;
+  previousValues: <T = BlacklistedTokenPreviousValuesSubscription>() => T;
 }
 
 export interface AggregateSecurityQuestion {
@@ -3182,16 +3182,16 @@ export interface AggregateSecurityQuestionSubscription
   count: () => Promise<AsyncIterator<Int>>;
 }
 
-export interface BlacklistedTokensPreviousValues {
+export interface BlacklistedTokenPreviousValues {
   id: ID_Output;
-  token: String;
+  token?: String;
   updatedAt: DateTimeOutput;
   createdAt: DateTimeOutput;
   deletedAt?: DateTimeOutput;
 }
 
-export interface BlacklistedTokensPreviousValuesPromise
-  extends Promise<BlacklistedTokensPreviousValues>,
+export interface BlacklistedTokenPreviousValuesPromise
+  extends Promise<BlacklistedTokenPreviousValues>,
     Fragmentable {
   id: () => Promise<ID_Output>;
   token: () => Promise<String>;
@@ -3200,8 +3200,8 @@ export interface BlacklistedTokensPreviousValuesPromise
   deletedAt: () => Promise<DateTimeOutput>;
 }
 
-export interface BlacklistedTokensPreviousValuesSubscription
-  extends Promise<AsyncIterator<BlacklistedTokensPreviousValues>>,
+export interface BlacklistedTokenPreviousValuesSubscription
+  extends Promise<AsyncIterator<BlacklistedTokenPreviousValues>>,
     Fragmentable {
   id: () => Promise<AsyncIterator<ID_Output>>;
   token: () => Promise<AsyncIterator<String>>;
@@ -3870,18 +3870,18 @@ export interface SecurityQuestionEdgeSubscription
   cursor: () => Promise<AsyncIterator<String>>;
 }
 
-export interface AggregateBlacklistedTokens {
+export interface AggregateBlacklistedToken {
   count: Int;
 }
 
-export interface AggregateBlacklistedTokensPromise
-  extends Promise<AggregateBlacklistedTokens>,
+export interface AggregateBlacklistedTokenPromise
+  extends Promise<AggregateBlacklistedToken>,
     Fragmentable {
   count: () => Promise<Int>;
 }
 
-export interface AggregateBlacklistedTokensSubscription
-  extends Promise<AsyncIterator<AggregateBlacklistedTokens>>,
+export interface AggregateBlacklistedTokenSubscription
+  extends Promise<AsyncIterator<AggregateBlacklistedToken>>,
     Fragmentable {
   count: () => Promise<AsyncIterator<Int>>;
 }
@@ -3979,43 +3979,43 @@ export interface RolePreviousValuesSubscription
   deletedAt: () => Promise<AsyncIterator<DateTimeOutput>>;
 }
 
-export interface BlacklistedTokensConnection {
+export interface BlacklistedTokenConnection {
   pageInfo: PageInfo;
-  edges: BlacklistedTokensEdge[];
+  edges: BlacklistedTokenEdge[];
 }
 
-export interface BlacklistedTokensConnectionPromise
-  extends Promise<BlacklistedTokensConnection>,
+export interface BlacklistedTokenConnectionPromise
+  extends Promise<BlacklistedTokenConnection>,
     Fragmentable {
   pageInfo: <T = PageInfoPromise>() => T;
-  edges: <T = FragmentableArray<BlacklistedTokensEdge>>() => T;
-  aggregate: <T = AggregateBlacklistedTokensPromise>() => T;
+  edges: <T = FragmentableArray<BlacklistedTokenEdge>>() => T;
+  aggregate: <T = AggregateBlacklistedTokenPromise>() => T;
 }
 
-export interface BlacklistedTokensConnectionSubscription
-  extends Promise<AsyncIterator<BlacklistedTokensConnection>>,
+export interface BlacklistedTokenConnectionSubscription
+  extends Promise<AsyncIterator<BlacklistedTokenConnection>>,
     Fragmentable {
   pageInfo: <T = PageInfoSubscription>() => T;
-  edges: <T = Promise<AsyncIterator<BlacklistedTokensEdgeSubscription>>>() => T;
-  aggregate: <T = AggregateBlacklistedTokensSubscription>() => T;
+  edges: <T = Promise<AsyncIterator<BlacklistedTokenEdgeSubscription>>>() => T;
+  aggregate: <T = AggregateBlacklistedTokenSubscription>() => T;
 }
 
-export interface BlacklistedTokensEdge {
-  node: BlacklistedTokens;
+export interface BlacklistedTokenEdge {
+  node: BlacklistedToken;
   cursor: String;
 }
 
-export interface BlacklistedTokensEdgePromise
-  extends Promise<BlacklistedTokensEdge>,
+export interface BlacklistedTokenEdgePromise
+  extends Promise<BlacklistedTokenEdge>,
     Fragmentable {
-  node: <T = BlacklistedTokensPromise>() => T;
+  node: <T = BlacklistedTokenPromise>() => T;
   cursor: () => Promise<String>;
 }
 
-export interface BlacklistedTokensEdgeSubscription
-  extends Promise<AsyncIterator<BlacklistedTokensEdge>>,
+export interface BlacklistedTokenEdgeSubscription
+  extends Promise<AsyncIterator<BlacklistedTokenEdge>>,
     Fragmentable {
-  node: <T = BlacklistedTokensSubscription>() => T;
+  node: <T = BlacklistedTokenSubscription>() => T;
   cursor: () => Promise<AsyncIterator<String>>;
 }
 
@@ -4360,7 +4360,7 @@ export const models: Model[] = [
     embedded: false,
   },
   {
-    name: 'BlacklistedTokens',
+    name: 'BlacklistedToken',
     embedded: false,
   },
   {
