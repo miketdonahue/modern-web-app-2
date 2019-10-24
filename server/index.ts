@@ -81,6 +81,7 @@ app
     const server = express();
     const { host, port } = config.server;
 
+    server.set('trust proxy', true);
     server.use(
       cors({
         origin: '*',
