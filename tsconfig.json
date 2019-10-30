@@ -6,6 +6,8 @@
     "strict": true,
     "isolatedModules": true,
     "esModuleInterop": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
     "skipLibCheck": true,
     "jsx": "preserve",
     "baseUrl": ".",

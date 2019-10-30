@@ -1,3 +1,4 @@
+import 'reflect-metadata';
 import express from 'express';
 import next from 'next';
 import cors from 'cors';
@@ -8,6 +9,7 @@ import csrf from 'csurf';
 import { ApolloServer, makeExecutableSchema } from 'apollo-server-express';
 import graphqlPlayground from 'express-graphql';
 import { applyMiddleware } from 'graphql-middleware';
+import { createConnection, getConnection, getConnectionManager } from 'typeorm';
 import { prisma } from '@server/prisma/generated/prisma-client';
 import { normalizeError } from '@server/modules/errors';
 import { HealthCheck } from '@server/modules/health-check';
@@ -53,33 +55,41 @@ const schema = applyMiddleware(
   validations
 );
 
-const apollo = new ApolloServer({
-  schema,
-  context: async ({ req, res }) => ({
-    req,
-    res,
-    user: authenticate(req.headers),
-    prisma,
-  }),
-  playground: false,
-  debug: config.server.graphql.debug,
-  formatError: error => {
-    const err = error;
-    const { code, level } = normalizeError(err);
-
-    // Ensures a more descriptive "code" is set for every error
-    err.extensions.code = code;
-
-    logger[level]({ err }, `${err.name}: ${err.message}`);
-    return err;
-  },
-});
-
 app
   .prepare()
-  .then(() => {
+  .then(async () => {
     const server = express();
     const { host, port } = config.server;
+
+    // Create database connection
+    const dbConnectionManager = getConnectionManager();
+    const dbConnection = dbConnectionManager.create(config.database);
+    const db = await dbConnection.connect();
+
+    const apollo = new ApolloServer({
+      schema,
+      context: async ({ req, res }) => {
+        return {
+          req,
+          res,
+          user: authenticate(req.headers),
+          prisma,
+          db,
+        };
+      },
+      playground: false,
+      debug: config.server.graphql.debug,
+      formatError: error => {
+        const err = error;
+        const { code, level } = normalizeError(err);
+
+        // Ensures a more descriptive "code" is set for every error
+        err.extensions.code = code;
+
+        logger[level]({ err }, `${err.name}: ${err.message}`);
+        return err;
+      },
+    });
 
     server.set('trust proxy', true);
     server.use(
