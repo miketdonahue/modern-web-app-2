@@ -49,11 +49,11 @@ export default merge(defaultConfig, {
       connectSrc: ["'self'", 'devtools.apollodata.com'],
     },
     dirs: {
-      types: 'server/models/**/types/*.graphql',
-      resolvers: 'server/models/**/resolvers/*.ts',
+      types: 'server/graphql/**/types/*.gql',
+      resolvers: 'server/graphql/**/resolvers/*.ts',
       routes: 'server/pages/**/routes.ts',
-      access: 'server/models/**/access.ts',
-      validations: 'server/models/**/validations.ts',
+      access: 'server/graphql/**/access.ts',
+      validations: 'server/graphql/**/validations.ts',
     },
   },
 });

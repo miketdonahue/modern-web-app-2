@@ -1,6 +1,6 @@
 const FILES: any = {
-  typeDefs: require.context('../../client/models', true, /types\/.*.graphql$/),
-  resolvers: require.context('../../client/models', true, /resolvers\/.*.ts$/),
+  typeDefs: require.context('../../client/graphql', true, /types\/.*.gql$/),
+  resolvers: require.context('../../client/graphql', true, /resolvers\/.*.ts$/),
 };
 
 /**

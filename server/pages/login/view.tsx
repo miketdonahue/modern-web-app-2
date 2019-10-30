@@ -6,7 +6,7 @@ import { withApollo, compose } from 'react-apollo';
 import ServerError from '@client/components/server-error';
 import withServerErrors from '@client/components/hoc/with-server-errors';
 import { loginSchema } from './validations';
-import * as mutations from './graphql/mutations.graphql';
+import * as mutations from './graphql/mutations.gql';
 
 interface Props {
   client: any;

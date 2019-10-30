@@ -9,7 +9,7 @@ import csrf from 'csurf';
 import { ApolloServer, makeExecutableSchema } from 'apollo-server-express';
 import graphqlPlayground from 'express-graphql';
 import { applyMiddleware } from 'graphql-middleware';
-import { createConnection, getConnection, getConnectionManager } from 'typeorm';
+import { createConnection, getConnection } from 'typeorm';
 import { prisma } from '@server/prisma/generated/prisma-client';
 import { normalizeError } from '@server/modules/errors';
 import { HealthCheck } from '@server/modules/health-check';
@@ -25,6 +25,7 @@ import {
   resolverLogger,
 } from '@server/middleware';
 
+const env = process.env.NODE_ENV || 'development';
 const dev = process.env.NODE_ENV !== 'production';
 const healthCheck = new HealthCheck();
 const app = next({ dev });
@@ -62,9 +63,8 @@ app
     const { host, port } = config.server;
 
     // Create database connection
-    const dbConnectionManager = getConnectionManager();
-    const dbConnection = dbConnectionManager.create(config.database);
-    const db = await dbConnection.connect();
+    await createConnection(env);
+    const db = getConnection(env);
 
     const apollo = new ApolloServer({
       schema,

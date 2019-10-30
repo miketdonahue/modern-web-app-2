@@ -29,7 +29,7 @@ module.exports = withTypescript(
           },
         },
         {
-          test: /\.graphql$/,
+          test: /\.gql$/,
           exclude: /node_modules/,
           loader: 'graphql-tag/loader',
         }
