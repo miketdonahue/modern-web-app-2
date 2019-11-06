@@ -1,19 +1,11 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Entity, Column } from 'typeorm';
+import { BaseTable } from './base-table';
 
 @Entity('customer')
-export class Customer {
-  @PrimaryGeneratedColumn()
-  public id!: number;
-
-  @PrimaryGeneratedColumn('uuid')
-  public uuid!: string;
-
+export class Customer extends BaseTable {
   @Column('int', { name: 'actor_id' })
   public actorId!: number;
 
-  @Column('int', { name: 'stripe_id' })
+  @Column('varchar', { name: 'stripe_id' })
   public stripeId!: string;
-
-  @Column('timestamptz', { name: 'deleted_at', nullable: true })
-  public deletedAt!: string;
 }

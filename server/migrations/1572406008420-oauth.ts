@@ -18,8 +18,8 @@ export class Oauth1572406008420 implements MigrationInterface {
         access_token varchar NOT NULL,
         refresh_token varchar,
         expires_at timestamptz,
-        created_at timestamptz NOT NULL,
-        updated_at timestamptz NOT NULL,
+        created_at timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        updated_at timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
         deleted_at timestamptz
       );
       `

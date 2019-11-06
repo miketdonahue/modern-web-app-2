@@ -6,6 +6,9 @@ import config from '@config';
 import generateCode from '@server/modules/code';
 import { InternalError } from '@server/modules/errors';
 import logger from '@server/modules/logger';
+import { Actor } from '@server/entities/actor';
+import { ActorAccount } from '@server/entities/actor-account';
+import { Role } from '@server/entities/role';
 import mailer, {
   WELCOME_EMAIL,
   CONFIRMATION_EMAIL,
@@ -15,16 +18,17 @@ import { transformRole } from '../utilities';
 import * as fragments from '../fragments';
 
 /**
- * Registers a new user
+ * Registers a new actor
  *
  * @param parent - The parent resolver
- * @param args - User input arguments
+ * @param args - Actor input arguments
  * @param context - GraphQL context object
  * @param info - GraphQL metadata
  * @returns token
  */
-const registerUser = async (parent, args, context, info): Promise<any> => {
-  const role = await context.prisma.role({ name: 'USER' });
+const registerActor = async (parent, args, context, info): Promise<any> => {
+  const { db, req } = context;
+  const role = await db.findOne(Role, { name: 'actor' });
 
   // Transform role data
   transformRole(role);
@@ -35,32 +39,36 @@ const registerUser = async (parent, args, context, info): Promise<any> => {
     memoryCost: 500,
   });
 
-  logger.info('AUTH-RESOLVER: Creating user');
-  const user = await context.prisma
-    .createUser({
-      role: { connect: { id: role.id } },
-      firstName: args.input.firstName,
-      lastName: args.input.lastName,
-      email: args.input.email,
-      password,
-      userAccount: {
-        create: config.server.auth.confirmable
-          ? {
-              confirmedCode: generateCode(),
-            }
-          : {
-              lastVisit: new Date(),
-              ip: context.req.ip,
-              loginAttempts: 0,
-              securityQuestionAttempts: 0,
-            },
-      },
-    })
-    .$fragment(fragments.registerUserFragment);
+  const actor = await db.transaction(
+    async (transactionalEntityManager: any) => {
+      logger.info('AUTH-RESOLVER: Creating actor');
+      const createdActor = await transactionalEntityManager.create(Actor, {
+        roleId: role.id,
+        firstName: args.input.firstName,
+        lastName: args.input.lastName,
+        email: args.input.email,
+        password,
+      });
+
+      await transactionalEntityManager.save(createdActor);
+
+      logger.info('AUTH-RESOLVER: Creating actor account');
+      const createdActorAccount = await db.create(ActorAccount, {
+        actorId: createdActor.id,
+        confirmedCode: config.server.auth.confirmable ? generateCode() : null,
+        lastVisit: new Date(),
+        ip: req.ip,
+      });
+
+      await transactionalEntityManager.save(createdActorAccount);
+
+      return createdActor;
+    }
+  );
 
   logger.info('AUTH-RESOLVER: Signing token');
   const token = jwt.sign(
-    { cuid: user.id, role: user.role },
+    { actorId: actor.id, role: actor.role },
     config.server.auth.jwt.secret,
     { expiresIn: config.server.auth.jwt.expiresIn }
   );
@@ -70,40 +78,48 @@ const registerUser = async (parent, args, context, info): Promise<any> => {
     : WELCOME_EMAIL;
 
   logger.info({ emailType }, 'AUTH-RESOLVER: Sending email');
-  await mailer.send(user, emailType);
+  await mailer.send(actor, emailType);
 
   return {
+    actorId: actor.uuid,
     token,
   };
 };
 
 /**
- * Confirms a new user's account
+ * Confirms a new actor's account
  *
  * @param parent - The parent resolver
- * @param args - User input arguments
+ * @param args - Actor input arguments
  * @param context - GraphQL context object
  * @param info - GraphQL metadata
  * @returns null
  */
-const confirmUser = async (parent, args, context, info): Promise<any> => {
-  logger.info('AUTH-RESOLVER: Confirming account');
-  const user = await context.prisma
-    .updateUserAccount({
-      data: {
-        confirmed: true,
-        confirmedCode: null,
-      },
-      where: {
-        confirmedCode: args.input.code,
-      },
-    })
-    .user();
+const confirmActor = async (parent, args, context, info): Promise<any> => {
+  const { db } = context;
+
+  const actorAccount = await db.findOne(ActorAccount, {
+    confirmedCode: args.input.code,
+  });
+
+  const actor = await db.findOne(Actor, { id: actorAccount.actorId });
+
+  logger.info('AUTH-RESOLVER: Confirming actor account');
+  await db.update(
+    ActorAccount,
+    { id: actorAccount.id },
+    {
+      confirmed: true,
+      confirmedCode: null,
+    }
+  );
 
   logger.info('AUTH-RESOLVER: Sending welcome email');
-  await mailer.send(user, WELCOME_EMAIL);
+  await mailer.send(actor, WELCOME_EMAIL);
 
-  return null;
+  return {
+    actorId: actor.uuid,
+  };
 };
 
 /**
@@ -168,7 +184,7 @@ const loginUser = async (parent, args, context, info): Promise<any> => {
 
   logger.info('AUTH-RESOLVER: Signing auth tokens');
   const token = jwt.sign(
-    { cuid: user.id, role: user.role },
+    { actorId: user.id, role: user.role },
     config.server.auth.jwt.secret,
     { expiresIn: config.server.auth.jwt.expiresIn }
   );
@@ -501,7 +517,7 @@ const validateAccess = async (parent, args, context, info): Promise<any> => {
       logger.info('AUTH-RESOLVER: Auth token has expired');
 
       const user = await context.prisma
-        .user({ id: decoded.cuid })
+        .user({ id: decoded.actorId })
         .$fragment(fragments.validateAccessFragment);
 
       if (!user) {
@@ -526,7 +542,7 @@ const validateAccess = async (parent, args, context, info): Promise<any> => {
       );
 
       const newToken = jwt.sign(
-        { cuid: user.id, role: user.role },
+        { actorId: user.id, role: user.role },
         config.server.auth.jwt.secret,
         { expiresIn: config.server.auth.jwt.expiresIn }
       );
@@ -566,8 +582,8 @@ export default {
     validateAccess,
   },
   Mutation: {
-    registerUser,
-    confirmUser,
+    registerActor,
+    confirmActor,
     loginUser,
     setUserSecurityQuestionAnswers,
     verifyUserSecurityQuestionAnswers,

@@ -1,17 +1,12 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Entity, Column } from 'typeorm';
+import { BaseTable } from './base-table';
 
 export enum ProviderName {
   GOOGLE = 'google',
 }
 
 @Entity('oauth')
-export class Oauth {
-  @PrimaryGeneratedColumn()
-  public id!: number;
-
-  @PrimaryGeneratedColumn('uuid')
-  public uuid!: string;
-
+export class Oauth extends BaseTable {
   @Column('int', { name: 'actor_id' })
   public actorId!: number;
 
@@ -25,8 +20,5 @@ export class Oauth {
   public refreshToken!: string;
 
   @Column('timestamptz', { name: 'expires_at', nullable: true })
-  public expiresAt!: string;
-
-  @Column('timestamptz', { name: 'deleted_at', nullable: true })
-  public deletedAt!: string;
+  public expiresAt!: Date;
 }

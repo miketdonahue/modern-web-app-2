@@ -11,8 +11,8 @@ export default {
     validateAccess: allow,
   },
   Mutation: {
-    registerUser: allow,
-    confirmUser: allow,
+    registerActor: allow,
+    confirmActor: allow,
     loginUser: accountUnlocked,
     setUserSecurityQuestionAnswers: allow,
     verifyUserSecurityQuestionAnswers: accountUnlocked,
@@ -22,6 +22,9 @@ export default {
     sendAuthEmail: allow,
   },
   TokenPayload: {
+    '*': allow,
+  },
+  ActorPayload: {
     '*': allow,
   },
 };

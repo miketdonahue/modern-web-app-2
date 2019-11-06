@@ -1,13 +1,8 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Entity, Column } from 'typeorm';
+import { BaseTable } from './base-table';
 
 @Entity('security_question_answer')
-export class SecurityQuestionAnswer {
-  @PrimaryGeneratedColumn()
-  public id!: number;
-
-  @PrimaryGeneratedColumn('uuid')
-  public uuid!: string;
-
+export class SecurityQuestionAnswer extends BaseTable {
   @Column('int', { name: 'actor_account_id' })
   public actorAccountId!: number;
 
@@ -16,7 +11,4 @@ export class SecurityQuestionAnswer {
 
   @Column('varchar')
   public answer!: string;
-
-  @Column('timestamptz', { name: 'deleted_at', nullable: true })
-  public deletedAt!: string;
 }

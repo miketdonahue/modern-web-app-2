@@ -1,16 +1,8 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Entity, Column } from 'typeorm';
+import { BaseTable } from './base-table';
 
 @Entity('blacklisted_token')
-export class BlacklistedToken {
-  @PrimaryGeneratedColumn()
-  public id!: number;
-
-  @PrimaryGeneratedColumn('uuid')
-  public uuid!: string;
-
+export class BlacklistedToken extends BaseTable {
   @Column('varchar')
   public token!: string;
-
-  @Column('timestamptz', { name: 'deleted_at', nullable: true })
-  public deletedAt!: string;
 }

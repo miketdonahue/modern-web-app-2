@@ -1,36 +1,31 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Entity, Column } from 'typeorm';
+import { BaseTable } from './base-table';
 
 @Entity('actor_account')
-export class ActorAccount {
-  @PrimaryGeneratedColumn()
-  public id!: number;
-
-  @PrimaryGeneratedColumn('uuid')
-  public uuid!: string;
-
+export class ActorAccount extends BaseTable {
   @Column('int', { name: 'actor_id' })
   public actorId!: number;
 
   @Column('boolean', { default: 'false' })
   public confirmed!: boolean;
 
-  @Column('int', { name: 'confirmed_code', nullable: true })
-  public confirmedCode!: number;
+  @Column('varchar', { name: 'confirmed_code', nullable: true })
+  public confirmedCode!: string;
 
   @Column('boolean', { default: 'false' })
   public locked!: boolean;
 
-  @Column('int', { name: 'locked_code', nullable: true })
-  public lockedCode!: number;
+  @Column('varchar', { name: 'locked_code', nullable: true })
+  public lockedCode!: string;
 
   @Column('timestamptz', { name: 'locked_expires', nullable: true })
-  public lockedExpires!: string;
+  public lockedExpires!: Date;
 
-  @Column('int', { name: 'reset_password_code', nullable: true })
-  public resetPasswordCode!: number;
+  @Column('varchar', { name: 'reset_password_code', nullable: true })
+  public resetPasswordCode!: string;
 
   @Column('timestamptz', { name: 'reset_password_expires', nullable: true })
-  public resetPasswordExpires!: string;
+  public resetPasswordExpires!: Date;
 
   @Column('text', {
     name: 'security_questions',
@@ -49,11 +44,8 @@ export class ActorAccount {
   public refreshToken!: string;
 
   @Column('timestamptz', { name: 'last_visit', nullable: true })
-  public lastVisit!: string;
+  public lastVisit!: Date;
 
   @Column('varchar', { nullable: true })
   public ip!: string;
-
-  @Column('timestamptz', { name: 'deleted_at', nullable: true })
-  public deletedAt!: string;
 }

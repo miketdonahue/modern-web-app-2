@@ -1,4 +1,13 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Entity, Column } from 'typeorm';
+import { BaseTable } from './base-table';
+
+interface Permission {
+  key?: string;
+}
+
+interface ProhibitedRoutes {
+  paths?: string[];
+}
 
 export enum RoleName {
   ADMIN = 'admin',
@@ -6,22 +15,13 @@ export enum RoleName {
 }
 
 @Entity('role')
-export class Role {
-  @PrimaryGeneratedColumn()
-  public id!: number;
-
-  @PrimaryGeneratedColumn('uuid')
-  public uuid!: string;
-
+export class Role extends BaseTable {
   @Column('enum', { enum: RoleName, default: RoleName.ACTOR })
   public name!: RoleName;
 
   @Column('varchar', { array: true, nullable: true })
-  public permissions!: string[];
+  public permissions!: Permission[];
 
   @Column('jsonb', { name: 'prohibited_routes', nullable: true })
-  public prohibitedRoutes!: Record<string, any>;
-
-  @Column('timestamptz', { name: 'deleted_at', nullable: true })
-  public deletedAt!: string;
+  public prohibitedRoutes!: ProhibitedRoutes;
 }

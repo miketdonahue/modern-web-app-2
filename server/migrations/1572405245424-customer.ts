@@ -10,9 +10,9 @@ export class Customer1572405245424 implements MigrationInterface {
         id serial PRIMARY KEY,
         uuid uuid DEFAULT uuid_generate_v4(),
         actor_id int NOT NULL,
-        stripe_id int NOT NULL,
-        created_at timestamptz NOT NULL,
-        updated_at timestamptz NOT NULL,
+        stripe_id varchar NOT NULL,
+        created_at timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        updated_at timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
         deleted_at timestamptz
       );
       `

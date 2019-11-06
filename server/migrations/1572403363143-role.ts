@@ -17,8 +17,8 @@ export class Role1572403363143 implements MigrationInterface {
         name role_enum NOT NULL,
         permissions varchar [],
         prohibited_routes jsonb,
-        created_at timestamptz NOT NULL,
-        updated_at timestamptz NOT NULL,
+        created_at timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        updated_at timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
         deleted_at timestamptz
       );
       `

@@ -1,13 +1,8 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Entity, Column } from 'typeorm';
+import { BaseTable } from './base-table';
 
 @Entity('permission')
-export class Permission {
-  @PrimaryGeneratedColumn()
-  public id!: number;
-
-  @PrimaryGeneratedColumn('uuid')
-  public uuid!: string;
-
+export class Permission extends BaseTable {
   @Column('varchar', { unique: true })
   public name!: string;
 
@@ -16,7 +11,4 @@ export class Permission {
 
   @Column('varchar', { array: true, nullable: true })
   public roles!: string[];
-
-  @Column('timestamptz', { name: 'deleted_at', nullable: true })
-  public deletedAt!: string;
 }

@@ -11,11 +11,11 @@ export class ActorAccount1572404848135 implements MigrationInterface {
         uuid uuid DEFAULT uuid_generate_v4(),
         actor_id int NOT NULL,
         confirmed boolean NOT NULL DEFAULT false,
-        confirmed_code int,
+        confirmed_code varchar,
         locked boolean NOT NULL DEFAULT false,
-        locked_code int,
+        locked_code varchar,
         locked_expires timestamptz,
-        reset_password_code int,
+        reset_password_code varchar,
         reset_password_expires timestamptz,
         security_questions text [],
         login_attempts int NOT NULL DEFAULT 0,
@@ -23,8 +23,8 @@ export class ActorAccount1572404848135 implements MigrationInterface {
         refresh_token varchar,
         last_visit timestamptz,
         ip varchar,
-        created_at timestamptz NOT NULL,
-        updated_at timestamptz NOT NULL,
+        created_at timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        updated_at timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
         deleted_at timestamptz
       );
       `

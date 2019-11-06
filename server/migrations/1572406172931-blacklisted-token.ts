@@ -10,8 +10,8 @@ export class BlacklistedToken1572406172931 implements MigrationInterface {
         id serial PRIMARY KEY,
         uuid uuid DEFAULT uuid_generate_v4(),
         token varchar NOT NULL,
-        created_at timestamptz NOT NULL,
-        updated_at timestamptz NOT NULL,
+        created_at timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        updated_at timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
         deleted_at timestamptz
       );
       `

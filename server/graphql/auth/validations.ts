@@ -22,18 +22,18 @@ export default {
     ),
   },
   Mutation: {
-    registerUser: inputRule(yup =>
+    registerActor: inputRule(yup =>
       yup.object({
         input: yup.object({ firstName: alpha, lastName: alpha, email }),
       })
     ),
-    confirmUser: inputRule(yup =>
-      yup.object({
-        input: yup.object({
-          code,
-        }),
-      })
-    ),
+    // confirmActor: inputRule(yup =>
+    //   yup.object({
+    //     input: yup.object({
+    //       code,
+    //     }),
+    //   })
+    // ),
     loginUser: inputRule(yup => yup.object({ input: yup.object({ email }) })),
     setUserSecurityQuestionAnswers: inputRule(yup =>
       yup.object({

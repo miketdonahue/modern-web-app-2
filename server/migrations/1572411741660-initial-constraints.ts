@@ -6,14 +6,9 @@ export class InitialConstraints1572411741660 implements MigrationInterface {
       `
       -- actor
       ALTER TABLE actor ADD CONSTRAINT actor_role_id_fkey FOREIGN KEY (role_id) REFERENCES role (id);
-      ALTER TABLE actor ADD CONSTRAINT actor_actor_account_id_fkey FOREIGN KEY (actor_account_id) REFERENCES actor_account (id);
-      ALTER TABLE actor ADD CONSTRAINT actor_customer_id_fkey FOREIGN KEY (customer_id) REFERENCES customer (id);
 
       -- actor_account
       ALTER TABLE actor_account ADD CONSTRAINT actor_account_actor_id_fkey FOREIGN KEY (actor_id) REFERENCES actor (id);
-
-      -- customer
-      ALTER TABLE customer ADD CONSTRAINT customer_actor_id_fkey FOREIGN KEY (actor_id) REFERENCES actor (id);
 
       -- security_question_answer
       ALTER TABLE security_question_answer ADD CONSTRAINT security_question_answer_actor_account_id_fkey FOREIGN KEY (actor_account_id) REFERENCES actor_account (id);
@@ -30,14 +25,9 @@ export class InitialConstraints1572411741660 implements MigrationInterface {
       `
       -- actor
       ALTER TABLE actor DROP CONSTRAINT actor_role_id_fkey;
-      ALTER TABLE actor DROP CONSTRAINT actor_actor_account_id_fkey;
-      ALTER TABLE actor DROP CONSTRAINT actor_customer_id_fkey;
 
       -- actor_account
       ALTER TABLE actor_account DROP CONSTRAINT actor_account_actor_id_fkey;
-
-      -- customer
-      ALTER TABLE customer DROP CONSTRAINT customer_actor_id_fkey;
 
       -- security_question_answer
       ALTER TABLE security_question_answer DROP CONSTRAINT security_question_answer_actor_account_id_fkey;

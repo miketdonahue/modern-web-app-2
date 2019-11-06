@@ -12,8 +12,8 @@ export class SecurityQuestionAnswer1572405667994 implements MigrationInterface {
         actor_account_id int NOT NULL,
         security_question_id int NOT NULL,
         answer varchar NOT NULL,
-        created_at timestamptz NOT NULL,
-        updated_at timestamptz NOT NULL,
+        created_at timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        updated_at timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
         deleted_at timestamptz
       );
       `

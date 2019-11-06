@@ -24,7 +24,7 @@ export const send = async (user, options): Promise<any> => {
     const data = await emailClient.transmissions.send({
       campaign_id: options.campaignId,
       metadata: {
-        cuid: user.id,
+        actorId: user.id,
       },
       options: {
         skip_suppression: false,

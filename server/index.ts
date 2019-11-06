@@ -63,8 +63,8 @@ app
     const { host, port } = config.server;
 
     // Create database connection
-    await createConnection(env);
-    const db = getConnection(env);
+    await createConnection();
+    const db = getConnection();
 
     const apollo = new ApolloServer({
       schema,
@@ -74,7 +74,7 @@ app
           res,
           user: authenticate(req.headers),
           prisma,
-          db,
+          db: db.manager,
         };
       },
       playground: false,
@@ -110,11 +110,12 @@ app
     );
     server.use(
       config.server.graphql.playground.endpoint,
-      graphqlPlayground({
+      graphqlPlayground((req: any, res: any) => ({
         schema,
-        context: { prisma },
+        // TODO: add req, res here
+        context: { req, res, prisma, db: db.manager },
         graphiql: config.server.graphql.playground.enabled,
-      })
+      }))
     );
     server.use(bodyParser.urlencoded({ extended: false }));
     server.use(csrf({ cookie: { key: 'ds_csrf' } }));

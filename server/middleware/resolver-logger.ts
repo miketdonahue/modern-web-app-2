@@ -15,10 +15,11 @@ import logger from '@server/modules/logger';
  * @returns A resolved Promise
  */
 const resolverLogger = (resolve, parent, args, context, info): any => {
-  const cuid =
-    (config.server.auth.enabled && context.user && context.user.cuid) || null;
+  const actorId =
+    (config.server.auth.enabled && context.user && context.user.actorId) ||
+    null;
 
-  logger.info({ cuid, args }, `Metadata for resolver: ${info.fieldName}`);
+  logger.info({ actorId, args }, `Metadata for resolver: ${info.fieldName}`);
 
   return resolve();
 };
