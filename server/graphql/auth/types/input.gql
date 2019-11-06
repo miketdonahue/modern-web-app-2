@@ -1,11 +1,11 @@
-input RegisterUserInput {
+input RegisterActorInput {
   firstName: String!
   lastName: String!
   email: String!
   password: String!
 }
 
-input ConfirmUserInput {
+input ConfirmActorInput {
   code: Int!
 }
 

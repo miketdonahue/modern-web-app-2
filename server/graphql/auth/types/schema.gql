@@ -2,12 +2,12 @@ extend type Query {
   getUserSecurityQuestionAnswers(
     input: UserSecurityQuestionAnswerInput!
   ): [SecurityQuestionAnswer!]!
-  validateAccess: TokenPayload
+  validateAccess: TokenPayload!
 }
 
 extend type Mutation {
-  registerUser(input: RegisterUserInput!): TokenPayload!
-  confirmUser(input: ConfirmUserInput!): String
+  registerActor(input: RegisterActorInput!): TokenPayload!
+  confirmActor(input: ConfirmActorInput!): ActorPayload!
   loginUser(input: LoginUserInput!): TokenPayload!
   setUserSecurityQuestionAnswers(input: UserSecurityQuestionInput!): String
   verifyUserSecurityQuestionAnswers(input: UserSecurityQuestionInput!): String

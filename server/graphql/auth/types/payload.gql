@@ -1,3 +1,8 @@
 type TokenPayload {
-  token: String
+  actorId: String!
+  token: String!
+}
+
+type ActorPayload {
+  actorId: String!
 }
