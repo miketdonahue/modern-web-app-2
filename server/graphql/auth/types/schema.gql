@@ -8,7 +8,7 @@ extend type Query {
 extend type Mutation {
   registerActor(input: RegisterActorInput!): TokenPayload!
   confirmActor(input: ConfirmActorInput!): ActorPayload!
-  loginUser(input: LoginUserInput!): TokenPayload!
+  loginActor(input: LoginActorInput!): TokenPayload!
   setUserSecurityQuestionAnswers(input: UserSecurityQuestionInput!): String
   verifyUserSecurityQuestionAnswers(input: UserSecurityQuestionInput!): String
   resetPassword(input: ResetPasswordInput!): String

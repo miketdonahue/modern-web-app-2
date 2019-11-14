@@ -3,17 +3,17 @@ import { BaseTable } from './base-table';
 
 @Entity('actor')
 export class Actor extends BaseTable {
-  @Column('int', { name: 'role_id' })
-  public roleId!: number;
+  @Column('int')
+  public role_id!: number;
 
-  @Column('int', { name: 'customer_id', nullable: true })
-  public customerId!: string;
+  @Column('int', { nullable: true })
+  public customer_id!: string;
 
-  @Column('varchar', { name: 'first_name', nullable: true })
-  public firstName!: string;
+  @Column('varchar', { nullable: true })
+  public first_name!: string;
 
-  @Column('varchar', { name: 'last_name', nullable: true })
-  public lastName!: string;
+  @Column('varchar', { nullable: true })
+  public last_name!: string;
 
   @Column('varchar', { unique: true })
   public email!: string;
@@ -21,8 +21,8 @@ export class Actor extends BaseTable {
   @Column('varchar')
   public password!: string;
 
-  @Column('varchar', { name: 'phone_country_code', nullable: true })
-  public phoneCountryCode!: string;
+  @Column('varchar', { nullable: true })
+  public phone_country_code!: string;
 
   @Column('varchar', { nullable: true })
   public phone!: string;
@@ -42,6 +42,6 @@ export class Actor extends BaseTable {
   @Column('varchar', { nullable: true })
   public state!: string;
 
-  @Column('varchar', { name: 'postal_code', nullable: true })
-  public postalCode!: string;
+  @Column('varchar', { nullable: true })
+  public postal_code!: string;
 }

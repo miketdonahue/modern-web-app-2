@@ -1,5 +1,5 @@
-mutation loginUser($input: LoginUserInput!) {
-  user: loginUser(input: $input) {
+mutation loginActor($input: LoginActorInput!) {
+  actor: loginActor(input: $input) {
     token
   }
 }

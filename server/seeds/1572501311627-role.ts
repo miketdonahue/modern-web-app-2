@@ -12,7 +12,7 @@ export class Role1572501311627 implements MigrationInterface {
       {
         name: RoleName.ACTOR,
         permissions: [{ key: 'post:write:any' }, { key: 'post:read:any' }],
-        prohibitedRoutes: { paths: ['/about'] },
+        prohibited_routes: { paths: ['/about'] },
       },
     ]);
   };

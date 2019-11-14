@@ -7,18 +7,18 @@ export enum ProviderName {
 
 @Entity('oauth')
 export class Oauth extends BaseTable {
-  @Column('int', { name: 'actor_id' })
-  public actorId!: number;
+  @Column('int')
+  public actor_id!: number;
 
   @Column('enum', { enum: ProviderName })
   public provider!: ProviderName;
 
-  @Column('varchar', { name: 'access_token' })
-  public accessToken!: string;
+  @Column('varchar')
+  public access_token!: string;
 
-  @Column('varchar', { name: 'refresh_token', nullable: true })
-  public refreshToken!: string;
+  @Column('varchar', { nullable: true })
+  public refresh_token!: string;
 
-  @Column('timestamptz', { name: 'expires_at', nullable: true })
-  public expiresAt!: Date;
+  @Column('timestamptz', { nullable: true })
+  public expires_at!: Date;
 }

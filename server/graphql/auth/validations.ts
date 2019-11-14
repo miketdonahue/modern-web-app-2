@@ -34,7 +34,7 @@ export default {
     //     }),
     //   })
     // ),
-    loginUser: inputRule(yup => yup.object({ input: yup.object({ email }) })),
+    loginActor: inputRule(yup => yup.object({ input: yup.object({ email }) })),
     setUserSecurityQuestionAnswers: inputRule(yup =>
       yup.object({
         input: yup.object({

@@ -13,18 +13,18 @@ export abstract class BaseTable {
   @PrimaryGeneratedColumn('uuid')
   public uuid!: string;
 
-  @CreateDateColumn({ name: 'created_at' })
-  public createdAt!: Date;
+  @CreateDateColumn()
+  public created_at!: Date;
 
-  @UpdateDateColumn({ name: 'updated_at' })
-  public updatedAt!: Date;
+  @UpdateDateColumn()
+  public updated_at!: Date;
 
-  @Column('timestamptz', { name: 'deleted_at', nullable: true })
-  public deletedAt!: Date;
+  @Column('timestamptz', { nullable: true })
+  public deleted_at!: Date;
 
   /* Listeners */
   @BeforeUpdate()
   public updateDates(): void {
-    this.updatedAt = new Date();
+    this.updated_at = new Date();
   }
 }

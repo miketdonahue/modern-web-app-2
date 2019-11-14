@@ -77,7 +77,7 @@ export default compose(
     ) => {
       client
         .mutate({
-          mutation: mutations.loginUser,
+          mutation: mutations.loginActor,
           variables: {
             input: { email: values.email, password: values.password },
           },

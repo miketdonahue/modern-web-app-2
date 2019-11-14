@@ -9,7 +9,7 @@ input ConfirmActorInput {
   code: Int!
 }
 
-input LoginUserInput {
+input LoginActorInput {
   email: String!
   password: String!
 }

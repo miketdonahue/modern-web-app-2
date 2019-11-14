@@ -13,7 +13,7 @@ export default {
   Mutation: {
     registerActor: allow,
     confirmActor: allow,
-    loginUser: accountUnlocked,
+    loginActor: accountUnlocked,
     setUserSecurityQuestionAnswers: allow,
     verifyUserSecurityQuestionAnswers: accountUnlocked,
     resetPassword: allow,

@@ -34,26 +34,28 @@ export class Actor1572504144500 implements MigrationInterface {
 
       await db.transaction(async transactionalEntityManager => {
         const actor = await db.create(Actor, {
-          roleId: role.id,
-          firstName: chance.first(),
-          lastName: chance.last(),
+          role_id: role.id,
+          first_name: chance.first(),
+          last_name: chance.last(),
           email,
           password,
-          phoneCountryCode: 1,
+          phone_country_code: 1,
           phone: chance.phone({ formatted: false, country: 'us' }),
           country: 'United States',
           address1: chance.address(),
           city: chance.city(),
           state: chance.state(),
-          postalCode: chance.zip(),
+          postal_code: chance.zip(),
         });
 
         await transactionalEntityManager.save(actor);
 
         await transactionalEntityManager.insert(ActorAccount, {
-          actorId: actor.id,
-          confirmedCode: config.server.auth.confirmable ? generateCode() : null,
-          refreshToken,
+          actor_id: actor.id,
+          confirmed_code: config.server.auth.confirmable
+            ? generateCode()
+            : null,
+          refresh_token: refreshToken,
         });
       });
     }

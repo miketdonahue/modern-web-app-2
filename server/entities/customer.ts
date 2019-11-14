@@ -3,9 +3,9 @@ import { BaseTable } from './base-table';
 
 @Entity('customer')
 export class Customer extends BaseTable {
-  @Column('int', { name: 'actor_id' })
-  public actorId!: number;
+  @Column('int')
+  public actor_id!: number;
 
-  @Column('varchar', { name: 'stripe_id' })
-  public stripeId!: string;
+  @Column('varchar')
+  public stripe_id!: string;
 }

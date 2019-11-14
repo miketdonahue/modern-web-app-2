@@ -43,9 +43,9 @@ const registerActor = async (parent, args, context, info): Promise<any> => {
     async (transactionalEntityManager: any) => {
       logger.info('AUTH-RESOLVER: Creating actor');
       const createdActor = await transactionalEntityManager.create(Actor, {
-        roleId: role.id,
-        firstName: args.input.firstName,
-        lastName: args.input.lastName,
+        role_id: role.id,
+        first_name: args.input.firstName,
+        last_name: args.input.lastName,
         email: args.input.email,
         password,
       });
@@ -54,9 +54,9 @@ const registerActor = async (parent, args, context, info): Promise<any> => {
 
       logger.info('AUTH-RESOLVER: Creating actor account');
       const createdActorAccount = await db.create(ActorAccount, {
-        actorId: createdActor.id,
-        confirmedCode: config.server.auth.confirmable ? generateCode() : null,
-        lastVisit: new Date(),
+        actor_id: createdActor.id,
+        confirmed_code: config.server.auth.confirmable ? generateCode() : null,
+        last_visit: new Date(),
         ip: req.ip,
       });
 
@@ -99,10 +99,10 @@ const confirmActor = async (parent, args, context, info): Promise<any> => {
   const { db } = context;
 
   const actorAccount = await db.findOne(ActorAccount, {
-    confirmedCode: args.input.code,
+    confirmed_code: args.input.code,
   });
 
-  const actor = await db.findOne(Actor, { id: actorAccount.actorId });
+  const actor = await db.findOne(Actor, { id: actorAccount.actor_id });
 
   logger.info('AUTH-RESOLVER: Confirming actor account');
   await db.update(
@@ -110,7 +110,7 @@ const confirmActor = async (parent, args, context, info): Promise<any> => {
     { id: actorAccount.id },
     {
       confirmed: true,
-      confirmedCode: null,
+      confirmed_code: null,
     }
   );
 
@@ -131,19 +131,36 @@ const confirmActor = async (parent, args, context, info): Promise<any> => {
  * @param info - GraphQL metadata
  * @returns token
  */
-const loginUser = async (parent, args, context, info): Promise<any> => {
-  const user = await context.prisma
-    .user({ email: args.input.email })
-    .$fragment(fragments.loginUserFragment);
+const loginActor = async (parent, args, context, info): Promise<any> => {
+  const { db } = context;
 
-  if (!user) {
+  const role = await db.findOne(Role, { name: 'actor' });
+  const [actorAccount] = await db.query(
+    `
+    SELECT
+      actor_account.*,
+      actor.password
+    FROM
+      actor_account
+      INNER JOIN actor ON actor_account.actor_id = actor.id
+    WHERE
+      actor.email = $1
+  `,
+    [args.input.email]
+  );
+
+  if (!actorAccount) {
     throw new InternalError('INVALID_CREDENTIALS');
   }
 
   // Transform role data
-  transformRole(user.role);
+  transformRole(role);
 
-  const passwordMatch = await argon2.verify(user.password, args.input.password);
+  const passwordMatch = await argon2.verify(
+    actorAccount.password,
+    args.input.password
+  );
+
   const refreshToken = jwt.sign(
     { hash: uuid() },
     config.server.auth.jwt.refreshSecret,
@@ -152,16 +169,18 @@ const loginUser = async (parent, args, context, info): Promise<any> => {
     }
   );
 
-  await context.prisma.updateUserAccount({
-    data: !passwordMatch
+  await db.update(
+    ActorAccount,
+    { id: actorAccount.id },
+    !passwordMatch
       ? {
-          loginAttempts: user.userAccount.loginAttempts + 1,
+          loginAttempts: actorAccount.loginAttempts + 1,
           locked:
-            user.userAccount.loginAttempts >=
+            actorAccount.loginAttempts >=
             config.server.auth.lockable.maxAttempts,
-          lockedCode: user.userAccount.locked && generateCode(),
+          lockedCode: actorAccount.locked && generateCode(),
           lockedExpires:
-            user.userAccount.locked &&
+            actorAccount.locked &&
             String(
               addHours(new Date(), config.server.auth.codes.expireTime.locked)
             ),
@@ -172,11 +191,8 @@ const loginUser = async (parent, args, context, info): Promise<any> => {
           loginAttempts: 0,
           securityQuestionAttempts: 0,
           refreshToken,
-        },
-    where: {
-      id: user.userAccount.id,
-    },
-  });
+        }
+  );
 
   if (!passwordMatch) {
     throw new InternalError('INVALID_CREDENTIALS');
@@ -184,7 +200,7 @@ const loginUser = async (parent, args, context, info): Promise<any> => {
 
   logger.info('AUTH-RESOLVER: Signing auth tokens');
   const token = jwt.sign(
-    { actorId: user.id, role: user.role },
+    { actorId: actorAccount.actor_id, role },
     config.server.auth.jwt.secret,
     { expiresIn: config.server.auth.jwt.expiresIn }
   );
@@ -584,7 +600,7 @@ export default {
   Mutation: {
     registerActor,
     confirmActor,
-    loginUser,
+    loginActor,
     setUserSecurityQuestionAnswers,
     verifyUserSecurityQuestionAnswers,
     resetPassword,

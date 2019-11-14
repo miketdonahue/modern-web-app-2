@@ -8,10 +8,13 @@
  * @returns The transformed role object
  */
 export const transformRole = (role): any => {
-  const userRole = role;
+  const actorRole = role;
 
-  userRole.permissions = userRole.permissions.map(permission => permission.key);
-  userRole.prohibitedRoutes = userRole.prohibitedRoutes.paths;
+  actorRole.permissions = actorRole.permissions.map(
+    permission => permission.key
+  );
 
-  return userRole;
+  actorRole.prohibitedRoutes = actorRole.prohibited_routes.paths;
+
+  return actorRole;
 };
