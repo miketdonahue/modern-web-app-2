@@ -15,5 +15,5 @@ const role = async (parent, args, context, info): Promise<any> => {
 };
 
 export default {
-  User: { role },
+  Actor: { role },
 };

@@ -17,7 +17,7 @@ export default {
   Query: {
     getActorSecurityQuestionAnswers: inputRule(yup =>
       yup.object({
-        input: yup.object({ userId: alphaNumeric }),
+        input: yup.object({ actorId: alphaNumeric }),
       })
     ),
   },

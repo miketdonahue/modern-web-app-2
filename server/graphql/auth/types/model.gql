@@ -1,6 +1,6 @@
 type OpenAuth {
   id: ID!
-  user: User!
+  actor: Actor!
   provider: ProviderName!
   accessToken: String!
   refreshToken: String

@@ -1,7 +1,7 @@
-type User {
+type Actor {
   id: ID!
   role: Role!
-  userAccount: UserAccount!
+  actorAccount: ActorAccount!
   customerAccount: Customer
   firstName: String
   lastName: String
@@ -20,9 +20,9 @@ type User {
   deletedAt: String
 }
 
-type UserAccount {
+type ActorAccount {
   id: ID!
-  user: User!
+  actor: Actor!
   confirmed: Boolean!
   confirmedCode: Int
   locked: Boolean!

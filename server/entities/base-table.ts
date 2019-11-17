@@ -20,7 +20,7 @@ export abstract class BaseTable {
   public updated_at!: Date;
 
   @Column('timestamp with time zone', { nullable: true })
-  public deleted_at!: Date;
+  public deleted_at!: Date | null;
 
   @Column('boolean', { default: false })
   public deleted!: boolean;

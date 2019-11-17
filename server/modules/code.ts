@@ -17,5 +17,5 @@ export default (length = 8) => {
     code += timestampParts[index];
   }
 
-  return Number(code);
+  return code;
 };

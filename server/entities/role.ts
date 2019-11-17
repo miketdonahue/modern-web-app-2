@@ -23,5 +23,5 @@ export class Role extends BaseTable {
   public permissions!: Permission[];
 
   @Column('jsonb', { nullable: true })
-  public prohibited_routes!: ProhibitedRoutes;
+  public prohibited_routes!: ProhibitedRoutes | null;
 }

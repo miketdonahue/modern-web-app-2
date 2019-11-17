@@ -6,7 +6,7 @@ import logger from '@server/modules/logger';
  * Checks if a user is authenticated
  *
  * @remarks
- * This function verifies a token and attaches the user to req.user
+ * This function verifies a token and attaches the user to req.actor
  *
  * @param headers - The application request headers
  * @returns A user object

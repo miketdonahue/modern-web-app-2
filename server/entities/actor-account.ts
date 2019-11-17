@@ -10,22 +10,22 @@ export class ActorAccount extends BaseTable {
   public confirmed!: boolean;
 
   @Column('varchar', { nullable: true })
-  public confirmed_code!: string;
+  public confirmed_code!: string | null;
 
   @Column('boolean', { default: 'false' })
   public locked!: boolean;
 
   @Column('varchar', { nullable: true })
-  public locked_code!: string;
+  public locked_code!: string | null;
 
   @Column('timestamp with time zone', { nullable: true })
-  public locked_expires!: Date;
+  public locked_expires!: Date | null;
 
   @Column('varchar', { nullable: true })
-  public reset_password_code!: string;
+  public reset_password_code!: string | null;
 
   @Column('timestamp with time zone', { nullable: true })
-  public reset_password_expires!: Date;
+  public reset_password_expires!: Date | null;
 
   @Column('text', {
     array: true,
@@ -40,11 +40,11 @@ export class ActorAccount extends BaseTable {
   public security_question_attempts!: number;
 
   @Column('varchar', { nullable: true })
-  public refresh_token!: string;
+  public refresh_token!: string | null;
 
   @Column('timestamp with time zone', { nullable: true })
-  public last_visit!: Date;
+  public last_visit!: Date | null;
 
   @Column('varchar', { nullable: true })
-  public ip!: string;
+  public ip!: string | null;
 }

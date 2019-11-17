@@ -8,7 +8,7 @@ import { InternalError } from '@server/modules/errors';
 import logger from '@server/modules/logger';
 import { Actor } from '@server/entities/actor';
 import { ActorAccount } from '@server/entities/actor-account';
-import { Role } from '@server/entities/role';
+import { Role, RoleName } from '@server/entities/role';
 import { SecurityQuestion } from '@server/entities/security-question';
 import { SecurityQuestionAnswer } from '@server/entities/security-question-answer';
 import { BlacklistedToken } from '@server/entities/blacklisted-token';
@@ -17,8 +17,7 @@ import mailer, {
   CONFIRMATION_EMAIL,
   UNLOCK_ACCOUNT_EMAIL,
 } from '@server/modules/mailer';
-import { transformRole } from '../utilities';
-import * as fragments from '../fragments';
+import { transformRoleForToken } from '../utilities';
 
 // TODO: wrap calls in try/catch
 
@@ -33,10 +32,7 @@ import * as fragments from '../fragments';
  */
 const registerActor = async (parent, args, context, info): Promise<any> => {
   const { db, req } = context;
-  const role = await db.findOne(Role, { name: 'actor' });
-
-  // Transform role data
-  transformRole(role);
+  const role = await db.findOne(Role, { name: RoleName.ACTOR });
 
   logger.info('AUTH-RESOLVER: Hashing password');
   const password = await argon2.hash(args.input.password, {
@@ -73,7 +69,7 @@ const registerActor = async (parent, args, context, info): Promise<any> => {
 
   logger.info('AUTH-RESOLVER: Signing token');
   const token = jwt.sign(
-    { actorId: actor.uuid, role },
+    { actorId: actor.uuid, role: transformRoleForToken(role) },
     config.server.auth.jwt.secret,
     { expiresIn: config.server.auth.jwt.expiresIn }
   );
@@ -128,10 +124,10 @@ const confirmActor = async (parent, args, context, info): Promise<any> => {
 };
 
 /**
- * Logs in a user
+ * Logs in an actor
  *
  * @param parent - The parent resolver
- * @param args - User input arguments
+ * @param args - Actor input arguments
  * @param context - GraphQL context object
  * @param info - GraphQL metadata
  * @returns token
@@ -139,7 +135,7 @@ const confirmActor = async (parent, args, context, info): Promise<any> => {
 const loginActor = async (parent, args, context, info): Promise<any> => {
   const { db } = context;
 
-  const role = await db.findOne(Role, { name: 'actor' });
+  const role = await db.findOne(Role, { name: RoleName.ACTOR });
   const [actorAccount] = await db.query(
     `
     SELECT
@@ -157,9 +153,6 @@ const loginActor = async (parent, args, context, info): Promise<any> => {
   if (!actorAccount) {
     throw new InternalError('INVALID_CREDENTIALS');
   }
-
-  // Transform role data
-  transformRole(role);
 
   const passwordMatch = await argon2.verify(
     actorAccount.password,
@@ -199,7 +192,7 @@ const loginActor = async (parent, args, context, info): Promise<any> => {
 
   logger.info('AUTH-RESOLVER: Signing auth tokens');
   const token = jwt.sign(
-    { actorId: actorAccount.actor_id, role },
+    { actorId: actorAccount.actor_id, role: transformRoleForToken(role) },
     config.server.auth.jwt.secret,
     { expiresIn: config.server.auth.jwt.expiresIn }
   );
@@ -223,10 +216,10 @@ const loginActor = async (parent, args, context, info): Promise<any> => {
 };
 
 /**
- * Sets a user's security question answers
+ * Sets a actor's security question answers
  *
  * @param parent - The parent resolver
- * @param args - User input arguments
+ * @param args - Actor input arguments
  * @param context - GraphQL context object
  * @param info - GraphQL metadata
  * @returns null
@@ -286,10 +279,10 @@ const setActorSecurityQuestionAnswers = async (
 };
 
 /**
- * Retrieve a user's security question answers
+ * Retrieve a actor's security question answers
  *
  * @param parent - The parent resolver
- * @param args - User input arguments
+ * @param args - Actor input arguments
  * @param context - GraphQL context object
  * @param info - GraphQL metadata
  * @returns An array of answer objects
@@ -328,10 +321,10 @@ const getActorSecurityQuestionAnswers = async (
 };
 
 /**
- * Verify a user's security question answers
+ * Verify a actor's security question answers
  *
  * @param parent - The parent resolver
- * @param args - User input arguments
+ * @param args - Actor input arguments
  * @param context - GraphQL context object
  * @param info - GraphQL metadata
  * @returns null
@@ -404,10 +397,10 @@ const verifyActorSecurityQuestionAnswers = async (
 };
 
 /**
- * Generate a reset token so a user can reset their password
+ * Generate a reset token so a actor can reset their password
  *
  * @param parent - The parent resolver
- * @param args - User input arguments
+ * @param args - Actor input arguments
  * @param context - GraphQL context object
  * @param info - GraphQL metadata
  * @returns null
@@ -451,7 +444,7 @@ const resetPassword = async (parent, args, context, info): Promise<any> => {
  * Change password
  *
  * @param parent - The parent resolver
- * @param args - User input arguments
+ * @param args - Actor input arguments
  * @param context - GraphQL context object
  * @param info - GraphQL metadata
  * @returns null
@@ -500,7 +493,7 @@ const changePassword = async (parent, args, context, info): Promise<any> => {
  * Unlock account
  *
  * @param parent - The parent resolver
- * @param args - User input arguments
+ * @param args - Actor input arguments
  * @param context - GraphQL context object
  * @param info - GraphQL metadata
  * @returns null
@@ -536,7 +529,7 @@ const unlockAccount = async (parent, args, context, info): Promise<any> => {
  * This is used to resend auth emails
  *
  * @param parent - The parent resolver
- * @param args - User input arguments
+ * @param args - Actor input arguments
  * @param context - GraphQL context object
  * @param info - GraphQL metadata
  * @returns null
@@ -556,10 +549,10 @@ const sendAuthEmail = async (parent, args, context, info): Promise<any> => {
 };
 
 /**
- * Logout a user
+ * Logout an actor
  *
  * @param parent - The parent resolver
- * @param args - User input arguments
+ * @param args - Actor input arguments
  * @param context - GraphQL context object
  * @param info - GraphQL metadata
  * @returns null
@@ -574,13 +567,13 @@ const logoutActor = async (parent, args, context, info): Promise<any> => {
 };
 
 /**
- * Validates a user's access
+ * Validates a actor's access
  *
  * @remarks
  * Will issue a new token based on a valid refresh token
  *
  * @param parent - The parent resolver
- * @param args - User input arguments
+ * @param args - Actor input arguments
  * @param context - GraphQL context object
  * @param info - GraphQL metadata
  * @returns decoded token
@@ -627,9 +620,7 @@ const validateAccess = async (parent, args, context, info): Promise<any> => {
         throw new InternalError('ACTOR_NOT_FOUND');
       }
 
-      // Transform role data
       const role = await db.findOne(Role, { uuid: actorAccount.role_id });
-      transformRole(role);
 
       try {
         await jwt.verify(
@@ -646,7 +637,7 @@ const validateAccess = async (parent, args, context, info): Promise<any> => {
       );
 
       const newToken = jwt.sign(
-        { actorId: actorAccount.actor_id, role },
+        { actorId: actorAccount.actor_id, role: transformRoleForToken(role) },
         config.server.auth.jwt.secret,
         { expiresIn: config.server.auth.jwt.expiresIn }
       );

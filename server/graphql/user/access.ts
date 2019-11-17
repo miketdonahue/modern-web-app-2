@@ -4,10 +4,10 @@ export default {
   Mutation: {
     '*': isAuthenticated,
   },
-  User: {
+  Actor: {
     '*': isAuthenticated,
   },
-  UserAccount: {
+  ActorAccount: {
     '*': isAuthenticated,
   },
 };

@@ -14,8 +14,8 @@ export class Oauth extends BaseTable {
   public provider!: ProviderName;
 
   @Column('varchar', { nullable: true })
-  public refresh_token!: string;
+  public refresh_token!: string | null;
 
   @Column('timestamp with time zone', { nullable: true })
-  public expires_at!: Date;
+  public expires_at!: Date | null;
 }

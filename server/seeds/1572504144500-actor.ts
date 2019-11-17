@@ -7,7 +7,7 @@ import uuid from 'uuid/v4';
 import config from '@config';
 import { Actor } from '@server/entities/actor';
 import { ActorAccount } from '@server/entities/actor-account';
-import { Role } from '@server/entities/role';
+import { Role, RoleName } from '@server/entities/role';
 import generateCode from '@server/modules/code';
 
 const chance = new Chance();
@@ -16,7 +16,7 @@ const numberOfUsers = 5;
 export class Actor1572504144500 implements MigrationInterface {
   public up = async (queryRunner: QueryRunner): Promise<any> => {
     const db = getManager('seed');
-    const role = await db.findOne(Role, { name: 'actor' });
+    const role = await db.findOne(Role, { name: RoleName.ACTOR });
     const password = await argon2.hash('Welcome123', {
       timeCost: 2000,
       memoryCost: 500,

@@ -1,6 +1,6 @@
 type Customer {
   id: ID!
-  user: User!
+  actor: Actor!
   stripeId: String!
   updatedAt: String!
   createdAt: String!

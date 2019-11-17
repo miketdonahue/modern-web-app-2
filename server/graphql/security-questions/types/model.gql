@@ -9,8 +9,8 @@ type SecurityQuestion {
 
 type SecurityQuestionAnswer {
   id: ID!
-  userAccount: UserAccount!
-  userSecurityQuestion: SecurityQuestion!
+  actorAccount: ActorAccount!
+  actorSecurityQuestion: SecurityQuestion!
   answer: String!
   updatedAt: String!
   createdAt: String!

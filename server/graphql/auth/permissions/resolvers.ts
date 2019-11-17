@@ -6,13 +6,13 @@ import config from '@config';
 import { ActorAccount } from '@server/entities/actor-account';
 
 /**
- * Checks if user account has been locked
+ * Checks if actor account has been locked
  *
  * @remarks
  * This is a rule for GraphQL Shield
  *
  * @param parent - The parent resolver
- * @param args - User input arguments
+ * @param args - Actor input arguments
  * @param context - GraphQL context object
  * @param info - GraphQL metadata
  * @returns A boolean
@@ -60,13 +60,13 @@ export const accountUnlocked = rule()(async (parent, args, context, info) => {
 });
 
 /**
- * Checks if user account locked code has expired
+ * Checks if actor account locked code has expired
  *
  * @remarks
  * This is a rule for GraphQL Shield
  *
  * @param parent - The parent resolver
- * @param args - User input arguments
+ * @param args - Actor input arguments
  * @param context - GraphQL context object
  * @param info - GraphQL metadata
  * @returns A boolean
@@ -92,13 +92,13 @@ export const lockedCodeNotExpired = rule()(
 );
 
 /**
- * Checks if user account reset password code has expired
+ * Checks if actor account reset password code has expired
  *
  * @remarks
  * This is a rule for GraphQL Shield
  *
  * @param parent - The parent resolver
- * @param args - User input arguments
+ * @param args - Actor input arguments
  * @param context - GraphQL context object
  * @param info - GraphQL metadata
  * @returns A boolean

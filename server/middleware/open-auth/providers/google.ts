@@ -2,9 +2,15 @@ import { google } from 'googleapis';
 import jwt from 'jsonwebtoken';
 import uuid from 'uuid/v4';
 import { prisma } from '@server/prisma/generated/prisma-client';
+import { getManager } from 'typeorm';
 import config from '@config';
 import generateCode from '@server/modules/code';
 import logger from '@server/modules/logger';
+import { Actor } from '@server/entities/actor';
+import { ActorAccount } from '@server/entities/actor-account';
+import { Role, RoleName } from '@server/entities/role';
+import { Oauth, ProviderName } from '@server/entities/oauth';
+import { transformRoleForToken } from '../../../graphql/auth/utilities';
 import { jwtUserFragment, userAccountFragment } from '../fragments';
 
 const oauthConfig = {
@@ -58,7 +64,7 @@ export const authorize = (req, res): any => {
  *    - If not user currently exists in the DB, create one
  *    - Exchange the access code for an access token
  *    - Create an OAuth DB entry
- *    - Attach the user to req.user and move forward to next middleware in the chain
+ *    - Attach the user to req.actor and move forward to next middleware in the chain
  *
  * @returns An Express.js middleware closure
  */
@@ -70,11 +76,12 @@ export const verify = (): any => {
   );
 
   return async (req, res, next) => {
+    const db = getManager();
     const { code, state } = req.query;
     const verifiedState = jwt.verify(state, config.server.auth.jwt.secret);
     const { tokens } = await oauth2Client.getToken(code);
     const { email } = jwt.decode(tokens.id_token);
-    let user: any = await prisma.user({ email }).$fragment(jwtUserFragment);
+    let actor: any = await db.findOne(Actor, { email });
 
     if (!verifiedState) {
       logger.error(
@@ -85,80 +92,75 @@ export const verify = (): any => {
       return res.redirect(302, oauthConfig.failureRedirect);
     }
 
-    if (!user) {
-      const role: any = await prisma.role({ name: 'USER' });
+    if (!actor) {
+      const role: any = await db.findOne(Role, { name: RoleName.ACTOR });
 
       logger.info(
         { provider: 'google', method: 'verify' },
         'OPEN-AUTH-MIDDLEWARE: Creating user'
       );
 
-      user = await prisma
-        .createUser({
-          role: { connect: { id: role.id } },
-          email,
-          userAccount: {
-            create: config.server.auth.confirmable
-              ? {
-                  confirmedCode: generateCode(),
-                }
-              : {},
-          },
-        })
-        .$fragment(jwtUserFragment);
+      const insertedActor = await db.insert(Actor, {
+        role_id: role.uuid,
+        email,
+      });
+
+      const [actorData] = insertedActor.raw;
+      actor = actorData;
+
+      await db.insert(ActorAccount, {
+        actor_id: actor.uuid,
+        confirmed_code: config.server.auth.confirmable ? generateCode() : null,
+      });
     }
 
-    const accessToken: any = tokens.access_token;
     const refreshToken: any = tokens.refresh_token;
     const expiresAt: any = tokens.expiry_date;
 
     try {
-      const existingOauths = await prisma.openAuths({
-        where: {
-          AND: [{ user: { id: user.id } }, { provider: 'GOOGLE' }],
-        },
+      const existingOauth = await db.findOne(Oauth, {
+        actor_id: actor.uuid,
+        provider: ProviderName.GOOGLE,
       });
 
-      if (existingOauths.length) {
-        const existingOauth = existingOauths[0];
-
+      if (existingOauth) {
         logger.info(
-          { id: existingOauth.id, provider: 'google', method: 'verify' },
+          { id: existingOauth.uuid, provider: 'google', method: 'verify' },
           'OPEN-AUTH-MIDDLEWARE: Updating existing oauth record'
         );
 
-        await prisma.updateOpenAuth({
-          data: {
-            accessToken,
-            refreshToken,
-            expiresAt: new Date(expiresAt),
-          },
-          where: { id: existingOauth.id },
-        });
+        await db.update(
+          Oauth,
+          { uuid: existingOauth.uuid },
+          {
+            refresh_token: refreshToken,
+            expires_at: new Date(expiresAt),
+          }
+        );
       } else {
         logger.info(
           { provider: 'google', method: 'verify' },
           'OPEN-AUTH-MIDDLEWARE: Creating new oauth record'
         );
 
-        await prisma.createOpenAuth({
-          user: { connect: { id: user.id } },
-          provider: 'GOOGLE',
-          accessToken,
-          refreshToken,
-          expiresAt: new Date(expiresAt),
+        await db.insert(Oauth, {
+          actor_id: actor.uuid,
+          provider: ProviderName.GOOGLE,
+          refresh_token: refreshToken,
+          expires_at: new Date(expiresAt),
         });
       }
     } catch (err) {
       logger.error(
-        { userId: user.id, err },
+        { actorId: actor.uuid, err },
         'OPEN-AUTH-MIDDLEWARE: Could not update or add open auth details to database'
       );
 
       return res.redirect(302, oauthConfig.failureRedirect);
     }
 
-    req.user = user;
+    const role = await db.findOne(Role, { uuid: actor.role_id });
+    req.actor = { uuid: actor.uuid, role: transformRoleForToken(role) };
     return next();
   };
 };
@@ -176,25 +178,18 @@ export const verify = (): any => {
  * @returns Redirect to the "success" route, usually the root path
  */
 export const authenticate = async (req, res): Promise<any> => {
-  const { user } = req;
+  const db = getManager();
+  const { actor } = req;
 
   try {
-    const { userAccount } = await prisma
-      .user({ id: user.id })
-      .$fragment(userAccountFragment);
-
-    await prisma.updateUserAccount({
-      data: {
-        lastVisit: new Date(),
-        ip: req.ip,
-      },
-      where: {
-        id: userAccount.id,
-      },
-    });
+    await db.update(
+      ActorAccount,
+      { actor_id: actor.uuid },
+      { last_visit: new Date(), ip: req.ip }
+    );
   } catch (err) {
     logger.error(
-      { userId: user.id, err },
+      { actorId: actor.uuid, err },
       'OPEN-AUTH-MIDDLEWARE: Could not update user account database table'
     );
 
@@ -207,7 +202,7 @@ export const authenticate = async (req, res): Promise<any> => {
   );
 
   const token = jwt.sign(
-    { actorId: user.id, role: user.role },
+    { actorId: actor.uuid, role: actor.role },
     config.server.auth.jwt.secret,
     { expiresIn: config.server.auth.jwt.expiresIn }
   );
@@ -217,6 +212,17 @@ export const authenticate = async (req, res): Promise<any> => {
     'OPEN-AUTH-MIDDLEWARE: Setting jwt cookie and redirecting'
   );
 
-  res.cookie('token', token, { path: '/' });
+  const dsToken = jwt.sign({ hash: uuid() }, config.server.auth.jwt.dsSecret, {
+    expiresIn: config.server.auth.jwt.expiresIn,
+  });
+
+  // TODO: change to `secure: true` when HTTPS
+  res.cookie('token', token, { path: '/', secure: false });
+  res.cookie('ds_token', dsToken, {
+    path: '/',
+    httpOnly: true,
+    secure: false,
+  });
+
   return res.redirect(302, oauthConfig.successRedirect);
 };

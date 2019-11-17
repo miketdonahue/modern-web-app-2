@@ -9,7 +9,7 @@ import logger from '@server/modules/logger';
  * @param info - GraphQL metadata
  * @returns undefined
  */
-const userAccount = async (parent, args, context, info): Promise<any> => {
+const actorAccount = async (parent, args, context, info): Promise<any> => {
   logger.info('USER-RESOLVER: Retrieving user account relation');
   return context.prisma.user({ email: parent.email }).userAccount();
 };
@@ -23,7 +23,7 @@ const userAccount = async (parent, args, context, info): Promise<any> => {
  * @param info - GraphQL metadata
  * @returns undefined
  */
-const user = async (parent, args, context, info): Promise<any> => {
+const actor = async (parent, args, context, info): Promise<any> => {
   logger.info('USER-RESOLVER: Retrieving user relation');
   return context.prisma.user({ where: { userAccount: { id: parent.id } } });
 };
@@ -45,6 +45,6 @@ const securityQuestions = async (parent, args, context, info): Promise<any> => {
 };
 
 export default {
-  User: { userAccount },
-  UserAccount: { user, securityQuestions },
+  Actor: { actorAccount },
+  ActorAccount: { actor, securityQuestions },
 };

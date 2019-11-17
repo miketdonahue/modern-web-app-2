@@ -14,7 +14,7 @@ export class Actor1572404666921 implements MigrationInterface {
         first_name varchar,
         last_name varchar,
         email varchar UNIQUE NOT NULL,
-        password varchar NOT NULL,
+        password varchar,
         phone_country_code varchar,
         phone varchar,
         country varchar,

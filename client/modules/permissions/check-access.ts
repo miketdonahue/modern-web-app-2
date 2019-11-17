@@ -49,7 +49,7 @@ export const checkAccess = async (ctx): Promise<any> => {
   }
 
   // Redirect all unauthorized route access requests to root
-  if (hasAccess && decoded.role.prohibitedRoutes.includes(pathname)) {
+  if (hasAccess && decoded.role.prohibited_routes.includes(pathname)) {
     return redirectTo(ctx, '/');
   }
 

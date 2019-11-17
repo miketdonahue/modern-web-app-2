@@ -7,41 +7,41 @@ export class Actor extends BaseTable {
   public role_id!: string;
 
   @Column('uuid', { nullable: true })
-  public customer_id!: string;
+  public customer_id!: string | null;
 
   @Column('varchar', { nullable: true })
-  public first_name!: string;
+  public first_name!: string | null;
 
   @Column('varchar', { nullable: true })
-  public last_name!: string;
+  public last_name!: string | null;
 
   @Column('varchar', { unique: true })
   public email!: string;
 
-  @Column('varchar')
-  public password!: string;
+  @Column('varchar', { nullable: true })
+  public password!: string | null;
 
   @Column('varchar', { nullable: true })
-  public phone_country_code!: string;
+  public phone_country_code!: string | null;
 
   @Column('varchar', { nullable: true })
-  public phone!: string;
+  public phone!: string | null;
 
   @Column('varchar', { nullable: true })
-  public country!: string;
+  public country!: string | null;
 
   @Column('varchar', { nullable: true })
-  public address1!: string;
+  public address1!: string | null;
 
   @Column('varchar', { nullable: true })
-  public address2!: string;
+  public address2!: string | null;
 
   @Column('varchar', { nullable: true })
-  public city!: string;
+  public city!: string | null;
 
   @Column('varchar', { nullable: true })
-  public state!: string;
+  public state!: string | null;
 
   @Column('varchar', { nullable: true })
-  public postal_code!: string;
+  public postal_code!: string | null;
 }
