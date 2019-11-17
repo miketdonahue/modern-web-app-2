@@ -1,6 +1,6 @@
 import argon2 from 'argon2';
 import jwt from 'jsonwebtoken';
-import addHours from 'date-fns/add_hours';
+import { addHours } from 'date-fns';
 import uuid from 'uuid/v4';
 import config from '@config';
 import generateCode from '@server/modules/code';
@@ -516,6 +516,7 @@ const unlockAccount = async (parent, args, context, info): Promise<any> => {
       locked: false,
       locked_code: null,
       locked_expires: null,
+      login_attempts: 0,
     })
     .where('locked_code = :lockedCode', {
       lockedCode: args.input.code,

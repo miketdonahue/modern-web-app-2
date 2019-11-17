@@ -19,7 +19,7 @@ export default merge(defaultConfig, {
       enabled: true,
       confirmable: true,
       lockable: {
-        enabled: false,
+        enabled: true,
       },
     },
     mailer: {

@@ -1,6 +1,7 @@
 import { rule } from 'graphql-shield';
-import isBefore from 'date-fns/is_before';
+import { isBefore, addHours } from 'date-fns';
 import { InternalError } from '@server/modules/errors';
+import generateCode from '@server/modules/code';
 import config from '@config';
 import { ActorAccount } from '@server/entities/actor-account';
 
@@ -21,30 +22,38 @@ export const accountUnlocked = rule()(async (parent, args, context, info) => {
     return true;
   }
 
-  const userAccount = await context.prisma
-    .user({
-      email: args.input.email,
-    })
-    .userAccount();
+  const { db } = context;
+  const [actorAccount] = await db.query(
+    `
+    SELECT
+      actor_account.*
+    FROM
+      actor_account
+      INNER JOIN actor ON actor_account.actor_id = actor.uuid
+    WHERE
+      actor.email = $1
+  `,
+    [args.input.email]
+  );
 
-  if (!userAccount) {
+  if (!actorAccount) {
     return new InternalError('INVALID_ACTOR_INPUT', { args });
   }
 
-  if (userAccount.locked) {
-    // TODO: need to add locked code and expires at
-    throw new InternalError('ACCOUNT_LOCKED');
+  if (actorAccount.locked) {
+    await db.update(
+      ActorAccount,
+      { uuid: actorAccount.uuid },
+      {
+        locked_code: generateCode(),
+        locked_expires: addHours(
+          new Date(),
+          config.server.auth.codes.expireTime.locked
+        ),
+      }
+    );
 
-    // await db.update(
-    //   ActorAccount,
-    //   { uuid: actorAccount.uuid },
-    //   {
-    //     locked_code: generateCode(),
-    //     locked_expires: String(
-    //       addHours(new Date(), config.server.auth.codes.expireTime.locked)
-    //     ),
-    //   }
-    // );
+    throw new InternalError('ACCOUNT_LOCKED');
   }
 
   return true;
