@@ -34,7 +34,7 @@ export class Actor1572504144500 implements MigrationInterface {
 
       await db.transaction(async transactionalEntityManager => {
         const actor = await db.create(Actor, {
-          role_id: role.id,
+          role_id: role.uuid,
           first_name: chance.first(),
           last_name: chance.last(),
           email,
@@ -51,7 +51,7 @@ export class Actor1572504144500 implements MigrationInterface {
         await transactionalEntityManager.save(actor);
 
         await transactionalEntityManager.insert(ActorAccount, {
-          actor_id: actor.id,
+          actor_id: actor.uuid,
           confirmed_code: config.server.auth.confirmable
             ? generateCode()
             : null,

@@ -2,6 +2,7 @@ import { rule } from 'graphql-shield';
 import isBefore from 'date-fns/is_before';
 import { InternalError } from '@server/modules/errors';
 import config from '@config';
+import { ActorAccount } from '@server/entities/actor-account';
 
 /**
  * Checks if user account has been locked
@@ -27,11 +28,23 @@ export const accountUnlocked = rule()(async (parent, args, context, info) => {
     .userAccount();
 
   if (!userAccount) {
-    return new InternalError('INVALID_USER_INPUT', { args });
+    return new InternalError('INVALID_ACTOR_INPUT', { args });
   }
 
   if (userAccount.locked) {
+    // TODO: need to add locked code and expires at
     throw new InternalError('ACCOUNT_LOCKED');
+
+    // await db.update(
+    //   ActorAccount,
+    //   { uuid: actorAccount.uuid },
+    //   {
+    //     locked_code: generateCode(),
+    //     locked_expires: String(
+    //       addHours(new Date(), config.server.auth.codes.expireTime.locked)
+    //     ),
+    //   }
+    // );
   }
 
   return true;
@@ -51,15 +64,17 @@ export const accountUnlocked = rule()(async (parent, args, context, info) => {
  */
 export const lockedCodeNotExpired = rule()(
   async (parent, args, context, info) => {
-    const userAccount = await context.prisma.userAccount({
-      lockedCode: args.input.code,
+    const { db } = context;
+
+    const actorAccount = await db.findOne(ActorAccount, {
+      locked_code: args.input.code,
     });
 
-    if (!userAccount) {
+    if (!actorAccount) {
       throw new InternalError('CODE_NOT_FOUND', { code: 'lockedCode' });
     }
 
-    if (isBefore(userAccount.lockedExpires, new Date())) {
+    if (isBefore(actorAccount.locked_expires, new Date())) {
       return new InternalError('LOCKED_CODE_EXPIRED');
     }
 
@@ -81,15 +96,17 @@ export const lockedCodeNotExpired = rule()(
  */
 export const resetPasswordCodeNotExpired = rule()(
   async (parent, args, context, info) => {
-    const userAccount = await context.prisma.userAccount({
-      resetPasswordCode: args.input.code,
+    const { db } = context;
+
+    const actorAccount = await db.findOne(ActorAccount, {
+      reset_password_code: args.input.code,
     });
 
-    if (!userAccount) {
+    if (!actorAccount) {
       throw new InternalError('CODE_NOT_FOUND', { code: 'resetPasswordCode' });
     }
 
-    if (isBefore(userAccount.resetPasswordExpires, new Date())) {
+    if (isBefore(actorAccount.reset_password_expires, new Date())) {
       return new InternalError('RESET_PASSWORD_CODE_EXPIRED');
     }
 

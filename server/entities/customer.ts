@@ -3,8 +3,8 @@ import { BaseTable } from './base-table';
 
 @Entity('customer')
 export class Customer extends BaseTable {
-  @Column('int')
-  public actor_id!: number;
+  @Column('uuid')
+  public actor_id!: string;
 
   @Column('varchar')
   public stripe_id!: string;

@@ -3,8 +3,8 @@ import { BaseTable } from './base-table';
 
 @Entity('actor_account')
 export class ActorAccount extends BaseTable {
-  @Column('int')
-  public actor_id!: number;
+  @Column('uuid')
+  public actor_id!: string;
 
   @Column('boolean', { default: 'false' })
   public confirmed!: boolean;
@@ -18,13 +18,13 @@ export class ActorAccount extends BaseTable {
   @Column('varchar', { nullable: true })
   public locked_code!: string;
 
-  @Column('timestamptz', { nullable: true })
+  @Column('timestamp with time zone', { nullable: true })
   public locked_expires!: Date;
 
   @Column('varchar', { nullable: true })
   public reset_password_code!: string;
 
-  @Column('timestamptz', { nullable: true })
+  @Column('timestamp with time zone', { nullable: true })
   public reset_password_expires!: Date;
 
   @Column('text', {
@@ -42,7 +42,7 @@ export class ActorAccount extends BaseTable {
   @Column('varchar', { nullable: true })
   public refresh_token!: string;
 
-  @Column('timestamptz', { nullable: true })
+  @Column('timestamp with time zone', { nullable: true })
   public last_visit!: Date;
 
   @Column('varchar', { nullable: true })

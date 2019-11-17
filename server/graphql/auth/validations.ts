@@ -15,7 +15,7 @@ const answers = (yup): any =>
 
 export default {
   Query: {
-    getUserSecurityQuestionAnswers: inputRule(yup =>
+    getActorSecurityQuestionAnswers: inputRule(yup =>
       yup.object({
         input: yup.object({ userId: alphaNumeric }),
       })
@@ -27,15 +27,15 @@ export default {
         input: yup.object({ firstName: alpha, lastName: alpha, email }),
       })
     ),
-    // confirmActor: inputRule(yup =>
-    //   yup.object({
-    //     input: yup.object({
-    //       code,
-    //     }),
-    //   })
-    // ),
+    confirmActor: inputRule(yup =>
+      yup.object({
+        input: yup.object({
+          code,
+        }),
+      })
+    ),
     loginActor: inputRule(yup => yup.object({ input: yup.object({ email }) })),
-    setUserSecurityQuestionAnswers: inputRule(yup =>
+    setActorSecurityQuestionAnswers: inputRule(yup =>
       yup.object({
         input: yup.object({
           email,
@@ -43,7 +43,7 @@ export default {
         }),
       })
     ),
-    verifyUserSecurityQuestionAnswers: inputRule(yup =>
+    verifyActorSecurityQuestionAnswers: inputRule(yup =>
       yup.object({
         input: yup.object({
           email,

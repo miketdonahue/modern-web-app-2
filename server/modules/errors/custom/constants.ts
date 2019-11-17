@@ -1,7 +1,7 @@
 export default {
-  INVALID_USER_INPUT: {
-    message: 'User input is invalid',
-    code: 'INVALID_USER_INPUT',
+  INVALID_ACTOR_INPUT: {
+    message: 'Actor input is invalid',
+    code: 'INVALID_ACTOR_INPUT',
     meta: { level: 'warn' },
   },
   UNAUTHENTICATED: {
@@ -24,13 +24,13 @@ export default {
     code: 'EMAIL_FAILURE',
     meta: { level: 'error' },
   },
-  USER_NOT_FOUND: {
-    message: 'User was not found',
-    code: 'USER_NOT_FOUND',
+  ACTOR_NOT_FOUND: {
+    message: 'Actor was not found',
+    code: 'ACTOR_NOT_FOUND',
     meta: { level: 'warn' },
   },
   ACCOUNT_LOCKED: {
-    message: 'User account is locked',
+    message: 'Actor account is locked',
     code: 'ACCOUNT_LOCKED',
     meta: { level: 'warn' },
   },
@@ -51,7 +51,7 @@ export default {
   },
   CODE_NOT_FOUND: {
     message: 'Account code was not found',
-    code: 'code_NOT_FOUND',
+    code: 'CODE_NOT_FOUND',
     meta: { level: 'warn' },
   },
   INVALID_SECURITY_QUESTIONS: {

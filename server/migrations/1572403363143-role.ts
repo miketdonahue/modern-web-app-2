@@ -13,13 +13,14 @@ export class Role1572403363143 implements MigrationInterface {
 
       CREATE TABLE role(
         id serial PRIMARY KEY,
-        uuid uuid DEFAULT uuid_generate_v4(),
+        uuid uuid UNIQUE DEFAULT uuid_generate_v4(),
         name role_enum NOT NULL,
         permissions varchar [],
         prohibited_routes jsonb,
-        created_at timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
-        updated_at timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
-        deleted_at timestamptz
+        created_at timestamp with time zone NOT NULL DEFAULT (now() AT TIME ZONE 'utc')::timestamptz,
+        updated_at timestamp with time zone NOT NULL DEFAULT (now() AT TIME ZONE 'utc')::timestamptz,
+        deleted_at timestamp with time zone,
+        deleted boolean NOT NULL DEFAULT false
       );
       `
     );

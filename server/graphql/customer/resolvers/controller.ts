@@ -17,7 +17,7 @@ const createCustomer = async (parent, args, context, info): Promise<any> => {
   const user = await context.prisma.user({ id: args.input.userId });
 
   if (!user) {
-    throw new InternalError('USER_NOT_FOUND');
+    throw new InternalError('ACTOR_NOT_FOUND');
   }
 
   try {

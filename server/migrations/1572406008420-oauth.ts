@@ -12,15 +12,15 @@ export class Oauth1572406008420 implements MigrationInterface {
 
       CREATE TABLE oauth(
         id serial PRIMARY KEY,
-        uuid uuid DEFAULT uuid_generate_v4(),
-        actor_id int NOT NULL,
+        uuid uuid UNIQUE DEFAULT uuid_generate_v4(),
+        actor_id uuid NOT NULL,
         provider provider_enum NOT NULL,
-        access_token varchar NOT NULL,
         refresh_token varchar,
-        expires_at timestamptz,
-        created_at timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
-        updated_at timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
-        deleted_at timestamptz
+        expires_at timestamp with time zone,
+        created_at timestamp with time zone NOT NULL DEFAULT (now() AT TIME ZONE 'utc')::timestamptz,
+        updated_at timestamp with time zone NOT NULL DEFAULT (now() AT TIME ZONE 'utc')::timestamptz,
+        deleted_at timestamp with time zone,
+        deleted boolean NOT NULL DEFAULT false
       );
       `
     );

@@ -8,11 +8,12 @@ export class BlacklistedToken1572406172931 implements MigrationInterface {
 
       CREATE TABLE blacklisted_token(
         id serial PRIMARY KEY,
-        uuid uuid DEFAULT uuid_generate_v4(),
+        uuid uuid UNIQUE DEFAULT uuid_generate_v4(),
         token varchar NOT NULL,
-        created_at timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
-        updated_at timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
-        deleted_at timestamptz
+        created_at timestamp with time zone NOT NULL DEFAULT (now() AT TIME ZONE 'utc')::timestamptz,
+        updated_at timestamp with time zone NOT NULL DEFAULT (now() AT TIME ZONE 'utc')::timestamptz,
+        deleted_at timestamp with time zone,
+        deleted boolean NOT NULL DEFAULT false
       );
       `
     );

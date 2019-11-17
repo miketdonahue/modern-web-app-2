@@ -9,6 +9,9 @@ import logger from '@server/modules/logger';
 import { Actor } from '@server/entities/actor';
 import { ActorAccount } from '@server/entities/actor-account';
 import { Role } from '@server/entities/role';
+import { SecurityQuestion } from '@server/entities/security-question';
+import { SecurityQuestionAnswer } from '@server/entities/security-question-answer';
+import { BlacklistedToken } from '@server/entities/blacklisted-token';
 import mailer, {
   WELCOME_EMAIL,
   CONFIRMATION_EMAIL,
@@ -16,6 +19,8 @@ import mailer, {
 } from '@server/modules/mailer';
 import { transformRole } from '../utilities';
 import * as fragments from '../fragments';
+
+// TODO: wrap calls in try/catch
 
 /**
  * Registers a new actor
@@ -43,7 +48,7 @@ const registerActor = async (parent, args, context, info): Promise<any> => {
     async (transactionalEntityManager: any) => {
       logger.info('AUTH-RESOLVER: Creating actor');
       const createdActor = await transactionalEntityManager.create(Actor, {
-        role_id: role.id,
+        role_id: role.uuid,
         first_name: args.input.firstName,
         last_name: args.input.lastName,
         email: args.input.email,
@@ -54,7 +59,7 @@ const registerActor = async (parent, args, context, info): Promise<any> => {
 
       logger.info('AUTH-RESOLVER: Creating actor account');
       const createdActorAccount = await db.create(ActorAccount, {
-        actor_id: createdActor.id,
+        actor_id: createdActor.uuid,
         confirmed_code: config.server.auth.confirmable ? generateCode() : null,
         last_visit: new Date(),
         ip: req.ip,
@@ -68,7 +73,7 @@ const registerActor = async (parent, args, context, info): Promise<any> => {
 
   logger.info('AUTH-RESOLVER: Signing token');
   const token = jwt.sign(
-    { actorId: actor.id, role: actor.role },
+    { actorId: actor.uuid, role },
     config.server.auth.jwt.secret,
     { expiresIn: config.server.auth.jwt.expiresIn }
   );
@@ -102,12 +107,12 @@ const confirmActor = async (parent, args, context, info): Promise<any> => {
     confirmed_code: args.input.code,
   });
 
-  const actor = await db.findOne(Actor, { id: actorAccount.actor_id });
+  const actor = await db.findOne(Actor, { uuid: actorAccount.actor_id });
 
   logger.info('AUTH-RESOLVER: Confirming actor account');
   await db.update(
     ActorAccount,
-    { id: actorAccount.id },
+    { uuid: actorAccount.uuid },
     {
       confirmed: true,
       confirmed_code: null,
@@ -142,7 +147,7 @@ const loginActor = async (parent, args, context, info): Promise<any> => {
       actor.password
     FROM
       actor_account
-      INNER JOIN actor ON actor_account.actor_id = actor.id
+      INNER JOIN actor ON actor_account.actor_id = actor.uuid
     WHERE
       actor.email = $1
   `,
@@ -171,26 +176,20 @@ const loginActor = async (parent, args, context, info): Promise<any> => {
 
   await db.update(
     ActorAccount,
-    { id: actorAccount.id },
+    { uuid: actorAccount.uuid },
     !passwordMatch
       ? {
-          loginAttempts: actorAccount.loginAttempts + 1,
+          login_attempts: actorAccount.login_attempts + 1,
           locked:
-            actorAccount.loginAttempts >=
+            actorAccount.login_attempts >=
             config.server.auth.lockable.maxAttempts,
-          lockedCode: actorAccount.locked && generateCode(),
-          lockedExpires:
-            actorAccount.locked &&
-            String(
-              addHours(new Date(), config.server.auth.codes.expireTime.locked)
-            ),
         }
       : {
-          lastVisit: new Date(),
+          last_visit: new Date(),
           ip: context.req.ip,
-          loginAttempts: 0,
-          securityQuestionAttempts: 0,
-          refreshToken,
+          login_attempts: 0,
+          security_question_attempts: 0,
+          refresh_token: refreshToken,
         }
   );
 
@@ -218,6 +217,7 @@ const loginActor = async (parent, args, context, info): Promise<any> => {
   });
 
   return {
+    actorId: actorAccount.actor_id,
     token,
   };
 };
@@ -231,35 +231,58 @@ const loginActor = async (parent, args, context, info): Promise<any> => {
  * @param info - GraphQL metadata
  * @returns null
  */
-const setUserSecurityQuestionAnswers = async (
+const setActorSecurityQuestionAnswers = async (
   parent,
   args,
   context,
   info
 ): Promise<any> => {
+  const { db } = context;
   const queue: any = [];
-  const userAccount = await context.prisma
-    .user({ id: args.input.userId })
-    .userAccount()
-    .$fragment(`{ id }`);
+  const actorAccount = await db.findOne(ActorAccount, {
+    actor_id: args.input.actorId,
+  });
 
-  if (!userAccount) {
-    throw new InternalError('INVALID_USER_INPUT', { args });
+  const securityQuestionPayload = async (
+    actorAcct: any,
+    shortName: any,
+    answer: any
+  ): Promise<any> => {
+    const question = await db.findOne(SecurityQuestion, {
+      short_name: shortName,
+    });
+
+    return {
+      actor_account_id: actorAcct.uuid,
+      security_question_id: question.uuid,
+      answer,
+    };
+  };
+
+  if (!actorAccount) {
+    throw new InternalError('INVALID_ACTOR_INPUT', { args });
   }
 
-  logger.info("AUTH-RESOLVER: Setting user's security questions");
+  logger.info("AUTH-RESOLVER: Setting actor's security questions");
   for (const item of args.input.answers) {
     queue.push(
-      context.prisma.createSecurityQuestionAnswer({
-        userAccount: { connect: { id: userAccount.id } },
-        userSecurityQuestion: { connect: { shortName: item.shortName } },
-        answer: item.answer,
-      })
+      securityQuestionPayload(actorAccount, item.shortName, item.answer)
     );
   }
 
-  await Promise.all(queue);
-  return null;
+  const resolvedAnswers = await Promise.all(queue);
+
+  await db
+    .createQueryBuilder()
+    .insert()
+    .into(SecurityQuestionAnswer)
+    .values(resolvedAnswers)
+    .onConflict(
+      `("actor_account_id", "security_question_id") DO UPDATE SET "answer" = excluded.answer`
+    )
+    .execute();
+
+  return { actorId: actorAccount.actor_id };
 };
 
 /**
@@ -271,22 +294,34 @@ const setUserSecurityQuestionAnswers = async (
  * @param info - GraphQL metadata
  * @returns An array of answer objects
  */
-const getUserSecurityQuestionAnswers = async (
+const getActorSecurityQuestionAnswers = async (
   parent,
   args,
   context,
   info
 ): Promise<any> => {
-  logger.info("AUTH-RESOLVER: Retrieving user's security question answers");
+  const { db } = context;
+  logger.info("AUTH-RESOLVER: Retrieving actor's security question answers");
 
-  const answers = await context.prisma
-    .user({ id: args.input.userId })
-    .userAccount()
-    .securityQuestions()
-    .$fragment(fragments.userSecurityQuestionAnswersFragment);
+  const actorAccount = await db.findOne(ActorAccount, {
+    actor_id: args.input.actorId,
+  });
+
+  const answers = await db.query(
+    `
+    SELECT
+      security_question_answer.*
+    FROM
+      security_question_answer
+      INNER JOIN actor_account ON security_question_answer.actor_account_id = actor_account.uuid
+    WHERE
+      security_question_answer.actor_account_id = $1
+  `,
+    [actorAccount.uuid]
+  );
 
   if (!answers) {
-    throw new InternalError('INVALID_USER_INPUT', { args });
+    throw new InternalError('INVALID_ACTOR_INPUT', { args });
   }
 
   return answers;
@@ -301,61 +336,71 @@ const getUserSecurityQuestionAnswers = async (
  * @param info - GraphQL metadata
  * @returns null
  */
-const verifyUserSecurityQuestionAnswers = async (
+const verifyActorSecurityQuestionAnswers = async (
   parent,
   args,
   context,
   info
 ): Promise<any> => {
-  const shortNamesIn: any = [];
-  const answersIn: any = [];
-  const user = await context.prisma
-    .user({ email: args.input.email })
-    .$fragment(fragments.verifyUserSecurityQuestionAnswersFragment);
+  const { db } = context;
+  const queue: any = [];
 
-  if (!user) {
-    throw new InternalError('INVALID_USER_INPUT', { args });
-  }
-
-  args.input.answers.forEach(item => {
-    shortNamesIn.push(item.shortName);
-    answersIn.push(item.answer);
+  const actorAccount = await db.findOne(ActorAccount, {
+    actor_id: args.input.actorId,
   });
 
-  logger.info("AUTH-RESOLVER: Verifying user's security answers");
-  const answers = await context.prisma
-    .user({ email: user.email })
-    .userAccount()
-    .securityQuestions({
-      where: {
-        AND: [
-          { userSecurityQuestion: { shortName_in: shortNamesIn } },
-          { answer_in: answersIn },
-        ],
-      },
+  const securityQuestionExists = async (
+    actorAcctUuid: any,
+    shortName: any,
+    answer: any
+  ): Promise<any> => {
+    const securityQuestion = await db.findOne(SecurityQuestion, {
+      short_name: shortName,
     });
 
-  if (config.server.auth.securityQuestions.number !== answers.length) {
-    await context.prisma.updateUserAccount({
-      data: {
-        securityQuestionAttempts: user.userAccount.securityQuestionAttempts + 1,
+    const [result] = await db.query(
+      `
+      SELECT EXISTS(
+        SELECT 1
+        FROM security_question_answer
+        WHERE actor_account_id = $1
+          AND security_question_id = $2
+          AND answer = $3
+      );
+      `,
+      [actorAcctUuid, securityQuestion.uuid, answer]
+    );
+
+    return result.exists;
+  };
+
+  for (const item of args.input.answers) {
+    queue.push(
+      securityQuestionExists(actorAccount.uuid, item.shortName, item.answer)
+    );
+  }
+
+  const existingSecurityQuestions = await Promise.all(queue);
+  const foundAllQuestions = existingSecurityQuestions.every(
+    (item: any) => item && item
+  );
+
+  if (!foundAllQuestions) {
+    await db.update(
+      ActorAccount,
+      { uuid: actorAccount.uuid },
+      {
+        security_question_attempts: actorAccount.security_question_attempts + 1,
         locked:
-          user.userAccount.securityQuestionAttempts >=
+          actorAccount.security_question_attempts >=
           config.server.auth.lockable.maxAttempts,
-        lockedCode: generateCode(),
-        lockedExpires: String(
-          addHours(new Date(), config.server.auth.codes.expireTime.locked)
-        ),
-      },
-      where: {
-        id: user.userAccount.id,
-      },
-    });
+      }
+    );
 
     throw new InternalError('INVALID_SECURITY_QUESTIONS');
   }
 
-  return null;
+  return { actorId: actorAccount.actor_id };
 };
 
 /**
@@ -368,29 +413,38 @@ const verifyUserSecurityQuestionAnswers = async (
  * @returns null
  */
 const resetPassword = async (parent, args, context, info): Promise<any> => {
-  const userAccount = await context.prisma
-    .user({ email: args.input.email })
-    .userAccount()
-    .$fragment(`{ id }`);
+  const { db } = context;
 
-  if (!userAccount) {
-    throw new InternalError('INVALID_USER_INPUT', { args });
+  const [actorAccount] = await db.query(
+    `
+    SELECT
+      actor_account.*
+    FROM
+      actor_account
+      INNER JOIN actor ON actor_account.actor_id = actor.uuid
+    WHERE
+      actor.email = $1
+  `,
+    [args.input.email]
+  );
+
+  if (!actorAccount) {
+    throw new InternalError('INVALID_ACTOR_INPUT', { args });
   }
 
-  logger.info("AUTH-RESOLVER: Preparing user's password for reset");
-  await context.prisma.updateUserAccount({
-    data: {
-      resetPasswordCode: generateCode(),
-      resetPasswordExpires: String(
+  logger.info("AUTH-RESOLVER: Preparing actor's password for reset");
+  await db.update(
+    ActorAccount,
+    { uuid: actorAccount.uuid },
+    {
+      reset_password_code: generateCode(),
+      reset_password_expires: String(
         addHours(new Date(), config.server.auth.codes.expireTime.passwordReset)
       ),
-    },
-    where: {
-      id: userAccount.id,
-    },
-  });
+    }
+  );
 
-  return null;
+  return { actorId: actorAccount.actor_id };
 };
 
 /**
@@ -403,30 +457,43 @@ const resetPassword = async (parent, args, context, info): Promise<any> => {
  * @returns null
  */
 const changePassword = async (parent, args, context, info): Promise<any> => {
-  logger.info("AUTH-RESOLVER: Changing user's password");
+  const { db } = context;
+
   const password = await argon2.hash(args.input.password, {
     timeCost: 2000,
     memoryCost: 500,
   });
 
-  const userAccount = await context.prisma
-    .updateUserAccount({
-      data: {
-        resetPasswordCode: null,
-        resetPasswordExpires: null,
-      },
-      where: {
-        resetPasswordCode: args.input.code,
-      },
+  logger.info(
+    { attrs: ['reset_password_code', 'reset_password_expires'] },
+    "AUTH-RESOLVER: Resetting actor's account attributes"
+  );
+
+  const updatedActorAccount = await db
+    .createQueryBuilder()
+    .update(ActorAccount)
+    .set({
+      reset_password_code: null,
+      reset_password_expires: null,
     })
-    .$fragment(`{ user { id } }`);
+    .where('reset_password_code = :resetPasswordCode', {
+      resetPasswordCode: args.input.code,
+    })
+    .returning('actor_id')
+    .execute();
 
-  await context.prisma.updateUser({
-    data: { password },
-    where: { id: userAccount.user.id },
-  });
+  const [actorAccount] = updatedActorAccount.raw;
 
-  return null;
+  logger.info("AUTH-RESOLVER: Changing actor's password");
+  await db.update(
+    Actor,
+    {
+      uuid: actorAccount.actor_id,
+    },
+    { password }
+  );
+
+  return { actorId: actorAccount.actor_id };
 };
 
 /**
@@ -439,19 +506,26 @@ const changePassword = async (parent, args, context, info): Promise<any> => {
  * @returns null
  */
 const unlockAccount = async (parent, args, context, info): Promise<any> => {
-  logger.info('AUTH-RESOLVER: Unlocking account');
-  await context.prisma.updateUserAccount({
-    data: {
-      locked: false,
-      lockedCode: null,
-      lockedExpires: null,
-    },
-    where: {
-      lockedCode: args.input.code,
-    },
-  });
+  const { db } = context;
 
-  return null;
+  logger.info('AUTH-RESOLVER: Unlocking account');
+  const updatedActorAccount = await db
+    .createQueryBuilder()
+    .update(ActorAccount)
+    .set({
+      locked: false,
+      locked_code: null,
+      locked_expires: null,
+    })
+    .where('locked_code = :lockedCode', {
+      lockedCode: args.input.code,
+    })
+    .returning('actor_id')
+    .execute();
+
+  const [actorAccount] = updatedActorAccount.raw;
+
+  return { actorId: actorAccount.actor_id };
 };
 
 /**
@@ -467,6 +541,7 @@ const unlockAccount = async (parent, args, context, info): Promise<any> => {
  * @returns null
  */
 const sendAuthEmail = async (parent, args, context, info): Promise<any> => {
+  // TODO: fix when converted to new email provider
   const user = await context.prisma.user({ email: args.input.email });
   const emailType = {
     CONFIRMATION_EMAIL,
@@ -474,7 +549,7 @@ const sendAuthEmail = async (parent, args, context, info): Promise<any> => {
   };
 
   logger.info('AUTH-RESOLVER: Sending email to user');
-  await mailer.send(user, emailType[args.input.type]);
+  await mailer.send(user, (emailType as any)[args.input.type]);
 
   return null;
 };
@@ -488,13 +563,13 @@ const sendAuthEmail = async (parent, args, context, info): Promise<any> => {
  * @param info - GraphQL metadata
  * @returns null
  */
-const logoutUser = async (parent, args, context, info): Promise<any> => {
-  logger.info('AUTH-RESOLVER: Logging out user');
-  await context.prisma.createBlacklistedToken({
-    token: args.input.token,
-  });
+const logoutActor = async (parent, args, context, info): Promise<any> => {
+  const { db } = context;
 
-  return null;
+  logger.info('AUTH-RESOLVER: Logging out actor');
+  await db.insert(BlacklistedToken, { token: args.input.token });
+
+  return undefined;
 };
 
 /**
@@ -515,50 +590,62 @@ const validateAccess = async (parent, args, context, info): Promise<any> => {
     return true;
   }
 
-  const decoded = jwt.decode(context.user.token);
-  const blacklistedToken = await context.prisma.blacklistedToken({
-    token: context.user.token,
+  const { db } = context;
+  const decoded = jwt.decode(context.actor.token);
+  const blacklistedToken = await db.findOne(BlacklistedToken, {
+    token: context.actor.token,
   });
 
   if (blacklistedToken) {
     logger.info('AUTH-RESOLVER: Received blacklisted auth token');
-    return { token: null };
+    return { actorId: context.actor.actorId, token: null };
   }
 
   try {
-    jwt.verify(context.user.token, config.server.auth.jwt.secret);
+    jwt.verify(context.actor.token, config.server.auth.jwt.secret);
     jwt.verify(context.req.cookies.ds_token, config.server.auth.jwt.dsSecret);
   } catch (err) {
     if (err.name === 'TokenExpiredError') {
       logger.info('AUTH-RESOLVER: Auth token has expired');
 
-      const user = await context.prisma
-        .user({ id: decoded.actorId })
-        .$fragment(fragments.validateAccessFragment);
+      const [actorAccount] = await db.query(
+        `
+        SELECT
+          actor_account.*,
+          actor.role_id as role_id
+        FROM
+          actor_account
+          INNER JOIN actor ON actor_account.actor_id = actor.uuid
+        WHERE
+          actor.uuid = $1
+      `,
+        [decoded.actorId]
+      );
 
-      if (!user) {
-        throw new InternalError('USER_NOT_FOUND');
+      if (!actorAccount) {
+        throw new InternalError('ACTOR_NOT_FOUND');
       }
 
       // Transform role data
-      transformRole(user.role);
+      const role = await db.findOne(Role, { uuid: actorAccount.role_id });
+      transformRole(role);
 
       try {
         await jwt.verify(
-          user.userAccount.refreshToken,
+          actorAccount.refresh_token,
           config.server.auth.jwt.refreshSecret
         );
       } catch (error) {
-        return { token: null };
+        return { actorId: actorAccount.actor_id, token: null };
       }
 
       logger.info(
-        { userId: user.id },
+        { actorId: actorAccount.actor_id },
         'AUTH-RESOLVER: Found valid refresh token'
       );
 
       const newToken = jwt.sign(
-        { actorId: user.id, role: user.role },
+        { actorId: actorAccount.actor_id, role },
         config.server.auth.jwt.secret,
         { expiresIn: config.server.auth.jwt.expiresIn }
       );
@@ -572,7 +659,7 @@ const validateAccess = async (parent, args, context, info): Promise<any> => {
       );
 
       logger.info(
-        { userId: user.id },
+        { actorId: actorAccount.actor_id },
         'AUTH-RESOLVER: Issuing new auth tokens'
       );
 
@@ -583,30 +670,30 @@ const validateAccess = async (parent, args, context, info): Promise<any> => {
         secure: false,
       });
 
-      return { token: newToken };
+      return { actorId: actorAccount.actor_id, token: newToken };
     }
 
-    return { token: null };
+    return { actorId: context.actor.actorId, token: null };
   }
 
-  return { token: context.user.token };
+  return { actorId: context.actor.actorId, token: context.actor.token };
 };
 
 export default {
   Query: {
-    getUserSecurityQuestionAnswers,
+    getActorSecurityQuestionAnswers,
     validateAccess,
   },
   Mutation: {
     registerActor,
     confirmActor,
     loginActor,
-    setUserSecurityQuestionAnswers,
-    verifyUserSecurityQuestionAnswers,
+    setActorSecurityQuestionAnswers,
+    verifyActorSecurityQuestionAnswers,
     resetPassword,
     changePassword,
     unlockAccount,
     sendAuthEmail,
-    logoutUser,
+    logoutActor,
   },
 };

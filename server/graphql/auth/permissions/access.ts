@@ -7,19 +7,20 @@ import {
 
 export default {
   Query: {
-    getUserSecurityQuestionAnswers: allow,
+    getActorSecurityQuestionAnswers: allow,
     validateAccess: allow,
   },
   Mutation: {
     registerActor: allow,
     confirmActor: allow,
     loginActor: accountUnlocked,
-    setUserSecurityQuestionAnswers: allow,
-    verifyUserSecurityQuestionAnswers: accountUnlocked,
+    setActorSecurityQuestionAnswers: allow,
+    verifyActorSecurityQuestionAnswers: accountUnlocked,
     resetPassword: allow,
     changePassword: resetPasswordCodeNotExpired,
     unlockAccount: lockedCodeNotExpired,
     sendAuthEmail: allow,
+    logoutActor: allow,
   },
   TokenPayload: {
     '*': allow,

@@ -1,3 +1,3 @@
-mutation logoutUser($input: LogoutUserInput!) {
-  user: logoutUser(input: $input)
+mutation logoutActor($input: LogoutActorInput!) {
+  user: logoutActor(input: $input)
 }

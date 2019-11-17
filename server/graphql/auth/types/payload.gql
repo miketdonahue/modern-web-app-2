@@ -1,6 +1,6 @@
 type TokenPayload {
   actorId: String!
-  token: String!
+  token: String
 }
 
 type ActorPayload {

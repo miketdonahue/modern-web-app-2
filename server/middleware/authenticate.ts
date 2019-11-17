@@ -26,15 +26,15 @@ const authenticate = (headers): any => {
   }
 
   return jwt.verify(token, config.server.auth.jwt.secret, (err, decoded) => {
-    const user = { decoded: null, token };
+    const actor = { decoded: null, token };
 
     if (err) {
       logger.warn({ err }, `AUTHENTICATE-MIDDLEWARE: ${err.message}`);
     }
 
-    // Add the decoded user to context for continued access
-    user.decoded = decoded;
-    return user;
+    // Add the decoded actor to context for continued access
+    actor.decoded = decoded;
+    return actor;
   });
 };
 

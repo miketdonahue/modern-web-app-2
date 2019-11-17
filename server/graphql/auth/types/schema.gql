@@ -1,6 +1,6 @@
 extend type Query {
-  getUserSecurityQuestionAnswers(
-    input: UserSecurityQuestionAnswerInput!
+  getActorSecurityQuestionAnswers(
+    input: GetActorSecurityQuestionAnswerInput!
   ): [SecurityQuestionAnswer!]!
   validateAccess: TokenPayload!
 }
@@ -9,11 +9,15 @@ extend type Mutation {
   registerActor(input: RegisterActorInput!): TokenPayload!
   confirmActor(input: ConfirmActorInput!): ActorPayload!
   loginActor(input: LoginActorInput!): TokenPayload!
-  setUserSecurityQuestionAnswers(input: UserSecurityQuestionInput!): String
-  verifyUserSecurityQuestionAnswers(input: UserSecurityQuestionInput!): String
-  resetPassword(input: ResetPasswordInput!): String
-  changePassword(input: ChangePasswordInput!): String
-  unlockAccount(input: UnlockAccountInput!): String
-  sendAuthEmail(input: SendAuthEmail!): String
-  logoutUser(input: LogoutUserInput!): String
+  setActorSecurityQuestionAnswers(
+    input: ActorSecurityQuestionAnswerInput!
+  ): ActorPayload!
+  verifyActorSecurityQuestionAnswers(
+    input: ActorSecurityQuestionAnswerInput!
+  ): ActorPayload!
+  resetPassword(input: ResetPasswordInput!): ActorPayload!
+  changePassword(input: ChangePasswordInput!): ActorPayload!
+  unlockAccount(input: UnlockAccountInput!): ActorPayload!
+  sendAuthEmail(input: SendAuthEmail!): ActorPayload!
+  logoutActor(input: LogoutActorInput!): String
 }

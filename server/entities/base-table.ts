@@ -19,8 +19,11 @@ export abstract class BaseTable {
   @UpdateDateColumn()
   public updated_at!: Date;
 
-  @Column('timestamptz', { nullable: true })
+  @Column('timestamp with time zone', { nullable: true })
   public deleted_at!: Date;
+
+  @Column('boolean', { default: false })
+  public deleted!: boolean;
 
   /* Listeners */
   @BeforeUpdate()

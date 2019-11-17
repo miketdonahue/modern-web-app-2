@@ -8,12 +8,13 @@ export class Customer1572405245424 implements MigrationInterface {
 
       CREATE TABLE customer(
         id serial PRIMARY KEY,
-        uuid uuid DEFAULT uuid_generate_v4(),
-        actor_id int NOT NULL,
+        uuid uuid UNIQUE DEFAULT uuid_generate_v4(),
+        actor_id uuid NOT NULL,
         stripe_id varchar NOT NULL,
-        created_at timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
-        updated_at timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
-        deleted_at timestamptz
+        created_at timestamp with time zone NOT NULL DEFAULT (now() AT TIME ZONE 'utc')::timestamptz,
+        updated_at timestamp with time zone NOT NULL DEFAULT (now() AT TIME ZONE 'utc')::timestamptz,
+        deleted_at timestamp with time zone,
+        deleted boolean NOT NULL DEFAULT false
       );
       `
     );

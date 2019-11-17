@@ -24,7 +24,7 @@ class Index extends Component {
 
     client
       .mutate({
-        mutation: mutations.logoutUser,
+        mutation: mutations.logoutActor,
         variables: {
           input: { token },
         },

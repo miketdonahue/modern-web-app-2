@@ -8,9 +8,9 @@ export class Actor1572404666921 implements MigrationInterface {
 
       CREATE TABLE actor(
         id serial PRIMARY KEY,
-        uuid uuid DEFAULT uuid_generate_v4(),
-        role_id int NOT NULL,
-        customer_id int,
+        uuid uuid UNIQUE DEFAULT uuid_generate_v4(),
+        role_id uuid NOT NULL,
+        customer_id uuid,
         first_name varchar,
         last_name varchar,
         email varchar UNIQUE NOT NULL,
@@ -23,9 +23,10 @@ export class Actor1572404666921 implements MigrationInterface {
         city varchar,
         state varchar,
         postal_code varchar,
-        created_at timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
-        updated_at timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
-        deleted_at timestamptz
+        created_at timestamp with time zone NOT NULL DEFAULT (now() AT TIME ZONE 'utc')::timestamptz,
+        updated_at timestamp with time zone NOT NULL DEFAULT (now() AT TIME ZONE 'utc')::timestamptz,
+        deleted_at timestamp with time zone,
+        deleted boolean NOT NULL DEFAULT false
       );
       `
     );

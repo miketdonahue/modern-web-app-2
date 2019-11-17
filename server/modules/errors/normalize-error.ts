@@ -24,6 +24,10 @@ const normalizeError = (error): any => {
     case 'ValidationError':
       return normalizers.validation(error);
     case 'InternalError':
+      return {
+        code: error.extensions.code,
+        level: error.extensions.exception.level,
+      };
     default:
       return { code: error.extensions.code, level: 'error' };
   }

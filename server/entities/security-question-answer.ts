@@ -3,11 +3,11 @@ import { BaseTable } from './base-table';
 
 @Entity('security_question_answer')
 export class SecurityQuestionAnswer extends BaseTable {
-  @Column('int')
-  public actor_account_id!: number;
+  @Column('uuid')
+  public actor_account_id!: string;
 
-  @Column('int')
-  public security_question_id!: number;
+  @Column('uuid')
+  public security_question_id!: string;
 
   @Column('varchar')
   public answer!: string;

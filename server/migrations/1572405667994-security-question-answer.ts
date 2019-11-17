@@ -8,13 +8,14 @@ export class SecurityQuestionAnswer1572405667994 implements MigrationInterface {
 
       CREATE TABLE security_question_answer(
         id serial PRIMARY KEY,
-        uuid uuid DEFAULT uuid_generate_v4(),
-        actor_account_id int NOT NULL,
-        security_question_id int NOT NULL,
+        uuid uuid UNIQUE DEFAULT uuid_generate_v4(),
+        actor_account_id uuid NOT NULL,
+        security_question_id uuid NOT NULL,
         answer varchar NOT NULL,
-        created_at timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
-        updated_at timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
-        deleted_at timestamptz
+        created_at timestamp with time zone NOT NULL DEFAULT (now() AT TIME ZONE 'utc')::timestamptz,
+        updated_at timestamp with time zone NOT NULL DEFAULT (now() AT TIME ZONE 'utc')::timestamptz,
+        deleted_at timestamp with time zone,
+        deleted boolean NOT NULL DEFAULT false
       );
       `
     );

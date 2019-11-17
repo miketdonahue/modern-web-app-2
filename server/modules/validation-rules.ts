@@ -9,6 +9,5 @@ export const alphaNumeric = yup
 export const code = yup
   .number()
   .integer('Code must be an 8 digit integer')
-  .min(8)
-  .max(8);
+  .min(8);
 export const email = yup.string().email('Invalid email address');

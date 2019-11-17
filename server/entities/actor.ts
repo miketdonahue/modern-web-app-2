@@ -3,10 +3,10 @@ import { BaseTable } from './base-table';
 
 @Entity('actor')
 export class Actor extends BaseTable {
-  @Column('int')
-  public role_id!: number;
+  @Column('uuid')
+  public role_id!: string;
 
-  @Column('int', { nullable: true })
+  @Column('uuid', { nullable: true })
   public customer_id!: string;
 
   @Column('varchar', { nullable: true })

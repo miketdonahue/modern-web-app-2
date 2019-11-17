@@ -14,13 +14,13 @@ input LoginActorInput {
   password: String!
 }
 
-input UserSecurityQuestionInput {
-  email: String!
+input ActorSecurityQuestionAnswerInput {
+  actorId: String!
   answers: [SecurityQuestionAnswerInput!]!
 }
 
-input UserSecurityQuestionAnswerInput {
-  userId: String!
+input GetActorSecurityQuestionAnswerInput {
+  actorId: String!
 }
 
 input ResetPasswordInput {
@@ -41,7 +41,7 @@ input SendAuthEmail {
   type: EmailType!
 }
 
-input LogoutUserInput {
+input LogoutActorInput {
   token: String!
 }
 
