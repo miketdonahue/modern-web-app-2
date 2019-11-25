@@ -25,6 +25,7 @@ module.exports = {
     'no-restricted-syntax': 0,
     'no-plusplus': ['error', { allowForLoopAfterthoughts: true }],
     'eslint-comments/disable-enable-pair': ['error', { allowWholeFile: true }],
+    'class-methods-use-this': 0,
 
     // Rules turned off for Next.js
     'react/react-in-jsx-scope': 0,

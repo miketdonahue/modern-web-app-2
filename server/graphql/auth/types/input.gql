@@ -36,7 +36,7 @@ input UnlockAccountInput {
   code: Int!
 }
 
-input SendAuthEmail {
+input SendAuthEmailInput {
   email: String!
   type: EmailType!
 }

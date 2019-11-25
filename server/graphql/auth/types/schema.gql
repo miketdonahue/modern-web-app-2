@@ -18,6 +18,6 @@ extend type Mutation {
   resetPassword(input: ResetPasswordInput!): ActorPayload!
   changePassword(input: ChangePasswordInput!): ActorPayload!
   unlockAccount(input: UnlockAccountInput!): ActorPayload!
-  sendAuthEmail(input: SendAuthEmail!): ActorPayload!
+  sendAuthEmail(input: SendAuthEmailInput!): ActorPayload!
   logoutActor(input: LogoutActorInput!): String
 }

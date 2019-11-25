@@ -4,7 +4,7 @@ import { addHours } from 'date-fns';
 import uuid from 'uuid/v4';
 import config from '@config';
 import generateCode from '@server/modules/code';
-import { InternalError } from '@server/modules/errors';
+import { InternalError, ExternalError } from '@server/modules/errors';
 import logger from '@server/modules/logger';
 import { Actor } from '@server/entities/actor';
 import { ActorAccount } from '@server/entities/actor-account';
@@ -12,7 +12,7 @@ import { Role, RoleName } from '@server/entities/role';
 import { SecurityQuestion } from '@server/entities/security-question';
 import { SecurityQuestionAnswer } from '@server/entities/security-question-answer';
 import { BlacklistedToken } from '@server/entities/blacklisted-token';
-import mailer, {
+import {
   WELCOME_EMAIL,
   CONFIRMATION_EMAIL,
   UNLOCK_ACCOUNT_EMAIL,
@@ -31,7 +31,7 @@ import { transformRoleForToken } from '../utilities';
  * @returns token
  */
 const registerActor = async (parent, args, context, info): Promise<any> => {
-  const { db, req } = context;
+  const { db, req, mailer } = context;
   const role = await db.findOne(Role, { name: RoleName.ACTOR });
 
   logger.info('AUTH-RESOLVER: Hashing password');
@@ -79,7 +79,7 @@ const registerActor = async (parent, args, context, info): Promise<any> => {
     : WELCOME_EMAIL;
 
   logger.info({ emailType }, 'AUTH-RESOLVER: Sending email');
-  await mailer.send(actor, emailType);
+  await mailer.message.sendMessage(actor, emailType);
 
   return {
     actorId: actor.uuid,
@@ -97,7 +97,7 @@ const registerActor = async (parent, args, context, info): Promise<any> => {
  * @returns null
  */
 const confirmActor = async (parent, args, context, info): Promise<any> => {
-  const { db } = context;
+  const { db, mailer } = context;
 
   const actorAccount = await db.findOne(ActorAccount, {
     confirmed_code: args.input.code,
@@ -116,7 +116,7 @@ const confirmActor = async (parent, args, context, info): Promise<any> => {
   );
 
   logger.info('AUTH-RESOLVER: Sending welcome email');
-  await mailer.send(actor, WELCOME_EMAIL);
+  await mailer.message.sendMessage(actor, WELCOME_EMAIL);
 
   return {
     actorId: actor.uuid,
@@ -535,17 +535,37 @@ const unlockAccount = async (parent, args, context, info): Promise<any> => {
  * @returns null
  */
 const sendAuthEmail = async (parent, args, context, info): Promise<any> => {
-  // TODO: fix when converted to new email provider
-  const user = await context.prisma.user({ email: args.input.email });
+  const { db, mailer } = context;
+  const [actor] = await db.query(
+    `
+    SELECT
+      actor_account.confirmed_code,
+      actor_account.locked_code,
+      actor.uuid,
+      actor.email,
+      actor.first_name
+    FROM
+      actor_account
+      INNER JOIN actor ON actor_account.actor_id = actor.uuid
+    WHERE
+      actor.email = $1
+  `,
+    [args.input.email]
+  );
+
   const emailType = {
     CONFIRMATION_EMAIL,
     UNLOCK_ACCOUNT_EMAIL,
   };
 
-  logger.info('AUTH-RESOLVER: Sending email to user');
-  await mailer.send(user, (emailType as any)[args.input.type]);
+  logger.info(
+    { type: args.input.type },
+    'AUTH-RESOLVER: Sending email to actor'
+  );
 
-  return null;
+  await mailer.message.sendMessage(actor, (emailType as any)[args.input.type]);
+
+  return { actorId: actor.uuid };
 };
 
 /**

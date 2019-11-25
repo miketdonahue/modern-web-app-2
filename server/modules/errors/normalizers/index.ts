@@ -1,11 +1,11 @@
 import jwt from './jwt';
 import stripe from './stripe';
-import sparkpost from './sparkpost';
+import mailgun from './mailgun';
 import validation from './validation';
 
 export default {
   jwt,
   stripe,
-  sparkpost,
+  mailgun,
   validation,
 };

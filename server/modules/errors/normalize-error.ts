@@ -17,8 +17,8 @@ const normalizeError = (error): any => {
   switch (source) {
     case 'JsonWebToken':
       return normalizers.jwt(error);
-    case 'SparkPost':
-      return normalizers.sparkpost(error);
+    case 'Mailgun':
+      return normalizers.mailgun(error);
     case 'Stripe':
       return normalizers.stripe(error);
     case 'ValidationError':

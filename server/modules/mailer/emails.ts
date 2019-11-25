@@ -2,10 +2,11 @@
  * New user welcome email options
  */
 export const WELCOME_EMAIL = {
-  campaignId: 'welcome',
-  templateId: 'welcome',
-  substitutionData: user => ({
-    firstName: user.firstName,
+  from: 'no-reply@mail.com',
+  subject: 'Welcome!',
+  template: 'welcome',
+  substitutionData: actor => ({
+    firstName: actor.first_name,
   }),
 };
 
@@ -13,11 +14,12 @@ export const WELCOME_EMAIL = {
  * Confirmation email options
  */
 export const CONFIRMATION_EMAIL = {
-  campaignId: 'signup-confirmation',
-  templateId: 'signup-confirmation',
-  substitutionData: user => ({
-    firstName: user.firstName,
-    confirmedCode: user.userAccount.confirmedCode,
+  from: 'no-reply@mail.com',
+  subject: 'Confirm your email address',
+  template: 'confirm-email-address',
+  substitutionData: actor => ({
+    firstName: actor.first_name,
+    confirmedCode: actor.confirmed_code,
   }),
 };
 
@@ -25,11 +27,12 @@ export const CONFIRMATION_EMAIL = {
  * Reset password email options
  */
 export const RESET_PASSWORD_EMAIL = {
-  campaignId: 'reset-password',
-  templateId: 'reset-password',
-  substitutionData: user => ({
-    firstName: user.firstName,
-    resetPasswordCode: user.userAccount.resetPasswordCode,
+  from: 'no-reply@mail.com',
+  subject: 'Reset your password',
+  template: 'reset-password',
+  substitutionData: actor => ({
+    firstName: actor.first_name,
+    resetPasswordCode: actor.reset_password_code,
   }),
 };
 
@@ -37,10 +40,11 @@ export const RESET_PASSWORD_EMAIL = {
  * Unlock account email options
  */
 export const UNLOCK_ACCOUNT_EMAIL = {
-  campaignId: 'unlock-account',
-  templateId: 'unlock-account',
-  substitutionData: user => ({
-    firstName: user.firstName,
-    lockedCode: user.userAccount.lockedCode,
+  from: 'no-reply@mail.com',
+  subject: 'Unlock your account',
+  template: 'unlock-account',
+  substitutionData: actor => ({
+    firstName: actor.first_name,
+    lockedCode: actor.locked_code,
   }),
 };

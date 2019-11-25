@@ -1,13 +1,12 @@
 import 'reflect-metadata';
 import express from 'express';
-import next from 'next';
+import nextServer from 'next';
 import cors from 'cors';
 import helmet from 'helmet';
 import cookieParser from 'cookie-parser';
 import bodyParser from 'body-parser';
 import csrf from 'csurf';
 import { ApolloServer, makeExecutableSchema } from 'apollo-server-express';
-import graphqlPlayground from 'express-graphql';
 import { applyMiddleware } from 'graphql-middleware';
 import { createConnection, getConnection } from 'typeorm';
 import { prisma } from '@server/prisma/generated/prisma-client';
@@ -17,6 +16,7 @@ import logger from '@server/modules/logger';
 import { fileLoader } from '@utils/file-loaders/node';
 import { mergeResolvers } from '@utils/merge-resolvers/server';
 import config from '@config';
+import { mailer } from '@server/modules/mailer';
 import {
   access,
   authenticate,
@@ -25,10 +25,9 @@ import {
   resolverLogger,
 } from '@server/middleware';
 
-const env = process.env.NODE_ENV || 'development';
-const dev = process.env.NODE_ENV !== 'production';
+const isDev = process.env.NODE_ENV !== 'production';
 const healthCheck = new HealthCheck();
-const app = next({ dev });
+const app = nextServer({ dev: isDev });
 const handle = app.getRequestHandler();
 
 // Register types and resolvers
@@ -75,9 +74,10 @@ app
           actor: authenticate(req.headers),
           prisma,
           db: db.manager,
+          mailer,
         };
       },
-      playground: false,
+      playground: config.server.graphql.playground.enabled,
       debug: config.server.graphql.debug,
       formatError: error => {
         const err = error;
@@ -108,26 +108,17 @@ app
         directives: config.server.contentSecurityPolicy,
       })
     );
-    server.use(
-      config.server.graphql.playground.endpoint,
-      graphqlPlayground((req: any, res: any) => ({
-        schema,
-        // TODO: add req, res here
-        context: {
-          req,
-          res,
-          prisma,
-          db: db.manager,
-          actor: {
-            token:
-              'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhY3RvcklkIjoiOGRlMjVhMjMtMDBjYi00YTk3LWJkN2EtYzM0NTdhNDU1ZDc2Iiwicm9sZSI6eyJpZCI6MiwidXVpZCI6Ijc0NTUwYjdkLTYwOTItNDIzZi1iYzYyLWJjY2U5MDcyZTdhMCIsImNyZWF0ZWRfYXQiOiIyMDE5LTExLTE3VDExOjMwOjU0LjEyOFoiLCJ1cGRhdGVkX2F0IjoiMjAxOS0xMS0xN1QxMTozMDo1NC4xMjhaIiwiZGVsZXRlZF9hdCI6bnVsbCwiZGVsZXRlZCI6ZmFsc2UsIm5hbWUiOiJhY3RvciIsInBlcm1pc3Npb25zIjpbbnVsbCxudWxsXSwicHJvaGliaXRlZF9yb3V0ZXMiOnsicGF0aHMiOlsiL2Fib3V0Il19LCJwcm9oaWJpdGVkUm91dGVzIjpbIi9hYm91dCJdfSwiaWF0IjoxNTczOTY2NzQzLCJleHAiOjE1NzM5NjY4MDN9.tGXrpjpebCG8R_2DxD2uPgv8qEhpO614IegLBmW8ZU4',
-          },
-        },
-        graphiql: config.server.graphql.playground.enabled,
-      }))
-    );
     server.use(bodyParser.urlencoded({ extended: false }));
-    server.use(csrf({ cookie: { key: 'ds_csrf' } }));
+    server.use((req, res, next) => {
+      if (
+        req.path ===
+        `${config.server.graphql.path}${config.server.graphql.playground.endpoint}`
+      ) {
+        next();
+      }
+
+      csrf({ cookie: { key: 'ds_csrf' } });
+    });
 
     // Apply Express middleware to GraphQL server
     apollo.applyMiddleware({

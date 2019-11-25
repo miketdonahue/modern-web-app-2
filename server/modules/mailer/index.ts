@@ -1,4 +1,4 @@
-import * as mailer from './operations';
+import { Message } from './api/message';
 
 export {
   WELCOME_EMAIL,
@@ -7,4 +7,6 @@ export {
   UNLOCK_ACCOUNT_EMAIL,
 } from './emails';
 
-export default mailer;
+export const mailer = {
+  message: new Message(),
+};
