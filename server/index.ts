@@ -26,6 +26,7 @@ import {
 } from '@server/middleware';
 
 const isDev = process.env.NODE_ENV !== 'production';
+const dbConnectionName = isDev ? 'development' : 'default';
 const healthCheck = new HealthCheck();
 const app = nextServer({ dev: isDev });
 const handle = app.getRequestHandler();
@@ -62,8 +63,8 @@ app
     const { host, port } = config.server;
 
     // Create database connection
-    await createConnection();
-    const db = getConnection();
+    await createConnection(dbConnectionName);
+    const db = getConnection(dbConnectionName);
 
     const apollo = new ApolloServer({
       schema,
