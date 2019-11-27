@@ -74,7 +74,4 @@ class Index extends Component {
   }
 }
 
-export default compose(
-  withApollo,
-  withRouter
-)(Index);
+export default compose(withApollo, withRouter)(Index);

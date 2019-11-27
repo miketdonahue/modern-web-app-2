@@ -11,7 +11,7 @@ module.exports = {
         },
       },
     ],
-    '@zeit/next-typescript/babel',
+    '@babel/preset-typescript',
   ],
   plugins: [
     ['@babel/plugin-proposal-decorators', { legacy: true }],

@@ -17,7 +17,13 @@
       "@pages/*": ["pages/*"],
       "@server/*": ["server/*"],
       "@utils/*": ["utils/*"]
-    }
+    },
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "forceConsistentCasingInFileNames": true,
+    "module": "esnext",
+    "resolveJsonModule": true,
+    "allowJs": false
   },
-  "exclude": ["node_modules", "server/**/*.ts"]
+  "exclude": ["node_modules", "server/**/*.ts"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"]
 }
