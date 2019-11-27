@@ -1,7 +1,7 @@
 import { Fragment } from 'react';
 import Router from 'next/router';
+import { Form, Button, Input } from 'antd';
 import { withFormik } from 'formik';
-import { Button, Form } from 'semantic-ui-react';
 import { withApollo, compose } from 'react-apollo';
 import ServerError from '@client/components/server-error';
 import withServerErrors from '@client/components/hoc/with-server-errors';
@@ -31,10 +31,10 @@ const LoginView = ({
     <ServerError errors={serverErrors} />
 
     <Form onSubmit={handleSubmit}>
-      <Form.Field>
+      <Form.Item>
         <label htmlFor="email">
           Email
-          <input
+          <Input
             id="email"
             type="email"
             value={values.email}
@@ -42,19 +42,21 @@ const LoginView = ({
           />
         </label>
         {errors.email && touched.email ? <div>{errors.email}</div> : null}
-      </Form.Field>
-      <Form.Field>
+      </Form.Item>
+      <Form.Item>
         <label htmlFor="password">
           Password
-          <input
+          <Input
             id="password"
             type="password"
             value={values.password}
             onChange={handleChange}
           />
         </label>
-      </Form.Field>
-      <Button type="submit">Login</Button>
+      </Form.Item>
+      <Button type="primary" htmlType="submit">
+        Login
+      </Button>
     </Form>
 
     <a href="/oauth/google">Login with Google</a>

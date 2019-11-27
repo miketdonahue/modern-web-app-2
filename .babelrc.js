@@ -15,5 +15,6 @@ module.exports = {
         extensions: ['.js', '.jsx', '.ts', '.tsx'],
       },
     ],
+    ['import', { libraryName: 'antd', style: true }],
   ],
 };

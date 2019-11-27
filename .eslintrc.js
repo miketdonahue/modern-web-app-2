@@ -26,6 +26,10 @@ module.exports = {
     'no-plusplus': ['error', { allowForLoopAfterthoughts: true }],
     'eslint-comments/disable-enable-pair': ['error', { allowWholeFile: true }],
     'class-methods-use-this': 0,
+    'jsx-a11y/label-has-associated-control': [
+      2,
+      { controlComponents: ['Input'] },
+    ],
 
     // Rules turned off for Next.js
     'react/react-in-jsx-scope': 0,

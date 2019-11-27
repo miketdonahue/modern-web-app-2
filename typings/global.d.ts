@@ -1,3 +1,6 @@
+declare module '*.css';
+declare module '*.less';
+
 declare namespace NodeJS {
   interface Process {
     browser: boolean;

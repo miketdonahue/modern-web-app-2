@@ -117,7 +117,7 @@ app
         next();
       }
 
-      csrf({ cookie: { key: 'ds_csrf' } });
+      csrf({ cookie: { key: 'ds_csrf' } })(req, res, next);
     });
 
     // Apply Express middleware to GraphQL server
