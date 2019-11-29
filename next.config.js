@@ -1,7 +1,7 @@
 const withCss = require('@zeit/next-css');
 const withLess = require('@zeit/next-less');
 const getCSSModuleLocalIdent = require('react-dev-utils/getCSSModuleLocalIdent');
-const antDesignTheme = require('./public/styles/ant-design/theme');
+const antDesignTheme = require('./styles/components/theme');
 
 module.exports = withCss(
   withLess({

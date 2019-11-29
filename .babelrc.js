@@ -10,11 +10,11 @@ module.exports = {
           '@config': './config',
           '@pages': './pages',
           '@server': './server',
+          '@styles': './styles',
           '@utils': './utils',
         },
         extensions: ['.js', '.jsx', '.ts', '.tsx'],
       },
     ],
-    ['import', { libraryName: 'antd', style: true }],
   ],
 };

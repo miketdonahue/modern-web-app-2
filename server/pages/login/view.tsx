@@ -1,12 +1,15 @@
 import { Fragment } from 'react';
 import Router from 'next/router';
-import { Form, Button, Input } from 'antd';
 import { withFormik } from 'formik';
 import { withApollo, compose } from 'react-apollo';
-import ServerError from '@client/components/server-error';
-import withServerErrors from '@client/components/hoc/with-server-errors';
+import ServerError from 'components/server-error';
+import Button from 'antd/lib/button';
+import Form from 'antd/lib/form';
+import Input from 'antd/lib/input';
+import withServerErrors from 'components/hoc/with-server-errors';
 import { loginSchema } from './validations';
 import * as mutations from './graphql/mutations.gql';
+import 'antd/es/button/style/index.less';
 
 interface Props {
   client: any;

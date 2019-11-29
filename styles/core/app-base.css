@@ -1,0 +1,28 @@
+/* Page */
+body {
+  background-color: theme('colors.white');
+  color: theme('colors.black');
+  font-family: theme('fontFamily.app');
+  font-size: 100%;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-weight: theme('fontWeight.normal');
+  line-height: theme('lineHeight.normal');
+  text-rendering: optimizeLegibility;
+}
+
+/* Links */
+a {
+  color: theme('colors.link');
+  font-family: inherit;
+  text-decoration: none;
+
+  &:hover,
+  &:active {
+    text-decoration: underline;
+  }
+
+  &:visited {
+    color: theme('colors.link');
+  }
+}

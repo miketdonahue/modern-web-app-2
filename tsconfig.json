@@ -16,6 +16,7 @@
       "@config": ["config"],
       "@pages/*": ["pages/*"],
       "@server/*": ["server/*"],
+      "@styles/*": ["styles/*"],
       "@utils/*": ["utils/*"]
     },
     "lib": ["dom", "dom.iterable", "esnext"],

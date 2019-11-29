@@ -2,6 +2,7 @@ import App from 'next/app';
 import { ApolloProvider } from 'react-apollo';
 import withApolloClient from '@client/apollo/with-apollo';
 import { checkAccess } from '@client/modules';
+import '@styles/core/index.css';
 
 class NextApp extends App {
   public static async getInitialProps({ Component, ctx }): Promise<any> {
