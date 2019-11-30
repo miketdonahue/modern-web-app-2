@@ -2,12 +2,10 @@ module.exports = {
   // Order matters for plugins
   plugins: {
     'postcss-import': {},
-    'postcss-mixins': {},
-    'postcss-simple-vars': {},
-    'postcss-custom-properties': {},
-    'postcss-nested': {},
-    'postcss-functions': {},
     tailwindcss: {},
-    autoprefixer: {},
+    'postcss-preset-env': { stage: 3 }, // Includes: autoprefixer, nesting, custom-properties
+    'postcss-simple-vars': {},
+    'postcss-functions': {},
+    'postcss-mixins': {},
   },
 };

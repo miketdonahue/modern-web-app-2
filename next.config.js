@@ -10,7 +10,11 @@ module.exports = withCss(
     cssModules: true,
     cssLoaderOptions: {
       getLocalIdent: (context, localIdentName, localName, options) => {
-        if (context.resourcePath.includes('node_modules')) {
+        // Ensure 3rd-party and global core app (tailwind css) CSS do not get localized
+        if (
+          context.resourcePath.includes('node_modules') ||
+          context.resourcePath.includes('styles/core')
+        ) {
           return localName;
         }
 
