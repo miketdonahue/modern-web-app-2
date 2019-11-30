@@ -3,9 +3,12 @@ module.exports = {
   plugins: {
     'postcss-import': {},
     tailwindcss: {},
-    'postcss-preset-env': { stage: 3 }, // Includes: autoprefixer, nesting, custom-properties
     'postcss-simple-vars': {},
     'postcss-functions': {},
     'postcss-mixins': {},
+    'postcss-preset-env': {
+      stage: 3,
+      features: { 'nesting-rules': true, 'custom-properties': true },
+    },
   },
 };

@@ -3,13 +3,12 @@ import Router from 'next/router';
 import { withFormik } from 'formik';
 import { withApollo, compose } from 'react-apollo';
 import ServerError from 'components/server-error';
-import Button from 'antd/lib/button';
+import { Button } from '@components/antd';
 import Form from 'antd/lib/form';
 import Input from 'antd/lib/input';
 import withServerErrors from 'components/hoc/with-server-errors';
 import { loginSchema } from './validations';
 import * as mutations from './graphql/mutations.gql';
-import 'antd/es/button/style/index.less';
 
 interface Props {
   client: any;
