@@ -1,6 +1,9 @@
-export default [
-  {
-    route: '/posts/:id',
-    page: 'post',
-  },
-];
+export default {
+  path: '/posts',
+  routes: [
+    {
+      path: '/:id',
+      page: '/post',
+    },
+  ],
+};

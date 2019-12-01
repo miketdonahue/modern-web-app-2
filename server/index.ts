@@ -29,8 +29,8 @@ import { registerRoutes } from './plugins/register-routes';
 const isDev = process.env.NODE_ENV !== 'production';
 const dbConnectionName = isDev ? 'development' : 'production';
 const healthCheck = new HealthCheck();
-const app = nextServer({ dev: isDev });
-const handle = app.getRequestHandler();
+const nextApp = nextServer({ dev: isDev });
+const handle = nextApp.getRequestHandler();
 
 // Register types and resolvers
 const typesArray = fileLoader('typeDefs');
@@ -57,10 +57,10 @@ const schema = applyMiddleware(
   validations
 );
 
-app
+nextApp
   .prepare()
   .then(async () => {
-    const server = express();
+    const expressApp = express();
     const { host, port } = config.server;
 
     // Create database connection
@@ -93,25 +93,25 @@ app
       },
     });
 
-    server.set('trust proxy', true);
-    server.use(
+    expressApp.set('trust proxy', true);
+    expressApp.use(
       cors({
         origin: '*',
         credentials: true,
         optionsSuccessStatus: 200,
       })
     );
-    server.use(helmet());
-    server.use(helmet.referrerPolicy({ policy: 'same-origin' }));
-    server.use(requestLogger());
-    server.use(cookieParser());
-    server.use(
+    expressApp.use(helmet());
+    expressApp.use(helmet.referrerPolicy({ policy: 'same-origin' }));
+    expressApp.use(requestLogger());
+    expressApp.use(cookieParser());
+    expressApp.use(
       helmet.contentSecurityPolicy({
         directives: config.server.contentSecurityPolicy,
       })
     );
-    server.use(bodyParser.urlencoded({ extended: false }));
-    server.use((req, res, next) => {
+    expressApp.use(bodyParser.urlencoded({ extended: false }));
+    expressApp.use((req, res, next) => {
       if (
         req.path ===
         `${config.server.graphql.path}${config.server.graphql.playground.endpoint}`
@@ -123,11 +123,11 @@ app
     });
 
     // Register plugins
-    await registerRoutes(server, app, routes);
+    await registerRoutes(expressApp, nextApp, routes);
 
     // Apply Express middleware to GraphQL server
     apollo.applyMiddleware({
-      app: server,
+      app: expressApp,
       path: config.server.graphql.path,
       cors: {
         origin: 'same-origin',
@@ -138,8 +138,8 @@ app
     });
 
     // Health & graceful shutdown
-    server.get('/health/liveness', (req, res) => res.status(200).end());
-    server.get('/health/readiness', async (req, res) => {
+    expressApp.get('/health/liveness', (req, res) => res.status(200).end());
+    expressApp.get('/health/readiness', async (req, res) => {
       const dbReady = await healthCheck.isReady();
 
       if (!dbReady) return res.status(500).end();
@@ -147,11 +147,11 @@ app
     });
 
     // Catch all requests
-    server.get('*', (req, res) => {
+    expressApp.get('*', (req, res) => {
       return handle(req, res);
     });
 
-    const serverInstance = server.listen(port, () => {
+    const serverInstance = expressApp.listen(port, () => {
       logger.info(
         {
           host,
@@ -177,13 +177,13 @@ app
       });
     });
 
-    server.on('error', (err: any) => {
+    expressApp.on('error', (err: any) => {
       if (err.code === 'EADDRINUSE') {
         logger.info('Server address in use, retrying to start...');
 
         setTimeout(() => {
           serverInstance.close();
-          server.listen(port, () => {
+          expressApp.listen(port, () => {
             logger.info(
               {
                 host,

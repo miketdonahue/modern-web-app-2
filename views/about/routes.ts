@@ -1,6 +1,9 @@
-export default [
-  {
-    route: '/about',
-    page: 'about',
-  },
-];
+export default {
+  path: '/',
+  routes: [
+    {
+      path: '/about',
+      page: '/about',
+    },
+  ],
+};

@@ -1,6 +1,4 @@
-export default [
-  {
-    route: '/',
-    page: 'index',
-  },
-];
+export default {
+  path: '/',
+  page: '/index',
+};

@@ -71,14 +71,15 @@ export const authorize = (req, res): any => {
  *
  * @returns An Express.js middleware closure
  */
-export const verify = (): any => {
-  const oauth2Client = new google.auth.OAuth2(
-    process.env.GOOGLE_CLIENT_ID,
-    process.env.GOOGLE_SECRET,
-    oauthConfig.callbackUrl
-  );
+export const verify = {
+  name: 'oauth-google-verify',
+  function: async (req, res, next) => {
+    const oauth2Client = new google.auth.OAuth2(
+      process.env.GOOGLE_CLIENT_ID,
+      process.env.GOOGLE_SECRET,
+      oauthConfig.callbackUrl
+    );
 
-  return async (req, res, next) => {
     const db = getConnection(dbConnectionName);
     const { code, state } = req.query;
     const verifiedState = jwt.verify(state, config.server.auth.jwt.secret);
@@ -167,7 +168,7 @@ export const verify = (): any => {
     const role = await db.manager.findOne(Role, { uuid: actor.role_id });
     req.actor = { uuid: actor.uuid, role: transformRoleForToken(role) };
     return next();
-  };
+  },
 };
 
 /**
