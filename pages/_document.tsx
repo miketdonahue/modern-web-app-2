@@ -16,6 +16,12 @@ class MyDocument extends Document {
         <body>
           <Main />
           <NextScript />
+
+          {/*
+            The below empty script with an empty space is a hack to fix FOUC with Ant Design due to Chromium bug
+            https://lab.laukstein.com/bug/input
+          */}
+          <script> </script>
         </body>
       </Html>
     );

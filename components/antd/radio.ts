@@ -1,4 +1,4 @@
 import Radio from 'antd/lib/radio';
-import 'antd/es/radio/style/index';
+import 'antd/lib/radio/style/index.less';
 
-export { Radio };
+export default Radio;

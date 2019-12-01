@@ -2,7 +2,7 @@
   "restartable": "rs",
   "ignoreRoot": [".git"],
   "verbose": false,
-  "watch": ["server"],
-  "ext": "ts gql",
+  "watch": ["server", "tailwind.config.js", "postcss.config.js"],
+  "ext": "ts gql js",
   "exec": "babel-node --extensions '.ts,.tsx' server/index.ts"
 }

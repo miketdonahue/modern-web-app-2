@@ -1,4 +1,4 @@
 import Drawer from 'antd/lib/drawer';
-import 'antd/es/drawer/style/index';
+import 'antd/lib/drawer/style/index.less';
 
-export { Drawer };
+export default Drawer;

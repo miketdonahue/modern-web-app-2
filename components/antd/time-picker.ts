@@ -1,4 +1,4 @@
 import TimePicker from 'antd/lib/time-picker';
-import 'antd/es/time-picker/style/index';
+import 'antd/lib/time-picker/style/index.less';
 
-export { TimePicker };
+export default TimePicker;

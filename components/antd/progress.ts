@@ -1,4 +1,4 @@
 import Progress from 'antd/lib/progress';
-import 'antd/es/progress/style/index';
+import 'antd/lib/progress/style/index.less';
 
-export { Progress };
+export default Progress;

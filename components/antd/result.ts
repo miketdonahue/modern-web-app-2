@@ -1,4 +1,4 @@
 import Result from 'antd/lib/result';
-import 'antd/es/result/style/index';
+import 'antd/lib/result/style/index.less';
 
-export { Result };
+export default Result;

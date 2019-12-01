@@ -1,4 +1,4 @@
 import BackTop from 'antd/lib/back-top';
-import 'antd/es/back-top/style/index';
+import 'antd/lib/back-top/style/index.less';
 
-export { BackTop };
+export default BackTop;

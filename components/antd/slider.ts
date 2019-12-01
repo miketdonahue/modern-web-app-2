@@ -1,4 +1,5 @@
 import Slider from 'antd/lib/slider';
-import 'antd/es/slider/style/index';
+import 'antd/lib/slider/style/index.less';
+import 'antd/lib/tooltip/style/index.less';
 
-export { Slider };
+export default Slider;

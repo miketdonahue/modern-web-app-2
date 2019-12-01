@@ -2,16 +2,19 @@ import { google } from 'googleapis';
 import jwt from 'jsonwebtoken';
 import uuid from 'uuid/v4';
 import { prisma } from '@server/prisma/generated/prisma-client';
-import { getManager } from 'typeorm';
-import config from '@config';
+import { createConnection, getConnection, getManager } from 'typeorm';
 import generateCode from '@server/modules/code';
 import logger from '@server/modules/logger';
 import { Actor } from '@server/entities/actor';
 import { ActorAccount } from '@server/entities/actor-account';
 import { Role, RoleName } from '@server/entities/role';
 import { Oauth, ProviderName } from '@server/entities/oauth';
+import config from '@config';
 import { transformRoleForToken } from '../../../graphql/auth/utilities';
 import { jwtUserFragment, userAccountFragment } from '../fragments';
+
+const isDev = process.env.NODE_ENV !== 'production';
+const dbConnectionName = isDev ? 'development' : 'production';
 
 const oauthConfig = {
   callbackUrl: 'http://localhost:8080/oauth/google/callback',
@@ -76,12 +79,12 @@ export const verify = (): any => {
   );
 
   return async (req, res, next) => {
-    const db = getManager();
+    const db = getConnection(dbConnectionName);
     const { code, state } = req.query;
     const verifiedState = jwt.verify(state, config.server.auth.jwt.secret);
     const { tokens } = await oauth2Client.getToken(code);
     const { email } = jwt.decode(tokens.id_token);
-    let actor: any = await db.findOne(Actor, { email });
+    let actor: any = await db.manager.findOne(Actor, { email });
 
     if (!verifiedState) {
       logger.error(
@@ -93,14 +96,16 @@ export const verify = (): any => {
     }
 
     if (!actor) {
-      const role: any = await db.findOne(Role, { name: RoleName.ACTOR });
+      const role: any = await db.manager.findOne(Role, {
+        name: RoleName.ACTOR,
+      });
 
       logger.info(
         { provider: 'google', method: 'verify' },
         'OPEN-AUTH-MIDDLEWARE: Creating user'
       );
 
-      const insertedActor = await db.insert(Actor, {
+      const insertedActor = await db.manager.insert(Actor, {
         role_id: role.uuid,
         email,
       });
@@ -108,7 +113,7 @@ export const verify = (): any => {
       const [actorData] = insertedActor.raw;
       actor = actorData;
 
-      await db.insert(ActorAccount, {
+      await db.manager.insert(ActorAccount, {
         actor_id: actor.uuid,
         confirmed_code: config.server.auth.confirmable ? generateCode() : null,
       });
@@ -118,7 +123,7 @@ export const verify = (): any => {
     const expiresAt: any = tokens.expiry_date;
 
     try {
-      const existingOauth = await db.findOne(Oauth, {
+      const existingOauth = await db.manager.findOne(Oauth, {
         actor_id: actor.uuid,
         provider: ProviderName.GOOGLE,
       });
@@ -129,7 +134,7 @@ export const verify = (): any => {
           'OPEN-AUTH-MIDDLEWARE: Updating existing oauth record'
         );
 
-        await db.update(
+        await db.manager.update(
           Oauth,
           { uuid: existingOauth.uuid },
           {
@@ -143,7 +148,7 @@ export const verify = (): any => {
           'OPEN-AUTH-MIDDLEWARE: Creating new oauth record'
         );
 
-        await db.insert(Oauth, {
+        await db.manager.insert(Oauth, {
           actor_id: actor.uuid,
           provider: ProviderName.GOOGLE,
           refresh_token: refreshToken,
@@ -159,7 +164,7 @@ export const verify = (): any => {
       return res.redirect(302, oauthConfig.failureRedirect);
     }
 
-    const role = await db.findOne(Role, { uuid: actor.role_id });
+    const role = await db.manager.findOne(Role, { uuid: actor.role_id });
     req.actor = { uuid: actor.uuid, role: transformRoleForToken(role) };
     return next();
   };
@@ -178,11 +183,11 @@ export const verify = (): any => {
  * @returns Redirect to the "success" route, usually the root path
  */
 export const authenticate = async (req, res): Promise<any> => {
-  const db = getManager();
+  const db = getConnection(dbConnectionName);
   const { actor } = req;
 
   try {
-    await db.update(
+    await db.manager.update(
       ActorAccount,
       { actor_id: actor.uuid },
       { last_visit: new Date(), ip: req.ip }

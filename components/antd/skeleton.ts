@@ -1,4 +1,4 @@
 import Skeleton from 'antd/lib/skeleton';
-import 'antd/es/skeleton/style/index';
+import 'antd/lib/skeleton/style/index.less';
 
-export { Skeleton };
+export default Skeleton;

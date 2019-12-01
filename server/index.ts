@@ -15,7 +15,6 @@ import { HealthCheck } from '@server/modules/health-check';
 import logger from '@server/modules/logger';
 import { fileLoader } from '@utils/file-loaders/node';
 import { mergeResolvers } from '@utils/merge-resolvers/server';
-import config from '@config';
 import { mailer } from '@server/modules/mailer';
 import {
   access,
@@ -24,9 +23,10 @@ import {
   requestLogger,
   resolverLogger,
 } from '@server/middleware';
+import config from '@config';
 
 const isDev = process.env.NODE_ENV !== 'production';
-const dbConnectionName = isDev ? 'development' : 'default';
+const dbConnectionName = isDev ? 'development' : 'production';
 const healthCheck = new HealthCheck();
 const app = nextServer({ dev: isDev });
 const handle = app.getRequestHandler();

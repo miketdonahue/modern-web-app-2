@@ -1,4 +1,4 @@
 import Affix from 'antd/lib/affix';
-import 'antd/es/affix/style/index';
+import 'antd/lib/affix/style/index.less';
 
-export { Affix };
+export default Affix;

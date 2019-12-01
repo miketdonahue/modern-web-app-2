@@ -4,18 +4,23 @@ module.exports = {
   separator: ':',
   theme: {
     screens: {
-      sm: '640px',
-      md: '768px',
-      lg: '1024px',
-      xl: '1280px',
+      'p-md': '320px',
+      'p-lg': '480px',
+      't-sm': '600px',
+      't-md': '768px',
+      't-lg': '1024px',
+      'd-sm': '1280px',
+      'd-md': '1440px',
+      'd-lg': '1920px',
     },
     colors: {
       transparent: 'transparent',
-
       black: '#000',
       white: '#fff',
-      link: '#4299e1',
-
+      link: '#3182ce',
+      primary: '',
+      secondary: '',
+      tertiary: '',
       gray: {
         100: '#f7fafc',
         200: '#edf2f7',
@@ -250,16 +255,16 @@ module.exports = {
       ],
     },
     fontSize: {
-      xs: '0.75rem',
-      sm: '0.875rem',
-      base: '1rem',
-      lg: '1.125rem',
-      xl: '1.25rem',
-      '2xl': '1.5rem',
-      '3xl': '1.875rem',
-      '4xl': '2.25rem',
-      '5xl': '3rem',
-      '6xl': '4rem',
+      xs: '0.75rem', // 12px
+      sm: '0.875rem', // 14px
+      base: '1rem', // 16px
+      lg: '1.125rem', // 12px
+      xl: '1.25rem', // 18px
+      '2xl': '1.5rem', // 24px
+      '3xl': '1.875rem', // 30px
+      '4xl': '2.25rem', // 36px
+      '5xl': '3rem', // 48px
+      '6xl': '4rem', // 64px
     },
     fontWeight: {
       hairline: '100',

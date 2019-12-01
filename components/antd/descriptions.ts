@@ -1,4 +1,4 @@
 import Descriptions from 'antd/lib/descriptions';
-import 'antd/es/descriptions/style/index';
+import 'antd/lib/descriptions/style/index.less';
 
-export { Descriptions };
+export default Descriptions;

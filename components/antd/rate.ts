@@ -1,4 +1,5 @@
 import Rate from 'antd/lib/rate';
-import 'antd/es/rate/style/index';
+import 'antd/lib/rate/style/index.less';
+import 'antd/lib/tooltip/style/index.less';
 
-export { Rate };
+export default Rate;

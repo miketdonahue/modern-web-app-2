@@ -1,4 +1,4 @@
 import Avatar from 'antd/lib/avatar';
-import 'antd/es/avatar/style/index';
+import 'antd/lib/avatar/style/index.less';
 
-export { Avatar };
+export default Avatar;

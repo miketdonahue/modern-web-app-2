@@ -1,4 +1,4 @@
 import Tag from 'antd/lib/tag';
-import 'antd/es/tag/style/index';
+import 'antd/lib/tag/style/index.less';
 
-export { Tag };
+export default Tag;

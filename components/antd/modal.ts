@@ -1,4 +1,5 @@
 import Modal from 'antd/lib/modal';
-import 'antd/es/modal/style/index';
+import 'antd/lib/modal/style/index.less';
+import 'antd/lib/button/style/index.less';
 
-export { Modal };
+export default Modal;

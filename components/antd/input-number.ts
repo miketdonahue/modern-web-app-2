@@ -1,4 +1,4 @@
 import InputNumber from 'antd/lib/input-number';
-import 'antd/es/input-number/style/index';
+import 'antd/lib/input-number/style/index.less';
 
-export { InputNumber };
+export default InputNumber;

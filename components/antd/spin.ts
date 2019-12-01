@@ -1,4 +1,4 @@
 import Spin from 'antd/lib/spin';
-import 'antd/es/spin/style/index';
+import 'antd/lib/spin/style/index.less';
 
-export { Spin };
+export default Spin;

@@ -1,4 +1,4 @@
 import Tooltip from 'antd/lib/tooltip';
-import 'antd/es/tooltip/style/index';
+import 'antd/lib/tooltip/style/index.less';
 
-export { Tooltip };
+export default Tooltip;

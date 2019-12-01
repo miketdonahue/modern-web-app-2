@@ -1,4 +1,5 @@
 import Menu from 'antd/lib/menu';
-import 'antd/es/menu/style/index';
+import 'antd/lib/menu/style/index.less';
+import 'antd/lib/tooltip/style/index.less';
 
-export { Menu };
+export default Menu;

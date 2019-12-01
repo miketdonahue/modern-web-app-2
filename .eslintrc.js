@@ -26,6 +26,7 @@ module.exports = {
     'no-plusplus': ['error', { allowForLoopAfterthoughts: true }],
     'eslint-comments/disable-enable-pair': ['error', { allowWholeFile: true }],
     'class-methods-use-this': 0,
+    '@typescript-eslint/explicit-function-return-type': 0,
     'jsx-a11y/label-has-associated-control': [
       2,
       { controlComponents: ['Input'] },

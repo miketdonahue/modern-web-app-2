@@ -1,4 +1,4 @@
 import Comment from 'antd/lib/comment';
-import 'antd/es/comment/style/index';
+import 'antd/lib/comment/style/index.less';
 
-export { Comment };
+export default Comment;

@@ -1,4 +1,4 @@
 import Carousel from 'antd/lib/carousel';
-import 'antd/es/carousel/style/index';
+import 'antd/lib/carousel/style/index.less';
 
-export { Carousel };
+export default Carousel;

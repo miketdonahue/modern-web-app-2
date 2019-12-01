@@ -1,4 +1,4 @@
 import Checkbox from 'antd/lib/checkbox';
-import 'antd/es/checkbox/style/index';
+import 'antd/lib/checkbox/style/index.less';
 
-export { Checkbox };
+export default Checkbox;

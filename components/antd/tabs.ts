@@ -1,4 +1,4 @@
 import Tabs from 'antd/lib/tabs';
-import 'antd/es/tabs/style/index';
+import 'antd/lib/tabs/style/index.less';
 
-export { Tabs };
+export default Tabs;

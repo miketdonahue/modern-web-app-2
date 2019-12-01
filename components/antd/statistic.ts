@@ -1,4 +1,4 @@
 import Statistic from 'antd/lib/statistic';
-import 'antd/es/statistic/style/index';
+import 'antd/lib/statistic/style/index.less';
 
-export { Statistic };
+export default Statistic;

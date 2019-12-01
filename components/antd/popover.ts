@@ -1,4 +1,4 @@
 import Popover from 'antd/lib/popover';
-import 'antd/es/popover/style/index';
+import 'antd/lib/popover/style/index.less';
 
-export { Popover };
+export default Popover;

@@ -1,4 +1,5 @@
 import PopConfirm from 'antd/lib/popconfirm';
-import 'antd/es/popconfirm/style/index';
+import 'antd/lib/popover/style/index.less';
+import 'antd/lib/button/style/index.less';
 
-export { PopConfirm };
+export default PopConfirm;

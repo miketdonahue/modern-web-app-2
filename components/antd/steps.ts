@@ -1,4 +1,4 @@
 import Steps from 'antd/lib/steps';
-import 'antd/es/steps/style/index';
+import 'antd/lib/steps/style/index.less';
 
-export { Steps };
+export default Steps;

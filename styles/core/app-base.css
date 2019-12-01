@@ -1,9 +1,9 @@
 /* Page */
 body {
   background-color: theme('colors.white');
-  color: theme('colors.black');
-  font-family: theme('fontFamily.app');
-  font-size: 100%;
+  color: theme('textColor.black');
+  font-family: theme('fontFamily.sans');
+  font-size: 100%; /* 16px */
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   font-weight: theme('fontWeight.normal');
@@ -25,4 +25,47 @@ a {
   &:visited {
     color: theme('colors.link');
   }
+}
+
+/* Lists */
+ol,
+ul {
+  list-style-position: outside;
+  margin-left: 2.5em;
+}
+
+ul {
+  list-style-type: disc;
+}
+
+ol {
+  list-style-type: decimal;
+}
+
+/* Font styles */
+strong,
+b {
+  font-weight: theme('fontWeight.bold');
+}
+
+em,
+i {
+  font-style: italic;
+}
+
+u {
+  text-decoration: underline;
+}
+
+sup,
+sub {
+  font-size: 0.75em;
+}
+
+sup {
+  vertical-align: super;
+}
+
+sub {
+  vertical-align: sub;
 }

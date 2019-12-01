@@ -1,4 +1,4 @@
 import Switch from 'antd/lib/switch';
-import 'antd/es/switch/style/index';
+import 'antd/lib/switch/style/index.less';
 
-export { Switch };
+export default Switch;

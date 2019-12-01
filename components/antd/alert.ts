@@ -1,4 +1,4 @@
 import Alert from 'antd/lib/alert';
-import 'antd/es/alert/style/index';
+import 'antd/lib/alert/style/index.less';
 
-export { Alert };
+export default Alert;

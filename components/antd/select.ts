@@ -1,4 +1,5 @@
 import Select from 'antd/lib/select';
-import 'antd/es/select/style/index';
+import 'antd/lib/select/style/index.less';
+import 'antd/lib/empty/style/index.less';
 
-export { Select };
+export default Select;

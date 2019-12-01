@@ -1,4 +1,5 @@
 import Anchor from 'antd/lib/anchor';
-import 'antd/es/anchor/style/index';
+import 'antd/lib/anchor/style/index.less';
+import 'antd/lib/affix/style/index.less';
 
-export { Anchor };
+export default Anchor;

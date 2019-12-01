@@ -1,4 +1,5 @@
 import Form from 'antd/lib/form';
-import 'antd/es/form/style/index';
+import 'antd/lib/form/style/index.less';
+import 'antd/lib/grid/style/index.less';
 
-export { Form };
+export default Form;

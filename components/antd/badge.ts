@@ -1,4 +1,4 @@
 import Badge from 'antd/lib/badge';
-import 'antd/es/badge/style/index';
+import 'antd/lib/badge/style/index.less';
 
-export { Badge };
+export default Badge;

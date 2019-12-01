@@ -1,6 +1,6 @@
 module.exports = [
   {
-    name: 'default',
+    name: 'production',
     type: 'postgres',
     host: process.env.DB_HOST,
     port: 5432,

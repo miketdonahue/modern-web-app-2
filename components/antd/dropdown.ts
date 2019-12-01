@@ -1,4 +1,5 @@
 import Dropdown from 'antd/lib/dropdown';
-import 'antd/es/dropdown/style/index';
+import 'antd/lib/dropdown/style/index.less';
+import 'antd/lib/button/style/index.less';
 
-export { Dropdown };
+export default Dropdown;

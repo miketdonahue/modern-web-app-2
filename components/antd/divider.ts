@@ -1,4 +1,4 @@
 import Divider from 'antd/lib/divider';
-import 'antd/es/divider/style/index';
+import 'antd/lib/divider/style/index.less';
 
-export { Divider };
+export default Divider;
