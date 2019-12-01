@@ -1,3 +1,3 @@
-import About from '@server/pages/about/view';
+import About from 'views/about/view';
 
 export default About;

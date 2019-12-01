@@ -49,7 +49,7 @@ export default {
     dirs: {
       types: '.build/server/graphql/**/types/*.gql',
       resolvers: '.build/server/graphql/**/resolvers/*.js',
-      routes: '.build/server/pages/**/routes.js',
+      routes: '.build/views/**/routes.js',
       access: '.build/server/graphql/**/access.js',
       validations: '.build/server/graphql/**/validations.js',
     },

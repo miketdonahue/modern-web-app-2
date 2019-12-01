@@ -1,6 +1,6 @@
 /* eslint-disable global-require */
 const purgecss = require('@fullhuman/postcss-purgecss')({
-  content: ['./server/pages/**/*.tsx'],
+  content: ['./views/**/*.tsx'],
   whitelistPatterns: [/ant/], // ignore ant design classes
 
   // Include any special characters you're using in this regular expression

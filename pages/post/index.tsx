@@ -1,3 +1,3 @@
-import Post from '@server/pages/post/view';
+import Post from 'views/post/view';
 
 export default Post;

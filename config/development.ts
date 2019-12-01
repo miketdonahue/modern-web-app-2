@@ -51,7 +51,7 @@ export default merge(defaultConfig, {
     dirs: {
       types: 'server/graphql/**/types/*.gql',
       resolvers: 'server/graphql/**/resolvers/*.ts',
-      routes: 'server/pages/**/routes.ts',
+      routes: 'views/**/routes.ts',
       access: 'server/graphql/**/access.ts',
       validations: 'server/graphql/**/validations.ts',
     },
