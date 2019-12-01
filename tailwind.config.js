@@ -15,10 +15,10 @@ module.exports = {
     },
     colors: {
       transparent: 'transparent',
-      black: '#000',
+      black: '#333',
       white: '#fff',
       link: '#3182ce',
-      primary: '',
+      primary: '#4433ff',
       secondary: '',
       tertiary: '',
       gray: {
@@ -133,6 +133,7 @@ module.exports = {
       },
     },
     spacing: {
+      // increments by 4px
       px: '1px',
       '0': '0',
       '1': '0.25rem',
