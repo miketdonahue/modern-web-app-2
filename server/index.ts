@@ -24,6 +24,7 @@ import {
   resolverLogger,
 } from '@server/middleware';
 import config from '@config';
+import { registerRoutes } from './plugins/register-routes';
 
 const isDev = process.env.NODE_ENV !== 'production';
 const dbConnectionName = isDev ? 'development' : 'production';
@@ -121,6 +122,9 @@ app
       csrf({ cookie: { key: 'ds_csrf' } })(req, res, next);
     });
 
+    // Register plugins
+    await registerRoutes(server, app, routes);
+
     // Apply Express middleware to GraphQL server
     apollo.applyMiddleware({
       app: server,
@@ -131,23 +135,6 @@ app
         optionsSuccessStatus: 200,
       },
       bodyParserConfig: true,
-    });
-
-    routes.forEach(function defineRoutes(obj) {
-      const { route, page = null, middleware = [], controller = null } = obj;
-
-      if (!page) {
-        server.get(route, middleware, controller);
-      }
-
-      server.get(route, (req, res) =>
-        app.render(
-          req,
-          res,
-          `/${page}`,
-          Object.assign({}, req.query, req.params)
-        )
-      );
     });
 
     // Health & graceful shutdown
