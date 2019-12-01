@@ -9,6 +9,7 @@
   "main": "index.js",
   "scripts": {
     "build": "./scripts/build.sh",
+    "build:analyze": "ANALYZE=true yarn build",
     "start": "NODE_ENV=production node .build/server/index.js",
     "dev": "nodemon",
     "lint": "eslint pages --ext '.ts,.tsx' --quiet",
@@ -86,6 +87,7 @@
     "@commitlint/cli": "8.2.0",
     "@commitlint/config-conventional": "8.2.0",
     "@fullhuman/postcss-purgecss": "^1.3.0",
+    "@next/bundle-analyzer": "^9.1.4",
     "@types/cookie-parser": "1.4.2",
     "@types/csurf": "1.9.36",
     "@types/enzyme": "3.10.3",
