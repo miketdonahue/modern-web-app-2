@@ -5,4 +5,4 @@ import 'antd/lib/checkbox/style/index.less';
 import 'antd/lib/button/style/index.less';
 import 'antd/lib/input/style/index.less';
 
-export default Transfer;
+export { Transfer };

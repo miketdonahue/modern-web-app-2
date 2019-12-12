@@ -5,4 +5,4 @@ import 'antd/lib/button/style/index.less';
 import 'antd/lib/time-picker/style/index.less';
 import 'antd/lib/tag/style/index.less';
 
-export default DatePicker;
+export { DatePicker };

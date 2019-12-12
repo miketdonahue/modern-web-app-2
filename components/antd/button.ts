@@ -1,4 +1,4 @@
 import Button from 'antd/lib/button';
 import 'antd/lib/button/style/index.less';
 
-export default Button;
+export { Button };

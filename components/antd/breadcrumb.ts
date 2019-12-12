@@ -5,4 +5,4 @@ import 'antd/lib/tooltip/style/index.less';
 import 'antd/lib/dropdown/style/index.less';
 import 'antd/lib/button/style/index.less';
 
-export default Breadcrumb;
+export { Breadcrumb };

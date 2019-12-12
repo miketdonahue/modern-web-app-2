@@ -14,11 +14,14 @@ module.exports = withBundleAnalyzer(
       poweredByHeader: false,
       cssModules: true,
       cssLoaderOptions: {
+        importLoaders: 1,
+        localIdentName: '[local]_[hash:base64:5]',
         getLocalIdent: (context, localIdentName, localName, options) => {
           // Ensure 3rd-party and global core app (tailwind css) CSS do not get localized
           if (
             context.resourcePath.includes('node_modules') ||
-            context.resourcePath.includes('styles/core')
+            context.resourcePath.includes('styles/core') ||
+            context.resourcePath.includes('overrides')
           ) {
             return localName;
           }

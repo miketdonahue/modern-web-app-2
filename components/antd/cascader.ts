@@ -4,4 +4,4 @@ import 'antd/lib/empty/style/index.less';
 import 'antd/lib/input/style/index.less';
 import 'antd/lib/button/style/index.less';
 
-export default Cascader;
+export { Cascader };

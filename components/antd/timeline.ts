@@ -1,4 +1,4 @@
 import Timeline from 'antd/lib/timeline';
 import 'antd/lib/timeline/style/index.less';
 
-export default Timeline;
+export { Timeline };
