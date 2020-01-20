@@ -12,7 +12,9 @@
     "build:analyze": "ANALYZE=true yarn build",
     "start": "NODE_ENV=production node .build/server/index.js",
     "dev": "nodemon",
-    "lint": "eslint pages --ext '.ts,.tsx' --quiet",
+    "lint:ts": "eslint src --ext '.ts,.tsx' --quiet",
+    "lint:css": "stylelint src/**/*.css --quiet",
+    "lint": "yarn lint:ts && yarn lint:css",
     "prettier:fix": "prettier \"**/*.{ts,tsx}\" --write",
     "ts": "tsc & tsc -p server/tsconfig.json",
     "test": "jest",
@@ -155,7 +157,11 @@
     "linters": {
       "*.{ts,tsx}": [
         "yarn prettier:fix",
-        "yarn lint --fix",
+        "yarn lint:ts --fix",
+        "git add"
+      ],
+      "*.css": [
+        "yarn lint:css --fix",
         "git add"
       ]
     }
