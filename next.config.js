@@ -1,7 +1,7 @@
 const withCss = require('@zeit/next-css');
 const withLess = require('@zeit/next-less');
 const getCSSModuleLocalIdent = require('react-dev-utils/getCSSModuleLocalIdent');
-const antDesignTheme = require('./styles/components/theme');
+const antDesignTheme = require('./src/styles/components/theme');
 
 const withBundleAnalyzer = require('@next/bundle-analyzer')({
   enabled: process.env.ANALYZE === 'true',

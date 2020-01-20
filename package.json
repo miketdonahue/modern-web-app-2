@@ -20,11 +20,11 @@
     "test": "jest",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
-    "db:migration:create": "typeorm migration:create -n Untitled",
+    "db:migration:create": "typeorm migration:create -n untitled",
     "db:migration:run": "babel-node --extensions '.ts' ./node_modules/typeorm/cli.js migration:run",
     "db:migration:revert": "babel-node --extensions '.ts' ./node_modules/typeorm/cli.js migration:revert",
     "db:migration:show": "babel-node --extensions '.ts' ./node_modules/typeorm/cli.js migration:show",
-    "db:seed:create": "typeorm migration:create -n Untitled -d server/seeds",
+    "db:seed:create": "typeorm migration:create -n untitled -d server/seeds",
     "db:seed:run": "babel-node --extensions '.ts' ./node_modules/typeorm/cli.js migration:run -c seed",
     "db:seed:reset": "babel-node --extensions '.ts' ./node_modules/typeorm/cli.js migration:revert -c seed"
   },

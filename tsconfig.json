@@ -12,13 +12,13 @@
     "jsx": "preserve",
     "baseUrl": ".",
     "paths": {
-      "@client/*": ["client/*"],
-      "@components/*": ["components/*"],
+      "@client/*": ["src/client/*"],
+      "@components/*": ["src/components/*"],
       "@config": ["config"],
-      "@pages/*": ["pages/*"],
-      "@server/*": ["server/*"],
-      "@styles/*": ["styles/*"],
-      "@utils/*": ["utils/*"]
+      "@pages/*": ["src/pages/*"],
+      "@server/*": ["src/server/*"],
+      "@styles/*": ["src/styles/*"],
+      "@utils/*": ["src/utils/*"]
     },
     "lib": ["dom", "dom.iterable", "esnext"],
     "forceConsistentCasingInFileNames": true,

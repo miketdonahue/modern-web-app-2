@@ -4,4 +4,4 @@ config
 node_modules
 next.config.js
 webpack.config.js
-server/prisma/generated
+src/server/prisma/generated

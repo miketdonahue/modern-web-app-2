@@ -4,5 +4,5 @@
   "verbose": false,
   "watch": ["server", "tailwind.config.js", "postcss.config.js"],
   "ext": "ts gql js",
-  "exec": "babel-node --extensions '.ts,.tsx' server/index.ts"
+  "exec": "babel-node --extensions '.ts,.tsx' src/server/index.ts"
 }
