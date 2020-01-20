@@ -8,14 +8,14 @@ export enum ProviderName {
 @Entity('oauth')
 export class Oauth extends BaseTable {
   @Column('uuid')
-  public actor_id!: string;
+  public actor_id: string;
 
   @Column('enum', { enum: ProviderName })
-  public provider!: ProviderName;
+  public provider: ProviderName;
 
   @Column('varchar', { nullable: true })
-  public refresh_token!: string | null;
+  public refresh_token: string | null;
 
   @Column('timestamp with time zone', { nullable: true })
-  public expires_at!: Date | null;
+  public expires_at: Date | null;
 }

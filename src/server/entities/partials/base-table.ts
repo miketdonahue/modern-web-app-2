@@ -8,22 +8,22 @@ import {
 
 export abstract class BaseTable {
   @PrimaryGeneratedColumn()
-  public id!: number;
+  public id: number;
 
   @PrimaryGeneratedColumn('uuid')
-  public uuid!: string;
+  public uuid: string;
 
   @CreateDateColumn()
-  public created_at!: Date;
+  public created_at: Date;
 
   @UpdateDateColumn()
-  public updated_at!: Date;
+  public updated_at: Date;
 
   @Column('timestamp with time zone', { nullable: true })
-  public deleted_at!: Date | null;
+  public deleted_at: Date | null;
 
   @Column('boolean', { default: false })
-  public deleted!: boolean;
+  public deleted: boolean;
 
   /* Listeners */
   @BeforeUpdate()

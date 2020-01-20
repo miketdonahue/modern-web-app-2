@@ -17,11 +17,11 @@ export enum RoleName {
 @Entity('role')
 export class Role extends BaseTable {
   @Column('enum', { enum: RoleName, default: RoleName.ACTOR })
-  public name!: RoleName;
+  public name: RoleName;
 
   @Column('varchar', { array: true, nullable: true })
-  public permissions!: Permission[];
+  public permissions: Permission[];
 
   @Column('jsonb', { nullable: true })
-  public prohibited_routes!: ProhibitedRoutes | null;
+  public prohibited_routes: ProhibitedRoutes | null;
 }
