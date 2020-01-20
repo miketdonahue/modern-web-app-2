@@ -1,5 +1,5 @@
 module.exports = {
-  extends: 'stylelint-config-standard',
+  extends: ['stylelint-config-standard', 'stylelint-config-prettier'],
   defaultSeverity: 'error',
   rules: {
     'at-rule-no-unknown': [
@@ -13,6 +13,16 @@ module.exports = {
           'components',
           'utilities',
           'screen',
+        ],
+      },
+    ],
+    'selector-pseudo-class-no-unknown': [
+      true,
+      {
+        ignorePseudoClasses: [
+          // CSS Modules directives
+          'global',
+          'local',
         ],
       },
     ],

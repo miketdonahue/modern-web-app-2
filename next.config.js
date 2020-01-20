@@ -21,7 +21,7 @@ module.exports = withBundleAnalyzer(
           if (
             context.resourcePath.includes('node_modules') ||
             context.resourcePath.includes('styles/core') ||
-            context.resourcePath.includes('overrides')
+            context.resourcePath.includes('components/antd')
           ) {
             return localName;
           }

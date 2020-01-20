@@ -25,7 +25,7 @@ module.exports = {
       stage: 3,
       features: { 'nesting-rules': true, 'custom-properties': true },
     }),
-    ...(process.env.NODE_ENV === 'production' ? [purgecss] : []),
+    // ...(process.env.NODE_ENV === 'production' ? [purgecss] : []),
     require('postcss-reporter')({ clearReportedMessages: true }),
   ],
 };
