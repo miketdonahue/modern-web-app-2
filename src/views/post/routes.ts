@@ -3,7 +3,7 @@ export default {
   routes: [
     {
       path: '/:id',
-      page: '/post',
+      page: '/post/[id]',
     },
   ],
 };

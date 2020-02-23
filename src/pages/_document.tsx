@@ -1,7 +1,13 @@
-import Document, { Html, Head, Main, NextScript } from 'next/document';
+import Document, {
+  Html,
+  Head,
+  Main,
+  NextScript,
+  DocumentContext,
+} from 'next/document';
 
 class MyDocument extends Document {
-  public static async getInitialProps(context): Promise<any> {
+  public static async getInitialProps(context: DocumentContext): Promise<any> {
     const initialProps = await Document.getInitialProps(context);
 
     return { ...initialProps };
@@ -16,12 +22,6 @@ class MyDocument extends Document {
         <body>
           <Main />
           <NextScript />
-
-          {/*
-            The below empty script with an empty space is a hack to fix FOUC with Ant Design due to Chromium bug
-            https://lab.laukstein.com/bug/input
-          */}
-          <script> </script>
         </body>
       </Html>
     );

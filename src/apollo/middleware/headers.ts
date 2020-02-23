@@ -10,18 +10,17 @@ import Cookies from 'universal-cookie';
  * @param cookies - A string of application cookies
  * @returns Forwards the operation to the next middleware
  */
-export const headersMiddleware = (cookies): any =>
+export const headersMiddleware = (cookies: any) =>
   new ApolloLink((operation, forward) => {
     operation.setContext(() => {
-      const cookie = new Cookies(cookies());
+      const cookie = new Cookies(cookies);
       const jwtToken = cookie.get('token');
       const csrfToken = cookie.get('csrf');
 
       return {
         headers: {
           authorization: jwtToken ? `Bearer ${jwtToken}` : null,
-          'CSRF-Token': csrfToken,
-          Cookie: cookies(),
+          'x-csrf-token': csrfToken,
         },
       };
     });

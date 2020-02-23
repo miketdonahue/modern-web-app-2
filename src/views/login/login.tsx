@@ -1,4 +1,80 @@
-export default (): any => <div>Login page</div>;
+import { withApollo } from '@apollo-setup/with-apollo';
+import { useMutation } from '@apollo/react-hooks';
+import { useRouter } from 'next/router';
+import { useFormik } from 'formik';
+import { ServerError } from '@components/server-error';
+import { loginValidationSchema } from './validations';
+import * as mutations from './graphql/mutations.gql';
+
+// with server errors hoc should be turned into a hook
+
+const Login = () => {
+  const router = useRouter();
+
+  const [loginActor, { loading, error, data }] = useMutation(
+    mutations.loginActor,
+    {
+      onCompleted: () => {
+        router.push('/');
+      },
+      // onError: (graphQLErrors: any) => {
+      //   return formatServerErrors(graphQLErrors);
+      // },
+    }
+  );
+
+  const formik = useFormik({
+    initialValues: {
+      email: '',
+      password: '',
+    },
+    validationSchema: loginValidationSchema,
+    onSubmit: values => {
+      loginActor({
+        variables: {
+          input: { email: values.email, password: values.password },
+        },
+      });
+    },
+  });
+
+  return (
+    <>
+      {/* <ServerError errors={serverErrors} /> */}
+
+      <form onSubmit={formik.handleSubmit}>
+        <div>
+          <label htmlFor="email">
+            Email
+            <input
+              id="email"
+              type="email"
+              value={formik.values.email}
+              onChange={formik.handleChange}
+            />
+          </label>
+          {/* {errors.email && touched.email ? <div>{errors.email}</div> : null} */}
+        </div>
+        <div>
+          <label htmlFor="password">
+            Password
+            <input
+              id="password"
+              type="password"
+              value={formik.values.password}
+              onChange={formik.handleChange}
+            />
+          </label>
+        </div>
+        <button type="submit">Login</button>
+      </form>
+
+      <a href="/oauth/google">Login with Google</a>
+    </>
+  );
+};
+
+export default withApollo()(Login);
 
 // import { Fragment } from 'react';
 // import Router from 'next/router';

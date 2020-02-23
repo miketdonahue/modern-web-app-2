@@ -17,7 +17,7 @@ export default {
         urlEncoded: { extended: false },
         json: {},
       },
-      csrf: { cookie: { key: 'ds_csrf' } },
+      csrf: { cookie: { key: '_ds_csrf', sameSite: true } },
     },
     graphql: {
       path: '/graphql',

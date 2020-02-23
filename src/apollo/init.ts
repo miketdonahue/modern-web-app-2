@@ -3,7 +3,7 @@ import { from } from 'apollo-link';
 import { InMemoryCache } from 'apollo-cache-inmemory';
 import { fileLoader } from '@utils/file-loaders/webpack';
 import { mergeResolvers } from '@utils/merge-resolvers/client';
-import { httpMiddleware, headersMiddleware } from 'src/client/middleware';
+import { httpMiddleware, headersMiddleware } from './middleware';
 
 // Register types and resolvers
 const typesArray = fileLoader('typeDefs');
@@ -23,10 +23,13 @@ let globalApolloClient = null;
 const createApolloClient = (initialState, context): any => {
   // The `context` (NextPageContext) will only be present on the server.
   // use it to extract auth headers (context.req) or similar.
+  const cookies =
+    context && context.req && context.req.headers && context.req.headers.cookie;
+
   const client = new ApolloClient({
     name: 'web',
     ssrMode: Boolean(context),
-    link: from([/* headersMiddleware(cookies), */ httpMiddleware]),
+    link: from([headersMiddleware(cookies), httpMiddleware]),
     cache: new InMemoryCache().restore(initialState || {}),
     typeDefs: [...typesArray], // extends server types
     resolvers, // extends server resolvers

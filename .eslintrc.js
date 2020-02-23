@@ -20,10 +20,6 @@ module.exports = {
       'always',
       { exceptAfterSingleLine: true },
     ],
-    '@typescript-eslint/explicit-function-return-type': [
-      'error',
-      { allowExpressions: true },
-    ],
     'no-underscore-dangle': ['error', { allow: ['_headers'] }],
     'no-restricted-syntax': 0,
     'no-plusplus': ['error', { allowForLoopAfterthoughts: true }],
