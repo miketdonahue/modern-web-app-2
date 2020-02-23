@@ -13,6 +13,7 @@
     "jsx": "preserve",
     "baseUrl": ".",
     "paths": {
+      "@apollo/*": ["src/apollo/*"],
       "@client/*": ["src/client/*"],
       "@components/*": ["src/components/*"],
       "@config": ["config"],

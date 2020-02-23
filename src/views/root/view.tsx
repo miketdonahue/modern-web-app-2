@@ -4,8 +4,8 @@ import Router, { withRouter } from 'next/router';
 // import { withApollo, compose } from 'react-apollo';
 import Cookies from 'universal-cookie';
 import Policy from 'src/components/policy';
+import { withApollo } from '@apollo/with-apollo';
 import * as mutations from './graphql/mutations.gql';
-import { withApollo } from '../../client/apollo/with-apollo';
 
 const PostLink = (props): any => {
   const { id, title } = props;
