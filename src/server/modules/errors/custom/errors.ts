@@ -1,3 +1,4 @@
+/* eslint-disable max-classes-per-file */
 import { ApolloError } from 'apollo-server-express';
 import errors from './constants';
 

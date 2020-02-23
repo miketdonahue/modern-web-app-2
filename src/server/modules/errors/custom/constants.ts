@@ -1,9 +1,4 @@
 export default {
-  INVALID_ACTOR_INPUT: {
-    message: 'Actor input is invalid',
-    code: 'INVALID_ACTOR_INPUT',
-    meta: { level: 'warn' },
-  },
   UNAUTHENTICATED: {
     message: 'Unauthenticated',
     code: 'UNAUTHENTICATED',

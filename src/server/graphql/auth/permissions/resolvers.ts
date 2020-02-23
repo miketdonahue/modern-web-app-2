@@ -37,7 +37,7 @@ export const accountUnlocked = rule()(async (parent, args, context, info) => {
   );
 
   if (!actorAccount) {
-    return new InternalError('INVALID_ACTOR_INPUT', { args });
+    throw new InternalError('INVALID_CREDENTIALS');
   }
 
   if (actorAccount.locked) {

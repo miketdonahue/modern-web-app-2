@@ -253,7 +253,7 @@ const setActorSecurityQuestionAnswers = async (
   };
 
   if (!actorAccount) {
-    throw new InternalError('INVALID_ACTOR_INPUT', { args });
+    throw new InternalError('ACTOR_NOT_FOUND', { args });
   }
 
   logger.info("AUTH-RESOLVER: Setting actor's security questions");
@@ -314,7 +314,7 @@ const getActorSecurityQuestionAnswers = async (
   );
 
   if (!answers) {
-    throw new InternalError('INVALID_ACTOR_INPUT', { args });
+    throw new InternalError('ACTOR_NOT_FOUND', { args });
   }
 
   return answers;
@@ -422,7 +422,7 @@ const resetPassword = async (parent, args, context, info): Promise<any> => {
   );
 
   if (!actorAccount) {
-    throw new InternalError('INVALID_ACTOR_INPUT', { args });
+    throw new InternalError('ACTOR_NOT_FOUND', { args });
   }
 
   logger.info("AUTH-RESOLVER: Preparing actor's password for reset");

@@ -11,7 +11,7 @@ import { initApolloClient, initOnContext } from './init';
  * @param  {Boolean} [withApolloOptions.ssr=true]
  * @returns {(PageComponent: ReactNode) => ReactNode}
  */
-export const withApollo = ({ ssr = true } = {}) => PageComponent => {
+export const withApollo = ({ ssr = false } = {}) => PageComponent => {
   const WithApollo = ({ apolloClient, apolloState, ...pageProps }) => {
     let client;
     if (apolloClient) {
