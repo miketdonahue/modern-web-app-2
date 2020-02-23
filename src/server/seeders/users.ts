@@ -5,7 +5,7 @@ import jwt from 'jsonwebtoken';
 import uuid from 'uuid/v4';
 import { prisma } from '@server/prisma/generated/prisma-client';
 import generateCode from '@server/modules/code';
-import config from '@config';
+import { config } from '@config';
 
 const chance = new Chance();
 const numberOfUsers = 5;

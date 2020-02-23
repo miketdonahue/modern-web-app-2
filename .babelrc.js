@@ -6,7 +6,7 @@ module.exports = {
       {
         root: ['./'],
         alias: {
-          '@apollo': './src/apollo',
+          '@apollo-setup': './src/apollo',
           '@client': './src/client',
           '@components': './src/components',
           '@config': './config',

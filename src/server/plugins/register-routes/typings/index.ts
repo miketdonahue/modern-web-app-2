@@ -1,14 +1,10 @@
-import { Request, Response, NextFunction, Express } from 'express';
+import { Request, Response, NextFunction } from 'express';
+import { Middleware } from '../../register-middleware/typings';
 
 export interface Route {
   path: string | string[] | RegExp | RegExp[];
   middleware?: Middleware[];
   routes: Action[];
-}
-
-export interface Middleware {
-  name: string;
-  function: (req: Request, res: Response, next: NextFunction) => void;
 }
 
 export interface Action {

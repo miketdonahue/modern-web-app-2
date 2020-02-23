@@ -3,7 +3,7 @@ import { isBefore, addHours } from 'date-fns';
 import { InternalError } from '@server/modules/errors';
 import generateCode from '@server/modules/code';
 import { ActorAccount } from '@server/entities/actor-account';
-import config from '@config';
+import { config } from '@config';
 
 /**
  * Checks if actor account has been locked

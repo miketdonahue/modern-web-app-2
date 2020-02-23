@@ -4,7 +4,7 @@ import { addHours } from 'date-fns';
 import uuid from 'uuid/v4';
 import generateCode from '@server/modules/code';
 import { InternalError, ExternalError } from '@server/modules/errors';
-import logger from '@server/modules/logger';
+import { logger } from '@server/modules/logger';
 import { Actor } from '@server/entities/actor';
 import { ActorAccount } from '@server/entities/actor-account';
 import { Role, RoleName } from '@server/entities/role';
@@ -16,7 +16,7 @@ import {
   CONFIRMATION_EMAIL,
   UNLOCK_ACCOUNT_EMAIL,
 } from '@server/modules/mailer';
-import config from '@config';
+import { config } from '@config';
 import { transformRoleForToken } from '../utilities';
 
 // TODO: wrap calls in try/catch

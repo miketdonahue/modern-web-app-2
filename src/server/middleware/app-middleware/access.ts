@@ -2,7 +2,7 @@ import { shield, deny } from 'graphql-shield';
 import assign from 'assign-deep';
 import { InternalError } from '@server/modules/errors';
 import { fileLoader } from '@utils/file-loaders/node';
-import config from '@config';
+import { config } from '@config';
 
 const permissionsArray = fileLoader('permissions');
 

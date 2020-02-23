@@ -12,7 +12,6 @@ import { initApolloClient, initOnContext } from './init';
  * @returns {(PageComponent: ReactNode) => ReactNode}
  */
 export const withApollo = ({ ssr = true } = {}) => PageComponent => {
-  console.log('X PAGE COMP', PageComponent);
   const WithApollo = ({ apolloClient, apolloState, ...pageProps }) => {
     let client;
     if (apolloClient) {
@@ -22,7 +21,7 @@ export const withApollo = ({ ssr = true } = {}) => PageComponent => {
       // Happens on: next.js csr
       client = initApolloClient(apolloState, undefined);
     }
-    console.log('X CLIENT', client);
+
     return (
       <ApolloProvider client={client}>
         <PageComponent {...pageProps} />
@@ -38,9 +37,7 @@ export const withApollo = ({ ssr = true } = {}) => PageComponent => {
   }
 
   if (ssr || PageComponent.getInitialProps) {
-    console.log('WITH SSR');
     WithApollo.getInitialProps = async context => {
-      console.log('INSIDE CONTEXT', context);
       const inAppContext = Boolean(context.ctx);
       const { apolloClient } = initOnContext(context);
 

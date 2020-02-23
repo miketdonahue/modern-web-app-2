@@ -1,18 +1,13 @@
 import 'reflect-metadata';
 import express from 'express';
 import nextServer from 'next';
-import cors from 'cors';
-import helmet from 'helmet';
-import cookieParser from 'cookie-parser';
-import bodyParser from 'body-parser';
-import csrf from 'csurf';
 import { ApolloServer, makeExecutableSchema } from 'apollo-server-express';
 import { applyMiddleware } from 'graphql-middleware';
 import { createConnection, getConnection } from 'typeorm';
 import { prisma } from '@server/prisma/generated/prisma-client';
 import { normalizeError } from '@server/modules/errors';
 import { HealthCheck } from '@server/modules/health-check';
-import logger from '@server/modules/logger';
+import { logger } from '@server/modules/logger';
 import { fileLoader } from '@utils/file-loaders/node';
 import { mergeResolvers } from '@utils/merge-resolvers/server';
 import { mailer } from '@server/modules/mailer';
@@ -22,9 +17,11 @@ import {
   validations,
   requestLogger,
   resolverLogger,
-} from '@server/middleware';
-import config from '@config';
+} from '@server/middleware/app-middleware';
+import { config } from '@config';
+import { coreMiddleware } from '@server/middleware/core-middleware';
 import { registerRoutes } from './plugins/register-routes';
+import { registerMiddleware } from './plugins/register-middleware';
 
 const isDev = process.env.NODE_ENV !== 'production';
 const dbConnectionName = isDev ? 'development' : 'production';
@@ -86,44 +83,21 @@ nextApp
         const { code, level } = normalizeError(err);
 
         // Ensures a more descriptive "code" is set for every error
-        err.extensions.code = code;
+        if (err.extensions) {
+          err.extensions.code = code;
+        }
 
         logger[level]({ err }, `${err.name}: ${err.message}`);
         return err;
       },
     });
 
+    // Trusting proxy must be set for load balancing
     expressApp.set('trust proxy', true);
-    expressApp.use(
-      cors({
-        origin: '*',
-        credentials: true,
-        optionsSuccessStatus: 200,
-      })
-    );
-    expressApp.use(helmet());
-    expressApp.use(helmet.referrerPolicy({ policy: 'same-origin' }));
-    expressApp.use(requestLogger());
-    expressApp.use(cookieParser());
-    expressApp.use(
-      helmet.contentSecurityPolicy({
-        directives: config.server.contentSecurityPolicy,
-      })
-    );
-    expressApp.use(bodyParser.urlencoded({ extended: false }));
-    expressApp.use((req, res, next) => {
-      if (
-        req.path ===
-        `${config.server.graphql.path}${config.server.graphql.playground.endpoint}`
-      ) {
-        next();
-      }
-
-      csrf({ cookie: { key: 'ds_csrf' } })(req, res, next);
-    });
 
     // Register plugins
     await registerRoutes(expressApp, nextApp, routes);
+    await registerMiddleware(expressApp, [...coreMiddleware, requestLogger]);
 
     // Apply Express middleware to GraphQL server
     apollo.applyMiddleware({

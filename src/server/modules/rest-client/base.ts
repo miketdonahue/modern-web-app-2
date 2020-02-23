@@ -1,5 +1,5 @@
 import axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
-import logger from '../logger';
+import { logger } from '@server/modules/logger';
 
 class RestClient {
   private http: AxiosInstance;

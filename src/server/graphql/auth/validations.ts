@@ -5,7 +5,7 @@ import {
   code,
   email,
 } from '@server/modules/validation-rules';
-import config from '@config';
+import { config } from '@config';
 
 const answers = (yup): any =>
   yup

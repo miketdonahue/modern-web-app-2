@@ -1,4 +1,4 @@
-import { oauth } from '@server/middleware';
+import { oauth } from '@server/middleware/app-middleware';
 
 export default {
   path: '/',

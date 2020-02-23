@@ -3,10 +3,10 @@ import production from './production';
 import test from './test';
 
 const env = process.env.NODE_ENV || 'development';
-const config: any = {
+const configs: any = {
   development,
   production,
   test,
 };
 
-export default config[env];
+export const config: any = configs[env];

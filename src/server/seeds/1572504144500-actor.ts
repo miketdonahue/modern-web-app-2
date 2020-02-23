@@ -8,7 +8,7 @@ import { Actor } from '@server/entities/actor';
 import { ActorAccount } from '@server/entities/actor-account';
 import { Role, RoleName } from '@server/entities/role';
 import generateCode from '@server/modules/code';
-import config from '@config';
+import { config } from '@config';
 
 const chance = new Chance();
 const numberOfUsers = 5;

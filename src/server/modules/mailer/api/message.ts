@@ -1,5 +1,5 @@
 import querystring from 'querystring';
-import config from '@config';
+import { config } from '@config';
 import { Mailer } from './base';
 import { ExternalError } from '../../errors';
 

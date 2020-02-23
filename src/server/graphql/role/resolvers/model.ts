@@ -1,4 +1,4 @@
-import logger from '@server/modules/logger';
+import { logger } from '@server/modules/logger';
 
 /**
  * Resolves a "role" relation

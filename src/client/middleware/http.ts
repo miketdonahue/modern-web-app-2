@@ -1,6 +1,6 @@
 import { createHttpLink } from 'apollo-link-http';
 import fetch from 'isomorphic-unfetch';
-import config from '@config';
+import { config } from '@config';
 
 const { host, port, graphql } = config.server;
 

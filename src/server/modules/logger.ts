@@ -1,7 +1,7 @@
 import pino from 'pino';
 import path from 'path';
 import uuid from 'uuid/v4';
-import config from '@config';
+import { config } from '@config';
 
 let destination = path.join(process.cwd(), 'server/logs/app.log');
 
@@ -90,4 +90,4 @@ const logger = defaultLogger.child({
   },
 });
 
-export default logger;
+export { logger };

@@ -6,7 +6,7 @@ import fs from 'fs';
 import path from 'path';
 import isGlob from 'is-glob';
 import Glob from 'glob';
-import config from '@config';
+import { config } from '@config';
 
 const DEFAULT_EXTENSIONS = ['.ts', '.js', '.gql', '.graphql', '.graphqls'];
 const DIRS: any = {

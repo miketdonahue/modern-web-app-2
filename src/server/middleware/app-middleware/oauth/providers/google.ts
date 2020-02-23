@@ -4,13 +4,13 @@ import uuid from 'uuid/v4';
 import { prisma } from '@server/prisma/generated/prisma-client';
 import { createConnection, getConnection, getManager } from 'typeorm';
 import generateCode from '@server/modules/code';
-import logger from '@server/modules/logger';
+import { logger } from '@server/modules/logger';
 import { Actor } from '@server/entities/actor';
 import { ActorAccount } from '@server/entities/actor-account';
 import { Role, RoleName } from '@server/entities/role';
 import { Oauth, ProviderName } from '@server/entities/oauth';
-import config from '@config';
-import { transformRoleForToken } from '../../../graphql/auth/utilities';
+import { config } from '@config';
+import { transformRoleForToken } from '../../../../graphql/auth/utilities';
 import { jwtUserFragment, userAccountFragment } from '../fragments';
 
 const isDev = process.env.NODE_ENV !== 'production';

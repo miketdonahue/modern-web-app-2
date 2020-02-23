@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken';
-import logger from '@server/modules/logger';
-import config from '@config';
+import { logger } from '@server/modules/logger';
+import { config } from '@config';
 
 /**
  * Checks if a user is authenticated

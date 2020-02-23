@@ -1,5 +1,5 @@
 import { rule } from 'graphql-shield';
-import config from '@config';
+import { config } from '@config';
 
 /**
  * Checks if a user is authenticated

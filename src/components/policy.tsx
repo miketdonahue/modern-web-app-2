@@ -1,7 +1,7 @@
 import { Component } from 'react';
 import jwt from 'jsonwebtoken';
 import gql from 'graphql-tag';
-import { withApollo } from '@apollo/with-apollo';
+import { withApollo } from '@apollo-setup/with-apollo';
 
 const GET_TOKEN = gql`
   query {

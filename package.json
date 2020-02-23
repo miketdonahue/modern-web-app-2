@@ -1,7 +1,7 @@
 {
   "name": "modern-web-app",
   "version": "1.0.0",
-  "description": "A modern web application using React, Apollo GraphQL, Prisma DB, and Express.js",
+  "description": "A modern web application using React, Apollo GraphQL, TypeORM, Postgres, and Express.js.",
   "repository": "https://github.com/meebix/modern-web-app",
   "author": "Michael Donahue <mtdonahue1@gmail.com>",
   "license": "MIT",

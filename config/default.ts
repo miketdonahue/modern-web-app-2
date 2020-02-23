@@ -1,6 +1,24 @@
 export default {
   server: {
     port: process.env.PORT || 8080,
+    middleware: {
+      helmet: {
+        referrerPolicy: {
+          policy: 'same-origin',
+        },
+      },
+      cors: {
+        origin: '*',
+        credentials: true,
+        optionsSuccessStatus: 200,
+      },
+      cookieParser: {},
+      bodyParser: {
+        urlEncoded: { extended: false },
+        json: {},
+      },
+      csrf: { cookie: { key: 'ds_csrf' } },
+    },
     graphql: {
       path: '/graphql',
       playground: {

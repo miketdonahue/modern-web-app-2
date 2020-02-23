@@ -1,18 +1,12 @@
-import logger from '@server/modules/logger';
+import { Request, Response, NextFunction } from 'express';
+import { logger } from '@server/modules/logger';
 
 /**
- * Logs Express.js request metadata
- *
- * @remarks
- * This is an Express.js middleware
- *
- * @param req - Express.js request object
- * @param res - Express.js response object
- * @param next - Express.js next method
- * @returns An Express.js middleware
+ * Generic Request Logger
  */
-const requestLogger = (): any => {
-  return (req, res, next) => {
+export const requestLogger = {
+  name: 'request-logger',
+  function: (req: Request, res: Response, next: NextFunction) => {
     if (req.url.startsWith('/_next')) return next();
 
     const startTime = process.hrtime();
@@ -41,7 +35,7 @@ const requestLogger = (): any => {
     };
 
     return next();
-  };
+  },
 };
 
 export default requestLogger;

@@ -1,5 +1,5 @@
-import logger from '@server/modules/logger';
-import config from '@config';
+import { logger } from '@server/modules/logger';
+import { config } from '@config';
 
 /**
  * Logs metadata for each GraphQL resolver request
