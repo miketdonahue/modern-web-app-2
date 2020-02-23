@@ -1,10 +1,11 @@
 import { Component } from 'react';
 import Link from 'next/link';
 import Router, { withRouter } from 'next/router';
-import { withApollo, compose } from 'react-apollo';
+// import { withApollo, compose } from 'react-apollo';
 import Cookies from 'universal-cookie';
 import Policy from 'src/components/policy';
 import * as mutations from './graphql/mutations.gql';
+import { withApollo } from '../../client/apollo/with-apollo';
 
 const PostLink = (props): any => {
   const { id, title } = props;
@@ -17,25 +18,25 @@ const PostLink = (props): any => {
 };
 
 class Index extends Component {
-  private logout = () => {
-    const { client } = this.props;
-    const cookies = new Cookies();
-    const token = cookies.get('token');
+  // private logout = () => {
+  //   const { client } = this.props;
+  //   const cookies = new Cookies();
+  //   const token = cookies.get('token');
 
-    client
-      .mutate({
-        mutation: mutations.logoutActor,
-        variables: {
-          input: { token },
-        },
-      })
-      .then(() => {
-        cookies.remove('token', { path: '/' });
-        cookies.remove('ds_token', { path: '/' });
+  //   client
+  //     .mutate({
+  //       mutation: mutations.logoutActor,
+  //       variables: {
+  //         input: { token },
+  //       },
+  //     })
+  //     .then(() => {
+  //       cookies.remove('token', { path: '/' });
+  //       cookies.remove('ds_token', { path: '/' });
 
-        return Router.push('/login');
-      });
-  };
+  //       return Router.push('/login');
+  //     });
+  // };
 
   public render(): any {
     return (
@@ -66,12 +67,13 @@ class Index extends Component {
             <PostLink id="css-in-js" title="Using CSS in JS" />
           </li>
         </ul>
-        <button onClick={this.logout} type="button">
+        {/* <button onClick={this.logout} type="button">
           Logout
-        </button>
+        </button> */}
       </div>
     );
   }
 }
 
-export default compose(withApollo, withRouter)(Index);
+// export default compose(withApollo, withRouter)(Index);
+export default withApollo()(Index);

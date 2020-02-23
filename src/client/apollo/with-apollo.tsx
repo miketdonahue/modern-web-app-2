@@ -1,79 +1,107 @@
 import React from 'react';
-import Head from 'next/head';
-import { getDataFromTree } from 'react-apollo';
-import initApollo from './init';
+import App from 'next/app';
+import { ApolloProvider } from '@apollo/react-hooks';
+import { initApolloClient, initOnContext } from './init';
 
 /**
- * Attach the Apollo Client to a React component
- *
- * @remarks
- * This is a higher-order React component
- *
- * @param App - The wrapped React component
- * @returns Renders a new component wrapped with Apollo Client
+ * Creates a withApollo HOC
+ * that provides the apolloContext
+ * to a next.js Page or AppTree.
+ * @param  {Object} withApolloOptions
+ * @param  {Boolean} [withApolloOptions.ssr=true]
+ * @returns {(PageComponent: ReactNode) => ReactNode}
  */
-export default function withApolloClient(App): any {
-  const displayName = App.displayName || App.name || 'Component';
-  const getCookies = (req?): any => {
-    return req ? req.headers.cookie || '' : document.cookie;
+export const withApollo = ({ ssr = true } = {}) => PageComponent => {
+  console.log('X PAGE COMP', PageComponent);
+  const WithApollo = ({ apolloClient, apolloState, ...pageProps }) => {
+    let client;
+    if (apolloClient) {
+      // Happens on: getDataFromTree & next.js ssr
+      client = apolloClient;
+    } else {
+      // Happens on: next.js csr
+      client = initApolloClient(apolloState, undefined);
+    }
+    console.log('X CLIENT', client);
+    return (
+      <ApolloProvider client={client}>
+        <PageComponent {...pageProps} />
+      </ApolloProvider>
+    );
   };
 
-  return class ApolloClient extends React.Component {
-    public props: any;
-    private apolloClient: any;
-    public static displayName = `WithApollo(${displayName})`;
+  // Set the correct displayName in development
+  if (process.env.NODE_ENV !== 'production') {
+    const displayName =
+      PageComponent.displayName || PageComponent.name || 'Component';
+    WithApollo.displayName = `withApollo(${displayName})`;
+  }
 
-    public constructor(props) {
-      super(props);
+  if (ssr || PageComponent.getInitialProps) {
+    console.log('WITH SSR');
+    WithApollo.getInitialProps = async context => {
+      console.log('INSIDE CONTEXT', context);
+      const inAppContext = Boolean(context.ctx);
+      const { apolloClient } = initOnContext(context);
 
-      this.apolloClient = initApollo(props.cache, {
-        cookies: () => getCookies(),
-      });
-    }
-
-    public static async getInitialProps(context): Promise<any> {
-      const { Component, router, ctx } = context;
-      let appProps = {};
-      const apollo = initApollo({}, { cookies: () => getCookies(ctx.req) });
-      const cache = apollo.cache.extract();
-
-      // Add apollo client to the `getInitialProps` context
-      ctx.apolloClient = apollo;
-
-      if (!process.browser) {
-        // Set the CSRF token on server-side requests
-        ctx.res.cookie('csrf', ctx.req.csrfToken());
+      // Run wrapped getInitialProps methods
+      let pageProps = {};
+      if (PageComponent.getInitialProps) {
+        pageProps = await PageComponent.getInitialProps(context);
+      } else if (inAppContext) {
+        pageProps = await App.getInitialProps(context);
       }
 
-      if (App.getInitialProps) {
-        appProps = await App.getInitialProps(context);
-      }
-
-      if (!process.browser) {
-        try {
-          await getDataFromTree(
-            <App
-              {...appProps}
-              Component={Component}
-              router={router}
-              apolloClient={apollo}
-            />
-          );
-        } catch (err) {
-          console.log('Error while running `getDataFromTree`', err);
+      // Only on the server:
+      if (typeof window === 'undefined') {
+        const { AppTree } = context;
+        // When redirecting, the response is finished.
+        // No point in continuing to render
+        if (context.res && context.res.finished) {
+          return pageProps;
         }
 
-        Head.rewind();
+        // Only if dataFromTree is enabled
+        if (ssr && AppTree) {
+          try {
+            // Import `@apollo/react-ssr` dynamically.
+            // We don't want to have this in our client bundle.
+            const { getDataFromTree } = await import('@apollo/react-ssr');
+
+            // Since AppComponents and PageComponents have different context types
+            // we need to modify their props a little.
+            let props;
+            if (inAppContext) {
+              props = { ...pageProps, apolloClient };
+            } else {
+              props = { pageProps: { ...pageProps, apolloClient } };
+            }
+
+            // Take the Next.js AppTree, determine which queries are needed to render,
+            // and fetch them. This method can be pretty slow since it renders
+            // your entire AppTree once for every query. Check out apollo fragments
+            // if you want to reduce the number of rerenders.
+            // https://www.apollographql.com/docs/react/data/fragments/
+            await getDataFromTree(<AppTree {...props} />);
+          } catch (error) {
+            // Prevent Apollo Client GraphQL errors from crashing SSR.
+            // Handle them in components via the data.error prop:
+            // https://www.apollographql.com/docs/react/api/react-apollo.html#graphql-query-data-error
+            console.error('Error while running `getDataFromTree`', error);
+          }
+        }
       }
 
       return {
-        ...appProps,
-        cache,
+        ...pageProps,
+        // Extract query data from the Apollo store
+        apolloState: apolloClient.cache.extract(),
+        // Provide the client for ssr. As soon as this payload
+        // gets JSON.stringified it will remove itself.
+        apolloClient: context.apolloClient,
       };
-    }
+    };
+  }
 
-    public render(): any {
-      return <App {...this.props} apolloClient={this.apolloClient} />;
-    }
-  };
-}
+  return WithApollo;
+};

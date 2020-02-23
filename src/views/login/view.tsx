@@ -1,97 +1,100 @@
-import { Fragment } from 'react';
-import Router from 'next/router';
-import { withFormik } from 'formik';
-import { withApollo, compose } from 'react-apollo';
-import ServerError from 'src/components/server-error';
-import { Form } from 'src/components/antd/form';
-import { Input } from 'src/components/antd/input';
-import { Button } from 'src/components/antd/button';
-import withServerErrors from 'src/components/hoc/with-server-errors';
-import { loginSchema } from './validations';
-import * as mutations from './graphql/mutations.gql';
+export default (): any => <div>Login page</div>;
 
-interface Props {
-  client: any;
-  formatServerErrors: (array) => void;
-}
+// import { Fragment } from 'react';
+// import Router from 'next/router';
+// import { withFormik } from 'formik';
+// import { compose } from 'react-apollo';
+// import ServerError from 'src/components/server-error';
+// import { Form } from 'src/components/antd/form';
+// import { Input } from 'src/components/antd/input';
+// import { Button } from 'src/components/antd/button';
+// import withServerErrors from 'src/components/hoc/with-server-errors';
+// import { loginSchema } from './validations';
+// import * as mutations from './graphql/mutations.gql';
+// import { withApollo } from '../../client/apollo/with-apollo';
 
-interface State {
-  email: string;
-  password: string;
-  errors?: any;
-}
+// interface Props {
+//   client: any;
+//   formatServerErrors: (array) => void;
+// }
 
-const LoginView = ({
-  values,
-  handleChange,
-  handleSubmit,
-  errors,
-  touched,
-  serverErrors,
-}): any => (
-  <Fragment>
-    <ServerError errors={serverErrors} />
+// interface State {
+//   email: string;
+//   password: string;
+//   errors?: any;
+// }
 
-    <Form onSubmit={handleSubmit}>
-      <Form.Item>
-        <label htmlFor="email">
-          Email
-          <Input
-            id="email"
-            type="email"
-            value={values.email}
-            onChange={handleChange}
-          />
-        </label>
-        {errors.email && touched.email ? <div>{errors.email}</div> : null}
-      </Form.Item>
-      <Form.Item>
-        <label htmlFor="password">
-          Password
-          <Input
-            id="password"
-            type="password"
-            value={values.password}
-            onChange={handleChange}
-          />
-        </label>
-      </Form.Item>
-      <Button type="primary" htmlType="submit">
-        Login
-      </Button>
-    </Form>
+// const LoginView = ({
+//   values,
+//   handleChange,
+//   handleSubmit,
+//   errors,
+//   touched,
+//   serverErrors,
+// }): any => (
+//   <Fragment>
+//     <ServerError errors={serverErrors} />
 
-    <a href="/oauth/google">Login with Google</a>
-  </Fragment>
-);
+//     <Form onSubmit={handleSubmit}>
+//       <Form.Item>
+//         <label htmlFor="email">
+//           Email
+//           <Input
+//             id="email"
+//             type="email"
+//             value={values.email}
+//             onChange={handleChange}
+//           />
+//         </label>
+//         {errors.email && touched.email ? <div>{errors.email}</div> : null}
+//       </Form.Item>
+//       <Form.Item>
+//         <label htmlFor="password">
+//           Password
+//           <Input
+//             id="password"
+//             type="password"
+//             value={values.password}
+//             onChange={handleChange}
+//           />
+//         </label>
+//       </Form.Item>
+//       <Button type="primary" htmlType="submit">
+//         Login
+//       </Button>
+//     </Form>
 
-export default compose(
-  withApollo,
-  withServerErrors,
-  withFormik<Props, State>({
-    displayName: 'LoginForm',
-    mapPropsToValues: () => ({
-      email: '',
-      password: '',
-    }),
-    validationSchema: loginSchema,
-    handleSubmit: (
-      values,
-      { setSubmitting, props: { client, formatServerErrors } }
-    ) => {
-      client
-        .mutate({
-          mutation: mutations.loginActor,
-          variables: {
-            input: { email: values.email, password: values.password },
-          },
-        })
-        .then(() => {
-          Router.push('/');
-        })
-        .catch(({ graphQLErrors }) => {
-          return formatServerErrors(graphQLErrors);
-        });
-    },
-  })
-)(LoginView);
+//     <a href="/oauth/google">Login with Google</a>
+//   </Fragment>
+// );
+
+// export default compose(
+//   withApollo,
+//   withServerErrors,
+//   withFormik<Props, State>({
+//     displayName: 'LoginForm',
+//     mapPropsToValues: () => ({
+//       email: '',
+//       password: '',
+//     }),
+//     validationSchema: loginSchema,
+//     handleSubmit: (
+//       values,
+//       { setSubmitting, props: { client, formatServerErrors } }
+//     ) => {
+//       client
+//         .mutate({
+//           mutation: mutations.loginActor,
+//           variables: {
+//             input: { email: values.email, password: values.password },
+//           },
+//         })
+//         .then(() => {
+//           Router.push('/');
+//         })
+//         .catch(({ graphQLErrors }) => {
+//           return formatServerErrors(graphQLErrors);
+//         });
+//     },
+//   })
+// )(LoginView);

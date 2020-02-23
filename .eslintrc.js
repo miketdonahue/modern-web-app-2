@@ -1,10 +1,13 @@
 module.exports = {
+  root: true,
   parser: '@typescript-eslint/parser',
-  plugins: ['@typescript-eslint', 'eslint-comments'],
+  parserOptions: {
+    project: './tsconfig.json',
+    tsconfigRootDir: __dirname,
+  },
+  plugins: ['@typescript-eslint'],
   extends: [
     'airbnb-typescript',
-    'plugin:@typescript-eslint/recommended',
-    'plugin:eslint-comments/recommended',
     'prettier',
     'prettier/react',
     'prettier/@typescript-eslint',
@@ -24,7 +27,6 @@ module.exports = {
     'no-underscore-dangle': ['error', { allow: ['_headers'] }],
     'no-restricted-syntax': 0,
     'no-plusplus': ['error', { allowForLoopAfterthoughts: true }],
-    'eslint-comments/disable-enable-pair': ['error', { allowWholeFile: true }],
     'class-methods-use-this': 0,
     '@typescript-eslint/explicit-function-return-type': 0,
     'jsx-a11y/label-has-associated-control': [

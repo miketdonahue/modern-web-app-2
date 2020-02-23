@@ -42,6 +42,10 @@ module.exports = withBundleAnalyzer(
         ignoreDevErrors: true,
         ignoreBuildErrors: true,
       },
+      onDemandEntries: {
+        maxInactiveAge: 300000, // 5 minutes
+        pagesBufferLength: 5,
+      },
       webpack: (config, { isServer }) => {
         if (isServer) {
           const antStyles = /node_modules\/antd\/.*?\/style.*?/;

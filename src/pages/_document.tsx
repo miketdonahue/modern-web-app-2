@@ -1,8 +1,8 @@
 import Document, { Html, Head, Main, NextScript } from 'next/document';
 
 class MyDocument extends Document {
-  public static async getInitialProps(ctx): Promise<any> {
-    const initialProps = await Document.getInitialProps(ctx);
+  public static async getInitialProps(context): Promise<any> {
+    const initialProps = await Document.getInitialProps(context);
 
     return { ...initialProps };
   }

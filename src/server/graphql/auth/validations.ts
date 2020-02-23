@@ -15,60 +15,62 @@ const answers = (yup): any =>
 
 export default {
   Query: {
-    getActorSecurityQuestionAnswers: inputRule(yup =>
+    getActorSecurityQuestionAnswers: inputRule()(yup =>
       yup.object({
         input: yup.object({ actorId: alphaNumeric }),
       })
     ),
   },
   Mutation: {
-    registerActor: inputRule(yup =>
+    registerActor: inputRule()(yup =>
       yup.object({
         input: yup.object({ firstName: alpha, lastName: alpha, email }),
       })
     ),
-    confirmActor: inputRule(yup =>
+    confirmActor: inputRule()(yup =>
       yup.object({
         input: yup.object({
           code,
         }),
       })
     ),
-    loginActor: inputRule(yup => yup.object({ input: yup.object({ email }) })),
-    setActorSecurityQuestionAnswers: inputRule(yup =>
-      yup.object({
-        input: yup.object({
-          email,
-          answers: answers(yup),
-        }),
-      })
-    ),
-    verifyActorSecurityQuestionAnswers: inputRule(yup =>
-      yup.object({
-        input: yup.object({
-          email,
-          answers: answers(yup),
-        }),
-      })
-    ),
-    resetPassword: inputRule(yup =>
+    loginActor: inputRule()(yup =>
       yup.object({ input: yup.object({ email }) })
     ),
-    changePassword: inputRule(yup =>
+    setActorSecurityQuestionAnswers: inputRule()(yup =>
+      yup.object({
+        input: yup.object({
+          email,
+          answers: answers(yup),
+        }),
+      })
+    ),
+    verifyActorSecurityQuestionAnswers: inputRule()(yup =>
+      yup.object({
+        input: yup.object({
+          email,
+          answers: answers(yup),
+        }),
+      })
+    ),
+    resetPassword: inputRule()(yup =>
+      yup.object({ input: yup.object({ email }) })
+    ),
+    changePassword: inputRule()(yup =>
       yup.object({
         input: yup.object({
           code,
         }),
       })
     ),
-    unlockAccount: inputRule(yup =>
+    unlockAccount: inputRule()(yup =>
       yup.object({
         input: yup.object({
           code,
         }),
       })
     ),
-    sendAuthEmail: inputRule(yup =>
+    sendAuthEmail: inputRule()(yup =>
       yup.object({
         input: yup.object({
           email,
