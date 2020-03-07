@@ -1,5 +1,5 @@
 export default {
-  path: '/posts',
+  path: '/post',
   routes: [
     {
       path: '/:id',

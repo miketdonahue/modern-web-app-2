@@ -78,4 +78,8 @@ const Login = () => {
   );
 };
 
+Login.getInitialProps = context => {
+  return {};
+};
+
 export default withApollo()(Login);

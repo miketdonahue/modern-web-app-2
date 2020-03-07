@@ -10,7 +10,7 @@
  */
 export const transformRoleForToken = (role): any => {
   const actorRole = { ...role };
-
+  // TODO: move to entities model Role
   return {
     uuid: actorRole.uuid,
     name: actorRole.name,

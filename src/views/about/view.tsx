@@ -1,1 +1,9 @@
-export default (): any => <div>About page</div>;
+const About = () => {
+  return <div>About page</div>;
+};
+
+About.getInitialProps = context => {
+  return {};
+};
+
+export default About;

@@ -1,6 +1,5 @@
 import Link from 'next/link';
 // import Router, { withRouter } from 'next/router';
-// import { withApollo, compose } from 'react-apollo';
 // import Cookies from 'universal-cookie';
 import Policy from 'src/components/policy';
 import { withApollo } from '@apollo-setup/with-apollo';
@@ -10,32 +9,30 @@ const PostLink = (props: any) => {
   const { id, title } = props;
 
   return (
-    <Link href={`/post?id=${id}`} as={`/posts/${id}`}>
+    <Link href="/post/[id]" as={`/post/${id}`}>
       <a>{title}</a>
     </Link>
   );
 };
 
-const Home = () => {
-  //   // private logout = () => {
-  //   //   const { client } = this.props;
-  //   //   const cookies = new Cookies();
-  //   //   const token = cookies.get('token');
+const Home = props => {
+  // const handleLogout = () => {
+  //   const { client } = this.props;
+  //   const cookies = new Cookies();
+  //   const token = cookies.get('token');
 
-  //   //   client
-  //   //     .mutate({
-  //   //       mutation: mutations.logoutActor,
-  //   //       variables: {
-  //   //         input: { token },
-  //   //       },
-  //   //     })
-  //   //     .then(() => {
-  //   //       cookies.remove('token', { path: '/' });
-  //   //       cookies.remove('ds_token', { path: '/' });
-
-  //   //       return Router.push('/login');
-  //   //     });
-  //   // };
+  //   client
+  //     .mutate({
+  //       mutation: mutations.logoutActor,
+  //       variables: {
+  //         input: { token },
+  //       },
+  //     })
+  //     .then(() => {
+  //       cookies.remove('token', { path: '/' });
+  //       return Router.push('/login');
+  //     });
+  // };
 
   return (
     <div>
@@ -65,11 +62,15 @@ const Home = () => {
           <PostLink id="css-in-js" title="Using CSS in JS" />
         </li>
       </ul>
-      {/* <button onClick={this.logout} type="button">
+      {/* <button onClick={handleLogout} type="button">
         Logout
       </button> */}
     </div>
   );
+};
+
+Home.getInitialProps = context => {
+  return {};
 };
 
 export default withApollo()(Home);
