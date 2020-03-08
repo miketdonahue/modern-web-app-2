@@ -16,6 +16,5 @@ const { host, port, graphql } = config.server;
 export const httpMiddleware = createHttpLink({
   uri: `${host}:${port}${graphql.path}`,
   credentials: 'same-origin',
-  useGETForQueries: true,
   fetch,
 });

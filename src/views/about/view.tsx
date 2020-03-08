@@ -1,8 +1,11 @@
+import { checkAccess } from '@client/modules';
+
 const About = () => {
   return <div>About page</div>;
 };
 
-About.getInitialProps = context => {
+About.getInitialProps = async context => {
+  await checkAccess(context);
   return {};
 };
 

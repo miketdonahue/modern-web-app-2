@@ -122,7 +122,6 @@ nextApp
 
     // Catch all requests
     expressApp.get('*', (req, res) => {
-      res.cookie('csrf', req.csrfToken());
       return handle(req, res);
     });
 

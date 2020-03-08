@@ -16,7 +16,7 @@ import { config } from '@config';
  */
 const resolverLogger = (resolve, parent, args, context, info): any => {
   const actorId =
-    (config.server.auth.enabled && context.user && context.user.actorId) ||
+    (config.server.auth.enabled && context.actor && context.actor.actorId) ||
     null;
 
   logger.info({ actorId, args }, `Metadata for resolver: ${info.fieldName}`);

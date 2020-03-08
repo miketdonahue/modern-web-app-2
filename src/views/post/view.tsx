@@ -1,4 +1,6 @@
 import Link from 'next/link';
+import { withApollo } from '@apollo-setup/with-apollo';
+import { checkAccess } from '@client/modules';
 
 interface Props {
   post: {
@@ -24,6 +26,8 @@ const Post = ({ post }: Props) => {
 };
 
 Post.getInitialProps = async (context): Promise<any> => {
+  await checkAccess(context);
+
   // From database
   const posts = [
     { id: 'web-app-security', title: 'Web application security' },
@@ -36,4 +40,4 @@ Post.getInitialProps = async (context): Promise<any> => {
   return { post };
 };
 
-export default Post;
+export default withApollo()(Post);

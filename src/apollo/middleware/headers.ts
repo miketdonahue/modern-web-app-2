@@ -15,12 +15,11 @@ export const headersMiddleware = (cookies: any) =>
     operation.setContext(() => {
       const cookie = new Cookies(cookies);
       const jwtToken = cookie.get('token');
-      const csrfToken = cookie.get('csrf');
 
       return {
         headers: {
-          authorization: jwtToken ? `Bearer ${jwtToken}` : null,
-          'x-csrf-token': csrfToken,
+          Authorization: jwtToken ? `Bearer ${jwtToken}` : null,
+          'X-Requested-With': 'XmlHttpRequest',
         },
       };
     });

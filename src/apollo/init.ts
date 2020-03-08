@@ -27,7 +27,6 @@ const createApolloClient = (initialState, context): any => {
     context && context.req && context.req.headers && context.req.headers.cookie;
 
   const client = new ApolloClient({
-    name: 'web',
     ssrMode: Boolean(context),
     link: from([headersMiddleware(cookies), httpMiddleware]),
     cache: new InMemoryCache().restore(initialState || {}),

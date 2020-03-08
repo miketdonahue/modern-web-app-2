@@ -11,5 +11,5 @@ import { config } from '@config';
  * @returns boolean
  */
 export const isAuthenticated = rule()(
-  async (parent, args, context, info) => !!context.user
+  async (parent, args, context, info) => !!context.actor
 );

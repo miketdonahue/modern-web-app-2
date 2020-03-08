@@ -1,7 +1,7 @@
 import jwt from 'jsonwebtoken';
 import gql from 'graphql-tag';
 import { redirectTo } from '../redirect';
-import { IGNORE_ROUTES } from './ignore-routes';
+// import { IGNORE_ROUTES } from './ignore-routes';
 
 /**
  * Checks if a user is authenticated & authorized
@@ -17,7 +17,7 @@ export const checkAccess = async (ctx): Promise<any> => {
   const urlPathname = process.browser ? pathname : req.url;
 
   // Ignore public routes
-  if (IGNORE_ROUTES.includes(urlPathname)) return true;
+  // if (IGNORE_ROUTES.includes(urlPathname)) return true;
 
   const VALIDATE_ACCESS = gql`
     query {
