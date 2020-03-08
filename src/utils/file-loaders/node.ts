@@ -10,11 +10,13 @@ import { config } from '@config';
 
 const DEFAULT_EXTENSIONS = ['.ts', '.js', '.gql', '.graphql', '.graphqls'];
 const DIRS: any = {
-  typeDefs: path.join(process.cwd(), config.server.dirs.types),
-  resolvers: path.join(process.cwd(), config.server.dirs.resolvers),
-  routes: path.join(process.cwd(), config.server.dirs.routes),
-  permissions: path.join(process.cwd(), config.server.dirs.access),
-  validations: path.join(process.cwd(), config.server.dirs.validations),
+  typeDefs: config.server.dirs.types.map(d => path.join(process.cwd(), d)),
+  resolvers: config.server.dirs.resolvers.map(d => path.join(process.cwd(), d)),
+  routes: config.server.dirs.routes.map(d => path.join(process.cwd(), d)),
+  permissions: config.server.dirs.access.map(d => path.join(process.cwd(), d)),
+  validations: config.server.dirs.validations.map(d =>
+    path.join(process.cwd(), d)
+  ),
 };
 
 /**
@@ -80,16 +82,20 @@ const readGlobSync = (pattern, options): any => Glob.sync(pattern, options);
  * @param globOptions - Glob options
  * @returns An array of file path strings
  */
-const getSchemaFiles = (dir, recursive, globOptions): any => {
-  if (isGlob(dir)) {
-    return readGlobSync(dir, globOptions);
-  }
+const getSchemaFiles = (dirs, recursive, globOptions): any => {
+  return dirs
+    .map(dir => {
+      if (isGlob(dir)) {
+        return readGlobSync(dir, globOptions);
+      }
 
-  if (recursive === true) {
-    return recursiveReadDirSync(dir);
-  }
+      if (recursive === true) {
+        return recursiveReadDirSync(dir);
+      }
 
-  return readDirSync(dir);
+      return readDirSync(dir);
+    })
+    .flat();
 };
 
 /**
