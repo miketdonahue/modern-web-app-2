@@ -1,11 +1,12 @@
 import { NextPageContext } from 'next';
 import Link from 'next/link';
-// import Router, { withRouter } from 'next/router';
-// import Cookies from 'universal-cookie';
+import { useMutation } from '@apollo/react-hooks';
+import { useRouter } from 'next/router';
+import Cookies from 'universal-cookie';
 import Policy from 'src/components/policy';
 import { withApollo } from '@apollo-setup/with-apollo';
 import { checkAccess } from '@modules/permissions/check-access';
-// import * as mutations from './graphql/mutations.gql';
+import * as mutations from './graphql/mutations.gql';
 
 type Props = {
   id: string;
@@ -23,23 +24,24 @@ const PostLink = (props: Props) => {
 };
 
 const Home = () => {
-  // const handleLogout = () => {
-  //   const { client } = this.props;
-  //   const cookies = new Cookies();
-  //   const token = cookies.get('token');
+  const router = useRouter();
+  const cookies = new Cookies();
+  const token = cookies.get('token-payload');
 
-  //   client
-  //     .mutate({
-  //       mutation: mutations.logoutActor,
-  //       variables: {
-  //         input: { token },
-  //       },
-  //     })
-  //     .then(() => {
-  //       cookies.remove('token', { path: '/' });
-  //       return Router.push('/login');
-  //     });
-  // };
+  const [logoutActor] = useMutation(mutations.logoutActor, {
+    onCompleted: () => {
+      cookies.remove('token', { path: '/' });
+      return router.push('/login');
+    },
+  });
+
+  const handleLogout = () => {
+    logoutActor({
+      variables: {
+        input: { token },
+      },
+    });
+  };
 
   return (
     <div>
@@ -69,9 +71,9 @@ const Home = () => {
           <PostLink id="css-in-js" title="Using CSS in JS" />
         </li>
       </ul>
-      {/* <button onClick={handleLogout} type="button">
+      <button onClick={handleLogout} type="button">
         Logout
-      </button> */}
+      </button>
     </div>
   );
 };

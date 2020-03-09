@@ -2,6 +2,7 @@ import argon2 from 'argon2';
 import jwt from 'jsonwebtoken';
 import { addHours } from 'date-fns';
 import uuid from 'uuid/v4';
+import Cookies from 'universal-cookie';
 import generateCode from '@server/modules/code';
 import { InternalError } from '@server/modules/errors';
 import { logger } from '@server/modules/logger';
@@ -614,9 +615,13 @@ const logoutActor = async (
   context: any
 ): Promise<any> => {
   const { db } = context;
+  const cookies = new Cookies(context.req.headers.cookie);
+  const signature = cookies.get('token-signature');
 
   logger.info('AUTH-RESOLVER: Logging out actor');
-  await db.insert(BlacklistedToken, { token: args.input.token });
+  await db.insert(BlacklistedToken, {
+    token: `${args.input.token}.${signature}`,
+  });
 
   return undefined;
 };
