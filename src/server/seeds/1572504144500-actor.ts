@@ -1,5 +1,5 @@
 /* eslint-disable no-await-in-loop */
-import { MigrationInterface, QueryRunner, getManager } from 'typeorm';
+import { MigrationInterface, getManager } from 'typeorm';
 import argon2 from 'argon2';
 import { Chance } from 'chance';
 import jwt from 'jsonwebtoken';
@@ -14,7 +14,7 @@ const chance = new Chance();
 const numberOfUsers = 5;
 
 export class Actor1572504144500 implements MigrationInterface {
-  public up = async (queryRunner: QueryRunner): Promise<any> => {
+  public up = async (): Promise<any> => {
     const db = getManager('seed');
     const role = await db.findOne(Role, { name: RoleName.ACTOR });
     const password = await argon2.hash('Welcome123', {
@@ -34,7 +34,7 @@ export class Actor1572504144500 implements MigrationInterface {
 
       await db.transaction(async transactionalEntityManager => {
         const actor = await db.create(Actor, {
-          role_id: role.uuid,
+          role_id: role && role.uuid,
           first_name: chance.first(),
           last_name: chance.last(),
           email,
@@ -61,5 +61,5 @@ export class Actor1572504144500 implements MigrationInterface {
     }
   };
 
-  public down = async (queryRunner: QueryRunner): Promise<any> => {};
+  public down = async (): Promise<any> => {};
 }

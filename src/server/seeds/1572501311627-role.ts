@@ -1,8 +1,8 @@
-import { MigrationInterface, QueryRunner, getManager } from 'typeorm';
+import { MigrationInterface, getManager } from 'typeorm';
 import { Role, RoleName } from '@server/entities/role';
 
 export class Role1572501311627 implements MigrationInterface {
-  public up = async (queryRunner: QueryRunner): Promise<any> => {
+  public up = async (): Promise<any> => {
     const db = getManager('seed');
 
     await db.insert(Role, [
@@ -17,5 +17,5 @@ export class Role1572501311627 implements MigrationInterface {
     ]);
   };
 
-  public down = async (queryRunner: QueryRunner): Promise<any> => {};
+  public down = async (): Promise<any> => {};
 }

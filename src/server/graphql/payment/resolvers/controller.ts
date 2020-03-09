@@ -1,7 +1,9 @@
-import stripeSdk from 'stripe';
+import Stripe from 'stripe';
 import { ExternalError } from '@server/modules/errors';
 
-const stripe = stripeSdk(process.env.STRIPE);
+const stripe = new Stripe(process.env.STRIPE as string, {
+  apiVersion: '2020-03-02',
+});
 
 /**
  * Create a new payment charge
@@ -12,7 +14,7 @@ const stripe = stripeSdk(process.env.STRIPE);
  * @param info - GraphQL metadata
  * @returns null
  */
-const createCharge = async (parent, args, context, info): Promise<any> => {
+const createCharge = async (): Promise<any> => {
   // TODO: based on UI, fill in the inputs
   try {
     await stripe.charges.create({

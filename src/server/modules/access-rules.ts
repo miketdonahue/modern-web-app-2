@@ -1,5 +1,4 @@
 import { rule } from 'graphql-shield';
-import { config } from '@config';
 
 /**
  * Checks if a user is authenticated
@@ -11,5 +10,5 @@ import { config } from '@config';
  * @returns boolean
  */
 export const isAuthenticated = rule()(
-  async (parent, args, context, info) => !!context.actor
+  async (parent, args, context) => !!context.actor
 );

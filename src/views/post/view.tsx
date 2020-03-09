@@ -1,3 +1,4 @@
+import { NextPageContext } from 'next';
 import Link from 'next/link';
 import { withApollo } from '@apollo-setup/with-apollo';
 import { checkAccess } from '@modules/permissions/check-access';
@@ -25,7 +26,7 @@ const Post = ({ post }: Props) => {
   );
 };
 
-Post.getInitialProps = async (context): Promise<any> => {
+Post.getInitialProps = async (context: NextPageContext) => {
   await checkAccess(context);
 
   // From database

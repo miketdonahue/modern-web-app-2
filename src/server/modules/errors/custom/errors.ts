@@ -1,4 +1,5 @@
 /* eslint-disable max-classes-per-file */
+/* eslint-disable prefer-object-spread */
 import { ApolloError } from 'apollo-server-express';
 import errors from './constants';
 
@@ -19,9 +20,9 @@ interface ExternalMeta {
  * @returns ApolloError
  */
 export class InternalError extends ApolloError {
-  public constructor(type, meta?: InternalMeta) {
-    const { message, code } = errors[type];
-    const additionalProperties = Object.assign({}, errors[type].meta, {
+  public constructor(type: string, meta?: InternalMeta) {
+    const { message, code } = (errors as any)[type];
+    const additionalProperties = Object.assign({}, (errors as any)[type].meta, {
       source: 'InternalError',
       ...meta,
     });
@@ -38,7 +39,7 @@ export class InternalError extends ApolloError {
  * @returns ApolloError
  */
 export class ExternalError extends ApolloError {
-  public constructor(error, meta: ExternalMeta) {
+  public constructor(error: any, meta: ExternalMeta) {
     const { message, ...restOfProperties } = error;
     const additionalProperties = Object.assign(
       {},

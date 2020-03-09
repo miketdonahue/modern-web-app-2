@@ -1,4 +1,3 @@
-
 import { logger } from '@server/modules/logger';
 
 /**
@@ -10,7 +9,7 @@ import { logger } from '@server/modules/logger';
  * @param info - GraphQL metadata
  * @returns undefined
  */
-const role = async (parent, args, context, info): Promise<any> => {
+const role = async (parent: any, args: any, context: any): Promise<any> => {
   logger.info('ROLE-RESOLVER: Retrieving user role relation');
   return context.prisma.user({ email: parent.email }).role();
 };

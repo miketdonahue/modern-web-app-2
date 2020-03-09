@@ -1,8 +1,8 @@
+import { Request, Response, NextFunction } from 'express';
 import { google } from 'googleapis';
 import jwt from 'jsonwebtoken';
 import uuid from 'uuid/v4';
-import { prisma } from '@server/prisma/generated/prisma-client';
-import { createConnection, getConnection, getManager } from 'typeorm';
+import { getConnection } from 'typeorm';
 import generateCode from '@server/modules/code';
 import { logger } from '@server/modules/logger';
 import { Actor } from '@server/entities/actor';
@@ -11,7 +11,6 @@ import { Role, RoleName } from '@server/entities/role';
 import { Oauth, ProviderName } from '@server/entities/oauth';
 import { config } from '@config';
 import { transformRoleForToken } from '../../../../graphql/auth/utilities';
-import { jwtUserFragment, userAccountFragment } from '../fragments';
 
 const isDev = process.env.NODE_ENV !== 'production';
 const dbConnectionName = isDev ? 'development' : 'production';
@@ -32,7 +31,7 @@ const oauthConfig = {
  * @param res - Express.js response object
  * @returns Redirect to provider login
  */
-export const authorize = (req, res): any => {
+export const authorize = (req: Request, res: Response): any => {
   const oauth2Client = new google.auth.OAuth2(
     process.env.GOOGLE_CLIENT_ID,
     process.env.GOOGLE_SECRET,
@@ -73,7 +72,7 @@ export const authorize = (req, res): any => {
  */
 export const verify = {
   name: 'oauth-google-verify',
-  function: async (req, res, next) => {
+  function: async (req: Request, res: Response, next: NextFunction) => {
     const oauth2Client = new google.auth.OAuth2(
       process.env.GOOGLE_CLIENT_ID,
       process.env.GOOGLE_SECRET,
@@ -82,10 +81,10 @@ export const verify = {
 
     const db = getConnection(dbConnectionName);
     const { code, state } = req.query;
-    const verifiedState = jwt.verify(state, config.server.auth.jwt.secret);
+    const verifiedState: any = jwt.verify(state, config.server.auth.jwt.secret);
     const { tokens } = await oauth2Client.getToken(code);
-    const { email } = jwt.decode(tokens.id_token);
-    let actor: any = await db.manager.findOne(Actor, { email });
+    const decoded: any = jwt.decode(tokens.id_token as string);
+    let actor: any = await db.manager.findOne(Actor, { email: decoded.email });
 
     if (!verifiedState) {
       logger.error(
@@ -108,7 +107,7 @@ export const verify = {
 
       const insertedActor = await db.manager.insert(Actor, {
         role_id: role.uuid,
-        email,
+        email: decoded.email,
       });
 
       const [actorData] = insertedActor.raw;
@@ -166,7 +165,10 @@ export const verify = {
     }
 
     const role = await db.manager.findOne(Role, { uuid: actor.role_id });
-    req.actor = { uuid: actor.uuid, role: transformRoleForToken(role) };
+    (req as any).actor = {
+      uuid: actor.uuid,
+      role: transformRoleForToken(role),
+    };
     return next();
   },
 };
@@ -183,9 +185,12 @@ export const verify = {
  * @param res - Express.js response object
  * @returns Redirect to the "success" route, usually the root path
  */
-export const authenticate = async (req, res): Promise<any> => {
+export const authenticate = async (
+  req: Request,
+  res: Response
+): Promise<any> => {
   const db = getConnection(dbConnectionName);
-  const { actor } = req;
+  const { actor } = req as any;
 
   try {
     await db.manager.update(

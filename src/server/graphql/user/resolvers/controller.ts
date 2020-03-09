@@ -9,7 +9,11 @@ import { logger } from '@server/modules/logger';
  * @param info - GraphQL metadata
  * @returns A user object
  */
-const updateUser = async (parent, args, context, info): Promise<any> => {
+const updateUser = async (
+  parent: any,
+  args: any,
+  context: any
+): Promise<any> => {
   logger.info('USER-RESOLVER: Updating user');
   const user = await context.prisma.updateUser({
     data: { ...args.input.data },

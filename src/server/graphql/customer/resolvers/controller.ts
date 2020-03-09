@@ -13,7 +13,11 @@ const stripe = stripeSdk(process.env.STRIPE);
  * @param info - GraphQL metadata
  * @returns null
  */
-const createCustomer = async (parent, args, context, info): Promise<any> => {
+const createCustomer = async (
+  parent: any,
+  args: any,
+  context: any
+): Promise<any> => {
   const user = await context.prisma.user({ id: args.input.userId });
 
   if (!user) {
@@ -52,7 +56,11 @@ const createCustomer = async (parent, args, context, info): Promise<any> => {
  * @param info - GraphQL metadata
  * @returns null
  */
-const updateCustomer = async (parent, args, context, info): Promise<any> => {
+const updateCustomer = async (
+  parent: any,
+  args: any,
+  context: any
+): Promise<any> => {
   const customer = await context.prisma
     .customer({
       user: { id: args.input.userId },

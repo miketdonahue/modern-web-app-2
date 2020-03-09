@@ -1733,6 +1733,11 @@
   dependencies:
     "@types/node" "*"
 
+"@types/chance@^1.0.9":
+  version "1.0.9"
+  resolved "https://registry.yarnpkg.com/@types/chance/-/chance-1.0.9.tgz#2074530976d53cfec84cbea0037923be31320e20"
+  integrity sha512-QEWzf4BICJwa9rr43hSRCAWDhxyakGl2iIXj5PsfGPuOBaJhv50tGX/P5flU8hStatLudPEhlJrZC2qwScD5nQ==
+
 "@types/cheerio@*":
   version "0.22.16"
   resolved "https://registry.yarnpkg.com/@types/cheerio/-/cheerio-0.22.16.tgz#c748a97b8a6f781b04bbda4a552e11b35bcc77e4"
@@ -2005,6 +2010,20 @@
   resolved "https://registry.yarnpkg.com/@types/parse-json/-/parse-json-4.0.0.tgz#2f8bb441434d163b35fb8ffdccd7138927ffb8c0"
   integrity sha512-//oorEZjL6sbPcKUaCdIGlIUeH26mgzimjBB77G6XRgnDl/L5wOnpyBGRe/Mmf5CVW3PwEBE1NjiMZ/ssFh4wA==
 
+"@types/pino-std-serializers@*":
+  version "2.4.0"
+  resolved "https://registry.yarnpkg.com/@types/pino-std-serializers/-/pino-std-serializers-2.4.0.tgz#8cad99175cb79c2448f7455a2d32fb3fde29579c"
+  integrity sha512-eAdu+NW1IkCdmp85SnhyKha+OOREQMT9lXaoICQxa7bhSauRiLzu3WSNt9Mf2piuJvWeXF/G0hGWHr63xNpIRA==
+
+"@types/pino@^5.15.5":
+  version "5.15.5"
+  resolved "https://registry.yarnpkg.com/@types/pino/-/pino-5.15.5.tgz#8e0d31ca71ecd955085fd81b30878ea239c9f570"
+  integrity sha512-UWEzZVLZ9NGNMeQrkckfsUuyPNwmIIhSNBulLL13Eh0QEebsq/QXd4x8OKsb1O+OkYBlWl5F90HZ9UFOjWWCbg==
+  dependencies:
+    "@types/node" "*"
+    "@types/pino-std-serializers" "*"
+    "@types/sonic-boom" "*"
+
 "@types/prettier@^1.13.2":
   version "1.19.0"
   resolved "https://registry.yarnpkg.com/@types/prettier/-/prettier-1.19.0.tgz#a2502fb7ce9b6626fdbfc2e2a496f472de1bdd05"
@@ -2049,6 +2068,13 @@
   dependencies:
     "@types/express-serve-static-core" "*"
     "@types/mime" "*"
+
+"@types/sonic-boom@*":
+  version "0.7.0"
+  resolved "https://registry.yarnpkg.com/@types/sonic-boom/-/sonic-boom-0.7.0.tgz#38337036293992a1df65dd3161abddf8fb9b7176"
+  integrity sha512-AfqR0fZMoUXUNwusgXKxcE9DPlHNDHQp6nKYUd4PSRpLobF5CCevSpyTEBcVZreqaWKCnGBr9KI1fHMTttoB7A==
+  dependencies:
+    "@types/node" "*"
 
 "@types/stack-utils@^1.0.1":
   version "1.0.1"
@@ -14369,10 +14395,10 @@ strip-json-comments@~2.0.1:
   resolved "https://registry.yarnpkg.com/strip-json-comments/-/strip-json-comments-2.0.1.tgz#3c531942e908c2697c0ec344858c286c7ca0a60a"
   integrity sha1-PFMZQukIwml8DsNEhYwobHygpgo=
 
-stripe@^8.20.0:
-  version "8.20.0"
-  resolved "https://registry.yarnpkg.com/stripe/-/stripe-8.20.0.tgz#23cdac18762b4bd2126a699e96569d67a44fd40b"
-  integrity sha512-DJQmdffrPBV8aWU4F8646e47rSYWZ/ZbVv6E98xOdcZVB5jo3nB0iGR+c5L2CeWBsvgpleWoxmGyE9fjYCTswg==
+stripe@^8.29.0:
+  version "8.29.0"
+  resolved "https://registry.yarnpkg.com/stripe/-/stripe-8.29.0.tgz#f46d3a26f07bfaff170a0376489504932ea47c87"
+  integrity sha512-ZuQA/M8dU6pHV174uU4w/K21Ftv4v+2yAOdkitijVbDue4YF2n14qbjIBT+rwGl+jaJovZAuMrbOWyZ+glI34w==
   dependencies:
     "@types/node" ">=8.1.0"
     qs "^6.6.0"

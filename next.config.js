@@ -40,7 +40,7 @@ module.exports = withBundleAnalyzer(
       },
       typescript: {
         ignoreDevErrors: true,
-        ignoreBuildErrors: true,
+        ignoreBuildErrors: false,
       },
       onDemandEntries: {
         maxInactiveAge: 300000, // 5 minutes

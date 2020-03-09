@@ -30,7 +30,11 @@ import { transformRoleForToken } from '../utilities';
  * @param info - GraphQL metadata
  * @returns token
  */
-const registerActor = async (parent, args, context, info): Promise<any> => {
+const registerActor = async (
+  parent: any,
+  args: any,
+  context: any
+): Promise<any> => {
   const { db, req, mailer } = context;
   const role = await db.findOne(Role, { name: RoleName.ACTOR });
 
@@ -96,7 +100,11 @@ const registerActor = async (parent, args, context, info): Promise<any> => {
  * @param info - GraphQL metadata
  * @returns null
  */
-const confirmActor = async (parent, args, context, info): Promise<any> => {
+const confirmActor = async (
+  parent: any,
+  args: any,
+  context: any
+): Promise<any> => {
   const { db, mailer } = context;
 
   const actorAccount = await db.findOne(ActorAccount, {
@@ -132,7 +140,11 @@ const confirmActor = async (parent, args, context, info): Promise<any> => {
  * @param info - GraphQL metadata
  * @returns token
  */
-const loginActor = async (parent, args, context, info): Promise<any> => {
+const loginActor = async (
+  parent: any,
+  args: any,
+  context: any
+): Promise<any> => {
   const { db } = context;
 
   const role = await db.findOne(Role, { name: RoleName.ACTOR });
@@ -231,10 +243,9 @@ const loginActor = async (parent, args, context, info): Promise<any> => {
  * @returns null
  */
 const setActorSecurityQuestionAnswers = async (
-  parent,
-  args,
-  context,
-  info
+  parent: any,
+  args: any,
+  context: any
 ): Promise<any> => {
   const { db } = context;
   const queue: any = [];
@@ -296,8 +307,7 @@ const setActorSecurityQuestionAnswers = async (
 const getActorSecurityQuestionAnswers = async (
   parent,
   args,
-  context,
-  info
+  context
 ): Promise<any> => {
   const { db } = context;
   logger.info("AUTH-RESOLVER: Retrieving actor's security question answers");
@@ -338,8 +348,7 @@ const getActorSecurityQuestionAnswers = async (
 const verifyActorSecurityQuestionAnswers = async (
   parent,
   args,
-  context,
-  info
+  context
 ): Promise<any> => {
   const { db } = context;
   const queue: any = [];
@@ -411,7 +420,11 @@ const verifyActorSecurityQuestionAnswers = async (
  * @param info - GraphQL metadata
  * @returns null
  */
-const resetPassword = async (parent, args, context, info): Promise<any> => {
+const resetPassword = async (
+  parent: any,
+  args: any,
+  context: any
+): Promise<any> => {
   const { db } = context;
 
   const [actorAccount] = await db.query(
@@ -455,7 +468,11 @@ const resetPassword = async (parent, args, context, info): Promise<any> => {
  * @param info - GraphQL metadata
  * @returns null
  */
-const changePassword = async (parent, args, context, info): Promise<any> => {
+const changePassword = async (
+  parent: any,
+  args: any,
+  context: any
+): Promise<any> => {
   const { db } = context;
 
   const password = await argon2.hash(args.input.password, {
@@ -504,7 +521,11 @@ const changePassword = async (parent, args, context, info): Promise<any> => {
  * @param info - GraphQL metadata
  * @returns null
  */
-const unlockAccount = async (parent, args, context, info): Promise<any> => {
+const unlockAccount = async (
+  parent: any,
+  args: any,
+  context: any
+): Promise<any> => {
   const { db } = context;
 
   logger.info('AUTH-RESOLVER: Unlocking account');
@@ -540,7 +561,11 @@ const unlockAccount = async (parent, args, context, info): Promise<any> => {
  * @param info - GraphQL metadata
  * @returns null
  */
-const sendAuthEmail = async (parent, args, context, info): Promise<any> => {
+const sendAuthEmail = async (
+  parent: any,
+  args: any,
+  context: any
+): Promise<any> => {
   const { db, mailer } = context;
   const [actor] = await db.query(
     `
@@ -583,7 +608,11 @@ const sendAuthEmail = async (parent, args, context, info): Promise<any> => {
  * @param info - GraphQL metadata
  * @returns null
  */
-const logoutActor = async (parent, args, context, info): Promise<any> => {
+const logoutActor = async (
+  parent: any,
+  args: any,
+  context: any
+): Promise<any> => {
   const { db } = context;
 
   logger.info('AUTH-RESOLVER: Logging out actor');
@@ -604,7 +633,11 @@ const logoutActor = async (parent, args, context, info): Promise<any> => {
  * @param info - GraphQL metadata
  * @returns decoded token
  */
-const validateAccess = async (parent, args, context, info): Promise<any> => {
+const validateAccess = async (
+  parent: any,
+  args: any,
+  context: any
+): Promise<any> => {
   // Skip authentication if auth is turned off
   if (!config.server.auth.enabled) {
     return true;

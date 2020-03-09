@@ -1,4 +1,5 @@
-import { Component } from 'react';
+import { useState } from 'react';
+import { useQuery } from '@apollo/react-hooks';
 import jwt from 'jsonwebtoken';
 import gql from 'graphql-tag';
 import { withApollo } from '@apollo-setup/with-apollo';
@@ -11,33 +12,20 @@ const GET_TOKEN = gql`
   }
 `;
 
-class Policy extends Component {
-  public state = {
-    canAccess: false,
-  };
+const Policy = ({ can, children }: any) => {
+  const [canAccess, setCanAccess] = useState(false);
 
-  public async componentDidMount(): any {
-    const { can, client } = this.props;
+  useQuery(GET_TOKEN, {
+    onCompleted: response => {
+      const { token } = response && response.payload;
+      const decoded: any = jwt.decode(token);
+      const { permissions } = decoded.role;
 
-    const {
-      data: { payload },
-    } = await client.query({
-      query: GET_TOKEN,
-    });
+      setCanAccess(permissions.includes(can));
+    },
+  });
 
-    const { token } = payload;
-    const decoded = jwt.decode(token);
-    const { permissions } = decoded.role;
+  return canAccess && children;
+};
 
-    this.setState({ canAccess: permissions.includes(can) });
-  }
-
-  public render(): any {
-    const { children } = this.props;
-    const { canAccess } = this.state;
-
-    return canAccess && children;
-  }
-}
-
-export default withApollo(Policy);
+export default withApollo()(Policy);

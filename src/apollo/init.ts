@@ -1,4 +1,6 @@
+/* eslint-disable no-param-reassign */
 import { ApolloClient } from 'apollo-client';
+import { NextPageContext } from 'next';
 import { from } from 'apollo-link';
 import { InMemoryCache } from 'apollo-cache-inmemory';
 import { fileLoader } from '@utils/file-loaders/webpack';
@@ -11,7 +13,7 @@ const resolvers = mergeResolvers();
 
 // On the client, we store the Apollo Client in the following variable.
 // This prevents the client from re-initializing between page transitions.
-let globalApolloClient = null;
+let globalApolloClient: any = null;
 
 /**
  * Creates an Apollo Client instance
@@ -20,7 +22,10 @@ let globalApolloClient = null;
  * @param context - Next.js page context
  * @returns Instance of Apollo Client
  */
-const createApolloClient = (initialState, context): any => {
+const createApolloClient = (
+  initialState: any,
+  context: NextPageContext
+): any => {
   // The `context` (NextPageContext) will only be present on the server.
   // use it to extract auth headers (context.req) or similar.
   const cookies =
@@ -47,7 +52,10 @@ const createApolloClient = (initialState, context): any => {
  * @param context - Next.js page context
  * @returns The Apollo Client instance
  */
-export const initApolloClient = (initialState, context): any => {
+export const initApolloClient = (
+  initialState: any,
+  context: NextPageContext
+): any => {
   // Make sure to create a new client for every server-side request so that data
   // isn't shared between connections (which would be bad)
   if (typeof window === 'undefined') {
@@ -68,7 +76,7 @@ export const initApolloClient = (initialState, context): any => {
  * inside getStaticProps, getStaticPaths or getServerProps
  * @param {NextPageContext | NextAppContext} context
  */
-export const initOnContext = context => {
+export const initOnContext = (context: any) => {
   const inAppContext = Boolean(context.ctx);
 
   // We consider installing `withApollo({ ssr: true })` on global App level
@@ -99,9 +107,9 @@ export const initOnContext = context => {
   // Add apolloClient to NextPageContext & NextAppContext.
   // This allows us to consume the apolloClient inside our
   // custom `getInitialProps({ apolloClient })`.
-  context.apolloClient = apolloClient;
+  (context as any).apolloClient = apolloClient;
   if (inAppContext) {
-    context.ctx.apolloClient = apolloClient;
+    (context as any).ctx.apolloClient = apolloClient;
   }
 
   return context;

@@ -1,6 +1,7 @@
 import express, { Express, Request, Response, Router } from 'express';
 import { logger } from '@server/modules/logger';
-import { Route, Middleware, Action } from './typings';
+import { Middleware } from '../register-middleware/typings';
+import { Route, Action } from './typings';
 
 interface ExpressRouter extends Router {
   [key: string]: any; // eslint-disable-line @typescript-eslint/no-explicit-any

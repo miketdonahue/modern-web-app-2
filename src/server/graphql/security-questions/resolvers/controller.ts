@@ -10,10 +10,9 @@ import { logger } from '@server/modules/logger';
  * @returns An array of security question objects
  */
 const getSecurityQuestions = async (
-  parent,
-  args,
-  context,
-  info
+  parent: any,
+  args: any,
+  context: any
 ): Promise<any> => {
   logger.info('SECURITY-QUESTION-RESOLVER: Retrieving security questions');
   return context.prisma.securityQuestions();

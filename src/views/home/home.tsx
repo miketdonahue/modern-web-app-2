@@ -1,3 +1,4 @@
+import { NextPageContext } from 'next';
 import Link from 'next/link';
 // import Router, { withRouter } from 'next/router';
 // import Cookies from 'universal-cookie';
@@ -6,7 +7,12 @@ import { withApollo } from '@apollo-setup/with-apollo';
 import { checkAccess } from '@modules/permissions/check-access';
 // import * as mutations from './graphql/mutations.gql';
 
-const PostLink = (props: any) => {
+type Props = {
+  id: string;
+  title: string;
+};
+
+const PostLink = (props: Props) => {
   const { id, title } = props;
 
   return (
@@ -16,7 +22,7 @@ const PostLink = (props: any) => {
   );
 };
 
-const Home = props => {
+const Home = () => {
   // const handleLogout = () => {
   //   const { client } = this.props;
   //   const cookies = new Cookies();
@@ -70,7 +76,7 @@ const Home = props => {
   );
 };
 
-Home.getInitialProps = async context => {
+Home.getInitialProps = async (context: NextPageContext) => {
   await checkAccess(context);
   return {};
 };

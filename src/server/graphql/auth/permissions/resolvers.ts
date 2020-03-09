@@ -17,7 +17,7 @@ import { config } from '@config';
  * @param info - GraphQL metadata
  * @returns A boolean
  */
-export const accountUnlocked = rule()(async (parent, args, context, info) => {
+export const accountUnlocked = rule()(async (parent, args, context) => {
   if (!config.server.auth.lockable.enabled) {
     return true;
   }
@@ -71,25 +71,23 @@ export const accountUnlocked = rule()(async (parent, args, context, info) => {
  * @param info - GraphQL metadata
  * @returns A boolean
  */
-export const lockedCodeNotExpired = rule()(
-  async (parent, args, context, info) => {
-    const { db } = context;
+export const lockedCodeNotExpired = rule()(async (parent, args, context) => {
+  const { db } = context;
 
-    const actorAccount = await db.findOne(ActorAccount, {
-      locked_code: args.input.code,
-    });
+  const actorAccount = await db.findOne(ActorAccount, {
+    locked_code: args.input.code,
+  });
 
-    if (!actorAccount) {
-      throw new InternalError('CODE_NOT_FOUND', { code: 'lockedCode' });
-    }
-
-    if (isBefore(actorAccount.locked_expires, new Date())) {
-      return new InternalError('LOCKED_CODE_EXPIRED');
-    }
-
-    return true;
+  if (!actorAccount) {
+    throw new InternalError('CODE_NOT_FOUND', { code: 'lockedCode' });
   }
-);
+
+  if (isBefore(actorAccount.locked_expires, new Date())) {
+    return new InternalError('LOCKED_CODE_EXPIRED');
+  }
+
+  return true;
+});
 
 /**
  * Checks if actor account reset password code has expired
@@ -104,7 +102,7 @@ export const lockedCodeNotExpired = rule()(
  * @returns A boolean
  */
 export const resetPasswordCodeNotExpired = rule()(
-  async (parent, args, context, info) => {
+  async (parent, args, context) => {
     const { db } = context;
 
     const actorAccount = await db.findOne(ActorAccount, {

@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-props-no-spreading */
 import React from 'react';
 import App from 'next/app';
 import { ApolloProvider } from '@apollo/react-hooks';
@@ -11,8 +12,8 @@ import { initApolloClient, initOnContext } from './init';
  * @param  {Boolean} [withApolloOptions.ssr=true]
  * @returns {(PageComponent: ReactNode) => ReactNode}
  */
-export const withApollo = ({ ssr = false } = {}) => PageComponent => {
-  const WithApollo = ({ apolloClient, apolloState, ...pageProps }) => {
+export const withApollo = ({ ssr = false } = {}) => (PageComponent: any) => {
+  const WithApollo = ({ apolloClient, apolloState, ...pageProps }: any) => {
     let client;
     if (apolloClient) {
       // Happens on: getDataFromTree & next.js ssr
@@ -37,7 +38,7 @@ export const withApollo = ({ ssr = false } = {}) => PageComponent => {
   }
 
   if (ssr || PageComponent.getInitialProps) {
-    WithApollo.getInitialProps = async context => {
+    WithApollo.getInitialProps = async (context: any) => {
       const inAppContext = Boolean(context.ctx);
       const { apolloClient } = initOnContext(context);
 

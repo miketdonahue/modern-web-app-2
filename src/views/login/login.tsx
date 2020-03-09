@@ -11,17 +11,14 @@ const Login = () => {
   const router = useRouter();
   const [serverErrors, formatServerErrors] = useServerErrors();
 
-  const [loginActor, { loading, error, data }] = useMutation(
-    mutations.loginActor,
-    {
-      onCompleted: () => {
-        router.push('/');
-      },
-      onError: (graphQLErrors: any) => {
-        return formatServerErrors(graphQLErrors.graphQLErrors);
-      },
-    }
-  );
+  const [loginActor] = useMutation(mutations.loginActor, {
+    onCompleted: () => {
+      router.push('/');
+    },
+    onError: (graphQLErrors: any) => {
+      return formatServerErrors(graphQLErrors.graphQLErrors);
+    },
+  });
 
   const formik = useFormik({
     initialValues: {
@@ -76,10 +73,6 @@ const Login = () => {
       <a href="/oauth/google">Login with Google</a>
     </>
   );
-};
-
-Login.getInitialProps = context => {
-  return {};
 };
 
 export default withApollo()(Login);

@@ -1,9 +1,10 @@
 import pino from 'pino';
 import path from 'path';
 import uuid from 'uuid/v4';
+import { Request, Response } from 'express';
 import { config } from '@config';
 
-let destination = path.join(process.cwd(), 'server/logs/app.log');
+let destination: any = path.join(process.cwd(), 'server/logs/app.log');
 
 if (process.env.NODE_ENV !== 'production') {
   destination = pino.destination(1);
@@ -16,7 +17,7 @@ const defaultLogger = pino(
   {
     name: 'graphql-server',
     level: config.server.logger.level,
-    enable: config.server.logger.enabled,
+    enabled: config.server.logger.enabled,
     redact: {
       paths: [],
       remove: true,
@@ -33,13 +34,13 @@ const defaultLogger = pino(
  */
 const logger = defaultLogger.child({
   serializers: {
-    req: req => {
+    req: (req: Request) => {
       if (!req) {
         return false;
       }
 
       const whitelistedHeaders = (): any => {
-        const headers = Object.assign({}, req.headers);
+        const headers = { ...req.headers };
 
         if (config.server.logger.level !== 'debug') {
           delete headers.authorization;
@@ -63,7 +64,7 @@ const logger = defaultLogger.child({
         ip: req.ip,
       };
     },
-    res: res => {
+    res: (res: Response) => {
       if (!res) {
         return false;
       }
@@ -73,8 +74,8 @@ const logger = defaultLogger.child({
         headers: res._headers,
       };
     },
-    args: args => {
-      const whitelistArgs = Object.assign({}, { ...args.input });
+    args: (args: any) => {
+      const whitelistArgs = { ...args.input };
 
       if (config.server.logger.level !== 'debug') {
         delete whitelistArgs.firstName;
