@@ -13,12 +13,20 @@ import Cookies from 'universal-cookie';
 export const headersMiddleware = (cookies: any) =>
   new ApolloLink((operation, forward) => {
     operation.setContext(() => {
-      const cookie = new Cookies(cookies);
-      const jwtToken = cookie.get('token');
+      const uc = new Cookies(cookies);
+      const uCookies = uc.getAll();
+
+      const getAuthorizationHeader = (cookie: any) => {
+        if (cookie['token-signature']) {
+          return `${cookie['token-payload']}.${cookie['token-signature']}`;
+        }
+
+        return cookie['token-payload'];
+      };
 
       return {
         headers: {
-          Authorization: jwtToken ? `Bearer ${jwtToken}` : null,
+          Authorization: `Bearer ${getAuthorizationHeader(uCookies)}`,
           'X-Requested-With': 'XmlHttpRequest',
         },
       };

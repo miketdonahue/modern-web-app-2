@@ -218,13 +218,17 @@ export const authenticate = async (req, res): Promise<any> => {
     'OPEN-AUTH-MIDDLEWARE: Setting jwt cookie and redirecting'
   );
 
-  const dsToken = jwt.sign({ hash: uuid() }, config.server.auth.jwt.dsSecret, {
-    expiresIn: config.server.auth.jwt.expiresIn,
-  });
+  const [tokenHeader = '', tokenBody = '', tokenSignature = ''] = token.split(
+    '.'
+  );
 
   // TODO: change to `secure: true` when HTTPS
-  res.cookie('token', token, { path: '/', secure: false });
-  res.cookie('ds_token', dsToken, {
+  res.cookie('token-payload', `${tokenHeader}.${tokenBody}`, {
+    path: '/',
+    secure: false,
+  });
+
+  res.cookie('token-signature', tokenSignature, {
     path: '/',
     httpOnly: true,
     secure: false,

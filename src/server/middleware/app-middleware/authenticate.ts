@@ -1,4 +1,5 @@
 import jwt from 'jsonwebtoken';
+import Cookies from 'universal-cookie';
 import { logger } from '@server/modules/logger';
 import { config } from '@config';
 
@@ -25,17 +26,28 @@ const authenticate = (headers): any => {
     }
   }
 
-  return jwt.verify(token, config.server.auth.jwt.secret, (err, decoded) => {
-    const actor = { decoded: null, token };
+  const uc = new Cookies(headers && headers.cookie);
+  const uCookies = uc.getAll();
+  const constructedToken =
+    uCookies && uCookies['token-signature']
+      ? `${token}.${uCookies['token-signature']}`
+      : token;
 
-    if (err) {
-      logger.warn({ err }, `AUTHENTICATE-MIDDLEWARE: ${err.message}`);
+  return jwt.verify(
+    constructedToken,
+    config.server.auth.jwt.secret,
+    (err, decoded) => {
+      const actor = { decoded: null, token: constructedToken };
+
+      if (err) {
+        logger.warn({ err }, `AUTHENTICATE-MIDDLEWARE: ${err.message}`);
+      }
+
+      // Add the decoded actor to context for continued access
+      actor.decoded = decoded;
+      return actor;
     }
-
-    // Add the decoded actor to context for continued access
-    actor.decoded = decoded;
-    return actor;
-  });
+  );
 };
 
 export default authenticate;

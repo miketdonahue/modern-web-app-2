@@ -1,7 +1,6 @@
 import jwt from 'jsonwebtoken';
 import gql from 'graphql-tag';
 import { redirectTo } from '../redirect';
-// import { IGNORE_ROUTES } from './ignore-routes';
 
 /**
  * Checks if a user is authenticated & authorized
@@ -14,10 +13,7 @@ import { redirectTo } from '../redirect';
  */
 export const checkAccess = async (ctx): Promise<any> => {
   const { apolloClient, req, pathname } = ctx;
-  const urlPathname = process.browser ? pathname : req.url;
-
-  // Ignore public routes
-  // if (IGNORE_ROUTES.includes(urlPathname)) return true;
+  const urlPathname = typeof window !== 'undefined' ? pathname : req.url;
 
   const VALIDATE_ACCESS = gql`
     query {

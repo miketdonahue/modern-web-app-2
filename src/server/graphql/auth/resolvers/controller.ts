@@ -3,7 +3,7 @@ import jwt from 'jsonwebtoken';
 import { addHours } from 'date-fns';
 import uuid from 'uuid/v4';
 import generateCode from '@server/modules/code';
-import { InternalError, ExternalError } from '@server/modules/errors';
+import { InternalError } from '@server/modules/errors';
 import { logger } from '@server/modules/logger';
 import { Actor } from '@server/entities/actor';
 import { ActorAccount } from '@server/entities/actor-account';
@@ -197,13 +197,19 @@ const loginActor = async (parent, args, context, info): Promise<any> => {
     { expiresIn: config.server.auth.jwt.expiresIn }
   );
 
-  const dsToken = jwt.sign({ hash: uuid() }, config.server.auth.jwt.dsSecret, {
-    expiresIn: config.server.auth.jwt.expiresIn,
-  });
+  // const dsToken = jwt.sign({ hash: uuid() }, config.server.auth.jwt.dsSecret, {
+  //   expiresIn: config.server.auth.jwt.expiresIn,
+  // });
+
+  const [tokenHeader, tokenBody, tokenSignature] = token.split('.');
 
   // TODO: change to `secure: true` when HTTPS
-  context.res.cookie('token', token, { path: '/', secure: false });
-  context.res.cookie('ds_token', dsToken, {
+  context.res.cookie('token-payload', `${tokenHeader}.${tokenBody}`, {
+    path: '/',
+    secure: false,
+  });
+
+  context.res.cookie('token-signature', tokenSignature, {
     path: '/',
     httpOnly: true,
     secure: false,
@@ -617,7 +623,6 @@ const validateAccess = async (parent, args, context, info): Promise<any> => {
 
   try {
     jwt.verify(context.actor.token, config.server.auth.jwt.secret);
-    jwt.verify(context.req.cookies.ds_token, config.server.auth.jwt.dsSecret);
   } catch (err) {
     if (err.name === 'TokenExpiredError') {
       logger.info('AUTH-RESOLVER: Auth token has expired');
@@ -648,7 +653,7 @@ const validateAccess = async (parent, args, context, info): Promise<any> => {
           config.server.auth.jwt.refreshSecret
         );
       } catch (error) {
-        return { actorId: actorAccount.actor_id, token: null };
+        return { token: null };
       }
 
       logger.info(
@@ -662,33 +667,36 @@ const validateAccess = async (parent, args, context, info): Promise<any> => {
         { expiresIn: config.server.auth.jwt.expiresIn }
       );
 
-      const newDsToken = jwt.sign(
-        { hash: uuid() },
-        config.server.auth.jwt.dsSecret,
-        {
-          expiresIn: config.server.auth.jwt.expiresIn,
-        }
-      );
-
       logger.info(
         { actorId: actorAccount.actor_id },
         'AUTH-RESOLVER: Issuing new auth tokens'
       );
 
-      context.res.cookie('token', newToken, { path: '/', secure: false });
-      context.res.cookie('ds_token', newDsToken, {
+      const [
+        tokenHeader = '',
+        tokenBody = '',
+        tokenSignature = '',
+      ] = newToken.split('.');
+
+      // TODO: change to `secure: true` when HTTPS
+      context.res.cookie('token-payload', `${tokenHeader}.${tokenBody}`, {
+        path: '/',
+        secure: false,
+      });
+
+      context.res.cookie('token-signature', tokenSignature, {
         path: '/',
         httpOnly: true,
         secure: false,
       });
 
-      return { actorId: actorAccount.actor_id, token: newToken };
+      return { token: newToken };
     }
 
-    return { actorId: context.actor.actorId, token: null };
+    return { token: null };
   }
 
-  return { actorId: context.actor.actorId, token: context.actor.token };
+  return { token: context.actor.token };
 };
 
 export default {
