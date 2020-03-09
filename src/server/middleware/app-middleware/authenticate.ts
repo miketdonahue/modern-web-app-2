@@ -12,7 +12,7 @@ import { config } from '@config';
  * @param headers - The application request headers
  * @returns A user object
  */
-const authenticate = (headers): any => {
+const authenticate = (headers: any): any => {
   let token = '';
   const headerParts =
     (headers.authorization && headers.authorization.split(' ')) || [];
@@ -36,7 +36,7 @@ const authenticate = (headers): any => {
   return jwt.verify(
     constructedToken,
     config.server.auth.jwt.secret,
-    (err, decoded) => {
+    (err: any, decoded: any) => {
       const actor = { decoded: null, token: constructedToken };
 
       if (err) {

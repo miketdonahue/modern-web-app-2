@@ -7,7 +7,7 @@ import {
 } from '@server/modules/validation-rules';
 import { config } from '@config';
 
-const answers = (yup): any =>
+const answers = (yup: any): any =>
   yup
     .array()
     .of(yup.object())

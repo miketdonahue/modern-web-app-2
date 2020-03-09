@@ -12,11 +12,11 @@ const IV_LENGTH = 16; // Always 16 for AES
  * @param text - A string to be encrypted
  * @returns Encrypted text
  */
-export const encrypt = (text): any => {
+export const encrypt = (text: string): any => {
   const iv = crypto.randomBytes(IV_LENGTH);
   const cipher = crypto.createCipheriv(
     'aes-256-cbc',
-    Buffer.from(ENCRYPTION_KEY),
+    Buffer.from(ENCRYPTION_KEY as string),
     iv
   );
   const encrypted = Buffer.concat([cipher.update(text), cipher.final()]);
@@ -33,13 +33,13 @@ export const encrypt = (text): any => {
  * @param text - A string to be decrypted
  * @returns Decrypted text
  */
-export const decrypt = (text): any => {
-  const textParts = text.split(':');
+export const decrypt = (text: string): any => {
+  const textParts: any = text.split(':');
   const iv = Buffer.from(textParts.shift(), 'hex');
   const encryptedText = Buffer.from(textParts.join(':'), 'hex');
   const decipher = crypto.createDecipheriv(
     'aes-256-cbc',
-    Buffer.from(ENCRYPTION_KEY),
+    Buffer.from(ENCRYPTION_KEY as string),
     iv
   );
   const decrypted = Buffer.concat([

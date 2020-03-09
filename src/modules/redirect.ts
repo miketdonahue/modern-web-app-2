@@ -1,3 +1,4 @@
+import { NextPageContext } from 'next';
 import Router from 'next/router';
 
 /**
@@ -10,7 +11,7 @@ import Router from 'next/router';
  * @param url - Current URL
  * @returns Redirects to the given URL
  */
-export const redirectTo = (ctx, url): any => {
+export const redirectTo = (ctx: NextPageContext, url: string): any => {
   if (ctx.res) {
     ctx.res.writeHead(302, { Location: url });
     return ctx.res.end();

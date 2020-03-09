@@ -71,7 +71,7 @@ const logger = defaultLogger.child({
 
       return {
         statusCode: res.statusCode,
-        headers: res._headers,
+        headers: res.header,
       };
     },
     args: (args: any) => {

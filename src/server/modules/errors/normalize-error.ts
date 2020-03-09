@@ -6,7 +6,7 @@ import normalizers from './normalizers';
  * @param error - GraphQL Error object from Apollo Server
  * @returns A normalizing function
  */
-const normalizeError = (error): any => {
+const normalizeError = (error: any): any => {
   let { source } = error.extensions.exception;
 
   // Some errors are not interceptable; Set a source here from some identifying property

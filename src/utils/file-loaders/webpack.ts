@@ -13,7 +13,7 @@ export const fileLoader = (type: string): any => {
   const array: any = [];
   const files = FILES[type];
 
-  files.keys().forEach(file => {
+  files.keys().forEach((file: any) => {
     const ext = file.split('.').pop();
     const data = files(file);
 

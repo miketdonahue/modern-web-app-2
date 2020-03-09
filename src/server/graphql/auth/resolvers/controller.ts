@@ -305,9 +305,9 @@ const setActorSecurityQuestionAnswers = async (
  * @returns An array of answer objects
  */
 const getActorSecurityQuestionAnswers = async (
-  parent,
-  args,
-  context
+  parent: any,
+  args: any,
+  context: any
 ): Promise<any> => {
   const { db } = context;
   logger.info("AUTH-RESOLVER: Retrieving actor's security question answers");
@@ -346,9 +346,9 @@ const getActorSecurityQuestionAnswers = async (
  * @returns null
  */
 const verifyActorSecurityQuestionAnswers = async (
-  parent,
-  args,
-  context
+  parent: any,
+  args: any,
+  context: any
 ): Promise<any> => {
   const { db } = context;
   const queue: any = [];
@@ -644,7 +644,7 @@ const validateAccess = async (
   }
 
   const { db } = context;
-  const decoded = jwt.decode(context.actor.token);
+  const decoded: any = jwt.decode(context.actor.token);
   const blacklistedToken = await db.findOne(BlacklistedToken, {
     token: context.actor.token,
   });

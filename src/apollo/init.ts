@@ -24,7 +24,7 @@ let globalApolloClient: any = null;
  */
 const createApolloClient = (
   initialState: any,
-  context: NextPageContext
+  context?: NextPageContext
 ): any => {
   // The `context` (NextPageContext) will only be present on the server.
   // use it to extract auth headers (context.req) or similar.
@@ -54,7 +54,7 @@ const createApolloClient = (
  */
 export const initApolloClient = (
   initialState: any,
-  context: NextPageContext
+  context?: NextPageContext
 ): any => {
   // Make sure to create a new client for every server-side request so that data
   // isn't shared between connections (which would be bad)

@@ -7,7 +7,7 @@ type Error = {
 };
 
 const useServerErrors = () => {
-  const [serverErrors, setErrors] = useState([]);
+  const [serverErrors, setErrors] = useState<any>([]);
 
   const formatServerErrors = (gqlErrors: any) => {
     const formattedErrors = gqlErrors.map((e: any) => {

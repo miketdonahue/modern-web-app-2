@@ -4,7 +4,7 @@
  * @param error - GraphQL Error object from Apollo Server
  * @returns A standardized error code and logger level
  */
-export default error => {
+export default (error: any) => {
   const errorInfo = { code: 'JWT', level: 'warn' };
 
   switch (error.extensions.exception.name) {

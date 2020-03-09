@@ -4,7 +4,7 @@
  * @param error - GraphQL Error object from Apollo Server
  * @returns A standardized error code and logger level
  */
-export default error => {
+export default (error: any) => {
   // eslint-disable-next-line no-param-reassign
   delete error.extensions.exception.value;
 

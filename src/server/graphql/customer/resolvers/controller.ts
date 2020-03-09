@@ -1,8 +1,10 @@
-import stripeSdk from 'stripe';
+import Stripe from 'stripe';
 import { logger } from '@server/modules/logger';
 import { InternalError, ExternalError } from '../../../modules/errors';
 
-const stripe = stripeSdk(process.env.STRIPE);
+const stripe = new Stripe(process.env.STRIPE as string, {
+  apiVersion: '2020-03-02',
+});
 
 /**
  * Create a new customer

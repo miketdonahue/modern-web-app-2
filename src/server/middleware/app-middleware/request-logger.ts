@@ -20,7 +20,7 @@ const requestLogger = {
       'Start request'
     );
 
-    res.end = (...args) => {
+    res.end = (...args: any) => {
       const diffTime = process.hrtime(startTime);
       const responseTime = (diffTime[0] * 1e9 + diffTime[1]) / 1e6;
 

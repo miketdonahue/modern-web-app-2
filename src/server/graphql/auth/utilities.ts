@@ -8,14 +8,14 @@
  * @param role - A actor role object
  * @returns The transformed role object
  */
-export const transformRoleForToken = (role): any => {
-  const actorRole = { ...role };
+export const transformRoleForToken = (role: any): any => {
+  const actorRole: any = { ...role };
   // TODO: move to entities model Role
   return {
     uuid: actorRole.uuid,
     name: actorRole.name,
     permissions: actorRole.permissions.map(
-      permission => JSON.parse(permission).key
+      (permission: any) => JSON.parse(permission).key
     ),
     prohibited_routes: actorRole.prohibited_routes.paths,
   };

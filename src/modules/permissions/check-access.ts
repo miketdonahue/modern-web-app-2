@@ -11,9 +11,9 @@ import { redirectTo } from '../redirect';
  * @param ctx - Next.js context
  * @returns Redirects to appropriate page
  */
-export const checkAccess = async (ctx): Promise<any> => {
+export const checkAccess = async (ctx: any): Promise<any> => {
   const { apolloClient, req, pathname } = ctx;
-  const urlPathname = typeof window !== 'undefined' ? pathname : req.url;
+  const urlPathname = typeof window !== 'undefined' ? pathname : req && req.url;
 
   const VALIDATE_ACCESS = gql`
     query {
@@ -32,7 +32,7 @@ export const checkAccess = async (ctx): Promise<any> => {
 
   const { token } = payload;
   const hasAccess = !!token;
-  const decoded = jwt.decode(token);
+  const decoded: any = jwt.decode(token);
 
   // Redirect authenticated requests to /login back to root path
   if (urlPathname === '/login' && hasAccess) {
@@ -45,7 +45,12 @@ export const checkAccess = async (ctx): Promise<any> => {
   }
 
   // Redirect all unauthorized route access requests to root
-  if (hasAccess && decoded.role.prohibited_routes.includes(pathname)) {
+  if (
+    hasAccess &&
+    decoded &&
+    decoded.role &&
+    decoded.role.prohibited_routes.includes(pathname)
+  ) {
     return redirectTo(ctx, '/');
   }
 

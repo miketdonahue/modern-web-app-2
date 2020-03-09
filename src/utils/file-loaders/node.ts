@@ -10,11 +10,19 @@ import { config } from '@config';
 
 const DEFAULT_EXTENSIONS = ['.ts', '.js', '.gql', '.graphql', '.graphqls'];
 const DIRS: any = {
-  typeDefs: config.server.dirs.types.map(d => path.join(process.cwd(), d)),
-  resolvers: config.server.dirs.resolvers.map(d => path.join(process.cwd(), d)),
-  routes: config.server.dirs.routes.map(d => path.join(process.cwd(), d)),
-  permissions: config.server.dirs.access.map(d => path.join(process.cwd(), d)),
-  validations: config.server.dirs.validations.map(d =>
+  typeDefs: config.server.dirs.types.map((d: string) =>
+    path.join(process.cwd(), d)
+  ),
+  resolvers: config.server.dirs.resolvers.map((d: string) =>
+    path.join(process.cwd(), d)
+  ),
+  routes: config.server.dirs.routes.map((d: string) =>
+    path.join(process.cwd(), d)
+  ),
+  permissions: config.server.dirs.access.map((d: string) =>
+    path.join(process.cwd(), d)
+  ),
+  validations: config.server.dirs.validations.map((d: string) =>
     path.join(process.cwd(), d)
   ),
 };
@@ -28,7 +36,7 @@ const DIRS: any = {
  * @param dir - A glob directory
  * @returns An array of file paths
  */
-const recursiveReadDirSync = (dir): any =>
+const recursiveReadDirSync = (dir: any): any =>
   fs
     .readdirSync(dir)
     .reduce(
@@ -48,7 +56,7 @@ const recursiveReadDirSync = (dir): any =>
  * @param dir - A glob directory
  * @returns An array of file paths
  */
-const readDirSync = (dir): any =>
+const readDirSync = (dir: any): any =>
   fs
     .readdirSync(dir)
     .reduce(
@@ -69,7 +77,8 @@ const readDirSync = (dir): any =>
  * @param options - Glob options
  * @returns An array of file path strings
  */
-const readGlobSync = (pattern, options): any => Glob.sync(pattern, options);
+const readGlobSync = (pattern: string, options: any): any =>
+  Glob.sync(pattern, options);
 
 /**
  * Get a list of files to be read
@@ -82,7 +91,11 @@ const readGlobSync = (pattern, options): any => Glob.sync(pattern, options);
  * @param globOptions - Glob options
  * @returns An array of file path strings
  */
-const getSchemaFiles = (dirs, recursive, globOptions): any => {
+const getSchemaFiles = (
+  dirs: any[],
+  recursive: boolean,
+  globOptions: any
+): any => {
   return dirs
     .map(dir => {
       if (isGlob(dir)) {
@@ -112,15 +125,15 @@ const getSchemaFiles = (dirs, recursive, globOptions): any => {
  * @returns An array of file contents from each file
  */
 export const fileLoader = (
-  type,
+  type: string,
   { recursive = false, globOptions = {}, flatten = false } = {}
 ): any => {
   const schemafiles = getSchemaFiles(DIRS[type], recursive, globOptions);
 
   let files = schemafiles
-    .map(f => ({ f, pathObj: path.parse(f) }))
-    .filter(({ pathObj }) => DEFAULT_EXTENSIONS.includes(pathObj.ext))
-    .map(({ f, pathObj }) => {
+    .map((f: any) => ({ f, pathObj: path.parse(f) }))
+    .filter(({ pathObj }: any) => DEFAULT_EXTENSIONS.includes(pathObj.ext))
+    .map(({ f, pathObj }: any) => {
       let returnVal;
 
       switch (pathObj.ext) {
@@ -143,7 +156,7 @@ export const fileLoader = (
 
       return returnVal;
     })
-    .filter(v => !!v); // filter files we don't know how to handle
+    .filter((v: any) => !!v); // filter files we don't know how to handle
 
   if (flatten) {
     files = files.flat();

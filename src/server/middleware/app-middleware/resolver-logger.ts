@@ -14,7 +14,13 @@ import { config } from '@config';
  * @param info - GraphQL metadata
  * @returns A resolved Promise
  */
-const resolverLogger = (resolve, parent, args, context, info): any => {
+const resolverLogger = (
+  resolve: any,
+  parent: any,
+  args: any,
+  context: any,
+  info: any
+): any => {
   const actorId =
     (config.server.auth.enabled && context.actor && context.actor.actorId) ||
     null;
