@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { withApollo } from '@apollo-setup/with-apollo';
-import { checkAccess } from '@client/modules';
+import { checkAccess } from '@modules/permissions/check-access';
 
 interface Props {
   post: {

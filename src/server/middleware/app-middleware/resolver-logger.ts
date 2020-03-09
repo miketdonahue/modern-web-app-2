@@ -24,4 +24,4 @@ const resolverLogger = (resolve, parent, args, context, info): any => {
   return resolve();
 };
 
-export default resolverLogger;
+export { resolverLogger };

@@ -3,7 +3,7 @@ import Link from 'next/link';
 // import Cookies from 'universal-cookie';
 import Policy from 'src/components/policy';
 import { withApollo } from '@apollo-setup/with-apollo';
-import { checkAccess } from '@client/modules';
+import { checkAccess } from '@modules/permissions/check-access';
 // import * as mutations from './graphql/mutations.gql';
 
 const PostLink = (props: any) => {

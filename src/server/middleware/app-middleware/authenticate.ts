@@ -50,4 +50,4 @@ const authenticate = (headers): any => {
   );
 };
 
-export default authenticate;
+export { authenticate };

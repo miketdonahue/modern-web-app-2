@@ -33,4 +33,4 @@ const normalizeError = (error): any => {
   }
 };
 
-export default normalizeError;
+export { normalizeError };

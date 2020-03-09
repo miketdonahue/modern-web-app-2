@@ -4,7 +4,7 @@ import { logger } from '@server/modules/logger';
 /**
  * Generic Request Logger
  */
-export const requestLogger = {
+const requestLogger = {
   name: 'request-logger',
   function: (req: Request, res: Response, next: NextFunction) => {
     if (req.url.startsWith('/_next')) return next();
@@ -38,4 +38,4 @@ export const requestLogger = {
   },
 };
 
-export default requestLogger;
+export { requestLogger };

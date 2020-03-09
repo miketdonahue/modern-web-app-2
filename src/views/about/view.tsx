@@ -1,4 +1,4 @@
-import { checkAccess } from '@client/modules';
+import { checkAccess } from '@modules/permissions/check-access';
 import { withApollo } from '@apollo-setup/with-apollo';
 
 const About = () => {

@@ -13,6 +13,7 @@ module.exports = {
           '@pages': './src/pages',
           '@server': './src/server',
           '@styles': './src/styles',
+          '@modules': './src/modules',
           '@utils': './src/utils',
         },
         extensions: ['.js', '.jsx', '.ts', '.tsx'],
