@@ -1,6 +1,6 @@
 import { NextPageContext } from 'next';
 import Link from 'next/link';
-import { useMutation } from '@apollo/react-hooks';
+import { useMutation, useApolloClient } from '@apollo/react-hooks';
 import { useRouter } from 'next/router';
 import Cookies from 'universal-cookie';
 import Policy from 'src/components/policy';
@@ -25,11 +25,13 @@ const PostLink = (props: Props) => {
 
 const Home = () => {
   const router = useRouter();
+  const client = useApolloClient();
   const cookies = new Cookies();
   const token = cookies.get('token-payload');
 
   const [logoutActor] = useMutation(mutations.logoutActor, {
     onCompleted: () => {
+      client.resetStore();
       return router.push('/login');
     },
   });
