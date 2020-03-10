@@ -1,8 +1,0 @@
-type Customer {
-  id: ID! @id @unique
-  user: User!
-  stripeId: String! @unique
-  updatedAt: DateTime! @updatedAt
-  createdAt: DateTime! @createdAt
-  deletedAt: DateTime
-}

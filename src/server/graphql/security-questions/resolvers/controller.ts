@@ -1,4 +1,5 @@
 import { logger } from '@server/modules/logger';
+import { SecurityQuestion } from '@server/entities/security-question';
 
 /**
  * Retrieves available security questions
@@ -15,7 +16,7 @@ const getSecurityQuestions = async (
   context: any
 ): Promise<any> => {
   logger.info('SECURITY-QUESTION-RESOLVER: Retrieving security questions');
-  return context.prisma.securityQuestions();
+  return context.db.find(SecurityQuestion);
 };
 
 export default {

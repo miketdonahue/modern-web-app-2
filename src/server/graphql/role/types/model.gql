@@ -9,4 +9,5 @@ type Role {
 # Enums
 enum RoleName {
   USER
+  ADMIN
 }

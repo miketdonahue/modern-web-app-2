@@ -1,4 +1,4 @@
-import merge from 'deepmerge';
+import merge from 'lodash.merge';
 import { fileLoader } from '@utils/file-loaders/node';
 
 /**
@@ -9,5 +9,5 @@ import { fileLoader } from '@utils/file-loaders/node';
 export const mergeResolvers = (): any => {
   const resolvers = fileLoader('resolvers');
 
-  return resolvers.length === 1 ? resolvers[0] : merge.all(resolvers);
+  return resolvers.length === 1 ? resolvers[0] : merge(resolvers);
 };

@@ -4,7 +4,6 @@ import nextServer from 'next';
 import { ApolloServer, makeExecutableSchema } from 'apollo-server-express';
 import { applyMiddleware } from 'graphql-middleware';
 import { createConnection, getConnection } from 'typeorm';
-import { prisma } from '@server/prisma/generated/prisma-client';
 import { normalizeError } from '@server/modules/errors';
 import { HealthCheck } from '@server/modules/health-check';
 import { logger } from '@server/modules/logger';
@@ -71,7 +70,6 @@ nextApp
           req,
           res,
           actor: authenticate(req.headers),
-          prisma,
           db: db.manager,
           mailer,
         };

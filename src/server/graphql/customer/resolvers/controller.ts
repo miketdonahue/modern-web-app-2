@@ -1,6 +1,8 @@
 import Stripe from 'stripe';
 import { logger } from '@server/modules/logger';
-import { InternalError, ExternalError } from '../../../modules/errors';
+import { InternalError, ExternalError } from '@server/modules/errors';
+import { Actor } from '@server/entities/actor';
+import { Customer } from '@server/entities/customer';
 
 const stripe = new Stripe(process.env.STRIPE as string, {
   apiVersion: '2020-03-02',
@@ -20,27 +22,28 @@ const createCustomer = async (
   args: any,
   context: any
 ): Promise<any> => {
-  const user = await context.prisma.user({ id: args.input.userId });
+  const { db } = context;
+  const actor = await db.findOne(Actor, { id: args.input.actorId });
 
-  if (!user) {
+  if (!actor) {
     throw new InternalError('ACTOR_NOT_FOUND');
   }
 
   try {
     logger.info('PAYMENT-RESOLVER: Creating new customer');
     const customer = await stripe.customers.create({
-      name: `${user.firstName} ${user.lastName}`,
-      email: user.email,
-      phone: `+${user.phoneCountryCode}${user.phone}`,
+      name: `${actor.firstName} ${actor.lastName}`,
+      email: actor.email,
+      phone: `+${actor.phoneCountryCode}${actor.phone}`,
       address: {
-        line1: user.address1,
-        line2: user.address2,
-        city: user.city,
-        state: user.state,
-        postal_code: user.postalCode,
-        country: user.country,
+        line1: actor.address1,
+        line2: actor.address2,
+        city: actor.city,
+        state: actor.state,
+        postal_code: actor.postalCode,
+        country: actor.country,
       },
-      metadata: { id: user.id },
+      metadata: { id: actor.id },
     });
 
     return { ...customer };
@@ -63,11 +66,8 @@ const updateCustomer = async (
   args: any,
   context: any
 ): Promise<any> => {
-  const customer = await context.prisma
-    .customer({
-      user: { id: args.input.userId },
-    })
-    .$fragment(`{ stripeId }`);
+  const { db } = context;
+  const customer = db.findOne(Customer, { actor_id: args.input.actorId });
 
   if (!customer) {
     throw new InternalError('CUSTOMER_NOT_FOUND');

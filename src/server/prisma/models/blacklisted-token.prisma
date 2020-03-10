@@ -1,7 +1,0 @@
-type BlacklistedToken {
-  id: ID! @id @unique
-  token: String! @unique
-  updatedAt: DateTime! @updatedAt
-  createdAt: DateTime! @createdAt
-  deletedAt: DateTime
-}

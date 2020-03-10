@@ -1,5 +1,3 @@
-import { prisma } from '@server/prisma/generated/prisma-client';
-
 /**
  * A class of health check methods
  *
@@ -21,7 +19,8 @@ export class HealthCheck {
     }
 
     try {
-      await prisma.roles();
+      // FIXME: here
+      // await prisma.roles();
     } catch (error) {
       return false;
     }

@@ -1,7 +1,7 @@
 input CreateCustomerInput {
-  userId: String!
+  actorId: String!
 }
 
 input UpdateCustomerInput {
-  userId: String!
+  actorId: String!
 }
