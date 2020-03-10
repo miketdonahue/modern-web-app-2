@@ -30,7 +30,6 @@ const Home = () => {
 
   const [logoutActor] = useMutation(mutations.logoutActor, {
     onCompleted: () => {
-      cookies.remove('token', { path: '/' });
       return router.push('/login');
     },
   });

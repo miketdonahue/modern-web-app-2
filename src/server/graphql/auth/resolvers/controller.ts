@@ -614,7 +614,7 @@ const logoutActor = async (
   args: any,
   context: any
 ): Promise<any> => {
-  const { db } = context;
+  const { db, res } = context;
   const cookies = new Cookies(context.req.headers.cookie);
   const signature = cookies.get('token-signature');
 
@@ -622,6 +622,9 @@ const logoutActor = async (
   await db.insert(BlacklistedToken, {
     token: `${args.input.token}.${signature}`,
   });
+
+  res.cookie('token-payload', '', { expires: new Date(0) });
+  res.cookie('token-signature', '', { expires: new Date(0) });
 
   return undefined;
 };
