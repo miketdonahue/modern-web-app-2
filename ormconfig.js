@@ -36,9 +36,9 @@ module.exports = [
     password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME,
     entities: ['src/server/entities/**/*.ts'],
-    migrations: ['src/server/seeds/*.ts'],
+    migrations: ['src/server/seeders/*.ts'],
     cli: {
-      migrationsDir: 'src/server/seeds',
+      migrationsDir: 'src/server/seeders',
     },
     logging: true,
   },

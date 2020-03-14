@@ -1,3 +1,4 @@
 extend type Mutation {
-  updateUser(input: UpdateUserInput!): Actor!
+  createActor: Actor
+  updateActor(input: UpdateActorInput!): Actor!
 }

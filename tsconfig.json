@@ -31,5 +31,5 @@
     "allowJs": false
   },
   "exclude": ["node_modules", "server/**/*.ts"],
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"]
+  "include": ["next-env.d.ts", "./typings/global.d.ts", "**/*.ts", "**/*.tsx"]
 }

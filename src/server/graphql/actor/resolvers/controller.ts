@@ -5,12 +5,12 @@ import { Actor } from '@server/entities/actor';
  * Updates a user
  *
  * @param parent - The parent resolver
- * @param args - User input arguments
+ * @param args - Actor input arguments
  * @param context - GraphQL context object
  * @param info - GraphQL metadata
  * @returns A user object
  */
-const updateUser = async (
+const updateActor = async (
   parent: any,
   args: any,
   context: any
@@ -30,6 +30,6 @@ const updateUser = async (
 
 export default {
   Mutation: {
-    updateUser,
+    updateActor,
   },
 };

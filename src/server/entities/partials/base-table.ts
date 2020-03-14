@@ -27,7 +27,7 @@ export abstract class BaseTable {
 
   /* Listeners */
   @BeforeUpdate()
-  public updateDates(): void {
+  public updateDates() {
     this.updated_at = new Date();
   }
 }

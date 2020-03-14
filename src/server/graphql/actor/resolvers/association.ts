@@ -6,7 +6,7 @@ import { SecurityQuestionAnswer } from '@server/entities/security-question-answe
  * Resolves "user account" relation
  *
  * @param parent - The parent resolver
- * @param args - User input arguments
+ * @param args - Actor input arguments
  * @param context - GraphQL context object
  * @param info - GraphQL metadata
  * @returns undefined
@@ -38,7 +38,7 @@ const actorAccount = async (
  * Resolves a "role" relation
  *
  * @param parent - The parent resolver
- * @param args - User input arguments
+ * @param args - Actor input arguments
  * @param context - GraphQL context object
  * @param info - GraphQL metadata
  * @returns undefined
@@ -66,7 +66,7 @@ const role = async (parent: any, args: any, context: any): Promise<any> => {
  * Resolves "actor" relation
  *
  * @param parent - The parent resolver
- * @param args - User input arguments
+ * @param args - Actor input arguments
  * @param context - GraphQL context object
  * @param info - GraphQL metadata
  * @returns undefined
@@ -81,7 +81,7 @@ const actor = async (parent: any, args: any, context: any): Promise<any> => {
  * Resolves "security questions" relation
  *
  * @param parent - The parent resolver
- * @param args - User input arguments
+ * @param args - Actor input arguments
  * @param context - GraphQL context object
  * @param info - GraphQL metadata
  * @returns undefined

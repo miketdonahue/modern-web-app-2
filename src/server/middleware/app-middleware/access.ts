@@ -1,5 +1,5 @@
 import { shield, deny } from 'graphql-shield';
-import merge from 'lodash.merge';
+import assign from 'assign-deep';
 import { InternalError } from '@server/modules/errors';
 import { fileLoader } from '@utils/file-loaders/node';
 import { config } from '@config';
@@ -16,7 +16,7 @@ const permissionsArray = fileLoader('permissions');
  * @param options - A hash of Shield options
  * @returns A Shield function generator to be used as middleware
  */
-export default shield(merge(permissionsArray[0]), {
+export default shield(assign(...permissionsArray), {
   debug: config.server.graphql.debug,
   fallbackRule: deny,
   fallbackError: new InternalError('UNAUTHORIZED'),

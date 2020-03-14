@@ -9,7 +9,7 @@ import { config } from '@config';
  *
  * @param resolve - Promise resolve() method
  * @param parent - The parent resolver
- * @param args - User input arguments
+ * @param args - Actor input arguments
  * @param context - GraphQL context object
  * @param info - GraphQL metadata
  * @returns A resolved Promise

@@ -12,7 +12,7 @@ const stripe = new Stripe(process.env.STRIPE as string, {
  * Create a new customer
  *
  * @param parent - The parent resolver
- * @param args - User input arguments
+ * @param args - Actor input arguments
  * @param context - GraphQL context object
  * @param info - GraphQL metadata
  * @returns null
@@ -56,7 +56,7 @@ const createCustomer = async (
  * Update an existing customer
  *
  * @param parent - The parent resolver
- * @param args - User input arguments
+ * @param args - Actor input arguments
  * @param context - GraphQL context object
  * @param info - GraphQL metadata
  * @returns null

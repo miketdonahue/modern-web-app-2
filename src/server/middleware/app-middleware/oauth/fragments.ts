@@ -1,4 +1,4 @@
-export const jwtUserFragment = `
+export const jwtActorFragment = `
   {
     id
     role {

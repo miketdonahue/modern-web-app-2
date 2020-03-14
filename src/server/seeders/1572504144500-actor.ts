@@ -11,18 +11,19 @@ import generateCode from '@server/modules/code';
 import { config } from '@config';
 
 const chance = new Chance();
-const numberOfUsers = 5;
+const numberOfActors = 5;
 
 export class Actor1572504144500 implements MigrationInterface {
   public up = async (): Promise<any> => {
     const db = getManager('seed');
     const role = await db.findOne(Role, { name: RoleName.ACTOR });
+
     const password = await argon2.hash('Welcome123', {
       timeCost: 2000,
       memoryCost: 500,
     });
 
-    for (let i = 0; i < numberOfUsers; i++) {
+    for (let i = 0; i < numberOfActors; i++) {
       const email = chance.email();
       const refreshToken = jwt.sign(
         { hash: uuid() },
@@ -33,7 +34,7 @@ export class Actor1572504144500 implements MigrationInterface {
       );
 
       await db.transaction(async transactionalEntityManager => {
-        const actor: any = await db.create(Actor as any, {
+        const actor = await db.create(Actor as any, {
           role_id: role && role.uuid,
           first_name: chance.first(),
           last_name: chance.last(),
@@ -51,7 +52,7 @@ export class Actor1572504144500 implements MigrationInterface {
         await transactionalEntityManager.save(actor);
 
         await transactionalEntityManager.insert(ActorAccount, {
-          actor_id: actor.uuid,
+          actor_id: (actor as any).uuid,
           confirmed_code: config.server.auth.confirmable
             ? generateCode()
             : null,

@@ -5,7 +5,7 @@ import { SecurityQuestion } from '@server/entities/security-question';
  * Retrieves available security questions
  *
  * @param parent - The parent resolver
- * @param args - User input arguments
+ * @param args - Actor input arguments
  * @param context - GraphQL context object
  * @param info - GraphQL metadata
  * @returns An array of security question objects

@@ -1,5 +1,5 @@
 import { shield } from 'graphql-shield';
-import merge from 'lodash.merge';
+import assign from 'assign-deep';
 import { fileLoader } from '@utils/file-loaders/node';
 
 const validationsArray = fileLoader('validations');
@@ -13,4 +13,4 @@ const validationsArray = fileLoader('validations');
  * @param validations - An object of validations
  * @returns A Shield function generator to be used as middleware
  */
-export default shield(merge(validationsArray[0]));
+export default shield(assign(...validationsArray));

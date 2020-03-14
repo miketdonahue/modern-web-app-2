@@ -1,10 +1,10 @@
-input UpdateUserInput {
+input UpdateActorInput {
   actorId: String!
-  data: UserInput
+  data: ActorInput
 }
 
 # Nested inputs
-input UserInput {
+input ActorInput {
   firstName: String
   lastName: String
   email: String

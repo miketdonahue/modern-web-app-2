@@ -1,6 +1,3 @@
-declare module '*.css';
-declare module '*.less';
-
 declare namespace NodeJS {
   interface Process {
     browser: boolean;
@@ -16,3 +13,7 @@ declare module '*.gql' {
 
   export = value;
 }
+
+declare module '*.css';
+declare module '*.less';
+declare module 'assign-deep';
