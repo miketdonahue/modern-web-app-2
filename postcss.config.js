@@ -1,31 +1,32 @@
-/* eslint-disable global-require */
-const purgecss = require('@fullhuman/postcss-purgecss')({
-  content: ['./views/**/*.tsx'],
-  whitelistPatterns: [/ant/], // ignore ant design classes
-
-  // Include any special characters you're using in this regular expression
-  defaultExtractor: content => content.match(/[\w-/:]+(?<!:)/g) || [],
-});
-
 module.exports = {
-  // Order matters for plugins
   plugins: [
-    require('postcss-import')({
-      plugins: [
-        require('stylelint')({
-          configFile: './stylelint.config.js',
-        }),
-      ],
-    }),
-    require('tailwindcss'),
-    require('postcss-simple-vars'),
-    require('postcss-functions'),
-    require('postcss-mixins'),
-    require('postcss-preset-env')({
-      stage: 3,
-      features: { 'nesting-rules': true, 'custom-properties': true },
-    }),
-    // ...(process.env.NODE_ENV === 'production' ? [purgecss] : []),
-    require('postcss-reporter')({ clearReportedMessages: true }),
+    'postcss-flexbugs-fixes',
+    [
+      'postcss-preset-env',
+      {
+        autoprefixer: {
+          flexbox: 'no-2009',
+        },
+        stage: 3,
+        features: {
+          'custom-properties': false,
+        },
+      },
+    ],
+    'tailwindcss',
+    process.env.NODE_ENV === 'production'
+      ? [
+          '@fullhuman/postcss-purgecss',
+          {
+            content: [
+              './src/pages/**/*.{ts,tsx}',
+              './src/views/**/*.{ts,tsx}',
+              './src/components/**/*.{ts,tsx}',
+            ],
+            defaultExtractor: content => content.match(/[\w-/:]+(?<!:)/g) || [],
+          },
+        ]
+      : undefined,
+    'postcss-preset-env',
   ],
 };

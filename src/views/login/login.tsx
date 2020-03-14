@@ -6,6 +6,7 @@ import { useServerErrors } from '@components/hooks/use-server-errors';
 import { ServerErrors } from '@components/server-error';
 import { loginValidationSchema } from './validations';
 import * as mutations from './graphql/mutations.gql';
+import classes from './styles.module.css';
 
 const Login = () => {
   const router = useRouter();
@@ -40,7 +41,7 @@ const Login = () => {
       <ServerErrors errors={serverErrors} />
 
       <form onSubmit={formik.handleSubmit}>
-        <div>
+        <div className={classes.thing}>
           <label htmlFor="email">
             Email
             <input
