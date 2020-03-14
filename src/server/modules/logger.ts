@@ -1,6 +1,6 @@
 import pino from 'pino';
 import path from 'path';
-import uuid from 'uuid/v4';
+import { v4 as uuid } from 'uuid';
 import { Request, Response } from 'express';
 import { config } from '@config';
 

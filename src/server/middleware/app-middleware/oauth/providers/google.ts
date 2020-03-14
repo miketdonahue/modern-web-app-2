@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { google } from 'googleapis';
 import jwt from 'jsonwebtoken';
-import uuid from 'uuid/v4';
+import { v4 as uuid } from 'uuid';
 import { getConnection } from 'typeorm';
 import generateCode from '@server/modules/code';
 import { logger } from '@server/modules/logger';
