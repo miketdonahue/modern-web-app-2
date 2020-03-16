@@ -4,7 +4,7 @@ import { v4 as uuid } from 'uuid';
 import { Request, Response } from 'express';
 import { config } from '@config';
 
-let destination: any = path.join(process.cwd(), 'server/logs/app.log');
+let destination: any = path.join(process.cwd(), 'src/server/logs/app.log');
 
 if (process.env.NODE_ENV !== 'production') {
   destination = pino.destination(1);

@@ -4,6 +4,7 @@ import { useRouter } from 'next/router';
 import { useFormik } from 'formik';
 import { useServerErrors } from '@components/hooks/use-server-errors';
 import { ServerErrors } from '@components/server-error';
+import { Button } from 'react-components';
 import { loginValidationSchema } from './validations';
 import * as mutations from './graphql/mutations.gql';
 import classes from './styles.module.css';
@@ -39,7 +40,7 @@ const Login = () => {
   return (
     <>
       <ServerErrors errors={serverErrors} />
-
+      <Button>Duh</Button>
       <form onSubmit={formik.handleSubmit}>
         <div className={classes.thing}>
           <label htmlFor="email">

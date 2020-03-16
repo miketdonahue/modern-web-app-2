@@ -1,4 +1,4 @@
-import merge from 'lodash.merge';
+import merge from 'deepmerge';
 import { fileLoader } from '@utils/file-loaders/webpack';
 
 /**
@@ -9,5 +9,5 @@ import { fileLoader } from '@utils/file-loaders/webpack';
 export const mergeResolvers = (): any => {
   const resolvers = fileLoader('resolvers');
 
-  return resolvers.length === 1 ? resolvers[0] : merge(resolvers);
+  return resolvers.length === 1 ? resolvers[0] : merge.all(resolvers);
 };

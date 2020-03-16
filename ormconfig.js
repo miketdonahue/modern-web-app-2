@@ -7,8 +7,8 @@ module.exports = [
     username: process.env.DB_USERNAME,
     password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME,
-    entities: ['.build/server/entities/**/*.js'],
-    migrations: ['.build/server/migrations/*.js'],
+    entities: ['.build/src/server/entities/**/*.js'],
+    migrations: ['.build/src/server/migrations/*.js'],
     logging: false,
   },
   {

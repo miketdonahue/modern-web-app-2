@@ -65,11 +65,11 @@ export default {
       defaultSrc: ["'self'"],
     },
     dirs: {
-      types: ['.build/server/graphql/**/types/*.gql'],
-      resolvers: ['.build/server/graphql/**/resolvers/*.js'],
-      routes: ['.build/views/**/routes.js'],
-      access: ['.build/server/graphql/**/access.js'],
-      validations: ['.build/server/graphql/**/validations.js'],
+      types: ['.build/src/server/graphql/**/types/*.gql'],
+      resolvers: ['.build/src/server/graphql/**/resolvers/*.js'],
+      routes: ['.build/src/views/**/routes.js'],
+      access: ['.build/src/server/graphql/**/access.js'],
+      validations: ['.build/src/server/graphql/**/validations.js'],
     },
   },
 };

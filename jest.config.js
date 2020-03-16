@@ -3,7 +3,7 @@ module.exports = {
   coverageDirectory: 'coverage',
   coveragePathIgnorePatterns: ['/node_modules/', 'setup-enzyme.ts'],
   moduleFileExtensions: ['ts', 'tsx', 'js'],
-  roots: ['<rootDir>/client', '<rootDir>/server'],
+  roots: ['<rootDir>/src'],
   setupFilesAfterEnv: ['<rootDir>/setup-enzyme.ts'],
   testMatch: ['**/__tests__/**/*.ts?(x)'],
   transform: {
