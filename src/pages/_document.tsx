@@ -69,21 +69,7 @@ class MyDocument extends Document {
           <Main />
           <NextScript />
 
-          <script>
-            {`
-              if( "fonts" in document ) {
-                var extraBold = new FontFace("Heebo", "url(/fonts/heebo/stage-2/heebo-extra-bold.woff2) format('woff2'), url(/fonts/heebo/stage-2/heebo-extra-bold.woff) format('woff')", { weight: "800" });
-                var bold = new FontFace("Heebo", "url(/fonts/heebo/stage-2/heebo-bold.woff2) format('woff2'), url(/fonts/heebo/stage-2/heebo-bold.woff) format('woff')", { weight: "700" });
-                var regular = new FontFace("Heebo", "url(/fonts/heebo/stage-2/heebo-regular.woff2) format('woff2'), url(/fonts/heebo/stage-2/heebo-regular.woff2) format('woff'), { weight: "400" }");
-
-                Promise.all([ extraBold.load(), bold.load(), regular.load() ]).then(function(fonts) {
-                  fonts.forEach(function(font) {
-                    document.fonts.add(font);
-                  });
-                });
-              }
-            `}
-          </script>
+          <script src="/js/font-loader.js" />
         </body>
       </Html>
     );

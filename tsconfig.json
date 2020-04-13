@@ -35,6 +35,7 @@
     "next-env.d.ts",
     "./typings/global.d.ts",
     "./*.js",
+    "public/js/**/*.js",
     "src/**/*.ts",
     "src/**/*.tsx"
   ]

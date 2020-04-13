@@ -67,7 +67,6 @@
     "pino-pretty": "^3.6.1",
     "react": "^16.13.1",
     "react-apollo": "^3.1.4",
-    "react-components": "https://github.com/meebix/react-components.git#master",
     "react-dom": "^16.13.1",
     "react-feather": "^2.0.4",
     "reflect-metadata": "^0.1.13",
