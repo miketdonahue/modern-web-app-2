@@ -34,6 +34,7 @@
   "include": [
     "next-env.d.ts",
     "./typings/global.d.ts",
+    "./*.js",
     "src/**/*.ts",
     "src/**/*.tsx"
   ]
