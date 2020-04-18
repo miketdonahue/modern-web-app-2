@@ -17,6 +17,7 @@ module.exports = {
       white: colors.white,
       gray: colors.gray,
       red: colors.red,
+      blue: colors.blue,
       orange: colors.orange,
       yellow: colors.yellow,
       green: colors.green,
@@ -25,13 +26,13 @@ module.exports = {
       // Override default colors or extend colors
       colors: {
         // Brand
-        primary: '',
+        primary: '#38a169',
         secondary: '',
         highlight: '',
 
         // Font
         text: '#333333',
-        link: 'blue',
+        link: '#38a169',
 
         // Contextual
         error: '',
