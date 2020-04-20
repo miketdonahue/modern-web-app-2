@@ -21,6 +21,7 @@
       "@server/*": ["src/server/*"],
       "@styles/*": ["src/styles/*"],
       "@modules/*": ["src/modules/*"],
+      "@public/*": ["public/*"],
       "@utils/*": ["src/utils/*"]
     },
     "typeRoots": ["./node_modules/@types", "./typings"],

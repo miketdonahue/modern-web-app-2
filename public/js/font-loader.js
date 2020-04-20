@@ -1,8 +1,8 @@
 if ('fonts' in document) {
-  const extraBold = new FontFace(
+  const black = new FontFace(
     'Heebo',
-    "url(/fonts/heebo/stage-2/heebo-extra-bold.woff2) format('woff2'), url(/fonts/heebo/stage-2/heebo-extra-bold.woff) format('woff')",
-    { weight: '800' }
+    "url(/fonts/heebo/stage-2/heebo-black.woff2) format('woff2'), url(/fonts/heebo/stage-2/heebo-black.woff) format('woff')",
+    { weight: '900' }
   );
 
   const bold = new FontFace(
@@ -11,13 +11,19 @@ if ('fonts' in document) {
     { weight: '700' }
   );
 
+  const medium = new FontFace(
+    'Heebo',
+    "url(/fonts/heebo/stage-2/heebo-medium.woff2) format('woff2'), url(/fonts/heebo/stage-2/heebo-medium.woff) format('woff')",
+    { weight: '500' }
+  );
+
   const regular = new FontFace(
     'Heebo',
     "url(/fonts/heebo/stage-2/heebo-regular.woff2) format('woff2'), url(/fonts/heebo/stage-2/heebo-regular.woff2) format('woff')",
     { weight: '400' }
   );
 
-  Promise.all([extraBold.load(), bold.load(), regular.load()]).then(
+  Promise.all([black.load(), bold.load(), medium.load(), regular.load()]).then(
     function loadFonts(fonts) {
       fonts.forEach(function loadEachFont(font) {
         document.fonts.add(font);

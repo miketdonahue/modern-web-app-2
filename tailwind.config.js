@@ -1,15 +1,15 @@
-const { colors, fontFamily } = require('tailwindcss/defaultTheme');
+const { colors, fontFamily, boxShadow } = require('tailwindcss/defaultTheme');
 
 module.exports = {
   theme: {
     screens: {
-      'p-md': '360px',
-      'p-lg': '480px',
-      't-sm': '600px',
-      't-md': '768px',
-      't-lg': '1024px',
-      'd-sm': '1280px',
-      'd-md': '1440px',
+      '360': '360px',
+      '480': '480px',
+      '600': '600px',
+      '768': '768px',
+      '1024': '1024px',
+      '1280': '1280px',
+      '1440': '1440px',
     },
     // Set colors from default without unwanted colors included
     colors: {
@@ -22,17 +22,16 @@ module.exports = {
       yellow: colors.yellow,
       green: colors.green,
     },
+    boxShadow: {
+      ...boxShadow,
+      outline: '0 0 0 2px rgba(56, 161, 105, 0.5)',
+    },
     extend: {
       // Override default colors or extend colors
       colors: {
-        // Brand
-        primary: '#38a169',
-        secondary: '',
-        highlight: '',
-
         // Font
-        text: '#333333',
-        link: '#38a169',
+        text: colors.gray[700],
+        link: colors.green[600],
 
         // Contextual
         error: '',

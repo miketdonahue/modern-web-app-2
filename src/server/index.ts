@@ -76,7 +76,7 @@ nextApp
       },
       playground: config.server.graphql.playground.enabled,
       debug: config.server.graphql.debug,
-      formatError: error => {
+      formatError: (error) => {
         const err = error;
         const { code, level } = normalizeError(err);
 
@@ -138,7 +138,7 @@ nextApp
       logger.info('SERVER: Server shutting down');
       healthCheck.setShuttingDown();
 
-      serverInstance.close(err => {
+      serverInstance.close((err) => {
         if (err) {
           logger.error({ err }, 'SERVER: Error closing server');
           process.exit(1);
@@ -171,7 +171,7 @@ nextApp
       throw err;
     });
   })
-  .catch(err => {
+  .catch((err) => {
     logger.error({ err }, 'Next.js failed to start');
     process.exit(1);
   });

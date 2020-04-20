@@ -13,10 +13,10 @@ module.exports = withBundleAnalyzer({
     maxInactiveAge: 300000, // 5 minutes
     pagesBufferLength: 5,
   },
-  webpack: config => {
+  webpack: (config) => {
     config.module.rules.push(
       {
-        test: /\.(png|svg|eot|otf|ttf|woff|woff2)$/,
+        test: /\.(png|jpg|svg|eot|otf|ttf|woff|woff2)$/,
         use: {
           loader: 'url-loader',
           options: {

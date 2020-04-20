@@ -1,6 +1,7 @@
-import { shield } from 'graphql-shield';
+import { shield, deny } from 'graphql-shield';
 import assign from 'assign-deep';
 import { fileLoader } from '@utils/file-loaders/node';
+import { config } from '@config';
 
 const validationsArray = fileLoader('validations');
 
@@ -13,4 +14,7 @@ const validationsArray = fileLoader('validations');
  * @param validations - An object of validations
  * @returns A Shield function generator to be used as middleware
  */
-export default shield(assign(...validationsArray));
+export default shield(assign(...validationsArray), {
+  debug: config.server.graphql.debug,
+  fallbackRule: deny,
+});

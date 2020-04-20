@@ -19,7 +19,7 @@ class MyDocument extends Document {
         <Head>
           <link
             rel="preload"
-            href="/fonts/heebo/stage-1/heebo-regular.woff2"
+            href="/fonts/heebo/stage-1/heebo-black.woff2"
             as="font"
             type="font/woff2"
             crossOrigin="anonymous"
@@ -33,20 +33,27 @@ class MyDocument extends Document {
           />
           <link
             rel="preload"
-            href="/fonts/heebo/stage-1/heebo-extra-bold.woff2"
+            href="/fonts/heebo/stage-1/heebo-medium.woff2"
             as="font"
             type="font/woff2"
             crossOrigin="anonymous"
           />
+          <link
+            rel="preload"
+            href="/fonts/heebo/stage-1/heebo-regular.woff2"
+            as="font"
+            type="font/woff2"
+            crossOrigin="anonymous"
+          />
+
           <link rel="icon" type="image/x-icon" href="/favicon.ico" />
 
           <style jsx>{`
             @font-face {
               font-family: Heebo;
-              src: url(/fonts/heebo/stage-1/heebo-extra-bold.woff2)
-                  format('woff2'),
-                url(/fonts/heebo/stage-1/heebo-extra-bold.woff) format('woff');
-              font-weight: 800;
+              src: url(/fonts/heebo/stage-1/heebo-black.woff2) format('woff2'),
+                url(/fonts/heebo/stage-1/heebo-black.woff) format('woff');
+              font-weight: 900;
               font-display: swap;
             }
             @font-face {
@@ -54,6 +61,13 @@ class MyDocument extends Document {
               src: url(/fonts/heebo/stage-1/heebo-bold.woff2) format('woff2'),
                 url(/fonts/heebo/stage-1/heebo-bold.woff) format('woff');
               font-weight: 700;
+              font-display: swap;
+            }
+            @font-face {
+              font-family: Heebo;
+              src: url(/fonts/heebo/stage-1/heebo-medium.woff2) format('woff2'),
+                url(/fonts/heebo/stage-1/heebo-medium.woff) format('woff');
+              font-weight: 500;
               font-display: swap;
             }
             @font-face {

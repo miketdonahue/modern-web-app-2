@@ -14,6 +14,7 @@ module.exports = {
           '@server': './src/server',
           '@styles': './src/styles',
           '@modules': './src/modules',
+          '@public': './public',
           '@utils': './src/utils',
         },
         extensions: ['.js', '.jsx', '.ts', '.tsx'],

@@ -1,8 +1,15 @@
+// Default Next.js PostCSS config extended
 module.exports = {
   plugins: [
+    'postcss-simple-vars',
+    'postcss-nested',
+    'postcss-flexbugs-fixes',
     [
       'postcss-preset-env',
       {
+        autoprefixer: {
+          flexbox: 'no-2009',
+        },
         stage: 3,
       },
     ],
@@ -16,7 +23,8 @@ module.exports = {
               './src/views/**/*.{ts,tsx}',
               './src/components/**/*.{ts,tsx}',
             ],
-            defaultExtractor: content => content.match(/[\w-/:]+(?<!:)/g) || [],
+            defaultExtractor: (content) =>
+              content.match(/[\w-/:]+(?<!:)/g) || [],
           },
         ]
       : undefined,
