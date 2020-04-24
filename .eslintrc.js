@@ -50,6 +50,12 @@ module.exports = {
         'react/prop-types': 'off',
       },
     },
+    {
+      files: ['src/components/app/**/*.tsx'],
+      rules: {
+        'react/jsx-props-no-spreading': 0,
+      },
+    },
   ],
   env: {
     node: true,

@@ -1,0 +1,30 @@
+.checkbox {
+  appearance: none;
+  background-color: theme('backgroundColor.white');
+  background-origin: border-box;
+  border-color: theme('colors.gray.400');
+  border-radius: theme('borderRadius.default');
+  border-width: theme('borderWidth.default');
+  color: theme('colors.green.600');
+  color-adjust: exact;
+  display: inline-block;
+  flex-shrink: 0;
+  height: theme('height.4');
+  user-select: none;
+  vertical-align: middle;
+  width: theme('width.4');
+
+  @media screen and (min-width: theme('screens.768')) {
+    height: theme('height.5');
+    width: theme('width.5');
+  }
+}
+
+.checkbox:checked {
+  background-color: currentColor;
+  background-image: url('/icons/checkmark.svg');
+  background-position: 50%;
+  background-repeat: no-repeat;
+  background-size: 65% 65%;
+  border-color: transparent;
+}

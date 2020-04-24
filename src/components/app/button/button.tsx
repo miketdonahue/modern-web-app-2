@@ -1,8 +1,22 @@
+/* eslint-disable react/button-has-type */
 import React from 'react';
 import cx from 'classnames';
 import styles from './button.module.scss';
 
-const Button = ({ loading = false, disabled = false }: any) => {
+type Button = {
+  type: 'button' | 'submit' | 'reset';
+  children: string | JSX.Element;
+  loading?: boolean;
+  disabled?: boolean;
+};
+
+const Button = ({
+  type = 'button',
+  children,
+  loading = false,
+  disabled = false,
+  ...restOfProps
+}: Button) => {
   const buttonTextClasses = cx({ invisible: loading });
   const buttonClasses = cx(styles.button, {
     [styles.disabled]: disabled,
@@ -10,8 +24,8 @@ const Button = ({ loading = false, disabled = false }: any) => {
   });
 
   return (
-    <button type="submit" className={buttonClasses}>
-      <span className={buttonTextClasses}>Sign in</span>
+    <button {...restOfProps} type={type} className={buttonClasses}>
+      <span className={buttonTextClasses}>{children}</span>
 
       {loading && (
         <div className={styles.loader}>

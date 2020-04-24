@@ -3,10 +3,9 @@ import { withApollo } from '@apollo-setup/with-apollo';
 import { useMutation } from '@apollo/react-hooks';
 import { useRouter } from 'next/router';
 import { useFormik } from 'formik';
-import cx from 'classnames';
 import { useServerErrors } from '@components/hooks/use-server-errors';
 import { ServerErrors } from '@components/server-error';
-import { Button } from '@components/app/button';
+import { Button, Checkbox } from '@components/app';
 import appLogo from '@public/images/logo-sm.svg';
 import googleIcon from '@public/images/social/google.svg';
 import loginBg from '@public/images/login-bg.jpg';
@@ -46,8 +45,6 @@ const Login = () => {
       });
     },
   });
-
-  const checkboxStyles = cx(styles.checkbox, 'w-4 h-4 768:w-5 768:h-5');
 
   return (
     <div className={styles.grid}>
@@ -125,12 +122,7 @@ const Login = () => {
 
                 <div className="flex items-center justify-between text-sm 768:text-base my-5">
                   <div className="flex items-center">
-                    <input
-                      type="checkbox"
-                      name="remember-me"
-                      id="remember-me"
-                      className={checkboxStyles}
-                    />
+                    <Checkbox name="remember-me" id="remember-me" />
                     <span className="ml-2">Remember me</span>
                   </div>
 
@@ -142,7 +134,7 @@ const Login = () => {
                     <ServerErrors errors={serverErrors} />
                   </div>
 
-                  <Button>Sign in</Button>
+                  <Button type="submit">Sign in</Button>
                 </div>
               </form>
             </div>
