@@ -26,7 +26,7 @@ export const registerRoutes = (
   nextApp: any,
   appRoutes: Route[] = []
 ): Promise<any[]> =>
-  new Promise(resolve => {
+  new Promise((resolve) => {
     const expressServer = expressApp;
     const nextServer = nextApp;
 

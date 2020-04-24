@@ -97,7 +97,7 @@ const getSchemaFiles = (
   globOptions: any
 ): any => {
   return dirs
-    .map(dir => {
+    .map((dir) => {
       if (isGlob(dir)) {
         return readGlobSync(dir, globOptions);
       }

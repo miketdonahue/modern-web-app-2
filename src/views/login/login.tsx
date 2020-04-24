@@ -6,12 +6,13 @@ import { useFormik } from 'formik';
 import cx from 'classnames';
 import { useServerErrors } from '@components/hooks/use-server-errors';
 import { ServerErrors } from '@components/server-error';
+import { Button } from '@components/app/button';
 import appLogo from '@public/images/logo-sm.svg';
 import googleIcon from '@public/images/social/google.svg';
 import loginBg from '@public/images/login-bg.jpg';
 import { loginValidationSchema } from './validations';
 import * as mutations from './graphql/mutations.gql';
-import styles from './login.module.css';
+import styles from './login.module.scss';
 
 const Login = () => {
   const router = useRouter();
@@ -96,7 +97,7 @@ const Login = () => {
                       onBlur={formik.handleBlur}
                     />
                   </label>
-                  {formik.errors.email ? (
+                  {formik.errors.email && formik.touched.email ? (
                     <div className="text-red-600 mt-2">
                       {formik.errors.email}
                     </div>
@@ -115,7 +116,7 @@ const Login = () => {
                       onBlur={formik.handleBlur}
                     />
                   </label>
-                  {formik.errors.password ? (
+                  {formik.errors.password && formik.touched.password ? (
                     <div className="text-red-600 mt-2">
                       {formik.errors.password}
                     </div>
@@ -141,12 +142,7 @@ const Login = () => {
                     <ServerErrors errors={serverErrors} />
                   </div>
 
-                  <button
-                    type="submit"
-                    className="text-sm 768:text-base text-white shadow-sm bg-green-600 hover:bg-green-500 w-full px-3 py-2 rounded-sm font-medium leading-5 768:leading-6"
-                  >
-                    Sign in
-                  </button>
+                  <Button>Sign in</Button>
                 </div>
               </form>
             </div>

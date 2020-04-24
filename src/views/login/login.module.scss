@@ -21,39 +21,39 @@
 }
 
 .loginGrid {
-  display: grid;
-  grid-template-columns: 1fr;
-  grid-column-gap: 1rem;
   align-items: center;
+  display: grid;
+  grid-column-gap: 1rem;
+  grid-template-columns: 1fr;
   height: 100vh;
   margin: 1rem;
 
   @media screen and (min-width: theme('screens.480')) {
-    max-width: theme('screens.360');
     margin: auto;
+    max-width: theme('screens.360');
   }
 }
 
 .checkbox {
   appearance: none;
+  background-color: theme('backgroundColor.white');
+  background-origin: border-box;
+  border-color: theme('colors.gray.400');
+  border-radius: theme('borderRadius.default');
+  border-width: theme('borderWidth.default');
+  color: theme('colors.green.600');
   color-adjust: exact;
   display: inline-block;
-  vertical-align: middle;
-  background-origin: border-box;
-  user-select: none;
   flex-shrink: 0;
-  color: theme('colors.green.600');
-  background-color: theme('backgroundColor.white');
-  border-color: theme('colors.gray.400');
-  border-width: theme('borderWidth.default');
-  border-radius: theme('borderRadius.default');
+  user-select: none;
+  vertical-align: middle;
 }
 
 .checkbox:checked {
-  background-image: url('/icons/checkmark.svg');
-  border-color: transparent;
   background-color: currentColor;
-  background-size: 65% 65%;
+  background-image: url('/icons/checkmark.svg');
   background-position: 50%;
   background-repeat: no-repeat;
+  background-size: 65% 65%;
+  border-color: transparent;
 }

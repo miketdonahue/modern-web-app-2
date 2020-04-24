@@ -16,7 +16,7 @@ class RestClient {
 
   private initInterceptors(): any {
     return this.http.interceptors.request.use(
-      axiosConfig => {
+      (axiosConfig) => {
         const config = { ...axiosConfig };
         const requestConfig = {
           auth: {
@@ -45,7 +45,7 @@ class RestClient {
 
         return config;
       },
-      error => {
+      (error) => {
         logger.error({ err: error }, 'REST-CLIENT: Init interceptors failed');
       }
     );

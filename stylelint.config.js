@@ -1,7 +1,18 @@
 module.exports = {
   extends: ['stylelint-config-standard', 'stylelint-config-prettier'],
+  plugins: ['stylelint-order'],
   defaultSeverity: 'error',
   rules: {
+    'order/order': [
+      'custom-properties',
+      'dollar-variables',
+      'at-variables',
+      'declarations',
+      'rules',
+      'at-rules',
+    ],
+    'order/properties-alphabetical-order': true,
+    'color-hex-length': 'long',
     'at-rule-no-unknown': [
       true,
       {

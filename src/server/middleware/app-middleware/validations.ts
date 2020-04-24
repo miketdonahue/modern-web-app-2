@@ -1,4 +1,4 @@
-import { shield, deny } from 'graphql-shield';
+import { shield, allow } from 'graphql-shield';
 import assign from 'assign-deep';
 import { fileLoader } from '@utils/file-loaders/node';
 import { config } from '@config';
@@ -16,5 +16,5 @@ const validationsArray = fileLoader('validations');
  */
 export default shield(assign(...validationsArray), {
   debug: config.server.graphql.debug,
-  fallbackRule: deny,
+  fallbackRule: allow,
 });

@@ -36,7 +36,7 @@ Post.getInitialProps = async (context: NextPageContext) => {
     { id: 'css-in-js', title: 'Using CSS in JS' },
   ];
 
-  const post = posts.find(p => p.id === 'css-in-js');
+  const post = posts.find((p) => p.id === 'css-in-js');
 
   return { post };
 };

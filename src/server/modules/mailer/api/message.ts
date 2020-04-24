@@ -6,7 +6,7 @@ import { ExternalError } from '../../errors';
 class Message extends Mailer {
   public async sendMessage(actor: any, options: any): Promise<any> {
     if (!config.server.mailer.sendEmails) {
-      return new Promise(resolve => resolve({}));
+      return new Promise((resolve) => resolve({}));
     }
 
     const { response, error } = await this.post(

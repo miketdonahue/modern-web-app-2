@@ -19,7 +19,7 @@ export const registerMiddleware = (
   app: Express,
   middleware: Middleware[]
 ): Promise<Middleware[]> =>
-  new Promise(resolve => {
+  new Promise((resolve) => {
     const server = app;
 
     middleware.forEach((middlewareFunc: Middleware) => {

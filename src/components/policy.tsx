@@ -16,7 +16,7 @@ const Policy = ({ can, children }: any) => {
   const [canAccess, setCanAccess] = useState(false);
 
   useQuery(GET_TOKEN, {
-    onCompleted: response => {
+    onCompleted: (response) => {
       const { token } = response && response.payload;
       const decoded: any = jwt.decode(token);
       const { permissions } = decoded.role;

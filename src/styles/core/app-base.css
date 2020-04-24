@@ -16,16 +16,16 @@ body {
 
 /* Global */
 *:focus {
-  outline: none !important;
   box-shadow: theme('boxShadow.outline') !important;
+  outline: none !important;
 }
 
 /* Links */
 a {
   color: theme('colors.link');
   font-family: inherit;
-  text-decoration: none;
   outline: none;
+  text-decoration: none;
 
   &:hover,
   &:focus,

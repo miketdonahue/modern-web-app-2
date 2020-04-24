@@ -1,8 +1,6 @@
 // Default Next.js PostCSS config extended
 module.exports = {
   plugins: [
-    'postcss-simple-vars',
-    'postcss-nested',
     'postcss-flexbugs-fixes',
     [
       'postcss-preset-env',

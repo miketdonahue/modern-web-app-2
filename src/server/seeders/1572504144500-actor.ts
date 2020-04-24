@@ -33,7 +33,7 @@ export class Actor1572504144500 implements MigrationInterface {
         }
       );
 
-      await db.transaction(async transactionalEntityManager => {
+      await db.transaction(async (transactionalEntityManager) => {
         const actor = await db.create(Actor as any, {
           role_id: role && role.uuid,
           first_name: chance.first(),
