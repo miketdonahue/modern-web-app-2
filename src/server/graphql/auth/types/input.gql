@@ -12,6 +12,7 @@ input ConfirmActorInput {
 input LoginActorInput {
   email: String!
   password: String!
+  rememberMe: Boolean!
 }
 
 input ActorSecurityQuestionAnswerInput {

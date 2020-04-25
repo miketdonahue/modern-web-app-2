@@ -1,6 +1,6 @@
 import argon2 from 'argon2';
 import jwt from 'jsonwebtoken';
-import { addHours } from 'date-fns';
+import { addHours, addDays } from 'date-fns';
 import { v4 as uuid } from 'uuid';
 import Cookies from 'universal-cookie';
 import generateCode from '@server/modules/code';
@@ -210,22 +210,24 @@ const loginActor = async (
     { expiresIn: config.server.auth.jwt.expiresIn }
   );
 
-  // const dsToken = jwt.sign({ hash: uuid() }, config.server.auth.jwt.dsSecret, {
-  //   expiresIn: config.server.auth.jwt.expiresIn,
-  // });
-
   const [tokenHeader, tokenBody, tokenSignature] = token.split('.');
+  const rememberMeDate = addDays(
+    new Date(),
+    config.server.auth.cookieExpiresIn
+  );
 
   // TODO: change to `secure: true` when HTTPS
   context.res.cookie('token-payload', `${tokenHeader}.${tokenBody}`, {
     path: '/',
     secure: false,
+    ...(args.input.rememberMe && { expires: rememberMeDate }),
   });
 
   context.res.cookie('token-signature', tokenSignature, {
     path: '/',
     httpOnly: true,
     secure: false,
+    ...(args.input.rememberMe && { expires: rememberMeDate }),
   });
 
   return {

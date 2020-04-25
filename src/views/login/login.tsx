@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { withApollo } from '@apollo-setup/with-apollo';
 import { useMutation } from '@apollo/react-hooks';
 import { useRouter } from 'next/router';
@@ -17,6 +17,8 @@ const Login = () => {
   const router = useRouter();
   const [serverErrors, formatServerErrors] = useServerErrors();
 
+  const [rememberMe, setRememberMe] = useState(true);
+
   const [loginActor] = useMutation(mutations.loginActor, {
     onCompleted: () => {
       router.push('/');
@@ -30,6 +32,10 @@ const Login = () => {
     router.push('/oauth/google');
   };
 
+  const handleRememberMe = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setRememberMe(event.target.checked);
+  };
+
   const formik = useFormik({
     validateOnChange: false,
     initialValues: {
@@ -40,7 +46,11 @@ const Login = () => {
     onSubmit: (values) => {
       loginActor({
         variables: {
-          input: { email: values.email, password: values.password },
+          input: {
+            email: values.email,
+            password: values.password,
+            rememberMe,
+          },
         },
       });
     },
@@ -122,7 +132,12 @@ const Login = () => {
 
                 <div className="flex items-center justify-between text-sm 768:text-base my-5">
                   <div className="flex items-center">
-                    <Checkbox name="remember-me" id="remember-me" />
+                    <Checkbox
+                      id="remember-me"
+                      name="remember-me"
+                      checked={rememberMe}
+                      onChange={handleRememberMe}
+                    />
                     <span className="ml-2">Remember me</span>
                   </div>
 
