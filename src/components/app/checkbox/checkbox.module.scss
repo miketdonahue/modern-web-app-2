@@ -10,9 +10,17 @@
   display: inline-block;
   flex-shrink: 0;
   height: theme('height.4');
+  transition-duration: theme('transitionDuration.300');
+  transition-property: theme('transitionProperty.colors');
+  transition-timing-function: theme('transitionTimingFunction.in-out');
   user-select: none;
   vertical-align: middle;
   width: theme('width.4');
+
+  &:focus {
+    box-shadow: theme('boxShadow.outline');
+    outline: none;
+  }
 
   @media screen and (min-width: theme('screens.768')) {
     height: theme('height.5');
@@ -27,4 +35,7 @@
   background-repeat: no-repeat;
   background-size: 65% 65%;
   border-color: transparent;
+  transition-duration: theme('transitionDuration.300');
+  transition-property: theme('transitionProperty.colors');
+  transition-timing-function: theme('transitionTimingFunction.in-out');
 }

@@ -1,28 +1,52 @@
 .button {
-  background-color: theme('backgroundColor.green.600');
-  border: 1px solid theme('colors.green.600');
   border-radius: theme('borderRadius.sm');
+  border-style: solid;
+  border-width: 1px;
   box-shadow: theme('boxShadow.sm');
-  color: theme('colors.white');
   font-size: theme('fontSize.sm');
   font-weight: theme('fontWeight.medium');
   line-height: theme('lineHeight.5');
   padding: theme('padding.2') theme('padding.3');
   position: relative;
+  transition-duration: theme('transitionDuration.300');
+  transition-property: theme('transitionProperty.colors');
   width: 100%;
 
-  &:hover:not(.loading):not(.disabled) {
-    background-color: theme('backgroundColor.green.500');
-    border-color: theme('colors.green.500');
+  &:focus {
+    box-shadow: theme('boxShadow.outline');
+    outline: none;
   }
 
   @media screen and (min-width: theme('screens.768')) {
-    border-color: theme('colors.green.500');
     font-size: theme('fontSize.base');
     line-height: theme('lineHeight.6');
   }
 }
 
+// Variants
+.default {
+  background-color: theme('backgroundColor.white');
+  border-color: theme('colors.gray.400');
+  color: theme('colors.text');
+
+  &:hover:not(.loading):not(.disabled) {
+    border-color: theme('colors.gray.500');
+    color: theme('colors.gray.900');
+  }
+}
+
+.primary {
+  background-color: theme('backgroundColor.green.600');
+  border-color: theme('colors.green.600');
+  color: theme('colors.white');
+
+  &:hover:not(.loading):not(.disabled) {
+    background-color: theme('backgroundColor.green.500');
+    border-color: theme('colors.green.500');
+  }
+}
+
+// States
 .loading {
   cursor: default;
   pointer-events: none;

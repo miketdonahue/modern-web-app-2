@@ -3,28 +3,43 @@ import React from 'react';
 import cx from 'classnames';
 import styles from './button.module.scss';
 
-type Button = {
-  type: 'button' | 'submit' | 'reset';
+interface Button extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+  type?: 'button' | 'submit' | 'reset';
+  variant?: 'default' | 'primary' | 'secondary';
   children: string | JSX.Element;
   loading?: boolean;
   disabled?: boolean;
-};
+  className?: string;
+}
 
 const Button = ({
   type = 'button',
+  variant = 'default',
   children,
   loading = false,
   disabled = false,
+  className,
   ...restOfProps
 }: Button) => {
   const buttonTextClasses = cx({ invisible: loading });
-  const buttonClasses = cx(styles.button, {
-    [styles.disabled]: disabled,
-    [styles.loading]: loading,
-  });
+  const buttonClasses = cx(
+    styles.button,
+    {
+      [styles.default]: variant === 'default',
+      [styles.primary]: variant === 'primary',
+      [styles.disabled]: disabled,
+      [styles.loading]: loading,
+    },
+    className
+  );
 
   return (
-    <button {...restOfProps} type={type} className={buttonClasses}>
+    <button
+      {...restOfProps}
+      type={type}
+      className={buttonClasses}
+      disabled={disabled}
+    >
       <span className={buttonTextClasses}>{children}</span>
 
       {loading && (

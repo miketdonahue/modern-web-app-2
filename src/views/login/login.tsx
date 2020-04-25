@@ -5,7 +5,7 @@ import { useRouter } from 'next/router';
 import { useFormik } from 'formik';
 import { useServerErrors } from '@components/hooks/use-server-errors';
 import { ServerErrors } from '@components/server-error';
-import { Button, Checkbox } from '@components/app';
+import { Button, Checkbox, Input } from '@components/app';
 import appLogo from '@public/images/logo-sm.svg';
 import googleIcon from '@public/images/social/google.svg';
 import loginBg from '@public/images/login-bg.jpg';
@@ -70,16 +70,12 @@ const Login = () => {
               </h1>
             </div>
             <div>
-              <button
-                type="button"
-                className="w-full text-sm 768:text-base border shadow-sm border-gray-400 hover:text-gray-900 px-3 py-2 rounded-sm leading-5 768:leading-6"
-                onClick={handleGmailButton}
-              >
+              <Button onClick={handleGmailButton}>
                 <div className="flex items-center justify-center">
                   <img src={googleIcon} alt="Google icon" className="w-4 h-4" />
                   <span className="ml-2">Sign in with Google</span>
                 </div>
-              </button>
+              </Button>
             </div>
             <div>
               <div className="flex items-center my-6">
@@ -95,13 +91,13 @@ const Login = () => {
                 <div className="mb-5">
                   <label htmlFor="email" className="text-sm 768:text-base">
                     Email
-                    <input
+                    <Input
                       id="email"
                       type="email"
-                      className="block w-full text-sm 768:text-base leading-5 768:leading-6 border border-gray-400 rounded-sm px-3 py-2 mt-2 focus:outline-none focus:shadow-outline"
                       value={formik.values.email}
                       onChange={formik.handleChange}
                       onBlur={formik.handleBlur}
+                      error={!!(formik.errors.email && formik.touched.email)}
                     />
                   </label>
                   {formik.errors.email && formik.touched.email ? (
@@ -114,13 +110,15 @@ const Login = () => {
                 <div className="mb-5">
                   <label htmlFor="password" className="text-sm 768:text-base">
                     Password
-                    <input
+                    <Input
                       id="password"
                       type="password"
-                      className="block w-full text-sm 768:text-base leading-5 768:leading-6 border border-gray-400 rounded-sm px-3 py-2 mt-2 focus:outline-none focus:shadow-outline"
                       value={formik.values.password}
                       onChange={formik.handleChange}
                       onBlur={formik.handleBlur}
+                      error={
+                        !!(formik.errors.password && formik.touched.password)
+                      }
                     />
                   </label>
                   {formik.errors.password && formik.touched.password ? (
@@ -145,11 +143,13 @@ const Login = () => {
                 </div>
 
                 <div className="mt-8">
-                  <div className="text-sm 768:text-base text-red-700 mb-2">
+                  <div className="text-sm 768:text-base text-red-600 mb-2">
                     <ServerErrors errors={serverErrors} />
                   </div>
 
-                  <Button type="submit">Sign in</Button>
+                  <Button type="submit" variant="primary">
+                    Sign in
+                  </Button>
                 </div>
               </form>
             </div>

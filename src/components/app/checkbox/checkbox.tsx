@@ -1,11 +1,7 @@
 import React from 'react';
 import styles from './checkbox.module.scss';
 
-interface Checkbox
-  extends React.DetailedHTMLProps<
-    React.InputHTMLAttributes<HTMLInputElement>,
-    HTMLInputElement
-  > {
+interface Checkbox extends React.InputHTMLAttributes<HTMLInputElement> {
   disabled?: boolean;
 }
 

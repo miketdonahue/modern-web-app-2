@@ -14,12 +14,6 @@ body {
   text-rendering: optimizeLegibility;
 }
 
-/* Global */
-*:focus {
-  box-shadow: theme('boxShadow.outline') !important;
-  outline: none !important;
-}
-
 /* Links */
 a {
   color: theme('colors.link');
@@ -31,6 +25,11 @@ a {
   &:focus,
   &:active {
     text-decoration: underline;
+  }
+
+  &:focus {
+    box-shadow: theme('boxShadow.outline');
+    outline: none;
   }
 
   &:visited {
