@@ -1,8 +1,8 @@
 input RegisterActorInput {
-  firstName: String!
-  lastName: String!
+  firstName: String
+  lastName: String
   email: String!
-  password: String!
+  password: String
 }
 
 input ConfirmActorInput {

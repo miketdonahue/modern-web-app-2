@@ -31,7 +31,7 @@ export default {
     auth: {
       enabled: true,
       confirmable: true,
-      cookieExpiresIn: '30', // time in days
+      cookieExpiresIn: '14', // time in days
       jwt: {
         secret: process.env.JWT_SECRET,
         dsSecret: process.env.JWT_DS_SECRET,

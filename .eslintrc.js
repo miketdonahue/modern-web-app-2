@@ -51,7 +51,7 @@ module.exports = {
       },
     },
     {
-      files: ['src/components/app/**/*.tsx'],
+      files: ['src/components/{app,icons}/**/*.tsx'],
       rules: {
         'react/jsx-props-no-spreading': 0,
       },

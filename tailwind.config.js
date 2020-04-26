@@ -10,6 +10,7 @@ module.exports = {
       '1024': '1024px',
       '1280': '1280px',
       '1440': '1440px',
+      '1600': '1600px',
     },
     // Set colors from default without unwanted colors included
     colors: {

@@ -1,25 +1,23 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { withApollo } from '@apollo-setup/with-apollo';
 import { useMutation } from '@apollo/react-hooks';
 import { useRouter } from 'next/router';
 import { useFormik } from 'formik';
 import { useServerErrors } from '@components/hooks/use-server-errors';
 import { ServerErrors } from '@components/server-error';
-import { Button, Checkbox, Input } from '@components/app';
+import { Button, Input } from '@components/app';
 import appLogo from '@public/images/logo-sm.svg';
 import googleIcon from '@public/images/social/google.svg';
-import loginBg from '@public/images/login-bg.jpg';
-import { loginValidationSchema } from './validations';
+import registerBg from '@public/images/register-bg.jpg';
+import { registerValidationSchema } from './validations';
 import * as mutations from './graphql/mutations.gql';
-import styles from './login.module.scss';
+import styles from './register.module.scss';
 
-const Login = () => {
+const Register = () => {
   const router = useRouter();
   const [serverErrors, formatServerErrors] = useServerErrors();
 
-  const [rememberMe, setRememberMe] = useState(true);
-
-  const [loginActor, { loading }] = useMutation(mutations.loginActor, {
+  const [registerActor, { loading }] = useMutation(mutations.registerActor, {
     onCompleted: () => {
       router.push('/');
     },
@@ -32,24 +30,21 @@ const Login = () => {
     router.push('/oauth/google');
   };
 
-  const handleRememberMe = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setRememberMe(event.target.checked);
-  };
-
   const formik = useFormik({
     validateOnChange: false,
     initialValues: {
+      firstName: '',
       email: '',
       password: '',
     },
-    validationSchema: loginValidationSchema,
+    validationSchema: registerValidationSchema,
     onSubmit: (values) => {
-      loginActor({
+      registerActor({
         variables: {
           input: {
+            firstName: values.firstName,
             email: values.email,
             password: values.password,
-            rememberMe,
           },
         },
       });
@@ -59,21 +54,21 @@ const Login = () => {
   return (
     <div className={styles.grid}>
       <div className={styles.gridLeft}>
-        <div className={styles.loginGrid}>
+        <div className={styles.registerGrid}>
           <div className="py-6">
             <div>
               <img src={appLogo} alt="Logo" width="60" className="mb-5" />
             </div>
             <div className="mb-8">
               <h1 className="text-2xl 768:text-3xl font-bold">
-                Sign in to your account
+                Start your 7-day free trial
               </h1>
             </div>
             <div>
               <Button onClick={handleGmailButton}>
                 <div className="flex items-center justify-center">
                   <img src={googleIcon} alt="Google icon" className="w-4 h-4" />
-                  <span className="ml-2">Sign in with Google</span>
+                  <span className="ml-2">Sign up with Google</span>
                 </div>
               </Button>
             </div>
@@ -81,13 +76,41 @@ const Login = () => {
               <div className="flex items-center my-6">
                 <div className="border-t border-gray-400 w-full mr-2" />
                 <div className="flex-shrink-0 text-sm 768:text-base text-gray-600">
-                  Or continue with
+                  Or with email
                 </div>
                 <div className="border-t border-gray-400 w-full ml-2" />
               </div>
             </div>
             <div>
               <form onSubmit={formik.handleSubmit} noValidate>
+                <div className="mb-5">
+                  <label htmlFor="email" className="text-sm 768:text-base">
+                    <span>First name</span>
+                    {formik.errors.firstName && formik.touched.firstName ? (
+                      <span className="text-red-600 mt-1">
+                        {' '}
+                        {formik.errors.firstName}
+                      </span>
+                    ) : null}
+
+                    <div className="mt-1">
+                      <Input
+                        id="first-name"
+                        name="firstName"
+                        type="text"
+                        value={formik.values.firstName}
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
+                        error={
+                          !!(
+                            formik.errors.firstName && formik.touched.firstName
+                          )
+                        }
+                      />
+                    </div>
+                  </label>
+                </div>
+
                 <div className="mb-5">
                   <label htmlFor="email" className="text-sm 768:text-base">
                     <span>Email address</span>
@@ -103,6 +126,7 @@ const Login = () => {
                         id="email"
                         name="email"
                         type="email"
+                        className="mt-1"
                         value={formik.values.email}
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
@@ -137,28 +161,26 @@ const Login = () => {
                   </label>
                 </div>
 
-                <div className="flex items-center justify-between text-sm 768:text-base my-5">
-                  <div className="flex items-center">
-                    <Checkbox
-                      id="remember-me"
-                      name="remember-me"
-                      checked={rememberMe}
-                      onChange={handleRememberMe}
-                    />
-                    <span className="ml-2">Remember me</span>
-                  </div>
-
-                  <a href="#">Forgot your password?</a>
-                </div>
-
                 <div className="mt-8">
                   <div className="text-sm 768:text-base text-red-600 mb-2">
                     <ServerErrors errors={serverErrors} />
                   </div>
 
                   <Button type="submit" variant="primary" loading={loading}>
-                    Sign in
+                    Sign up
                   </Button>
+
+                  <div className="text-xs 768:text-sm text-gray-500 mt-2">
+                    By signing up, you agree to our{' '}
+                    <a href="#" className="text-gray-500 underline">
+                      Terms of Service
+                    </a>{' '}
+                    and{' '}
+                    <a href="#" className="text-gray-500 underline">
+                      Privacy Policy
+                    </a>
+                    .
+                  </div>
                 </div>
               </form>
             </div>
@@ -176,10 +198,14 @@ const Login = () => {
         </svg>
       </div>
       <div className={styles.gridRight}>
-        <img src={loginBg} alt="Background" className="w-screen h-screen" />
+        <img
+          src={registerBg}
+          alt="Background"
+          className="w-screen h-screen object-cover"
+        />
       </div>
     </div>
   );
 };
 
-export default withApollo()(Login);
+export default withApollo()(Register);

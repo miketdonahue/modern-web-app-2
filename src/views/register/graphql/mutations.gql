@@ -1,0 +1,5 @@
+mutation registerActor($input: RegisterActorInput!) {
+  actor: registerActor(input: $input) {
+    token
+  }
+}
