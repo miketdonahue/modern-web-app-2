@@ -34,14 +34,14 @@ export const checkAccess = async (ctx: any): Promise<any> => {
   const hasAccess = !!token;
   const decoded: any = jwt.decode(token);
 
-  // Redirect authenticated requests to /login back to root path
-  if (urlPathname === '/login' && hasAccess) {
-    return redirectTo(ctx, '/');
+  // Redirect authenticated requests to /app/login back to root path
+  if (urlPathname === '/app/login' && hasAccess) {
+    return redirectTo(ctx, '/app');
   }
 
-  // Redirect all unauthenticated requests to /login
-  if (urlPathname !== '/login' && !hasAccess) {
-    return redirectTo(ctx, '/login');
+  // Redirect all unauthenticated requests to /app/login
+  if (urlPathname !== '/app/login' && !hasAccess) {
+    return redirectTo(ctx, '/app/login');
   }
 
   // Redirect all unauthorized route access requests to root
@@ -51,7 +51,7 @@ export const checkAccess = async (ctx: any): Promise<any> => {
     decoded.role &&
     decoded.role.prohibited_routes.includes(pathname)
   ) {
-    return redirectTo(ctx, '/');
+    return redirectTo(ctx, '/app');
   }
 
   return undefined;

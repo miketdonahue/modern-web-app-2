@@ -19,7 +19,7 @@ const Register = () => {
 
   const [registerActor, { loading }] = useMutation(mutations.registerActor, {
     onCompleted: () => {
-      router.push('/');
+      router.push('/app');
     },
     onError: (graphQLErrors: any) => {
       return formatServerErrors(graphQLErrors.graphQLErrors);
@@ -27,7 +27,7 @@ const Register = () => {
   });
 
   const handleGmailButton = () => {
-    router.push('/oauth/google');
+    router.push('/app/oauth/google');
   };
 
   const formik = useFormik({
@@ -172,11 +172,17 @@ const Register = () => {
 
                   <div className="text-xs 768:text-sm text-gray-500 mt-2">
                     By signing up, you agree to our{' '}
-                    <a href="#" className="text-gray-500 underline">
+                    <a
+                      href="/terms-of-service"
+                      className="text-gray-500 underline visited:text-gray-500"
+                    >
                       Terms of Service
                     </a>{' '}
                     and{' '}
-                    <a href="#" className="text-gray-500 underline">
+                    <a
+                      href="/privacy-policy"
+                      className="text-gray-500 underline visited:text-gray-500"
+                    >
                       Privacy Policy
                     </a>
                     .

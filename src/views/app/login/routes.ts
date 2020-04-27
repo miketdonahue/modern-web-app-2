@@ -1,11 +1,11 @@
 import { oauth } from '@server/middleware/app-middleware';
 
 export default {
-  path: '/',
+  path: '/app',
   routes: [
     {
       path: '/login',
-      page: '/login',
+      page: '/app/login',
     },
     {
       path: '/oauth/google',

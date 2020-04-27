@@ -1,9 +1,9 @@
 export default {
-  path: '/',
+  path: '/app',
   routes: [
     {
       path: '/register',
-      page: '/register',
+      page: '/app/register',
     },
   ],
 };

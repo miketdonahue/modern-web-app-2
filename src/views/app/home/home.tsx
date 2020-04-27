@@ -17,7 +17,7 @@ const PostLink = (props: Props) => {
   const { id, title } = props;
 
   return (
-    <Link href="/post/[id]" as={`/post/${id}`}>
+    <Link href="/app/post/[id]" as={`/app/post/${id}`}>
       <a>{title}</a>
     </Link>
   );
@@ -32,7 +32,7 @@ const Home = () => {
   const [logoutActor] = useMutation(mutations.logoutActor, {
     onCompleted: () => {
       client.resetStore();
-      return router.push('/login');
+      return router.push('/app/login');
     },
   });
 
@@ -52,7 +52,7 @@ const Home = () => {
       </Policy>
       <ul>
         <li>
-          <Link href="/about">
+          <Link href="/app/about">
             <a>About</a>
           </Link>
         </li>

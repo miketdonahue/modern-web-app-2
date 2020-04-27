@@ -15,7 +15,7 @@ const Post = ({ post }: Props) => {
       <h2>Pages</h2>
       <ul>
         <li>
-          <Link href="/">
+          <Link href="/app">
             <a>Home</a>
           </Link>
         </li>

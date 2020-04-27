@@ -21,7 +21,7 @@ const Login = () => {
 
   const [loginActor, { loading }] = useMutation(mutations.loginActor, {
     onCompleted: () => {
-      router.push('/');
+      router.push('/app');
     },
     onError: (graphQLErrors: any) => {
       return formatServerErrors(graphQLErrors.graphQLErrors);
@@ -29,7 +29,7 @@ const Login = () => {
   });
 
   const handleGmailButton = () => {
-    router.push('/oauth/google');
+    router.push('/app/oauth/google');
   };
 
   const handleRememberMe = (event: React.ChangeEvent<HTMLInputElement>) => {

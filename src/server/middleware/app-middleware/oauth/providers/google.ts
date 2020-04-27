@@ -17,8 +17,8 @@ const dbConnectionName = isDev ? 'development' : 'production';
 
 const oauthConfig = {
   callbackUrl: 'http://localhost:8080/oauth/google/callback',
-  successRedirect: '/',
-  failureRedirect: '/login',
+  successRedirect: '/app',
+  failureRedirect: '/app/login',
 };
 
 /**

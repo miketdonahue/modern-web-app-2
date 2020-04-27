@@ -1,9 +1,9 @@
 export default {
-  path: '/',
+  path: '/app',
   routes: [
     {
       path: '/',
-      page: '/index',
+      page: '/app/index',
     },
   ],
 };
