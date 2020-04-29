@@ -5,9 +5,7 @@ import { ApolloProvider } from '@apollo/react-hooks';
 import { initApolloClient, initOnContext } from './init';
 
 /**
- * Creates a withApollo HOC
- * that provides the apolloContext
- * to a next.js Page or AppTree.
+ * Creates a withApollo HOC that provides the apolloContext to a next.js Page or AppTree.
  * @param  {Object} withApolloOptions
  * @param  {Boolean} [withApolloOptions.ssr=true]
  * @returns {(PageComponent: ReactNode) => ReactNode}

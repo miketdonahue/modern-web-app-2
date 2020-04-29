@@ -21,10 +21,10 @@ const Input = ({
 
   return (
     <input
-      {...restOfProps}
       type={type}
       className={inputClasses}
       disabled={disabled}
+      {...restOfProps}
     />
   );
 };

@@ -1,0 +1,39 @@
+$backgroundColor: #434559;
+$color: #eaedf2;
+
+.tooltip {
+  background-color: $backgroundColor;
+  border-radius: theme('borderRadius.default');
+  color: $color;
+  padding: theme('spacing.1') theme('spacing.2');
+}
+
+.arrow,
+.arrow::before {
+  height: 12px;
+  position: absolute;
+  width: 12px;
+  z-index: -1;
+}
+
+.arrow::before {
+  background: #434559;
+  content: '';
+  transform: rotate(45deg);
+}
+
+.tooltip[data-placement^='top'] > .arrow {
+  bottom: -4px;
+}
+
+.tooltip[data-placement^='bottom'] > .arrow {
+  top: -4px;
+}
+
+.tooltip[data-placement^='left'] > .arrow {
+  right: -4px;
+}
+
+.tooltip[data-placement^='right'] > .arrow {
+  left: -4px;
+}

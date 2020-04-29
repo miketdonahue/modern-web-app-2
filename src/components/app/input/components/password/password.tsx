@@ -35,10 +35,10 @@ const Password = ({
   return (
     <div className={styles.container}>
       <input
-        {...restOfProps}
         type={passwordShown ? 'text' : 'password'}
         className={inputClasses}
         disabled={disabled}
+        {...restOfProps}
       />
       <div
         className={styles.eye}

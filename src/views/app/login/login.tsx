@@ -5,7 +5,7 @@ import { useRouter } from 'next/router';
 import { useFormik } from 'formik';
 import { useServerErrors } from '@components/hooks/use-server-errors';
 import { ServerErrors } from '@components/server-error';
-import { Button, Checkbox, Input } from '@components/app';
+import { Button, Checkbox, Input, Tooltip } from '@components/app';
 import appLogo from '@public/images/logo-sm.svg';
 import googleIcon from '@public/images/social/google.svg';
 import loginBg from '@public/images/login-bg.jpg';
@@ -138,15 +138,23 @@ const Login = () => {
                 </div>
 
                 <div className="flex items-center justify-between text-sm 768:text-base my-5">
-                  <div className="flex items-center">
-                    <Checkbox
-                      id="remember-me"
-                      name="remember-me"
-                      checked={rememberMe}
-                      onChange={handleRememberMe}
-                    />
-                    <span className="ml-2">Remember me</span>
-                  </div>
+                  <Tooltip
+                    content={
+                      <div className="text-xs">
+                        We will keep you logged in for 14 days
+                      </div>
+                    }
+                  >
+                    <div className="flex items-center">
+                      <Checkbox
+                        id="remember-me"
+                        name="remember-me"
+                        checked={rememberMe}
+                        onChange={handleRememberMe}
+                      />
+                      <span className="ml-2">Remember me</span>
+                    </div>
+                  </Tooltip>
 
                   <a href="#">Forgot your password?</a>
                 </div>

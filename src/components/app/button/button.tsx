@@ -35,10 +35,10 @@ const Button = ({
 
   return (
     <button
-      {...restOfProps}
       type={type}
       className={buttonClasses}
       disabled={disabled}
+      {...restOfProps}
     >
       <span className={buttonTextClasses}>{children}</span>
 
