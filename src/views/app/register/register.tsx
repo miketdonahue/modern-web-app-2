@@ -1,4 +1,5 @@
 import React from 'react';
+import Link from 'next/link';
 import { withApollo } from '@apollo-setup/with-apollo';
 import { useMutation } from '@apollo/react-hooks';
 import { useRouter } from 'next/router';
@@ -172,19 +173,17 @@ const Register = () => {
 
                   <div className="text-xs 768:text-sm text-gray-500 mt-2">
                     By signing up, you agree to our{' '}
-                    <a
-                      href="/terms-of-service"
-                      className="text-gray-500 underline visited:text-gray-500"
-                    >
-                      Terms of Service
-                    </a>{' '}
+                    <Link href="/terms-of-service" as="/terms-of-service">
+                      <a className="text-gray-500 underline visited:text-gray-500">
+                        Terms of Service
+                      </a>
+                    </Link>{' '}
                     and{' '}
-                    <a
-                      href="/privacy-policy"
-                      className="text-gray-500 underline visited:text-gray-500"
-                    >
-                      Privacy Policy
-                    </a>
+                    <Link href="/privacy-policy" as="/privacy-policy">
+                      <a className="text-gray-500 underline visited:text-gray-500">
+                        Privacy Policy
+                      </a>
+                    </Link>
                     .
                   </div>
                 </div>

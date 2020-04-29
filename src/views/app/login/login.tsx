@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import Link from 'next/link';
 import { withApollo } from '@apollo-setup/with-apollo';
 import { useMutation } from '@apollo/react-hooks';
 import { useRouter } from 'next/router';
@@ -156,7 +157,9 @@ const Login = () => {
                     </div>
                   </Tooltip>
 
-                  <a href="#">Forgot your password?</a>
+                  <Link href="/app/forgot-password" as="/app/forgot-password">
+                    Forgot your password?
+                  </Link>
                 </div>
 
                 <div className="mt-8">
