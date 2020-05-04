@@ -29,14 +29,6 @@ const Login = () => {
     },
   });
 
-  const handleGmailButton = () => {
-    router.push('/app/oauth/google');
-  };
-
-  const handleRememberMe = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setRememberMe(event.target.checked);
-  };
-
   const formik = useFormik({
     validateOnChange: false,
     initialValues: {
@@ -56,6 +48,24 @@ const Login = () => {
       });
     },
   });
+
+  const handleGmailButton = () => {
+    router.push('/app/oauth/google');
+  };
+
+  const handleRememberMe = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setRememberMe(event.target.checked);
+  };
+
+  const handleChange = (event: any) => {
+    const { name } = event.target;
+
+    formik.handleChange(event);
+
+    if ((formik.errors as any)[name]) {
+      formik.setFieldError(name, '');
+    }
+  };
 
   return (
     <div className={styles.grid}>
@@ -105,7 +115,7 @@ const Login = () => {
                         name="email"
                         type="email"
                         value={formik.values.email}
-                        onChange={formik.handleChange}
+                        onChange={handleChange}
                         onBlur={formik.handleBlur}
                         error={!!(formik.errors.email && formik.touched.email)}
                       />
@@ -128,7 +138,7 @@ const Login = () => {
                         id="password"
                         name="password"
                         value={formik.values.password}
-                        onChange={formik.handleChange}
+                        onChange={handleChange}
                         onBlur={formik.handleBlur}
                         error={
                           !!(formik.errors.password && formik.touched.password)

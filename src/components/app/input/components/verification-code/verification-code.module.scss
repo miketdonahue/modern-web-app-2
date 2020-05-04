@@ -5,6 +5,8 @@
 
   & > input {
     margin-right: theme('spacing.1');
+    padding-bottom: theme('padding.3');
+    padding-top: theme('padding.3');
   }
 
   & > input:last-child {

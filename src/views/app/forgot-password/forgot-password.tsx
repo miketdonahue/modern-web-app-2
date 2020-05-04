@@ -41,6 +41,16 @@ const ForgotPassword = () => {
     },
   });
 
+  const handleChange = (event: any) => {
+    const { name } = event.target;
+
+    formik.handleChange(event);
+
+    if ((formik.errors as any)[name]) {
+      formik.setFieldError(name, '');
+    }
+  };
+
   return (
     <div className={styles.grid}>
       <div className={styles.gridLeft}>
@@ -114,7 +124,7 @@ const ForgotPassword = () => {
                         name="email"
                         type="email"
                         value={formik.values.email}
-                        onChange={formik.handleChange}
+                        onChange={handleChange}
                         onBlur={formik.handleBlur}
                         error={!!(formik.errors.email && formik.touched.email)}
                       />

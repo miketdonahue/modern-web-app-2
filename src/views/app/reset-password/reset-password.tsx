@@ -3,7 +3,7 @@ import { withApollo } from '@apollo-setup/with-apollo';
 import { useMutation } from '@apollo/react-hooks';
 import { useRouter } from 'next/router';
 import { useFormik } from 'formik';
-import { Button, Input } from '@components/app';
+import { Button, Input, PasswordStrength } from '@components/app';
 import { useServerErrors } from '@components/hooks/use-server-errors';
 import { ServerErrors } from '@components/server-error';
 import loginBg from '@public/images/login-bg.jpg';
@@ -41,6 +41,14 @@ const ResetPassword = () => {
       });
     },
   });
+
+  const handleChange = (event: any) => {
+    formik.handleChange(event);
+
+    if (formik.errors.password) {
+      formik.setFieldError('password', '');
+    }
+  };
 
   const handleVerificationChange = async (value: string) => {
     formik.setFieldValue('verificationCode', value);
@@ -98,19 +106,27 @@ const ResetPassword = () => {
               <form onSubmit={formik.handleSubmit} noValidate>
                 <div className="mb-5">
                   <label htmlFor="password" className="text-sm 768:text-base">
-                    <span>New password</span>
-                    {formik.errors.password && formik.touched.password ? (
-                      <span className="text-red-600 mt-1">
-                        {' '}
-                        {formik.errors.password}
-                      </span>
-                    ) : null}
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <span>New password</span>
+                        {formik.errors.password && formik.touched.password ? (
+                          <span className="text-red-600 mt-1">
+                            {' '}
+                            {formik.errors.password}
+                          </span>
+                        ) : null}
+                      </div>
+
+                      {formik.values.password && (
+                        <PasswordStrength password={formik.values.password} />
+                      )}
+                    </div>
 
                     <div className="mt-1">
                       <Input.Password
                         name="password"
                         value={formik.values.password}
-                        onChange={formik.handleChange}
+                        onChange={handleChange}
                         onBlur={formik.handleBlur}
                         error={
                           !!(formik.errors.password && formik.touched.password)
@@ -120,7 +136,7 @@ const ResetPassword = () => {
                   </label>
                 </div>
 
-                <div className="mb-5">
+                <div className="mb-2">
                   <label htmlFor="password" className="text-sm 768:text-base">
                     <span>Verification code</span>
                     {formik.errors.verificationCode &&
@@ -146,6 +162,10 @@ const ResetPassword = () => {
                       />
                     </div>
                   </label>
+                </div>
+
+                <div className="text-center">
+                  <a href="#">I did not receive a code</a>
                 </div>
 
                 <div className="mt-8">

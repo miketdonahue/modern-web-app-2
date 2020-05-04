@@ -27,10 +27,6 @@ const Register = () => {
     },
   });
 
-  const handleGmailButton = () => {
-    router.push('/app/oauth/google');
-  };
-
   const formik = useFormik({
     validateOnChange: false,
     initialValues: {
@@ -51,6 +47,20 @@ const Register = () => {
       });
     },
   });
+
+  const handleChange = (event: any) => {
+    const { name } = event.target;
+
+    formik.handleChange(event);
+
+    if ((formik.errors as any)[name]) {
+      formik.setFieldError(name, '');
+    }
+  };
+
+  const handleGmailButton = () => {
+    router.push('/app/oauth/google');
+  };
 
   return (
     <div className={styles.grid}>
@@ -100,7 +110,7 @@ const Register = () => {
                         name="firstName"
                         type="text"
                         value={formik.values.firstName}
-                        onChange={formik.handleChange}
+                        onChange={handleChange}
                         onBlur={formik.handleBlur}
                         error={
                           !!(
@@ -129,7 +139,7 @@ const Register = () => {
                         type="email"
                         className="mt-1"
                         value={formik.values.email}
-                        onChange={formik.handleChange}
+                        onChange={handleChange}
                         onBlur={formik.handleBlur}
                         error={!!(formik.errors.email && formik.touched.email)}
                       />
@@ -152,7 +162,7 @@ const Register = () => {
                         id="password"
                         name="password"
                         value={formik.values.password}
-                        onChange={formik.handleChange}
+                        onChange={handleChange}
                         onBlur={formik.handleBlur}
                         error={
                           !!(formik.errors.password && formik.touched.password)
