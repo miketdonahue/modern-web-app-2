@@ -6,7 +6,6 @@ import { useFormik } from 'formik';
 import { Button, Input } from '@components/app';
 import { useServerErrors } from '@components/hooks/use-server-errors';
 import { ServerErrors } from '@components/server-error';
-import appLogo from '@public/images/logo-sm.svg';
 import loginBg from '@public/images/login-bg.jpg';
 import { resetPasswordValidationSchema } from './validations';
 import * as mutations from './graphql/mutations.gql';
@@ -29,6 +28,7 @@ const ResetPassword = () => {
     validateOnChange: false,
     initialValues: {
       password: '',
+      verificationCode: '',
     },
     validationSchema: resetPasswordValidationSchema,
     onSubmit: (values) => {
@@ -42,21 +42,55 @@ const ResetPassword = () => {
     },
   });
 
+  const handleVerificationChange = async (value: string) => {
+    formik.setFieldValue('verificationCode', value);
+
+    if (formik.errors.verificationCode) {
+      formik.setFieldError('verificationCode', '');
+    }
+  };
+
+  const handleVerificationComplete = (value: string) => {
+    console.log('onComplete', value);
+  };
+
   return (
     <div className={styles.grid}>
       <div className={styles.gridLeft}>
         <div className={styles.resetPasswordGrid}>
           <div className="py-6">
-            <div>
-              <img src={appLogo} alt="Logo" width="60" className="mb-5" />
-            </div>
+            <svg
+              width="14rem"
+              height="14rem"
+              className="mx-auto"
+              viewBox="0 0 180 180"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="m90 180c49.706 0 90-40.294 90-90 0-49.706-40.294-90-90-90-49.706 0-90 40.294-90 90 0 49.706 40.294 90 90 90z"
+                fill="#EDF2F7"
+              />
+              <path
+                d="m64.448 82.153v-34.679c0-13.806 11.341-25.147 25.146-25.147s25.147 11.341 25.147 25.147v34.679h12.491v-34.679c0-20.709-16.765-37.473-37.474-37.473-20.709 0-37.473 16.764-37.473 37.473v34.679h12.162z"
+                fill="#2B3B4E"
+              />
+              <path
+                d="m136.27 156.61h-93.354c-3.2871 0-5.9168-2.629-5.9168-5.917v-65.907c0-3.2871 2.6297-5.9168 5.9168-5.9168h93.354c3.288 0 5.917 2.6297 5.917 5.9168v65.907c0 3.288-2.629 5.917-5.917 5.917z"
+                fill="#ECB85E"
+              />
+              <path
+                d="m89.594 99.081c-5.7525 0-10.354 4.6017-10.354 10.355 0 3.944 2.301 7.396 5.4238 9.039v13.149c0 2.63 2.1366 4.766 4.7663 4.766 2.6298 0 4.7664-2.136 4.7664-4.766v-13.149c3.2871-1.808 5.4238-5.095 5.4238-9.039 0.3287-5.753-4.2733-10.355-10.026-10.355z"
+                fill="#324A5E"
+              />
+            </svg>
 
-            <div className="mb-8">
+            <div className="text-center my-8">
               <h1 className="text-2xl 768:text-3xl font-bold">
                 Reset your password
               </h1>
               <div className="mt-1">
-                Enter a new password that you will use to log in.
+                Enter a new password for yourself and the verification code we
+                sent to your email address.
               </div>
             </div>
 
@@ -64,7 +98,7 @@ const ResetPassword = () => {
               <form onSubmit={formik.handleSubmit} noValidate>
                 <div className="mb-5">
                   <label htmlFor="password" className="text-sm 768:text-base">
-                    <span>Password</span>
+                    <span>New password</span>
                     {formik.errors.password && formik.touched.password ? (
                       <span className="text-red-600 mt-1">
                         {' '}
@@ -74,13 +108,40 @@ const ResetPassword = () => {
 
                     <div className="mt-1">
                       <Input.Password
-                        id="password"
                         name="password"
                         value={formik.values.password}
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
                         error={
                           !!(formik.errors.password && formik.touched.password)
+                        }
+                      />
+                    </div>
+                  </label>
+                </div>
+
+                <div className="mb-5">
+                  <label htmlFor="password" className="text-sm 768:text-base">
+                    <span>Verification code</span>
+                    {formik.errors.verificationCode &&
+                    formik.touched.verificationCode ? (
+                      <span className="text-red-600 mt-1">
+                        {' '}
+                        {formik.errors.verificationCode}
+                      </span>
+                    ) : null}
+
+                    <div className="mt-1">
+                      <Input.VerificationCode
+                        name="verificationCode"
+                        numOfFields={8}
+                        onInputChange={handleVerificationChange}
+                        onComplete={handleVerificationComplete}
+                        error={
+                          !!(
+                            formik.errors.verificationCode &&
+                            formik.touched.verificationCode
+                          )
                         }
                       />
                     </div>

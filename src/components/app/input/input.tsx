@@ -2,6 +2,7 @@
 import React from 'react';
 import cx from 'classnames';
 import { Password } from './components/password';
+import { VerificationCode } from './components/verification-code';
 import styles from './input.module.scss';
 
 interface Input extends React.InputHTMLAttributes<HTMLInputElement> {
@@ -31,5 +32,6 @@ const Input = ({
 
 // Sub-components
 Input.Password = Password;
+Input.VerificationCode = VerificationCode;
 
 export { Input };
