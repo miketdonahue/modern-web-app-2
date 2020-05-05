@@ -57,8 +57,8 @@ const ForgotPassword = () => {
         <div className={styles.forgotPasswordGrid}>
           <div className="py-6">
             <svg
-              width="14rem"
-              height="14rem"
+              width="12rem"
+              height="12rem"
               className="mx-auto"
               viewBox="0 0 180 180"
               xmlns="http://www.w3.org/2000/svg"
