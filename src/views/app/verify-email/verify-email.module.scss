@@ -3,7 +3,7 @@
   grid-template-columns: 1fr;
 
   @media screen and (min-width: theme('screens.1024')) {
-    grid-template-columns: 1fr 5rem 1fr;
+    grid-template-columns: 1fr 32rem;
   }
 }
 
@@ -11,21 +11,12 @@
   grid-column: 1 / 2;
 }
 
-.gridMiddle {
-  display: none;
-
-  @media screen and (min-width: theme('screens.1024')) {
-    display: block;
-    grid-column: 2 / 3;
-  }
-}
-
 .gridRight {
   display: none;
 
   @media screen and (min-width: theme('screens.1024')) {
     display: block;
-    grid-column: 3 / 4;
+    grid-column: 2 / 3;
   }
 }
 
