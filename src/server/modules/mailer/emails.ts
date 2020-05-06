@@ -7,6 +7,7 @@ export const WELCOME_EMAIL = {
   template: 'welcome',
   substitutionData: (actor: any) => ({
     firstName: actor.first_name,
+    signInUrl: 'http://localhost:8080/app/login',
   }),
 };
 
@@ -33,6 +34,7 @@ export const RESET_PASSWORD_EMAIL = {
   substitutionData: (actor: any) => ({
     firstName: actor.first_name,
     resetPasswordCode: actor.reset_password_code,
+    resetPasswordUrl: 'http://localhost:8080/app/reset-password',
   }),
 };
 
@@ -46,5 +48,6 @@ export const UNLOCK_ACCOUNT_EMAIL = {
   substitutionData: (actor: any) => ({
     firstName: actor.first_name,
     lockedCode: actor.locked_code,
+    resetPasswordUrl: 'http://localhost:8080/app/reset-password',
   }),
 };

@@ -5,7 +5,7 @@ import styles from './button.module.scss';
 
 interface Button extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   type?: 'button' | 'submit' | 'reset';
-  variant?: 'default' | 'primary' | 'secondary';
+  variant?: 'default' | 'primary';
   children: string | JSX.Element;
   loading?: boolean;
   disabled?: boolean;

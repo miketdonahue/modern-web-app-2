@@ -9,3 +9,4 @@ server/logs/*
 yarn-debug.log*
 yarn-error.log*
 docker-compose.yml
+emails
