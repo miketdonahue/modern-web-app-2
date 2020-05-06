@@ -6,11 +6,11 @@ import { useFormik } from 'formik';
 import { useServerErrors } from '@components/hooks/use-server-errors';
 import { ServerErrors } from '@components/server-error';
 import { Button, Input } from '@components/app';
-import { verifyEmailValidationSchema } from './validations';
+import { confirmEmailValidationSchema } from './validations';
 import * as mutations from './graphql/mutations.gql';
-import styles from './verify-email.module.scss';
+import styles from './confirm-email.module.scss';
 
-const VerifyEmail = () => {
+const ConfirmEmail = () => {
   const router = useRouter();
   const [serverErrors, formatServerErrors] = useServerErrors();
 
@@ -28,7 +28,7 @@ const VerifyEmail = () => {
     initialValues: {
       verificationCode: '',
     },
-    validationSchema: verifyEmailValidationSchema,
+    validationSchema: confirmEmailValidationSchema,
     onSubmit: (values) => {
       loginActor({
         variables: {
@@ -92,7 +92,7 @@ const VerifyEmail = () => {
 
             <div className="text-center my-8">
               <h1 className="text-2xl 768:text-3xl font-bold">
-                Verify your email
+                Confirm your email
               </h1>
               <div className="mt-1">
                 We sent an 8-digit code to your email address. Please enter the
@@ -198,4 +198,4 @@ const VerifyEmail = () => {
   );
 };
 
-export default withApollo()(VerifyEmail);
+export default withApollo()(ConfirmEmail);
