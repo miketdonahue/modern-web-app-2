@@ -3,6 +3,7 @@ import jwt from 'jsonwebtoken';
 import { addHours, addDays } from 'date-fns';
 import { v4 as uuid } from 'uuid';
 import Cookies from 'universal-cookie';
+import { decrypt } from '@server/modules/encryption';
 import generateCode from '@server/modules/code';
 import { InternalError } from '@server/modules/errors';
 import { logger } from '@server/modules/logger';
@@ -43,7 +44,7 @@ const registerActor = async (
     memoryCost: 500,
   });
 
-  const actor = await db.transaction(
+  const actorAccount = await db.transaction(
     async (transactionalEntityManager: any) => {
       logger.info('AUTH-RESOLVER: Creating actor');
       const createdActor = await transactionalEntityManager.create(Actor, {
@@ -66,9 +67,25 @@ const registerActor = async (
 
       await transactionalEntityManager.save(createdActorAccount);
 
-      return createdActor;
+      return createdActorAccount;
     }
   );
+
+  const [actor] = await db.query(
+    `
+    SELECT
+      actor.*,
+      actor_account.confirmed_code
+    FROM
+      actor
+      INNER JOIN actor_account ON actor_account.actor_id = actor.uuid
+    WHERE
+      actor.uuid = $1
+  `,
+    [actorAccount.actor_id]
+  );
+
+  actor.email = decrypt(actor.email);
 
   logger.info('AUTH-RESOLVER: Signing token');
   const token = jwt.sign(
@@ -82,8 +99,8 @@ const registerActor = async (
     'AUTH-RESOLVER: Sending emails'
   );
 
-  await mailer.message.sendMessage(actor, 'WELCOME_EMAIL');
-  await mailer.message.sendMessage(actor, 'CONFIRM_EMAIL');
+  await mailer.message.sendMessage(actor, WELCOME_EMAIL);
+  await mailer.message.sendMessage(actor, CONFIRM_EMAIL);
 
   return {
     actorId: actor.uuid,
