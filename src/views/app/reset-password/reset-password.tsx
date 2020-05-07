@@ -96,8 +96,8 @@ const ResetPassword = () => {
                 Reset your password
               </h1>
               <div className="mt-1">
-                Enter a new password for yourself and the verification code we
-                sent to your email address.
+                Enter a new password and the 8-digit verification code we sent
+                to your email address.
               </div>
             </div>
 

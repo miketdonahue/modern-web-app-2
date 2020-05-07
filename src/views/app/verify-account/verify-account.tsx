@@ -6,11 +6,11 @@ import { useFormik } from 'formik';
 import { useServerErrors } from '@components/hooks/use-server-errors';
 import { ServerErrors } from '@components/server-error';
 import { Button, Input } from '@components/app';
-import { confirmEmailValidationSchema } from './validations';
+import { verifyAccountValidationSchema } from './validations';
 import * as mutations from './graphql/mutations.gql';
-import styles from './confirm-email.module.scss';
+import styles from './verify-account.module.scss';
 
-const ConfirmEmail = () => {
+const VerifyAccount = () => {
   const router = useRouter();
   const [serverErrors, formatServerErrors] = useServerErrors();
 
@@ -28,7 +28,7 @@ const ConfirmEmail = () => {
     initialValues: {
       verificationCode: '',
     },
-    validationSchema: confirmEmailValidationSchema,
+    validationSchema: verifyAccountValidationSchema,
     onSubmit: (values) => {
       loginActor({
         variables: {
@@ -55,44 +55,49 @@ const ConfirmEmail = () => {
   return (
     <div className={styles.grid}>
       <div className={styles.gridLeft}>
-        <div className={styles.confirmEmailGrid}>
+        <div className={styles.verifyAccountGrid}>
           <div className="py-6">
             <svg
               width="12rem"
               height="12rem"
               className="mx-auto"
               viewBox="0 0 180 180"
+              fill="none"
               xmlns="http://www.w3.org/2000/svg"
             >
               <path
-                d="m90 180c49.706 0 90-40.294 90-90 0-49.706-40.294-90-90-90-49.706 0-90 40.294-90 90 0 49.706 40.294 90 90 90z"
+                d="M90 180C139.706 180 180 139.706 180 90C180 40.2944 139.706 0 90 0C40.2944 0 0 40.2944 0 90C0 139.706 40.2944 180 90 180Z"
                 fill="#EDF2F7"
               />
               <path
-                d="m157.6 57.559-62.471-45.318c-2.2637-1.6543-5.3546-1.6543-7.6618 0l-62.383 45.318 66.258 42.184 66.258-42.184z"
+                d="M90 30L84.605 81.8616L90 168C124.215 149.317 145.499 125.924 145.499 80.791V30H90Z"
                 fill="#ECB85E"
               />
               <path
-                d="m132.14 57.559h-81.582v70.742h81.582v-70.742z"
-                fill="#fff"
-              />
-              <path
-                d="m157.56 141.88h0.044v-84.324l-66.258 42.184 66.214 42.14z"
-                fill="#F3BF64"
-              />
-              <path
-                d="m25.087 57.559h-0.0871v84.324h0.1306l66.214-42.14-66.258-42.184z"
-                fill="#F3BF64"
-              />
-              <path
-                d="m91.345 99.743-66.214 42.14h132.43l-66.214-42.14z"
+                d="M34.5014 30V80.791C34.5014 125.924 55.7854 149.317 90 168V30H34.5014Z"
                 fill="#ECB85E"
+              />
+              <path
+                d="M90 42.938L84.6051 81.8613L90 153.106C103.701 144.919 113.309 136.505 119.952 126.936C128.436 114.714 132.561 99.6204 132.561 80.791V42.938H90Z"
+                fill="#F6E080"
+              />
+              <path
+                d="M47.4394 42.938V80.791C47.4394 99.6204 51.5638 114.714 60.0483 126.936C66.6912 136.505 76.2994 144.919 90 153.106V42.938H47.4394Z"
+                fill="#F6E080"
+              />
+              <path
+                d="M90 63.6863L84.605 81.8616L90 117.047H98.7996V92.9202C103.103 90.0653 105.942 85.1792 105.942 79.628C105.942 70.8237 98.8045 63.6863 90 63.6863Z"
+                fill="#324A5E"
+              />
+              <path
+                d="M74.058 79.6282C74.058 85.1795 76.897 90.0656 81.2004 92.9204V117.048H90V63.6863C81.1955 63.6863 74.058 70.8237 74.058 79.6282Z"
+                fill="#324A5E"
               />
             </svg>
 
             <div className="text-center my-8">
               <h1 className="text-2xl 768:text-3xl font-bold">
-                Confirm your email
+                Verify your account
               </h1>
               <div className="mt-1">
                 We sent an 8-digit code to your email address. Please enter the
@@ -140,7 +145,7 @@ const ConfirmEmail = () => {
                   </div>
 
                   <Button type="submit" variant="primary" loading={loading}>
-                    Confirm my email
+                    Verify my account
                   </Button>
                 </div>
               </form>
@@ -198,4 +203,4 @@ const ConfirmEmail = () => {
   );
 };
 
-export default withApollo()(ConfirmEmail);
+export default withApollo()(VerifyAccount);

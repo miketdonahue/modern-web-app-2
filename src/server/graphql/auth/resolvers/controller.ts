@@ -14,13 +14,11 @@ import { SecurityQuestionAnswer } from '@server/entities/security-question-answe
 import { BlacklistedToken } from '@server/entities/blacklisted-token';
 import {
   WELCOME_EMAIL,
-  CONFIRMATION_EMAIL,
+  CONFIRM_EMAIL,
   UNLOCK_ACCOUNT_EMAIL,
 } from '@server/modules/mailer';
 import { config } from '@config';
 import { transformRoleForToken } from '../utilities';
-
-// TODO: wrap calls in try/catch
 
 /**
  * Registers a new actor
@@ -79,12 +77,13 @@ const registerActor = async (
     { expiresIn: config.server.auth.jwt.expiresIn }
   );
 
-  const emailType = config.server.auth.confirmable
-    ? CONFIRMATION_EMAIL
-    : WELCOME_EMAIL;
+  logger.info(
+    { emails: ['welcome', 'confirm-email'] },
+    'AUTH-RESOLVER: Sending emails'
+  );
 
-  logger.info({ emailType }, 'AUTH-RESOLVER: Sending email');
-  await mailer.message.sendMessage(actor, emailType);
+  await mailer.message.sendMessage(actor, 'WELCOME_EMAIL');
+  await mailer.message.sendMessage(actor, 'CONFIRM_EMAIL');
 
   return {
     actorId: actor.uuid,
@@ -588,7 +587,7 @@ const sendAuthEmail = async (
   );
 
   const emailType = {
-    CONFIRMATION_EMAIL,
+    CONFIRM_EMAIL,
     UNLOCK_ACCOUNT_EMAIL,
   };
 

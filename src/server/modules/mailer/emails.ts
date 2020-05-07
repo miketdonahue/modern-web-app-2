@@ -14,10 +14,10 @@ export const WELCOME_EMAIL = {
 /**
  * Confirmation email options
  */
-export const CONFIRMATION_EMAIL = {
+export const CONFIRM_EMAIL = {
   from: 'no-reply@mail.com',
-  subject: 'Confirm your email address',
-  template: 'confirm-email-address',
+  subject: 'Please confirm your email address',
+  template: 'confirm-email',
   substitutionData: (actor: any) => ({
     firstName: actor.first_name,
     confirmedCode: actor.confirmed_code,
@@ -39,6 +39,19 @@ export const RESET_PASSWORD_EMAIL = {
 };
 
 /**
+ * Account locked email options
+ */
+export const ACCOUNT_LOCKED_EMAIL = {
+  from: 'no-reply@mail.com',
+  subject: 'Your account has been locked',
+  template: 'account-locked',
+  substitutionData: (actor: any) => ({
+    firstName: actor.first_name,
+    unlockAccountUrl: 'http://localhost:8080/app/unlock-account',
+  }),
+};
+
+/**
  * Unlock account email options
  */
 export const UNLOCK_ACCOUNT_EMAIL = {
@@ -48,6 +61,5 @@ export const UNLOCK_ACCOUNT_EMAIL = {
   substitutionData: (actor: any) => ({
     firstName: actor.first_name,
     lockedCode: actor.locked_code,
-    resetPasswordUrl: 'http://localhost:8080/app/reset-password',
   }),
 };

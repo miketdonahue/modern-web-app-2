@@ -54,6 +54,6 @@ input SecurityQuestionAnswerInput {
 
 # Enums
 enum EmailType {
-  CONFIRMATION_EMAIL
+  CONFIRM_EMAIL
   UNLOCK_ACCOUNT_EMAIL
 }

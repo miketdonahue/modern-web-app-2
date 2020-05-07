@@ -20,7 +20,7 @@ const Register = () => {
 
   const [registerActor, { loading }] = useMutation(mutations.registerActor, {
     onCompleted: () => {
-      router.push('/app');
+      router.push('/app/confirm-email');
     },
     onError: (graphQLErrors: any) => {
       return formatServerErrors(graphQLErrors.graphQLErrors);

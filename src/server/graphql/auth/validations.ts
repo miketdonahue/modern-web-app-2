@@ -71,9 +71,7 @@ export default {
       yup.object({
         input: yup.object({
           email,
-          type: yup
-            .mixed()
-            .oneOf(['CONFIRMATION_EMAIL', 'UNLOCK_ACCOUNT_EMAIL']),
+          type: yup.mixed().oneOf(['CONFIRM_EMAIL', 'UNLOCK_ACCOUNT_EMAIL']),
         }),
       })
     ),

@@ -2,7 +2,7 @@ import { Message } from './api/message';
 
 export {
   WELCOME_EMAIL,
-  CONFIRMATION_EMAIL,
+  CONFIRM_EMAIL,
   RESET_PASSWORD_EMAIL,
   UNLOCK_ACCOUNT_EMAIL,
 } from './emails';

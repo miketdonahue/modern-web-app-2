@@ -6,11 +6,11 @@ import { useFormik } from 'formik';
 import { useServerErrors } from '@components/hooks/use-server-errors';
 import { ServerErrors } from '@components/server-error';
 import { Button, Input } from '@components/app';
-import { confirmEmailValidationSchema } from './validations';
+import { unlockAccountValidationSchema } from './validations';
 import * as mutations from './graphql/mutations.gql';
-import styles from './confirm-email.module.scss';
+import styles from './unlock-account.module.scss';
 
-const ConfirmEmail = () => {
+const UnlockAccount = () => {
   const router = useRouter();
   const [serverErrors, formatServerErrors] = useServerErrors();
 
@@ -26,36 +26,34 @@ const ConfirmEmail = () => {
   const formik = useFormik({
     validateOnChange: false,
     initialValues: {
-      verificationCode: '',
+      email: '',
     },
-    validationSchema: confirmEmailValidationSchema,
+    validationSchema: unlockAccountValidationSchema,
     onSubmit: (values) => {
       loginActor({
         variables: {
           input: {
-            email: values.verificationCode,
+            email: values.email,
           },
         },
       });
     },
   });
 
-  const handleVerificationChange = async (value: string) => {
-    formik.setFieldValue('verificationCode', value);
+  const handleChange = (event: any) => {
+    const { name } = event.target;
 
-    if (formik.errors.verificationCode) {
-      formik.setFieldError('verificationCode', '');
+    formik.handleChange(event);
+
+    if ((formik.errors as any)[name]) {
+      formik.setFieldError(name, '');
     }
-  };
-
-  const handleVerificationComplete = (value: string) => {
-    console.log('onComplete', value);
   };
 
   return (
     <div className={styles.grid}>
       <div className={styles.gridLeft}>
-        <div className={styles.confirmEmailGrid}>
+        <div className={styles.unlockAccountGrid}>
           <div className="py-6">
             <svg
               width="12rem"
@@ -65,73 +63,58 @@ const ConfirmEmail = () => {
               xmlns="http://www.w3.org/2000/svg"
             >
               <path
-                d="m90 180c49.706 0 90-40.294 90-90 0-49.706-40.294-90-90-90-49.706 0-90 40.294-90 90 0 49.706 40.294 90 90 90z"
+                d="M90 180C139.706 180 180 139.706 180 90C180 40.2944 139.706 0 90 0C40.2944 0 0 40.2944 0 90C0 139.706 40.2944 180 90 180Z"
                 fill="#EDF2F7"
               />
               <path
-                d="m157.6 57.559-62.471-45.318c-2.2637-1.6543-5.3546-1.6543-7.6618 0l-62.383 45.318 66.258 42.184 66.258-42.184z"
+                d="M64.4476 82.1526V47.4734C64.4476 33.6674 75.7882 22.3268 89.5942 22.3268C103.4 22.3268 114.741 33.6674 114.741 47.4734V50L127.232 47.4734C127.232 26.7644 110.467 10 89.7585 10C69.0496 10 52.2852 26.7644 52.2852 47.4734V82.1526H64.4476Z"
+                fill="#2B3B4E"
+              />
+              <path
+                d="M136.271 156.606H42.9168C39.6297 156.606 37 153.977 37 150.689V84.7823C37 81.4952 39.6297 78.8655 42.9168 78.8655H136.271C139.559 78.8655 142.188 81.4952 142.188 84.7823V150.689C142.188 153.977 139.559 156.606 136.271 156.606Z"
                 fill="#ECB85E"
               />
               <path
-                d="m132.14 57.559h-81.582v70.742h81.582v-70.742z"
-                fill="#fff"
-              />
-              <path
-                d="m157.56 141.88h0.044v-84.324l-66.258 42.184 66.214 42.14z"
-                fill="#F3BF64"
-              />
-              <path
-                d="m25.087 57.559h-0.0871v84.324h0.1306l66.214-42.14-66.258-42.184z"
-                fill="#F3BF64"
-              />
-              <path
-                d="m91.345 99.743-66.214 42.14h132.43l-66.214-42.14z"
-                fill="#ECB85E"
+                d="M89.5942 99.0813C83.8417 99.0813 79.2397 103.683 79.2397 109.436C79.2397 113.38 81.5407 116.832 84.6635 118.475V131.624C84.6635 134.254 86.8001 136.39 89.4298 136.39C92.0596 136.39 94.1962 134.254 94.1962 131.624V118.475C97.4833 116.667 99.62 113.38 99.62 109.436C99.9487 103.683 95.3467 99.0813 89.5942 99.0813Z"
+                fill="#324A5E"
               />
             </svg>
 
             <div className="text-center my-8">
               <h1 className="text-2xl 768:text-3xl font-bold">
-                Confirm your email
+                Unlock your account
               </h1>
               <div className="mt-1">
-                We sent an 8-digit code to your email address. Please enter the
-                code below.
+                We&apos;re sorry your account was locked. We may have locked
+                your account in order to protect it. Let&apos;s get you back on
+                track.
               </div>
             </div>
 
             <div>
               <form onSubmit={formik.handleSubmit} noValidate>
-                <div className="mb-2">
-                  <label htmlFor="password" className="text-sm 768:text-base">
-                    <span>Verification code</span>
-                    {formik.errors.verificationCode &&
-                    formik.touched.verificationCode ? (
+                <div className="mb-5">
+                  <label htmlFor="email" className="text-sm 768:text-base">
+                    <span>Email address</span>
+                    {formik.errors.email && formik.touched.email ? (
                       <span className="text-red-600 mt-1">
                         {' '}
-                        {formik.errors.verificationCode}
+                        {formik.errors.email}
                       </span>
                     ) : null}
 
                     <div className="mt-1">
-                      <Input.VerificationCode
-                        name="verificationCode"
-                        numOfFields={8}
-                        onInputChange={handleVerificationChange}
-                        onComplete={handleVerificationComplete}
-                        error={
-                          !!(
-                            formik.errors.verificationCode &&
-                            formik.touched.verificationCode
-                          )
-                        }
+                      <Input
+                        id="email"
+                        name="email"
+                        type="email"
+                        value={formik.values.email}
+                        onChange={handleChange}
+                        onBlur={formik.handleBlur}
+                        error={!!(formik.errors.email && formik.touched.email)}
                       />
                     </div>
                   </label>
-                </div>
-
-                <div className="text-center">
-                  <a href="#">Resend code</a>
                 </div>
 
                 <div className="mt-8">
@@ -140,7 +123,7 @@ const ConfirmEmail = () => {
                   </div>
 
                   <Button type="submit" variant="primary" loading={loading}>
-                    Confirm my email
+                    Send unlock instructions
                   </Button>
                 </div>
               </form>
@@ -198,4 +181,4 @@ const ConfirmEmail = () => {
   );
 };
 
-export default withApollo()(ConfirmEmail);
+export default withApollo()(UnlockAccount);

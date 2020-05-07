@@ -15,12 +15,15 @@
   display: none;
 
   @media screen and (min-width: theme('screens.1024')) {
+    background-image: url('/images/auth-bg.png');
+    background-size: 100% 100%;
+    background-size: cover;
     display: block;
     grid-column: 2 / 3;
   }
 }
 
-.confirmEmailGrid {
+.unlockAccountGrid {
   align-items: center;
   display: grid;
   grid-column-gap: 1rem;
