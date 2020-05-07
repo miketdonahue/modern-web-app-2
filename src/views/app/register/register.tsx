@@ -6,7 +6,7 @@ import { useRouter } from 'next/router';
 import { useFormik } from 'formik';
 import { useServerErrors } from '@components/hooks/use-server-errors';
 import { ServerErrors } from '@components/server-error';
-import { Button, Input } from '@components/app';
+import { Button, Input, PasswordStrength } from '@components/app';
 import appLogo from '@public/images/logo-sm.svg';
 import googleIcon from '@public/images/social/google.svg';
 import registerBg from '@public/images/register-bg.jpg';
@@ -149,13 +149,21 @@ const Register = () => {
 
                 <div className="mb-5">
                   <label htmlFor="password" className="text-sm 768:text-base">
-                    <span>Password</span>
-                    {formik.errors.password && formik.touched.password ? (
-                      <span className="text-red-600 mt-1">
-                        {' '}
-                        {formik.errors.password}
-                      </span>
-                    ) : null}
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <span>Password</span>
+                        {formik.errors.password && formik.touched.password ? (
+                          <span className="text-red-600 mt-1">
+                            {' '}
+                            {formik.errors.password}
+                          </span>
+                        ) : null}
+                      </div>
+
+                      {formik.values.password && (
+                        <PasswordStrength password={formik.values.password} />
+                      )}
+                    </div>
 
                     <div className="mt-1">
                       <Input.Password
