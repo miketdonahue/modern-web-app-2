@@ -182,6 +182,11 @@ const Login = () => {
                 </div>
               </form>
             </div>
+
+            <div className="text-sm text-center mt-6">
+              <span>Want to sign up?</span>{' '}
+              <a href="/app/register">Create a new account</a>
+            </div>
           </div>
         </div>
       </div>

@@ -196,6 +196,10 @@ const Register = () => {
                     </Link>
                     .
                   </div>
+
+                  <div className="text-sm text-center mt-6">
+                    <a href="/app/login">Sign into an existing account</a>
+                  </div>
                 </div>
               </form>
             </div>
