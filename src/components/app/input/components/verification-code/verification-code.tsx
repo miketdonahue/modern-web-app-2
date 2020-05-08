@@ -51,6 +51,7 @@ const VerificationCode = ({
 
     if (onInputChange) {
       onInputChange(value);
+      setInputValues(value.split(''));
     }
 
     if (onComplete && value.length >= numOfFields) {
@@ -87,7 +88,7 @@ const VerificationCode = ({
         }
       });
 
-      setInputValues(inputValues);
+      setInputValues(inputVals);
     } else {
       nextInput = refs[currentRefIndex + 1];
       inputVals[currentRefIndex] = value;
