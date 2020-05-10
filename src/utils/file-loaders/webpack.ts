@@ -22,7 +22,7 @@ export const fileLoader = (type: string): any => {
         array.push(data.default);
         break;
       }
-      case 'graphql':
+      case 'gql':
         array.push(data.loc.source.body);
         break;
       default:

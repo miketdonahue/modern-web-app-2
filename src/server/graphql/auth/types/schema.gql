@@ -6,7 +6,7 @@ extend type Query {
 }
 
 extend type Mutation {
-  registerActor(input: RegisterActorInput!): TokenPayload!
+  registerActor(input: RegisterActorInput!): ActorPayload!
   confirmActor(input: ConfirmActorInput!): ActorPayload!
   loginActor(input: LoginActorInput!): TokenPayload!
   setActorSecurityQuestionAnswers(

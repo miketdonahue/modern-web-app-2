@@ -50,6 +50,7 @@
     "deepmerge": "^4.2.2",
     "express": "^4.17.1",
     "formik": "^2.1.4",
+    "framer-motion": "^1.10.3",
     "glob": "^7.1.6",
     "googleapis": "^48.0.0",
     "graphql": "^15.0.0",

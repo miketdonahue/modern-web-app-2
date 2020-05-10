@@ -48,12 +48,42 @@ export const accountUnlocked = rule()(async (parent, args, context) => {
         locked_code: generateCode(),
         locked_expires: addHours(
           new Date(),
-          config.server.auth.codes.expireTime.locked
+          config.server.auth.codes.expireTime
         ),
       }
     );
 
     throw new InternalError('ACCOUNT_LOCKED');
+  }
+
+  return true;
+});
+
+/**
+ * Checks if actor account confirmed code has expired
+ *
+ * @remarks
+ * This is a rule for GraphQL Shield
+ *
+ * @param parent - The parent resolver
+ * @param args - Actor input arguments
+ * @param context - GraphQL context object
+ * @param info - GraphQL metadata
+ * @returns A boolean
+ */
+export const confirmedCodeNotExpired = rule()(async (parent, args, context) => {
+  const { db } = context;
+
+  const actorAccount = await db.findOne(ActorAccount, {
+    confirmed_code: args.input.code,
+  });
+
+  if (!actorAccount) {
+    throw new InternalError('CODE_NOT_FOUND', { code: 'confirmedCode' });
+  }
+
+  if (isBefore(actorAccount.confirmed_expires, new Date())) {
+    return new InternalError('CONFIRMED_CODE_EXPIRED');
   }
 
   return true;

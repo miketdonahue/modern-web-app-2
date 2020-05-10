@@ -1,11 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { withApollo } from '@apollo-setup/with-apollo';
 import { useMutation } from '@apollo/react-hooks';
 import { useRouter } from 'next/router';
 import { useFormik } from 'formik';
 import { useServerErrors } from '@components/hooks/use-server-errors';
 import { ServerErrors } from '@components/server-error';
-import { Button, Input } from '@components/app';
+import { Input, Spinner } from '@components/app';
 import { confirmEmailValidationSchema } from './validations';
 import * as mutations from './graphql/mutations.gql';
 import styles from './confirm-email.module.scss';
@@ -13,12 +13,14 @@ import styles from './confirm-email.module.scss';
 const ConfirmEmail = () => {
   const router = useRouter();
   const [serverErrors, formatServerErrors] = useServerErrors();
+  const [verifyLoading, setVerifyLoading] = useState(false);
 
-  const [loginActor, { loading }] = useMutation(mutations.loginActor, {
+  const [confirmActor, { loading }] = useMutation(mutations.confirmActor, {
     onCompleted: () => {
-      router.push('/app');
+      router.push('/app/login');
     },
     onError: (graphQLErrors: any) => {
+      setVerifyLoading(false);
       return formatServerErrors(graphQLErrors.graphQLErrors);
     },
   });
@@ -29,15 +31,7 @@ const ConfirmEmail = () => {
       verificationCode: '',
     },
     validationSchema: confirmEmailValidationSchema,
-    onSubmit: (values) => {
-      loginActor({
-        variables: {
-          input: {
-            email: values.verificationCode,
-          },
-        },
-      });
-    },
+    onSubmit: () => {},
   });
 
   const handleVerificationChange = async (value: string) => {
@@ -49,7 +43,17 @@ const ConfirmEmail = () => {
   };
 
   const handleVerificationComplete = (value: string) => {
-    console.log('onComplete', value);
+    setVerifyLoading(true);
+
+    setTimeout(() => {
+      confirmActor({
+        variables: {
+          input: {
+            code: Number(value),
+          },
+        },
+      });
+    }, 1200);
   };
 
   return (
@@ -119,6 +123,7 @@ const ConfirmEmail = () => {
                         numOfFields={8}
                         onInputChange={handleVerificationChange}
                         onComplete={handleVerificationComplete}
+                        disabled={loading}
                         error={
                           !!(
                             formik.errors.verificationCode &&
@@ -139,9 +144,9 @@ const ConfirmEmail = () => {
                     <ServerErrors errors={serverErrors} />
                   </div>
 
-                  <Button type="submit" variant="primary" loading={loading}>
-                    Confirm my email
-                  </Button>
+                  <div className="flex justify-center">
+                    <Spinner size={3} active={verifyLoading} />
+                  </div>
                 </div>
               </form>
             </div>

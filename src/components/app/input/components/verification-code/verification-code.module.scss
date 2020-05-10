@@ -16,3 +16,7 @@
   min-width: 0;
   text-align: center;
 }
+
+.disabled {
+  background-color: theme('colors.gray.200');
+}

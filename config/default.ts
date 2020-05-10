@@ -41,10 +41,7 @@ export default {
       },
       codes: {
         // time in minutes
-        expireTime: {
-          passwordReset: 30,
-          locked: 15,
-        },
+        expireTime: 30,
       },
       lockable: {
         enabled: true,

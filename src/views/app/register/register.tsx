@@ -18,8 +18,10 @@ const Register = () => {
   const router = useRouter();
   const [serverErrors, formatServerErrors] = useServerErrors();
 
+  const [setActorId] = useMutation(mutations.setActorId);
   const [registerActor, { loading }] = useMutation(mutations.registerActor, {
-    onCompleted: () => {
+    onCompleted: ({ actor }: any) => {
+      setActorId({ variables: { input: { actorId: actor.actorId } } });
       router.push('/app/confirm-email');
     },
     onError: (graphQLErrors: any) => {

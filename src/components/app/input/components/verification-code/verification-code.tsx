@@ -51,7 +51,6 @@ const VerificationCode = ({
 
     if (onInputChange) {
       onInputChange(value);
-      setInputValues(value.split(''));
     }
 
     if (onComplete && value.length >= numOfFields) {
@@ -142,7 +141,7 @@ const VerificationCode = ({
         const verificationClasses = cx(
           baseStyles.input,
           styles.input,
-          { [baseStyles.error]: error },
+          { [baseStyles.error]: error, [styles.disabled]: disabled },
           className
         );
 

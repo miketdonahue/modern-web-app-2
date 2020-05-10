@@ -1,5 +1,9 @@
 mutation registerActor($input: RegisterActorInput!) {
   actor: registerActor(input: $input) {
-    token
+    actorId
   }
+}
+
+mutation setActorId($input: SetActorIdInput!) {
+  setActorId(input: $input) @client
 }

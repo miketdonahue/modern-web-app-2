@@ -12,6 +12,9 @@ export class ActorAccount extends BaseTable {
   @Column('varchar', { nullable: true })
   public confirmed_code: string | null;
 
+  @Column('timestamp with time zone', { nullable: true })
+  public confirmed_expires: Date | null;
+
   @Column('boolean', { default: 'false' })
   public locked: boolean;
 

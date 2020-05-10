@@ -31,10 +31,13 @@ const createApolloClient = (
   const cookies =
     context && context.req && context.req.headers && context.req.headers.cookie;
 
+  // Default local state
+  const defaultLocalState = { local: { actor: {}, messages: {} } };
+
   const client = new ApolloClient({
     ssrMode: Boolean(context),
     link: from([headersMiddleware(cookies), httpMiddleware]),
-    cache: new InMemoryCache().restore(initialState || {}),
+    cache: new InMemoryCache().restore(initialState || defaultLocalState),
     typeDefs: [...typesArray], // extends server types
     resolvers, // extends server resolvers
   });

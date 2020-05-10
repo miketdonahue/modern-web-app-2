@@ -1,0 +1,3 @@
+input SetActorIdInput {
+  actorId: string!
+}

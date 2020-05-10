@@ -12,6 +12,7 @@ export class ActorAccount1572404848135 implements MigrationInterface {
         actor_id uuid NOT NULL,
         confirmed boolean NOT NULL DEFAULT false,
         confirmed_code varchar,
+        confirmed_expires timestamp with time zone,
         locked boolean NOT NULL DEFAULT false,
         locked_code varchar,
         locked_expires timestamp with time zone,

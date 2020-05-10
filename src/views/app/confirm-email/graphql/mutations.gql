@@ -1,5 +1,9 @@
-mutation loginActor($input: LoginActorInput!) {
-  actor: loginActor(input: $input) {
-    token
+mutation confirmActor($input: ConfirmActorInput!) {
+  actor: confirmActor(input: $input) {
+    actorId
   }
+}
+
+mutation setMessage($input: SetMessageInput!) {
+  message: setMessage(input: $input)
 }

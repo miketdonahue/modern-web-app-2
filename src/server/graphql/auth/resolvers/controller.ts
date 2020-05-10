@@ -1,6 +1,6 @@
 import argon2 from 'argon2';
 import jwt from 'jsonwebtoken';
-import { addHours, addDays } from 'date-fns';
+import { addMinutes, addDays } from 'date-fns';
 import { v4 as uuid } from 'uuid';
 import Cookies from 'universal-cookie';
 import { decrypt } from '@server/modules/encryption';
@@ -61,6 +61,9 @@ const registerActor = async (
       const createdActorAccount = await db.create(ActorAccount, {
         actor_id: createdActor.uuid,
         confirmed_code: config.server.auth.confirmable ? generateCode() : null,
+        confirmed_expires: String(
+          addMinutes(new Date(), config.server.auth.codes.expireTime)
+        ),
         last_visit: new Date(),
         ip: req.ip,
       });
@@ -87,24 +90,17 @@ const registerActor = async (
 
   actor.email = decrypt(actor.email);
 
-  logger.info('AUTH-RESOLVER: Signing token');
-  const token = jwt.sign(
-    { actorId: actor.uuid, role: transformRoleForToken(role) },
-    config.server.auth.jwt.secret,
-    { expiresIn: config.server.auth.jwt.expiresIn }
-  );
-
   logger.info(
     { emails: ['welcome', 'confirm-email'] },
     'AUTH-RESOLVER: Sending emails'
   );
 
+  /* Sending emails */
   await mailer.message.sendMessage(actor, WELCOME_EMAIL);
   await mailer.message.sendMessage(actor, CONFIRM_EMAIL);
 
   return {
     actorId: actor.uuid,
-    token,
   };
 };
 
@@ -122,7 +118,7 @@ const confirmActor = async (
   args: any,
   context: any
 ): Promise<any> => {
-  const { db, mailer } = context;
+  const { db } = context;
 
   const actorAccount = await db.findOne(ActorAccount, {
     confirmed_code: args.input.code,
@@ -137,11 +133,9 @@ const confirmActor = async (
     {
       confirmed: true,
       confirmed_code: null,
+      confirmed_expires: null,
     }
   );
-
-  logger.info('AUTH-RESOLVER: Sending welcome email');
-  await mailer.message.sendMessage(actor, WELCOME_EMAIL);
 
   return {
     actorId: actor.uuid,
@@ -470,7 +464,7 @@ const resetPassword = async (
     {
       reset_password_code: generateCode(),
       reset_password_expires: String(
-        addHours(new Date(), config.server.auth.codes.expireTime.passwordReset)
+        addMinutes(new Date(), config.server.auth.codes.expireTime)
       ),
     }
   );
