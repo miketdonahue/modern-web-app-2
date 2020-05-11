@@ -3,9 +3,9 @@ import { withApollo } from '@apollo-setup/with-apollo';
 import { useMutation } from '@apollo/react-hooks';
 import { useRouter } from 'next/router';
 import { useFormik } from 'formik';
+import { AlertError } from '@components/icons';
 import { useServerErrors } from '@components/hooks/use-server-errors';
-import { ServerErrors } from '@components/server-error';
-import { Input, Spinner } from '@components/app';
+import { Input, Spinner, Alert } from '@components/app';
 import { confirmEmailValidationSchema } from './validations';
 import * as mutations from './graphql/mutations.gql';
 import styles from './confirm-email.module.scss';
@@ -53,7 +53,7 @@ const ConfirmEmail = () => {
           },
         },
       });
-    }, 1200);
+    }, 1000);
   };
 
   return (
@@ -140,13 +140,23 @@ const ConfirmEmail = () => {
                 </div>
 
                 <div className="mt-8">
-                  <div className="text-sm 768:text-base text-red-600 mb-2">
-                    <ServerErrors errors={serverErrors} />
-                  </div>
-
                   <div className="flex justify-center">
                     <Spinner size={3} active={verifyLoading} />
                   </div>
+
+                  {serverErrors.length > 0 && (
+                    <Alert variant="error">
+                      <div className="mr-3">
+                        <AlertError size={18} />
+                      </div>
+                      <Alert.Content>
+                        <Alert.Header>An error has occurred</Alert.Header>
+                        {serverErrors.map((error: any) => {
+                          return <div>{error.message}</div>;
+                        })}
+                      </Alert.Content>
+                    </Alert>
+                  )}
                 </div>
               </form>
             </div>

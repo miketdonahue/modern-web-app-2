@@ -1,0 +1,9 @@
+.header {
+  font-weight: theme('fontWeight.medium');
+  line-height: theme('lineHeight.tight');
+  padding-bottom: theme('padding.1');
+}
+
+.error {
+  color: theme('colors.red.800');
+}

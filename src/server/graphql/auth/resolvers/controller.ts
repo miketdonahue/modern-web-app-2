@@ -90,12 +90,24 @@ const registerActor = async (
 
   actor.email = decrypt(actor.email);
 
+  logger.info('AUTH-RESOLVER: Signing actor id token');
+  const actorIdToken = jwt.sign(
+    { actorId: actor.uuid },
+    config.server.auth.jwt.secret
+  );
+
+  // TODO: change to `secure: true` when HTTPS
+  context.res.cookie('actor', actorIdToken, {
+    path: '/',
+    secure: false,
+  });
+
+  /* Sending emails */
   logger.info(
     { emails: ['welcome', 'confirm-email'] },
     'AUTH-RESOLVER: Sending emails'
   );
 
-  /* Sending emails */
   await mailer.message.sendMessage(actor, WELCOME_EMAIL);
   await mailer.message.sendMessage(actor, CONFIRM_EMAIL);
 
@@ -119,12 +131,18 @@ const confirmActor = async (
   context: any
 ): Promise<any> => {
   const { db } = context;
+  const cookies = new Cookies(context.req.headers.cookie);
+  const token = cookies.get('actor');
+  const decoded: any = jwt.decode(token);
 
   const actorAccount = await db.findOne(ActorAccount, {
+    actor_id: decoded.actorId,
     confirmed_code: args.input.code,
   });
 
-  const actor = await db.findOne(Actor, { uuid: actorAccount.actor_id });
+  if (!actorAccount) {
+    throw new InternalError('CODE_NOT_FOUND');
+  }
 
   logger.info('AUTH-RESOLVER: Confirming actor account');
   await db.update(
@@ -138,7 +156,7 @@ const confirmActor = async (
   );
 
   return {
-    actorId: actor.uuid,
+    actorId: actorAccount.actor_id,
   };
 };
 

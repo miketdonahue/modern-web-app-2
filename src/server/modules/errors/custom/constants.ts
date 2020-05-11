@@ -35,7 +35,7 @@ export default {
     meta: { level: 'warn' },
   },
   RESET_PASSWORD_CODE_EXPIRED: {
-    message: 'Confirmation code has expired',
+    message: 'Reset password code has expired',
     code: 'RESET_PASSWORD_CODE_EXPIRED',
     meta: { level: 'warn' },
   },
@@ -45,7 +45,7 @@ export default {
     meta: { level: 'warn' },
   },
   CODE_NOT_FOUND: {
-    message: 'Account code was not found',
+    message: 'Verification code was not found',
     code: 'CODE_NOT_FOUND',
     meta: { level: 'warn' },
   },

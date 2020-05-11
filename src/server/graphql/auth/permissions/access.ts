@@ -1,7 +1,6 @@
 import { allow } from 'graphql-shield';
 import {
   accountUnlocked,
-  confirmedCodeNotExpired,
   resetPasswordCodeNotExpired,
   lockedCodeNotExpired,
 } from './resolvers';
@@ -13,7 +12,7 @@ export default {
   },
   Mutation: {
     registerActor: allow,
-    confirmActor: confirmedCodeNotExpired,
+    confirmActor: allow,
     loginActor: accountUnlocked,
     setActorSecurityQuestionAnswers: allow,
     verifyActorSecurityQuestionAnswers: accountUnlocked,

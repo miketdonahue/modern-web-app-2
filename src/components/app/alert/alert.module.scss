@@ -1,0 +1,11 @@
+.alert {
+  border-radius: theme('borderRadius.sm');
+  display: flex;
+  line-height: theme('lineHeight.tight');
+  padding: theme('padding.3');
+}
+
+.error {
+  background-color: theme('colors.red.100');
+  color: theme('colors.red.700');
+}
