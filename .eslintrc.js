@@ -5,14 +5,15 @@ module.exports = {
     project: './tsconfig.json',
     tsconfigRootDir: __dirname,
   },
-  plugins: ['@typescript-eslint'],
   extends: [
     'airbnb-typescript',
     'prettier',
     'prettier/react',
     'prettier/@typescript-eslint',
   ],
+  plugins: ['@typescript-eslint', 'prettier'],
   rules: {
+    'prettier/prettier': 'error',
     'import/no-extraneous-dependencies': ['error', { devDependencies: true }],
     'import/prefer-default-export': 0,
     'lines-between-class-members': [
