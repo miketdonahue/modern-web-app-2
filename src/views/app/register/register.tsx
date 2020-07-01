@@ -1,33 +1,30 @@
 import React from 'react';
 import Link from 'next/link';
-import { withApollo } from '@apollo-setup/with-apollo';
-import { useMutation } from '@apollo/react-hooks';
+import { useMutation } from 'react-query';
 import { useRouter } from 'next/router';
 import { useFormik } from 'formik';
 import { useServerErrors } from '@components/hooks/use-server-errors';
 import { ServerErrors } from '@components/server-error';
 import { Button, Input, PasswordStrength } from '@components/app';
+import { Google } from '@components/icons';
+import { request } from '@modules/request';
 import appLogo from '@public/images/logo-sm.svg';
-import googleIcon from '@public/images/social/google.svg';
 import registerBg from '@public/images/register-bg.jpg';
 import { registerValidationSchema } from './validations';
-import * as mutations from './graphql/mutations.gql';
 import styles from './register.module.scss';
 
 const Register = () => {
   const router = useRouter();
-  const [serverErrors, formatServerErrors] = useServerErrors();
+  const [serverErrors] = useServerErrors();
 
-  const [setActorId] = useMutation(mutations.setActorId);
-  const [registerActor, { loading }] = useMutation(mutations.registerActor, {
-    onCompleted: ({ actor }: any) => {
-      setActorId({ variables: { input: { actorId: actor.actorId } } });
-      router.push('/app/confirm-email');
-    },
-    onError: (graphQLErrors: any) => {
-      return formatServerErrors(graphQLErrors.graphQLErrors);
-    },
-  });
+  const [mutate, { isLoading }] = useMutation(
+    (variables: any) => request.post('/api/v1/auth/register', variables),
+    {
+      onSuccess: () => {
+        router.push('/app/confirm-email');
+      },
+    }
+  );
 
   const formik = useFormik({
     validateOnChange: false,
@@ -38,14 +35,10 @@ const Register = () => {
     },
     validationSchema: registerValidationSchema,
     onSubmit: (values) => {
-      registerActor({
-        variables: {
-          input: {
-            firstName: values.firstName,
-            email: values.email,
-            password: values.password,
-          },
-        },
+      mutate({
+        firstName: values.firstName,
+        email: values.email,
+        password: values.password,
       });
     },
   });
@@ -80,7 +73,8 @@ const Register = () => {
             <div>
               <Button onClick={handleGmailButton}>
                 <div className="flex items-center justify-center">
-                  <img src={googleIcon} alt="Google icon" className="w-4 h-4" />
+                  {/* <img src={googleIcon} alt="Google icon" className="w-4 h-4" /> */}
+                  <Google size={32} />
                   <span className="ml-2">Sign up with Google</span>
                 </div>
               </Button>
@@ -187,7 +181,7 @@ const Register = () => {
                     <ServerErrors errors={serverErrors} />
                   </div>
 
-                  <Button type="submit" variant="primary" loading={loading}>
+                  <Button type="submit" variant="primary" loading={isLoading}>
                     Sign up
                   </Button>
 
@@ -237,4 +231,4 @@ const Register = () => {
   );
 };
 
-export default withApollo()(Register);
+export { Register };

@@ -1,9 +1,0 @@
-mutation registerActor($input: RegisterActorInput!) {
-  actor: registerActor(input: $input) {
-    actorId
-  }
-}
-
-mutation setActorId($input: SetActorIdInput!) {
-  setActorId(input: $input) @client
-}

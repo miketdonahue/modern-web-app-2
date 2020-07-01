@@ -94,8 +94,8 @@ nextApp
     expressApp.set('trust proxy', true);
 
     // Register plugins
-    await registerRoutes(expressApp, nextApp, routes);
     await registerMiddleware(expressApp, [...coreMiddleware, requestLogger]);
+    await registerRoutes(expressApp, nextApp, routes);
 
     // Apply Express middleware to GraphQL server
     apollo.applyMiddleware({
