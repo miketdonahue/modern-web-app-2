@@ -1,5 +1,4 @@
-import { Entity, Column, BeforeInsert, AfterLoad } from 'typeorm';
-import { encrypt, decrypt } from '@server/modules/encryption';
+import { Entity, Column } from 'typeorm';
 import { BaseTable } from './partials/base-table';
 
 @Entity('actor')
@@ -45,14 +44,4 @@ export class Actor extends BaseTable {
 
   @Column('varchar', { nullable: true })
   public postal_code: string | null;
-
-  @BeforeInsert()
-  encryptData() {
-    this.email = encrypt(this.email);
-  }
-
-  @AfterLoad()
-  decryptData() {
-    this.email = decrypt(this.email);
-  }
 }

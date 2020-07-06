@@ -1,32 +1,46 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { withApollo } from '@apollo-setup/with-apollo';
-import { useMutation } from '@apollo/react-hooks';
+import { useMutation } from 'react-query';
+// import { withApollo } from '@apollo-setup/with-apollo';
+// import { useMutation } from '@apollo/react-hooks';
 import { useRouter } from 'next/router';
 import { useFormik } from 'formik';
-import { useServerErrors } from '@components/hooks/use-server-errors';
+import { request } from '@modules/request';
+// import { useServerErrors } from '@components/hooks/use-server-errors';
 import { ServerErrors } from '@components/server-error';
 import { Button, Checkbox, Input, Tooltip } from '@components/app';
 import appLogo from '@public/images/logo-sm.svg';
-import googleIcon from '@public/images/social/google.svg';
+import { Google } from '@components/icons';
 import { loginValidationSchema } from './validations';
-import * as mutations from './graphql/mutations.gql';
+// import * as mutations from './graphql/mutations.gql';
 import styles from './login.module.scss';
 
 const Login = () => {
   const router = useRouter();
-  const [serverErrors, formatServerErrors] = useServerErrors();
-
+  // const [serverErrors, formatServerErrors] = useServerErrors();
+  const [serverErrors, setServerErrors] = useState([]);
   const [rememberMe, setRememberMe] = useState(true);
 
-  const [loginActor, { loading }] = useMutation(mutations.loginActor, {
-    onCompleted: () => {
-      router.push('/app');
-    },
-    onError: (graphQLErrors: any) => {
-      return formatServerErrors(graphQLErrors.graphQLErrors);
-    },
-  });
+  const [mutate, { isLoading }] = useMutation(
+    (variables: any) => request.post('/api/v1/auth/login', variables),
+    {
+      onError: (error) => {
+        return setServerErrors(error?.response?.data?.error || []);
+      },
+      onSuccess: () => {
+        router.push('/app');
+      },
+    }
+  );
+
+  // const [loginActor, { loading }] = useMutation(mutations.loginActor, {
+  //   onCompleted: () => {
+  //     router.push('/app');
+  //   },
+  //   onError: (graphQLErrors: any) => {
+  //     return formatServerErrors(graphQLErrors.graphQLErrors);
+  //   },
+  // });
 
   const formik = useFormik({
     validateOnChange: false,
@@ -36,14 +50,10 @@ const Login = () => {
     },
     validationSchema: loginValidationSchema,
     onSubmit: (values) => {
-      loginActor({
-        variables: {
-          input: {
-            email: values.email,
-            password: values.password,
-            rememberMe,
-          },
-        },
+      mutate({
+        email: values.email,
+        password: values.password,
+        rememberMe,
       });
     },
   });
@@ -82,7 +92,7 @@ const Login = () => {
             <div>
               <Button onClick={handleGmailButton}>
                 <div className="flex items-center justify-center">
-                  <img src={googleIcon} alt="Google icon" className="w-4 h-4" />
+                  <Google size={32} />
                   <span className="ml-2">Sign in with Google</span>
                 </div>
               </Button>
@@ -176,7 +186,7 @@ const Login = () => {
                     <ServerErrors errors={serverErrors} />
                   </div>
 
-                  <Button type="submit" variant="primary" loading={loading}>
+                  <Button type="submit" variant="primary" loading={isLoading}>
                     Sign in
                   </Button>
                 </div>
@@ -240,4 +250,4 @@ const Login = () => {
   );
 };
 
-export default withApollo()(Login);
+export { Login };

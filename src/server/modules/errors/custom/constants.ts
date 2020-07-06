@@ -1,9 +1,5 @@
 export default {
-  UNAUTHENTICATED: {
-    message: 'Unauthenticated',
-    code: 'UNAUTHENTICATED',
-    meta: { level: 'warn' },
-  },
+  UNAUTHENTICATED: 'UNAUTHENTICATED',
   UNAUTHORIZED: {
     message: 'Unauthorized',
     code: 'UNAUTHORIZED',

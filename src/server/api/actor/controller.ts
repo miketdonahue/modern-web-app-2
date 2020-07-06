@@ -1,5 +1,19 @@
+import { Request, Response } from 'express';
 import { logger } from '@server/modules/logger';
 import { ActorAccount } from '@server/entities/actor-account';
+
+/**
+ * Unlock account
+ *
+ * @param parent - The parent resolver
+ * @param args - Actor input arguments
+ * @param context - GraphQL context object
+ * @param info - GraphQL metadata
+ * @returns null
+ */
+const getMe = async (req: Request, res: Response) => {
+  return res.json({ id: '123' });
+};
 
 /**
  * Unlock account
@@ -38,4 +52,4 @@ const unlockActorAccount = async (
   return { actorId: actorAccount.actor_id };
 };
 
-export { unlockActorAccount };
+export { getMe, unlockActorAccount };

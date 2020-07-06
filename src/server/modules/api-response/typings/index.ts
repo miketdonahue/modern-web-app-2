@@ -35,14 +35,12 @@ interface Relationships {
   };
 }
 
-interface Error {
-  id?: string;
+export interface Error {
   links?: {
     about?: string;
   };
   status?: string;
   code?: string;
-  title?: string;
   detail?: string;
   source?: {
     pointer?: string;
@@ -53,20 +51,18 @@ interface Error {
   };
 }
 
-interface ApiResponseWithData {
+export type ApiResponseWithData = {
   data: Data | Data[] | null | [];
   meta?: {
     [key: string]: any;
   };
   links?: Links;
   included?: Data[];
-}
+};
 
-interface ApiResponseWithError {
+export type ApiResponseWithError = {
   error: Error[];
   meta?: {
     [key: string]: any;
   };
-}
-
-export type ApiResponse = ApiResponseWithData | ApiResponseWithError;
+};
