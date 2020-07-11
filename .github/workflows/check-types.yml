@@ -1,0 +1,22 @@
+name: Check Types
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+
+jobs:
+  check-types:
+    name: Check Types
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out Git repository
+        uses: actions/checkout@v2
+
+      - name: Install Dependencies
+        run: yarn add -D typescript
+
+      - name: Run Linters
+        run: yarn ts
