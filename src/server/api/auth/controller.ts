@@ -5,9 +5,7 @@ import { addMinutes, addDays } from 'date-fns';
 import { v4 as uuid } from 'uuid';
 import Cookies from 'universal-cookie';
 import { getManager } from '@server/modules/db-manager';
-import { decrypt } from '@server/modules/encryption';
 import generateCode from '@server/modules/code';
-// import { InternalError } from '@server/modules/errors';
 import { logger } from '@server/modules/logger';
 import {
   resourceTypes,
@@ -36,7 +34,7 @@ const registerActor = async (req: Request, res: Response) => {
 
   const role = await db.findOne(Role, { name: RoleName.ACTOR });
 
-  logger.info('AUTH-RESOLVER: Hashing password');
+  logger.info('AUTH-CONTROLLER: Hashing password');
   const password = await argon2.hash(req.body.password, {
     timeCost: 2000,
     memoryCost: 500,
@@ -44,7 +42,7 @@ const registerActor = async (req: Request, res: Response) => {
 
   const actorAccount = await db.transaction(
     async (transactionalEntityManager: any) => {
-      logger.info('AUTH-RESOLVER: Creating actor');
+      logger.info('AUTH-CONTROLLER: Creating actor');
       const createdActor = await transactionalEntityManager.create(Actor, {
         role_id: role?.uuid,
         first_name: req.body.firstName,
@@ -55,7 +53,7 @@ const registerActor = async (req: Request, res: Response) => {
 
       await transactionalEntityManager.save(createdActor);
 
-      logger.info('AUTH-RESOLVER: Creating actor account');
+      logger.info('AUTH-CONTROLLER: Creating actor account');
       const createdActorAccount = await db.create(ActorAccount, {
         actor_id: createdActor.uuid,
         confirmed_code: config.server.auth.confirmable ? generateCode() : null,
@@ -86,11 +84,9 @@ const registerActor = async (req: Request, res: Response) => {
     [actorAccount.actor_id]
   );
 
-  actor.email = decrypt(actor.email);
-
-  logger.info('AUTH-RESOLVER: Signing actor id token');
+  logger.info('AUTH-CONTROLLER: Signing actor id token');
   const actorIdToken = jwt.sign(
-    { actorId: actor.uuid },
+    { actor_id: actor.uuid },
     config.server.auth.jwt.secret
   );
 
@@ -103,7 +99,7 @@ const registerActor = async (req: Request, res: Response) => {
   /* Sending emails */
   logger.info(
     { emails: ['welcome', 'confirm-email'] },
-    'AUTH-RESOLVER: Sending emails'
+    'AUTH-CONTROLLER: Sending emails'
   );
 
   await mailer.message.sendMessage(actor, WELCOME_EMAIL);
@@ -126,15 +122,26 @@ const confirmActor = async (req: Request, res: Response) => {
   const decoded: any = jwt.decode(token);
 
   const actorAccount = await db.findOne(ActorAccount, {
-    actor_id: decoded.actorId,
+    actor_id: decoded.actor_id,
     confirmed_code: req.body.code,
   });
 
   if (!actorAccount) {
-    throw new InternalError('CODE_NOT_FOUND');
+    const errorResponse: ApiResponseWithError = {
+      error: [
+        {
+          status: '400',
+          code: errorTypes.CODE_NOT_FOUND.code,
+          detail: errorTypes.CODE_NOT_FOUND.detail,
+        },
+      ],
+    };
+
+    logger.warn('AUTH-CONTROLLER: The actor account was not found');
+    return res.status(400).json(errorResponse);
   }
 
-  logger.info('AUTH-RESOLVER: Confirming actor account');
+  logger.info('AUTH-CONTROLLER: Confirming actor account');
   await db.update(
     ActorAccount,
     { uuid: actorAccount.uuid },
@@ -187,6 +194,7 @@ const loginActor = async (req: Request, res: Response) => {
   };
 
   if (!actorAccount) {
+    logger.error('AUTH-CONTROLLER: The actor account was not found');
     return res.status(400).json(errorResponse);
   }
 
@@ -222,12 +230,16 @@ const loginActor = async (req: Request, res: Response) => {
   );
 
   if (!passwordMatch) {
+    logger.error(
+      'AUTH-CONTROLLER: The actor password did not match our records'
+    );
+
     return res.status(400).json(errorResponse);
   }
 
-  logger.info('AUTH-RESOLVER: Signing auth tokens');
+  logger.info('AUTH-CONTROLLER: Signing auth tokens');
   const token = jwt.sign(
-    { actorId: actorAccount.actor_id, role: transformRoleForToken(role) },
+    { actor_id: actorAccount.actor_id, role: transformRoleForToken(role) },
     config.server.auth.jwt.secret,
     { expiresIn: config.server.auth.jwt.expiresIn }
   );
@@ -266,7 +278,7 @@ const loginActor = async (req: Request, res: Response) => {
 /**
  * Generate a reset token so a actor can reset their password
  */
-const resetPassword = async (req: Request, res: Response) => {
+const forgotPassword = async (req: Request, res: Response) => {
   const db = getManager();
 
   const [actorAccount] = await db.query(
@@ -283,10 +295,13 @@ const resetPassword = async (req: Request, res: Response) => {
   );
 
   if (!actorAccount) {
-    throw new InternalError('ACTOR_NOT_FOUND', { ...req.body });
+    logger.error('AUTH-CONTROLLER: The actor account was not found');
+
+    return res.end();
   }
 
-  logger.info("AUTH-RESOLVER: Preparing actor's password for reset");
+  logger.info("AUTH-CONTROLLER: Preparing actor's password for reset");
+
   await db.update(
     ActorAccount,
     { uuid: actorAccount.uuid },
@@ -337,7 +352,10 @@ const sendAuthEmail = async (req: Request, res: Response) => {
     UNLOCK_ACCOUNT_EMAIL,
   };
 
-  logger.info({ type: req.body.type }, 'AUTH-RESOLVER: Sending email to actor');
+  logger.info(
+    { type: req.body.type },
+    'AUTH-CONTROLLER: Sending email to actor'
+  );
 
   await mailer.message.sendMessage(actor, (emailType as any)[req.body.type]);
 
@@ -359,7 +377,7 @@ const logoutActor = async (req: Request, res: Response) => {
   const cookies = new Cookies(req.headers.cookie);
   const signature = cookies.get('token-signature');
 
-  logger.info('AUTH-RESOLVER: Logging out actor');
+  logger.info('AUTH-CONTROLLER: Logging out actor');
   await db.insert(BlacklistedToken, {
     token: `${req.body.token}.${signature}`,
   });
@@ -386,7 +404,7 @@ const checkAccess = async (req: Request, res: Response) => {
   });
 
   if (blacklistedToken) {
-    logger.info('AUTH-RESOLVER: Received blacklisted auth token');
+    logger.info('AUTH-CONTROLLER: Received blacklisted auth token');
     return { actorId: context.actor.actorId, token: null };
   }
 
@@ -394,7 +412,7 @@ const checkAccess = async (req: Request, res: Response) => {
     jwt.verify(context.actor.token, config.server.auth.jwt.secret);
   } catch (err) {
     if (err.name === 'TokenExpiredError') {
-      logger.info('AUTH-RESOLVER: Auth token has expired');
+      logger.info('AUTH-CONTROLLER: Auth token has expired');
 
       const [actorAccount] = await db.query(
         `
@@ -427,18 +445,18 @@ const checkAccess = async (req: Request, res: Response) => {
 
       logger.info(
         { actorId: actorAccount.actor_id },
-        'AUTH-RESOLVER: Found valid refresh token'
+        'AUTH-CONTROLLER: Found valid refresh token'
       );
 
       const newToken = jwt.sign(
-        { actorId: actorAccount.actor_id, role: transformRoleForToken(role) },
+        { actor_id: actorAccount.actor_id, role: transformRoleForToken(role) },
         config.server.auth.jwt.secret,
         { expiresIn: config.server.auth.jwt.expiresIn }
       );
 
       logger.info(
         { actorId: actorAccount.actor_id },
-        'AUTH-RESOLVER: Issuing new auth tokens'
+        'AUTH-CONTROLLER: Issuing new auth tokens'
       );
 
       const [
@@ -473,7 +491,7 @@ export {
   registerActor,
   confirmActor,
   loginActor,
-  resetPassword,
+  forgotPassword,
   sendAuthEmail,
   logoutActor,
 };

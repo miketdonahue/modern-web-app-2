@@ -6,7 +6,7 @@ export default {
     {
       path: '/',
       middleware: [securePage],
-      page: '/app/index',
+      page: '/app',
     },
   ],
 };

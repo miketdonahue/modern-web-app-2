@@ -1,27 +1,28 @@
 import React from 'react';
-import { withApollo } from '@apollo-setup/with-apollo';
-import { useMutation } from '@apollo/react-hooks';
+import { useMutation } from 'react-query';
 import { useRouter } from 'next/router';
+import { request } from '@modules/request';
 import { useFormik } from 'formik';
-import { useServerErrors } from '@components/hooks/use-server-errors';
 import { ServerErrors } from '@components/server-error';
 import { Button, Input } from '@components/app';
 import { verifyAccountValidationSchema } from './validations';
-import * as mutations from './graphql/mutations.gql';
 import styles from './verify-account.module.scss';
 
 const VerifyAccount = () => {
   const router = useRouter();
-  const [serverErrors, formatServerErrors] = useServerErrors();
+  const [serverErrors, setServerErrors] = React.useState([]);
 
-  const [loginActor, { loading }] = useMutation(mutations.loginActor, {
-    onCompleted: () => {
-      router.push('/app');
-    },
-    onError: (graphQLErrors: any) => {
-      return formatServerErrors(graphQLErrors.graphQLErrors);
-    },
-  });
+  const [mutate, { isLoading }] = useMutation(
+    (variables: any) => request.post('/api/v1/auth/login', variables),
+    {
+      onError: (error) => {
+        return setServerErrors(error?.response?.data?.error || []);
+      },
+      onSuccess: () => {
+        router.push('/app');
+      },
+    }
+  );
 
   const formik = useFormik({
     validateOnChange: false,
@@ -30,12 +31,8 @@ const VerifyAccount = () => {
     },
     validationSchema: verifyAccountValidationSchema,
     onSubmit: (values) => {
-      loginActor({
-        variables: {
-          input: {
-            email: values.verificationCode,
-          },
-        },
+      mutate({
+        email: values.verificationCode,
       });
     },
   });
@@ -144,7 +141,7 @@ const VerifyAccount = () => {
                     <ServerErrors errors={serverErrors} />
                   </div>
 
-                  <Button type="submit" variant="primary" loading={loading}>
+                  <Button type="submit" variant="primary" loading={isLoading}>
                     Verify my account
                   </Button>
                 </div>
@@ -203,4 +200,4 @@ const VerifyAccount = () => {
   );
 };
 
-export default withApollo()(VerifyAccount);
+export { VerifyAccount };

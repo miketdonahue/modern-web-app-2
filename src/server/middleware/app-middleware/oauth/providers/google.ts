@@ -16,7 +16,7 @@ const isDev = process.env.NODE_ENV !== 'production';
 const dbConnectionName = isDev ? 'development' : 'production';
 
 const oauthConfig = {
-  callbackUrl: 'http://localhost:8080/oauth/google/callback',
+  callbackUrl: 'http://localhost:8080/app/oauth/google/callback',
   successRedirect: '/app',
   failureRedirect: '/app/login',
 };
@@ -213,7 +213,7 @@ export const authenticate = async (
   );
 
   const token = jwt.sign(
-    { actorId: actor.uuid, role: actor.role },
+    { actor_id: actor.uuid, role: actor.role },
     config.server.auth.jwt.secret,
     { expiresIn: config.server.auth.jwt.expiresIn }
   );

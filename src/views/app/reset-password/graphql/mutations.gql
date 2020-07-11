@@ -1,5 +1,0 @@
-mutation loginActor($input: LoginActorInput!) {
-  actor: loginActor(input: $input) {
-    token
-  }
-}

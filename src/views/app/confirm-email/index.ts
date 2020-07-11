@@ -1,1 +1,1 @@
-export { default as ConfirmEmail } from './confirm-email';
+export { ConfirmEmail } from './confirm-email';

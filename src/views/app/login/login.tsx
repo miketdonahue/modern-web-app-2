@@ -1,23 +1,18 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { useMutation } from 'react-query';
-// import { withApollo } from '@apollo-setup/with-apollo';
-// import { useMutation } from '@apollo/react-hooks';
 import { useRouter } from 'next/router';
 import { useFormik } from 'formik';
 import { request } from '@modules/request';
-// import { useServerErrors } from '@components/hooks/use-server-errors';
 import { ServerErrors } from '@components/server-error';
 import { Button, Checkbox, Input, Tooltip } from '@components/app';
 import appLogo from '@public/images/logo-sm.svg';
 import { Google } from '@components/icons';
 import { loginValidationSchema } from './validations';
-// import * as mutations from './graphql/mutations.gql';
 import styles from './login.module.scss';
 
 const Login = () => {
   const router = useRouter();
-  // const [serverErrors, formatServerErrors] = useServerErrors();
   const [serverErrors, setServerErrors] = useState([]);
   const [rememberMe, setRememberMe] = useState(true);
 
@@ -32,15 +27,6 @@ const Login = () => {
       },
     }
   );
-
-  // const [loginActor, { loading }] = useMutation(mutations.loginActor, {
-  //   onCompleted: () => {
-  //     router.push('/app');
-  //   },
-  //   onError: (graphQLErrors: any) => {
-  //     return formatServerErrors(graphQLErrors.graphQLErrors);
-  //   },
-  // });
 
   const formik = useFormik({
     validateOnChange: false,
@@ -57,10 +43,6 @@ const Login = () => {
       });
     },
   });
-
-  const handleGmailButton = () => {
-    router.push('/app/oauth/google');
-  };
 
   const handleRememberMe = (event: React.ChangeEvent<HTMLInputElement>) => {
     setRememberMe(event.target.checked);
@@ -90,7 +72,7 @@ const Login = () => {
               </h1>
             </div>
             <div>
-              <Button onClick={handleGmailButton}>
+              <Button component="a" href="/app/oauth/google">
                 <div className="flex items-center justify-center">
                   <Google size={32} />
                   <span className="ml-2">Sign in with Google</span>

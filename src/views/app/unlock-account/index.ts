@@ -1,1 +1,1 @@
-export { default as UnlockAccount } from './unlock-account';
+export { UnlockAccount } from './unlock-account';

@@ -19,7 +19,7 @@ export class Role extends BaseTable {
   @Column('enum', { enum: RoleName, default: RoleName.ACTOR })
   public name: RoleName;
 
-  @Column('varchar', { array: true, nullable: true })
+  @Column('character varying', { array: true, nullable: true })
   public permissions: Permission[];
 
   @Column('jsonb', { nullable: true })

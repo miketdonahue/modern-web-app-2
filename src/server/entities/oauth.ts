@@ -13,7 +13,7 @@ export class Oauth extends BaseTable {
   @Column('enum', { enum: ProviderName })
   public provider: ProviderName;
 
-  @Column('varchar', { nullable: true })
+  @Column('character varying', { nullable: true })
   public refresh_token: string | null;
 
   @Column('timestamp with time zone', { nullable: true })

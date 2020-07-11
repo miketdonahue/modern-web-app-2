@@ -1,29 +1,29 @@
 import React, { useState } from 'react';
-import { withApollo } from '@apollo-setup/with-apollo';
-import { useMutation } from '@apollo/react-hooks';
+import { useMutation } from 'react-query';
 import { useRouter } from 'next/router';
 import { useFormik } from 'formik';
+import { request } from '@modules/request';
+import { ServerErrors } from '@components/server-error';
 import { AlertError } from '@components/icons';
-import { useServerErrors } from '@components/hooks/use-server-errors';
 import { Input, Spinner, Alert } from '@components/app';
 import { confirmEmailValidationSchema } from './validations';
-import * as mutations from './graphql/mutations.gql';
 import styles from './confirm-email.module.scss';
 
 const ConfirmEmail = () => {
   const router = useRouter();
-  const [serverErrors, formatServerErrors] = useServerErrors();
-  const [verifyLoading, setVerifyLoading] = useState(false);
+  const [serverErrors, setServerErrors] = useState([]);
 
-  const [confirmActor, { loading }] = useMutation(mutations.confirmActor, {
-    onCompleted: () => {
-      router.push('/app/login');
-    },
-    onError: (graphQLErrors: any) => {
-      setVerifyLoading(false);
-      return formatServerErrors(graphQLErrors.graphQLErrors);
-    },
-  });
+  const [mutate, { isLoading }] = useMutation(
+    (variables: any) => request.post('/api/v1/auth/confirm', variables),
+    {
+      onError: (error) => {
+        return setServerErrors(error?.response?.data?.error || []);
+      },
+      onSuccess: () => {
+        router.push('/app');
+      },
+    }
+  );
 
   const formik = useFormik({
     validateOnChange: false,
@@ -43,15 +43,10 @@ const ConfirmEmail = () => {
   };
 
   const handleVerificationComplete = (value: string) => {
-    setVerifyLoading(true);
-
+    /* Intentional timeout to ensure loading state shows for at least 1 second */
     setTimeout(() => {
-      confirmActor({
-        variables: {
-          input: {
-            code: Number(value),
-          },
-        },
+      mutate({
+        code: Number(value),
       });
     }, 1000);
   };
@@ -123,7 +118,7 @@ const ConfirmEmail = () => {
                         numOfFields={8}
                         onInputChange={handleVerificationChange}
                         onComplete={handleVerificationComplete}
-                        disabled={loading}
+                        disabled={isLoading}
                         error={
                           !!(
                             formik.errors.verificationCode &&
@@ -141,7 +136,7 @@ const ConfirmEmail = () => {
 
                 <div className="mt-8">
                   <div className="flex justify-center">
-                    <Spinner size={3} active={verifyLoading} />
+                    <Spinner size={3} active={isLoading} />
                   </div>
 
                   {serverErrors.length > 0 && (
@@ -151,9 +146,7 @@ const ConfirmEmail = () => {
                       </div>
                       <Alert.Content>
                         <Alert.Header>An error has occurred</Alert.Header>
-                        {serverErrors.map((error: any) => {
-                          return <div>{error.message}</div>;
-                        })}
+                        <ServerErrors errors={serverErrors} />
                       </Alert.Content>
                     </Alert>
                   )}
@@ -213,4 +206,4 @@ const ConfirmEmail = () => {
   );
 };
 
-export default withApollo()(ConfirmEmail);
+export { ConfirmEmail };

@@ -5,6 +5,11 @@
   padding: theme('padding.3');
 }
 
+.info {
+  background-color: theme('colors.blue.100');
+  color: theme('colors.blue.700');
+}
+
 .error {
   background-color: theme('colors.red.100');
   color: theme('colors.red.700');

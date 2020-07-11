@@ -92,7 +92,7 @@ const registerActor = async (
 
   logger.info('AUTH-RESOLVER: Signing actor id token');
   const actorIdToken = jwt.sign(
-    { actorId: actor.uuid },
+    { actor_id: actor.uuid },
     config.server.auth.jwt.secret
   );
 
@@ -233,7 +233,7 @@ const loginActor = async (
 
   logger.info('AUTH-RESOLVER: Signing auth tokens');
   const token = jwt.sign(
-    { actorId: actorAccount.actor_id, role: transformRoleForToken(role) },
+    { actor_id: actorAccount.actor_id, role: transformRoleForToken(role) },
     config.server.auth.jwt.secret,
     { expiresIn: config.server.auth.jwt.expiresIn }
   );
@@ -733,7 +733,7 @@ const validateAccess = async (
       );
 
       const newToken = jwt.sign(
-        { actorId: actorAccount.actor_id, role: transformRoleForToken(role) },
+        { actor_id: actorAccount.actor_id, role: transformRoleForToken(role) },
         config.server.auth.jwt.secret,
         { expiresIn: config.server.auth.jwt.expiresIn }
       );

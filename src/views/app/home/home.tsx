@@ -3,7 +3,7 @@ import { useMutation } from 'react-query';
 import { useRouter } from 'next/router';
 import Cookies from 'universal-cookie';
 import { request } from '@modules/request';
-// import Policy from 'src/components/policy';
+import { Policy } from '@components/policy';
 
 type Props = {
   id: string;
@@ -22,7 +22,6 @@ const PostLink = (props: Props) => {
 
 const Home = () => {
   const router = useRouter();
-
   const cookies = new Cookies();
   const token = cookies.get('token-payload');
 
@@ -44,9 +43,9 @@ const Home = () => {
   return (
     <div>
       <h2>Pages</h2>
-      {/* <Policy can="post:read:any">
+      <Policy can="post:read:any">
         <div>Policy</div>
-      </Policy> */}
+      </Policy>
       <ul>
         <li>
           <Link href="/app/about">

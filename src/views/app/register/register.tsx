@@ -3,7 +3,6 @@ import Link from 'next/link';
 import { useMutation } from 'react-query';
 import { useRouter } from 'next/router';
 import { useFormik } from 'formik';
-import { useServerErrors } from '@components/hooks/use-server-errors';
 import { ServerErrors } from '@components/server-error';
 import { Button, Input, PasswordStrength } from '@components/app';
 import { Google } from '@components/icons';
@@ -15,11 +14,14 @@ import styles from './register.module.scss';
 
 const Register = () => {
   const router = useRouter();
-  const [serverErrors] = useServerErrors();
+  const [serverErrors, setServerErrors] = React.useState([]);
 
   const [mutate, { isLoading }] = useMutation(
     (variables: any) => request.post('/api/v1/auth/register', variables),
     {
+      onError: (error) => {
+        return setServerErrors(error?.response?.data?.error || []);
+      },
       onSuccess: () => {
         router.push('/app/confirm-email');
       },
@@ -53,10 +55,6 @@ const Register = () => {
     }
   };
 
-  const handleGmailButton = () => {
-    router.push('/app/oauth/google');
-  };
-
   return (
     <div className={styles.grid}>
       <div className={styles.gridLeft}>
@@ -71,7 +69,7 @@ const Register = () => {
               </h1>
             </div>
             <div>
-              <Button onClick={handleGmailButton}>
+              <Button component="a" href="/app/oauth/google">
                 <div className="flex items-center justify-center">
                   <Google size={32} />
                   <span className="ml-2">Sign up with Google</span>

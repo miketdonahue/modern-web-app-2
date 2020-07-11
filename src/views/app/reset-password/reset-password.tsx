@@ -1,27 +1,28 @@
 import React from 'react';
-import { withApollo } from '@apollo-setup/with-apollo';
-import { useMutation } from '@apollo/react-hooks';
+import { useMutation } from 'react-query';
 import { useRouter } from 'next/router';
 import { useFormik } from 'formik';
+import { request } from '@modules/request';
 import { Button, Input, PasswordStrength } from '@components/app';
-import { useServerErrors } from '@components/hooks/use-server-errors';
 import { ServerErrors } from '@components/server-error';
 import { resetPasswordValidationSchema } from './validations';
-import * as mutations from './graphql/mutations.gql';
 import styles from './reset-password.module.scss';
 
 const ResetPassword = () => {
   const router = useRouter();
-  const [serverErrors, formatServerErrors] = useServerErrors();
+  const [serverErrors, setServerErrors] = React.useState([]);
 
-  const [loginActor, { loading }] = useMutation(mutations.loginActor, {
-    onCompleted: () => {
-      router.push('/app');
-    },
-    onError: (graphQLErrors: any) => {
-      return formatServerErrors(graphQLErrors.graphQLErrors);
-    },
-  });
+  const [mutate, { isLoading }] = useMutation(
+    (variables: any) => request.post('/api/v1/auth/login', variables),
+    {
+      onError: (error) => {
+        return setServerErrors(error?.response?.data?.error || []);
+      },
+      onSuccess: () => {
+        router.push('/app');
+      },
+    }
+  );
 
   const formik = useFormik({
     validateOnChange: false,
@@ -31,12 +32,8 @@ const ResetPassword = () => {
     },
     validationSchema: resetPasswordValidationSchema,
     onSubmit: (values) => {
-      loginActor({
-        variables: {
-          input: {
-            password: values.password,
-          },
-        },
+      mutate({
+        password: values.password,
       });
     },
   });
@@ -172,7 +169,7 @@ const ResetPassword = () => {
                     <ServerErrors errors={serverErrors} />
                   </div>
 
-                  <Button type="submit" variant="primary" loading={loading}>
+                  <Button type="submit" variant="primary" loading={isLoading}>
                     Reset my password
                   </Button>
                 </div>
@@ -231,4 +228,4 @@ const ResetPassword = () => {
   );
 };
 
-export default withApollo()(ResetPassword);
+export { ResetPassword };

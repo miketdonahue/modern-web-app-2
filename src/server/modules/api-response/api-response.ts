@@ -1,1 +1,1 @@
-export const resourceTypes = { ACTOR: 'actor' };
+export const resourceTypes = { ACTOR: 'actor', TOKEN: 'token' };

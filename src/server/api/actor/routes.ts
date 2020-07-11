@@ -11,6 +11,11 @@ export default {
       controller: controller.getMe,
     },
     {
+      path: '/reset-password',
+      method: 'post',
+      controller: controller.resetPassword,
+    },
+    {
       path: '/unlock-account',
       method: 'post',
       controller: controller.unlockActorAccount,

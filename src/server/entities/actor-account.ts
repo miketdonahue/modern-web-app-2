@@ -9,7 +9,7 @@ export class ActorAccount extends BaseTable {
   @Column('boolean', { default: 'false' })
   public confirmed: boolean;
 
-  @Column('varchar', { nullable: true })
+  @Column('character varying', { nullable: true })
   public confirmed_code: string | null;
 
   @Column('timestamp with time zone', { nullable: true })
@@ -18,13 +18,13 @@ export class ActorAccount extends BaseTable {
   @Column('boolean', { default: 'false' })
   public locked: boolean;
 
-  @Column('varchar', { nullable: true })
+  @Column('character varying', { nullable: true })
   public locked_code: string | null;
 
   @Column('timestamp with time zone', { nullable: true })
   public locked_expires: Date | null;
 
-  @Column('varchar', { nullable: true })
+  @Column('character varying', { nullable: true })
   public reset_password_code: string | null;
 
   @Column('timestamp with time zone', { nullable: true })
@@ -42,12 +42,12 @@ export class ActorAccount extends BaseTable {
   @Column('int', { default: '0' })
   public security_question_attempts: number;
 
-  @Column('varchar', { nullable: true })
+  @Column('character varying', { nullable: true })
   public refresh_token: string | null;
 
   @Column('timestamp with time zone', { nullable: true })
   public last_visit: Date | null;
 
-  @Column('varchar', { nullable: true })
+  @Column('character varying', { nullable: true })
   public ip: string | null;
 }

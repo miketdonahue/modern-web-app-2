@@ -84,6 +84,19 @@
   }
 }
 
+// Components
+a.link {
+  color: theme('colors.black');
+
+  &:hover {
+    text-decoration: none;
+  }
+
+  &:visited {
+    color: theme('colors.black');
+  }
+}
+
 @keyframes bounce {
   0%,
   80%,

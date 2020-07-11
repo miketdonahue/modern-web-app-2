@@ -9,6 +9,6 @@ export class SecurityQuestionAnswer extends BaseTable {
   @Column('uuid')
   public security_question_id: string;
 
-  @Column('varchar')
+  @Column('character varying')
   public answer: string;
 }

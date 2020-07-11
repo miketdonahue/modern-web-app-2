@@ -1,9 +1,0 @@
-mutation confirmActor($input: ConfirmActorInput!) {
-  actor: confirmActor(input: $input) {
-    actorId
-  }
-}
-
-mutation setMessage($input: SetMessageInput!) {
-  message: setMessage(input: $input)
-}

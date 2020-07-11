@@ -3,12 +3,12 @@ import { BaseTable } from './partials/base-table';
 
 @Entity('permission')
 export class Permission extends BaseTable {
-  @Column('varchar', { unique: true })
+  @Column('character varying', { unique: true })
   public name: string;
 
-  @Column('varchar', { unique: true })
+  @Column('character varying', { unique: true })
   public key: string;
 
-  @Column('varchar', { array: true, nullable: true })
+  @Column('character varying', { array: true, nullable: true })
   public roles: string[];
 }
