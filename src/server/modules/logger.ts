@@ -7,7 +7,7 @@ import { config } from '@config';
 let destination: any = path.join(process.cwd(), 'src/server/logs/app.log');
 
 if (process.env.NODE_ENV !== 'production') {
-  destination = pino.destination(1);
+  destination = (pino as any).destination(1);
 }
 
 /**
