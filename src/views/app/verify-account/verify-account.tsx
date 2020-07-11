@@ -1,4 +1,5 @@
 import React from 'react';
+import { AxiosError } from 'axios';
 import { useMutation } from 'react-query';
 import { useRouter } from 'next/router';
 import { request } from '@modules/request';
@@ -15,7 +16,7 @@ const VerifyAccount = () => {
   const [mutate, { isLoading }] = useMutation(
     (variables: any) => request.post('/api/v1/auth/login', variables),
     {
-      onError: (error) => {
+      onError: (error: AxiosError) => {
         return setServerErrors(error?.response?.data?.error || []);
       },
       onSuccess: () => {

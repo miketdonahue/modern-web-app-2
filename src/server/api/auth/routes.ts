@@ -33,10 +33,5 @@ export default {
       method: 'post',
       controller: controller.sendAuthEmail,
     },
-    {
-      path: '/check-access',
-      method: 'post',
-      controller: controller.checkAccess,
-    },
   ],
 };

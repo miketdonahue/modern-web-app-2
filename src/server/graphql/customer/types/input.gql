@@ -1,7 +1,0 @@
-input CreateCustomerInput {
-  actorId: String!
-}
-
-input UpdateCustomerInput {
-  actorId: String!
-}

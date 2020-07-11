@@ -12,17 +12,16 @@ import {
   ApiResponseWithData,
   ApiResponseWithError,
 } from '@server/modules/api-response';
-import { errorTypes, InternalError } from '@server/modules/errors';
+import { errorTypes } from '@server/modules/errors';
 import { Actor } from '@server/entities/actor';
 import { ActorAccount } from '@server/entities/actor-account';
 import { Role, RoleName } from '@server/entities/role';
 import { BlacklistedToken } from '@server/entities/blacklisted-token';
-import {
-  mailer,
-  WELCOME_EMAIL,
-  CONFIRM_EMAIL,
-  UNLOCK_ACCOUNT_EMAIL,
-} from '@server/modules/mailer';
+// import {
+//   WELCOME_EMAIL,
+//   CONFIRM_EMAIL,
+//   UNLOCK_ACCOUNT_EMAIL,
+// } from '@server/modules/mailer';
 import { config } from '@config';
 import { transformRoleForToken } from '@server/modules/utilities';
 
@@ -102,8 +101,8 @@ const registerActor = async (req: Request, res: Response) => {
     'AUTH-CONTROLLER: Sending emails'
   );
 
-  await mailer.message.sendMessage(actor, WELCOME_EMAIL);
-  await mailer.message.sendMessage(actor, CONFIRM_EMAIL);
+  // await mailer.message.sendMessage(actor, WELCOME_EMAIL);
+  // await mailer.message.sendMessage(actor, CONFIRM_EMAIL);
 
   const response: ApiResponseWithData = {
     data: { id: actor.uuid, type: resourceTypes.ACTOR },
@@ -347,17 +346,17 @@ const sendAuthEmail = async (req: Request, res: Response) => {
     [req.body.email]
   );
 
-  const emailType = {
-    CONFIRM_EMAIL,
-    UNLOCK_ACCOUNT_EMAIL,
-  };
+  // const emailType = {
+  //   CONFIRM_EMAIL,
+  //   UNLOCK_ACCOUNT_EMAIL,
+  // };
 
   logger.info(
     { type: req.body.type },
     'AUTH-CONTROLLER: Sending email to actor'
   );
 
-  await mailer.message.sendMessage(actor, (emailType as any)[req.body.type]);
+  // await mailer.message.sendMessage(actor, (emailType as any)[req.body.type]);
 
   const response: ApiResponseWithData = {
     data: {
@@ -388,106 +387,7 @@ const logoutActor = async (req: Request, res: Response) => {
   return res.end();
 };
 
-/**
- * Checks a actor's access
- */
-const checkAccess = async (req: Request, res: Response) => {
-  // Skip authentication if auth is turned off
-  if (!config.server.auth.enabled) {
-    return true;
-  }
-
-  const db = getManager();
-  const decoded: any = jwt.decode(context.actor.token);
-  const blacklistedToken = await db.findOne(BlacklistedToken, {
-    token: context.actor.token,
-  });
-
-  if (blacklistedToken) {
-    logger.info('AUTH-CONTROLLER: Received blacklisted auth token');
-    return { actorId: context.actor.actorId, token: null };
-  }
-
-  try {
-    jwt.verify(context.actor.token, config.server.auth.jwt.secret);
-  } catch (err) {
-    if (err.name === 'TokenExpiredError') {
-      logger.info('AUTH-CONTROLLER: Auth token has expired');
-
-      const [actorAccount] = await db.query(
-        `
-        SELECT
-          actor_account.*,
-          actor.role_id as role_id
-        FROM
-          actor_account
-          INNER JOIN actor ON actor_account.actor_id = actor.uuid
-        WHERE
-          actor.uuid = $1
-      `,
-        [decoded.actorId]
-      );
-
-      if (!actorAccount) {
-        throw new InternalError('ACTOR_NOT_FOUND');
-      }
-
-      const role = await db.findOne(Role, { uuid: actorAccount.role_id });
-
-      try {
-        await jwt.verify(
-          actorAccount.refresh_token,
-          config.server.auth.jwt.refreshSecret
-        );
-      } catch (error) {
-        return { token: null };
-      }
-
-      logger.info(
-        { actorId: actorAccount.actor_id },
-        'AUTH-CONTROLLER: Found valid refresh token'
-      );
-
-      const newToken = jwt.sign(
-        { actor_id: actorAccount.actor_id, role: transformRoleForToken(role) },
-        config.server.auth.jwt.secret,
-        { expiresIn: config.server.auth.jwt.expiresIn }
-      );
-
-      logger.info(
-        { actorId: actorAccount.actor_id },
-        'AUTH-CONTROLLER: Issuing new auth tokens'
-      );
-
-      const [
-        tokenHeader = '',
-        tokenBody = '',
-        tokenSignature = '',
-      ] = newToken.split('.');
-
-      // TODO: change to `secure: true` when HTTPS
-      res.cookie('token-payload', `${tokenHeader}.${tokenBody}`, {
-        path: '/',
-        secure: false,
-      });
-
-      res.cookie('token-signature', tokenSignature, {
-        path: '/',
-        httpOnly: true,
-        secure: false,
-      });
-
-      return { token: newToken };
-    }
-
-    return { token: null };
-  }
-
-  return { token: context.actor.token };
-};
-
 export {
-  checkAccess,
   registerActor,
   confirmActor,
   loginActor,

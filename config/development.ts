@@ -10,13 +10,6 @@ export default merge(
         level: 'debug',
         pretty: true,
       },
-      graphql: {
-        playground: {
-          enabled: true,
-        },
-        debug: true,
-        logger: true,
-      },
       auth: {
         enabled: true,
         confirmable: true,
@@ -51,11 +44,7 @@ export default merge(
         connectSrc: ["'self'", 'devtools.apollodata.com'],
       },
       dirs: {
-        types: ['src/server/graphql/**/types/*.gql'],
-        resolvers: ['src/server/graphql/**/resolvers/*.ts'],
         routes: ['src/views/**/routes.ts', 'src/server/api/**/*.ts'],
-        access: ['src/server/graphql/**/access.ts'],
-        validations: ['src/server/graphql/**/validations.ts'],
       },
     },
   },

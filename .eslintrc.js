@@ -14,6 +14,7 @@ module.exports = {
   plugins: ['@typescript-eslint', 'prettier'],
   rules: {
     'prettier/prettier': 'error',
+    'react/require-default-props': 0, // Not useful with TypeScript
     'import/no-extraneous-dependencies': ['error', { devDependencies: true }],
     'import/prefer-default-export': 0,
     'lines-between-class-members': [

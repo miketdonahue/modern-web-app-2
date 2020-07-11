@@ -1,7 +1,4 @@
-import { NextPageContext } from 'next';
 import Link from 'next/link';
-import { withApollo } from '@apollo-setup/with-apollo';
-import { checkAccess } from '@modules/permissions/check-access';
 
 interface Props {
   post: {
@@ -26,9 +23,7 @@ const Post = ({ post }: Props) => {
   );
 };
 
-Post.getInitialProps = async (context: NextPageContext) => {
-  await checkAccess(context);
-
+Post.getInitialProps = async () => {
   // From database
   const posts = [
     { id: 'web-app-security', title: 'Web application security' },
@@ -41,4 +36,4 @@ Post.getInitialProps = async (context: NextPageContext) => {
   return { post };
 };
 
-export default withApollo()(Post);
+export default Post;

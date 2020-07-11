@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useMutation } from 'react-query';
+import { AxiosError } from 'axios';
 import { useRouter } from 'next/router';
 import { useFormik } from 'formik';
 import { request } from '@modules/request';
@@ -16,7 +17,7 @@ const ConfirmEmail = () => {
   const [mutate, { isLoading }] = useMutation(
     (variables: any) => request.post('/api/v1/auth/confirm', variables),
     {
-      onError: (error) => {
+      onError: (error: AxiosError) => {
         return setServerErrors(error?.response?.data?.error || []);
       },
       onSuccess: () => {

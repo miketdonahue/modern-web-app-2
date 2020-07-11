@@ -10,7 +10,7 @@ import { ActorAccount } from '@server/entities/actor-account';
 import { Role, RoleName } from '@server/entities/role';
 import { Oauth, ProviderName } from '@server/entities/oauth';
 import { config } from '@config';
-import { transformRoleForToken } from '../../../../graphql/auth/utilities';
+import { transformRoleForToken } from '@server/modules/utilities';
 
 const isDev = process.env.NODE_ENV !== 'production';
 const dbConnectionName = isDev ? 'development' : 'production';
@@ -80,9 +80,12 @@ export const verify = {
     );
 
     const db = getConnection(dbConnectionName);
-    const { code, state } = req.query;
-    const verifiedState: any = jwt.verify(state, config.server.auth.jwt.secret);
-    const { tokens } = await oauth2Client.getToken(code);
+    const { code } = req.query;
+    const verifiedState: any = jwt.verify(
+      req.query.state as string,
+      config.server.auth.jwt.secret
+    );
+    const { tokens } = await oauth2Client.getToken(code as string);
     const decoded: any = jwt.decode(tokens.id_token as string);
     let actor: any = await db.manager.findOne(Actor, { email: decoded.email });
 

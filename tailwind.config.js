@@ -71,4 +71,5 @@ module.exports = {
     textColor: ['responsive', 'hover', 'focus', 'visited'],
   },
   plugins: [],
+  purge: ['./src/components/**/*.tsx', './src/views/**/*.tsx'],
 };

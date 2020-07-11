@@ -1,3 +1,0 @@
-input SetActorIdInput {
-  actorId: string!
-}

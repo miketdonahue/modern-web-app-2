@@ -4,16 +4,6 @@ declare namespace NodeJS {
   }
 }
 
-declare module '*.gql' {
-  import { DocumentNode } from 'graphql';
-
-  const value: {
-    [key: string]: DocumentNode;
-  };
-
-  export = value;
-}
-
 declare module '*.svg';
 declare module '*.png';
 declare module '*.jpg';

@@ -1,22 +1,11 @@
 import 'reflect-metadata';
 import express from 'express';
 import nextServer from 'next';
-import { ApolloServer, makeExecutableSchema } from 'apollo-server-express';
-import { applyMiddleware } from 'graphql-middleware';
-import { createConnection, getConnection } from 'typeorm';
-import { normalizeError } from '@server/modules/errors';
+import { createConnection } from 'typeorm';
 import { HealthCheck } from '@server/modules/health-check';
 import { logger } from '@server/modules/logger';
-import { fileLoader } from '@utils/file-loaders/node';
-import { mergeResolvers } from '@utils/merge-resolvers/server';
-import { mailer } from '@server/modules/mailer';
-import {
-  access,
-  authenticate,
-  validations,
-  requestLogger,
-  resolverLogger,
-} from '@server/middleware/app-middleware';
+import { fileLoader } from '@utils/file-loader';
+import { requestLogger } from '@server/middleware/app-middleware';
 import { config } from '@config';
 import { coreMiddleware } from '@server/middleware/core-middleware';
 import { registerRoutes } from './plugins/register-routes';
@@ -29,29 +18,7 @@ const nextApp = nextServer({ dev: isDev });
 const handle = nextApp.getRequestHandler();
 
 // Register types and resolvers
-const typesArray = fileLoader('typeDefs');
-const resolvers = mergeResolvers();
 const routes = fileLoader('routes', { flatten: true });
-
-// Set up root types
-const rootTypes = `
-  type Query { root: String }
-  type Mutation { root: String }
-  type Subscription { root: String }
-`;
-
-// GraphQL schemas, middleware, and server setup
-const graphqlSchema = makeExecutableSchema({
-  typeDefs: [rootTypes, ...typesArray],
-  resolvers,
-});
-
-const schema = applyMiddleware(
-  graphqlSchema,
-  resolverLogger,
-  access,
-  validations
-);
 
 nextApp
   .prepare()
@@ -61,34 +28,6 @@ nextApp
 
     // Create database connection
     await createConnection(dbConnectionName);
-    const db = getConnection(dbConnectionName);
-
-    const apollo = new ApolloServer({
-      schema,
-      context: async ({ req, res }) => {
-        return {
-          req,
-          res,
-          actor: authenticate(req.headers),
-          db: db.manager,
-          mailer,
-        };
-      },
-      playground: config.server.graphql.playground.enabled,
-      debug: config.server.graphql.debug,
-      formatError: (error) => {
-        const err = error;
-        const { code, level } = normalizeError(err);
-
-        // Ensures a more descriptive "code" is set for every error
-        if (err.extensions) {
-          err.extensions.code = code;
-        }
-
-        logger[level]({ err }, `${err.name}: ${err.message}`);
-        return err;
-      },
-    });
 
     // Trusting proxy must be set for load balancing
     expressApp.set('trust proxy', true);
@@ -96,18 +35,6 @@ nextApp
     // Register plugins
     await registerMiddleware(expressApp, [...coreMiddleware, requestLogger]);
     await registerRoutes(expressApp, nextApp, routes);
-
-    // Apply Express middleware to GraphQL server
-    apollo.applyMiddleware({
-      app: expressApp,
-      path: config.server.graphql.path,
-      cors: {
-        origin: 'same-origin',
-        credentials: true,
-        optionsSuccessStatus: 200,
-      },
-      bodyParserConfig: true,
-    });
 
     // Health & graceful shutdown
     expressApp.get('/health/liveness', (req, res) => res.status(200).end());

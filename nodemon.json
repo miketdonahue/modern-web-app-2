@@ -8,6 +8,6 @@
     "config/",
     "tailwind.config.js"
   ],
-  "ext": "ts gql js",
+  "ext": "ts js",
   "exec": "babel-node --extensions '.ts,.tsx' src/server/index.ts"
 }

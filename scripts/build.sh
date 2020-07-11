@@ -6,10 +6,10 @@ rm -rf .build
 # Run Next.js build
 next build
 
-# Transpile views folder and copy GraphQL files
+# Transpile views folder and copy files
 babel src/views --out-dir .build/src/views --presets @babel/preset-typescript --extensions '.ts' --copy-files
 
-# Transpile server folder and copy GraphQL files
+# Transpile server folder and copy files
 babel src/server --out-dir .build/src/server --presets @babel/preset-typescript --extensions '.ts' --copy-files
 
 # Transpile config folder

@@ -19,15 +19,6 @@ export default {
       },
       csrf: { cookie: { key: '_ds_csrf', sameSite: true } },
     },
-    graphql: {
-      path: '/graphql',
-      playground: {
-        enabled: false,
-        endpoint: '/playground',
-      },
-      debug: false,
-      logger: false,
-    },
     auth: {
       enabled: true,
       confirmable: true,
@@ -63,11 +54,7 @@ export default {
       defaultSrc: ["'self'"],
     },
     dirs: {
-      types: ['.build/src/server/graphql/**/types/*.gql'],
-      resolvers: ['.build/src/server/graphql/**/resolvers/*.js'],
       routes: ['.build/src/views/**/routes.js'],
-      access: ['.build/src/server/graphql/**/access.js'],
-      validations: ['.build/src/server/graphql/**/validations.js'],
     },
   },
 };

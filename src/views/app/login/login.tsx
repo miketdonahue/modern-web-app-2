@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { useMutation } from 'react-query';
+import { AxiosError } from 'axios';
 import { useRouter } from 'next/router';
 import { useFormik } from 'formik';
 import { request } from '@modules/request';
@@ -19,7 +20,7 @@ const Login = () => {
   const [mutate, { isLoading }] = useMutation(
     (variables: any) => request.post('/api/v1/auth/login', variables),
     {
-      onError: (error) => {
+      onError: (error: AxiosError) => {
         return setServerErrors(error?.response?.data?.error || []);
       },
       onSuccess: () => {

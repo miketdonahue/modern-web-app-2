@@ -1,4 +1,0 @@
-input SetMessageInput {
-  key: string!
-  message: string!
-}

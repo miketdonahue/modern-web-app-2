@@ -15,7 +15,7 @@ if (process.env.NODE_ENV !== 'production') {
  */
 const defaultLogger = pino(
   {
-    name: 'graphql-server',
+    name: 'web-server',
     level: config.server.logger.level,
     enabled: config.server.logger.enabled,
     redact: {
@@ -46,7 +46,6 @@ const logger = defaultLogger.child({
           delete headers.authorization;
           delete headers.cookie;
           delete headers['csrf-token'];
-          delete headers['apollographql-client-name'];
         }
 
         return headers;
