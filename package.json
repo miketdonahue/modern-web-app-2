@@ -170,7 +170,8 @@
   "lint-staged": {
     "*.{ts,tsx}": [
       "yarn prettier:fix",
-      "yarn lint:ts --fix"
+      "yarn lint:ts --fix",
+      "yarn ts"
     ],
     "*.css": [
       "yarn lint:css --fix"
