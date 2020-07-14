@@ -1,6 +1,2 @@
-export {
-  WELCOME_EMAIL,
-  CONFIRM_EMAIL,
-  RESET_PASSWORD_EMAIL,
-  UNLOCK_ACCOUNT_EMAIL,
-} from './emails';
+export * as mailer from './mailer';
+export * as emails from './emails';

@@ -2,7 +2,7 @@
  * New user welcome email options
  */
 export const WELCOME_EMAIL = {
-  from: 'no-reply@mail.com',
+  from: 'no-reply@local-mdonahue.com',
   subject: 'Welcome!',
   template: 'welcome',
   substitutionData: (actor: any) => ({
@@ -15,7 +15,7 @@ export const WELCOME_EMAIL = {
  * Confirmation email options
  */
 export const CONFIRM_EMAIL = {
-  from: 'no-reply@mail.com',
+  from: 'no-reply@local-mdonahue.com',
   subject: 'Please confirm your email address',
   template: 'confirm-email',
   substitutionData: (actor: any) => ({
@@ -28,7 +28,7 @@ export const CONFIRM_EMAIL = {
  * Reset password email options
  */
 export const RESET_PASSWORD_EMAIL = {
-  from: 'no-reply@mail.com',
+  from: 'no-reply@local-mdonahue.com',
   subject: 'Reset your password',
   template: 'reset-password',
   substitutionData: (actor: any) => ({
@@ -42,7 +42,7 @@ export const RESET_PASSWORD_EMAIL = {
  * Account locked email options
  */
 export const ACCOUNT_LOCKED_EMAIL = {
-  from: 'no-reply@mail.com',
+  from: 'no-reply@local-mdonahue.com',
   subject: 'Your account has been locked',
   template: 'account-locked',
   substitutionData: (actor: any) => ({
@@ -55,7 +55,7 @@ export const ACCOUNT_LOCKED_EMAIL = {
  * Unlock account email options
  */
 export const UNLOCK_ACCOUNT_EMAIL = {
-  from: 'no-reply@mail.com',
+  from: 'no-reply@local-mdonahue.com',
   subject: 'Unlock your account',
   template: 'unlock-account',
   substitutionData: (actor: any) => ({

@@ -18,7 +18,7 @@ export default merge(
         },
       },
       mailer: {
-        sendEmails: false,
+        sendEmails: true,
       },
       contentSecurityPolicy: {
         defaultSrc: ["'self'"],

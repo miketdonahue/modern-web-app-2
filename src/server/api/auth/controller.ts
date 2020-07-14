@@ -17,11 +17,13 @@ import { Actor } from '@server/entities/actor';
 import { ActorAccount } from '@server/entities/actor-account';
 import { Role, RoleName } from '@server/entities/role';
 import { BlacklistedToken } from '@server/entities/blacklisted-token';
-// import {
-//   WELCOME_EMAIL,
-//   CONFIRM_EMAIL,
-//   UNLOCK_ACCOUNT_EMAIL,
-// } from '@server/modules/mailer';
+import {
+  mailer,
+  emails,
+  // WELCOME_EMAIL,
+  // CONFIRM_EMAIL,
+  // UNLOCK_ACCOUNT_EMAIL,
+} from '@server/modules/mailer';
 import { config } from '@config';
 import { transformRoleForToken } from '@server/modules/utilities';
 
@@ -101,7 +103,7 @@ const registerActor = async (req: Request, res: Response) => {
     'AUTH-CONTROLLER: Sending emails'
   );
 
-  // await mailer.message.sendMessage(actor, WELCOME_EMAIL);
+  await mailer.sendEmail(actor, emails.WELCOME_EMAIL);
   // await mailer.message.sendMessage(actor, CONFIRM_EMAIL);
 
   const response: ApiResponseWithData = {

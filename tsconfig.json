@@ -32,6 +32,8 @@
   },
   "exclude": ["node_modules", "src/server/**/*.ts"],
   "include": [
+    "scripts",
+    "templates",
     "next-env.d.ts",
     "./typings/global.d.ts",
     "./*.js",

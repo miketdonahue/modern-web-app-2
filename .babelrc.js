@@ -1,6 +1,7 @@
 module.exports = {
   presets: ['next/babel'],
   plugins: [
+    '@babel/plugin-proposal-export-namespace-from',
     '@babel/plugin-proposal-optional-chaining',
     [
       'module-resolver',
