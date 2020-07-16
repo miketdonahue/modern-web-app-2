@@ -4,10 +4,9 @@
 export const WELCOME_EMAIL = {
   from: 'no-reply@local-mdonahue.com',
   subject: 'Welcome!',
-  template: 'welcome',
+  templateId: 'd-c44af4952a6240d49ca9db8bfb0ab72d',
   substitutionData: (actor: any) => ({
     firstName: actor.first_name,
-    signInUrl: 'http://localhost:8080/app/login',
   }),
 };
 
@@ -16,11 +15,11 @@ export const WELCOME_EMAIL = {
  */
 export const CONFIRM_EMAIL = {
   from: 'no-reply@local-mdonahue.com',
-  subject: 'Please confirm your email address',
-  template: 'confirm-email',
+  subject: 'Confirm your email address',
+  templateId: 'd-3c4980342dad426bb40997dffc0d47a7',
   substitutionData: (actor: any) => ({
     firstName: actor.first_name,
-    confirmedCode: actor.confirmed_code,
+    code: actor.confirmed_code,
   }),
 };
 
@@ -30,11 +29,10 @@ export const CONFIRM_EMAIL = {
 export const RESET_PASSWORD_EMAIL = {
   from: 'no-reply@local-mdonahue.com',
   subject: 'Reset your password',
-  template: 'reset-password',
+  templateId: 'd-ae0dedc4f95443b5bf2483bd9d3cc8c7',
   substitutionData: (actor: any) => ({
     firstName: actor.first_name,
-    resetPasswordCode: actor.reset_password_code,
-    resetPasswordUrl: 'http://localhost:8080/app/reset-password',
+    code: actor.reset_password_code,
   }),
 };
 
@@ -47,7 +45,6 @@ export const ACCOUNT_LOCKED_EMAIL = {
   template: 'account-locked',
   substitutionData: (actor: any) => ({
     firstName: actor.first_name,
-    unlockAccountUrl: 'http://localhost:8080/app/unlock-account',
   }),
 };
 
@@ -60,6 +57,6 @@ export const UNLOCK_ACCOUNT_EMAIL = {
   template: 'unlock-account',
   substitutionData: (actor: any) => ({
     firstName: actor.first_name,
-    lockedCode: actor.locked_code,
+    code: actor.locked_code,
   }),
 };
