@@ -118,8 +118,8 @@ const registerActor = async (req: Request, res: Response) => {
     'AUTH-CONTROLLER: Sending emails'
   );
 
-  await sendEmail(actor, emails.CONFIRM_EMAIL);
   await sendEmail(actor, emails.WELCOME_EMAIL);
+  await sendEmail(actor, emails.CONFIRM_EMAIL);
 
   const response: ApiResponseWithData = {
     data: { id: actor.uuid, type: resourceTypes.ACTOR },
@@ -196,7 +196,14 @@ const confirmCode = async (req: Request, res: Response) => {
       'AUTH-CONTROLLER: Resend confirmation code email due to expired code'
     );
 
-    await sendEmail(actor, codeType[req.body.type].email);
+    const updatedActorAccount = await db.findOne(ActorAccount, {
+      uuid: actorAccount.uuid,
+    });
+
+    await sendEmail(
+      { ...actor, ...updatedActorAccount },
+      codeType[req.body.type].email
+    );
 
     const errResponse: ApiResponseWithError = {
       error: [
@@ -277,7 +284,7 @@ const loginActor = async (req: Request, res: Response) => {
   };
 
   if (!actor || !actorAccount) {
-    logger.error('AUTH-CONTROLLER: The actor account was not found');
+    logger.warn('AUTH-CONTROLLER: The actor account was not found');
     return res.status(400).json(errorResponse);
   }
 
@@ -310,7 +317,11 @@ const loginActor = async (req: Request, res: Response) => {
       'AUTH-CONTROLLER: Resend confirmation code email due to account not being confirmed'
     );
 
-    await sendEmail(actor, emails.CONFIRM_EMAIL);
+    const updatedActorAccount = await db.findOne(ActorAccount, {
+      actor_id: actor.uuid,
+    });
+
+    await sendEmail({ ...actor, ...updatedActorAccount }, emails.CONFIRM_EMAIL);
 
     const errResponse: ApiResponseWithError = {
       error: [
@@ -322,7 +333,7 @@ const loginActor = async (req: Request, res: Response) => {
       ],
     };
 
-    logger.error('AUTH-CONTROLLER: The actor account is not confirmed');
+    logger.warn('AUTH-CONTROLLER: The actor account is not confirmed');
     return res.status(403).json(errResponse);
   }
 
@@ -367,7 +378,7 @@ const loginActor = async (req: Request, res: Response) => {
       ],
     };
 
-    logger.error('AUTH-CONTROLLER: The actor account is locked');
+    logger.warn('AUTH-CONTROLLER: The actor account is locked');
     return res.status(403).json(errResponse);
   }
 
@@ -506,7 +517,14 @@ const resetPassword = async (req: Request, res: Response) => {
       'AUTH-CONTROLLER: Resend password security code email due to expired code'
     );
 
-    await sendEmail(actor, emails.RESET_PASSWORD_EMAIL);
+    const updatedActorAccount = await db.findOne(ActorAccount, {
+      actor_id: actor.uuid,
+    });
+
+    await sendEmail(
+      { ...actor, ...updatedActorAccount },
+      emails.RESET_PASSWORD_EMAIL
+    );
 
     const errResponse: ApiResponseWithError = {
       error: [

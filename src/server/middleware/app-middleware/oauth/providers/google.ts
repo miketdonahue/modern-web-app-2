@@ -108,12 +108,15 @@ export const verify = {
         'OPEN-AUTH-MIDDLEWARE: Creating user'
       );
 
-      const insertedActor = await db.manager.insert(Actor, {
+      await db.manager.insert(Actor, {
         role_id: role.uuid,
         email: decoded.email,
       });
 
-      const [actorData] = insertedActor.raw;
+      const actorData = await db.manager.findOne(Actor, {
+        email: decoded.email,
+      });
+
       actor = actorData;
 
       await db.manager.insert(ActorAccount, {
@@ -172,6 +175,7 @@ export const verify = {
       uuid: actor.uuid,
       role: transformRoleForToken(role),
     };
+
     return next();
   },
 };
@@ -241,6 +245,9 @@ export const authenticate = async (
     httpOnly: true,
     secure: false,
   });
+
+  // Remove 'actor' cookie
+  res.cookie('actor', '', { expires: new Date(0) });
 
   return res.redirect(302, oauthConfig.successRedirect);
 };
