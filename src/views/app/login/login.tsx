@@ -5,6 +5,7 @@ import { AxiosError } from 'axios';
 import { useRouter } from 'next/router';
 import { useFormik } from 'formik';
 import { request } from '@modules/request';
+import { Error } from '@server/modules/api-response';
 import { ServerErrors } from '@components/server-error';
 import { Button, Checkbox, Input, Tooltip } from '@components/app';
 import appLogo from '@public/images/logo-sm.svg';
@@ -14,14 +15,20 @@ import styles from './login.module.scss';
 
 const Login = () => {
   const router = useRouter();
-  const [serverErrors, setServerErrors] = useState([]);
+  const [serverErrors, setServerErrors] = useState<Error[]>([]);
   const [rememberMe, setRememberMe] = useState(true);
 
   const [mutate, { isLoading }] = useMutation(
     (variables: any) => request.post('/api/v1/auth/login', variables),
     {
       onError: (error: AxiosError) => {
-        return setServerErrors(error?.response?.data?.error || []);
+        return error?.response?.data?.error.map((e: Error) => {
+          if (e.code === 'ACCOUNT_NOT_CONFIRMED') {
+            router.push('/app/security-code?type=confirm-email');
+          } else {
+            setServerErrors([...serverErrors, e]);
+          }
+        });
       },
       onSuccess: () => {
         router.push('/app');
@@ -49,7 +56,7 @@ const Login = () => {
     setRememberMe(event.target.checked);
   };
 
-  const handleChange = (event: any) => {
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name } = event.target;
 
     formik.handleChange(event);

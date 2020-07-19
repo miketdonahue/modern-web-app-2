@@ -1,42 +1,55 @@
 import React, { useState } from 'react';
+import { v4 as uuid } from 'uuid';
 import { useMutation } from 'react-query';
 import { AxiosError } from 'axios';
 import { useRouter } from 'next/router';
 import { useFormik } from 'formik';
 import { request } from '@modules/request';
+import { Error } from '@server/modules/api-response';
 import { ServerErrors } from '@components/server-error';
-import { AlertError } from '@components/icons';
+import { AlertError, AlertInfo } from '@components/icons';
 import { Input, Spinner, Alert } from '@components/app';
-import { confirmEmailValidationSchema } from './validations';
-import styles from './confirm-email.module.scss';
+import { securityCodeValidationSchema } from './validations';
+import styles from './security-code.module.scss';
 
-const ConfirmEmail = () => {
+const SecurityCode = () => {
   const router = useRouter();
-  const [serverErrors, setServerErrors] = useState([]);
-
-  const [mutate, { isLoading }] = useMutation(
-    (variables: any) => request.post('/api/v1/auth/confirm', variables),
-    {
-      onError: (error: AxiosError) => {
-        return setServerErrors(error?.response?.data?.error || []);
-      },
-      onSuccess: () => {
-        router.push('/app');
-      },
-    }
-  );
+  const [infoAlerts, setInfoAlerts] = useState<string[]>([]);
+  const [serverErrors, setServerErrors] = useState<Error[]>([]);
 
   const formik = useFormik({
     validateOnChange: false,
     initialValues: {
       verificationCode: '',
     },
-    validationSchema: confirmEmailValidationSchema,
+    validationSchema: securityCodeValidationSchema,
     onSubmit: () => {},
   });
 
+  const [mutate, { isLoading }] = useMutation(
+    (variables: any) => request.post('/api/v1/auth/security-code', variables),
+    {
+      onError: (error: AxiosError) => {
+        return error?.response?.data?.error.map((e: Error) => {
+          if (e.code === 'CODE_EXPIRED') {
+            formik.setFieldValue('verificationCode', '');
+            setInfoAlerts([...infoAlerts, e.detail || '']);
+          } else {
+            setServerErrors([...serverErrors, e]);
+          }
+        });
+      },
+      onSuccess: () => {
+        router.push('/app/login');
+      },
+    }
+  );
+
   const handleVerificationChange = async (value: string) => {
     formik.setFieldValue('verificationCode', value);
+
+    setInfoAlerts([]);
+    setServerErrors([]);
 
     if (formik.errors.verificationCode) {
       formik.setFieldError('verificationCode', '');
@@ -47,15 +60,27 @@ const ConfirmEmail = () => {
     /* Intentional timeout to ensure loading state shows for at least 1 second */
     setTimeout(() => {
       mutate({
-        code: Number(value),
+        type: router.query.type,
+        code: value,
       });
     }, 1000);
+  };
+
+  const getDescriptionText = (type: string) => {
+    switch (type) {
+      case 'confirm-email':
+        return 'confirm your email';
+      default:
+        break;
+    }
+
+    return '';
   };
 
   return (
     <div className={styles.grid}>
       <div className={styles.gridLeft}>
-        <div className={styles.confirmEmailGrid}>
+        <div className={styles.securityCodeGrid}>
           <div className="py-6">
             <svg
               width="12rem"
@@ -65,38 +90,27 @@ const ConfirmEmail = () => {
               xmlns="http://www.w3.org/2000/svg"
             >
               <path
-                d="m90 180c49.706 0 90-40.294 90-90 0-49.706-40.294-90-90-90-49.706 0-90 40.294-90 90 0 49.706 40.294 90 90 90z"
+                d="M90 180C139.706 180 180 139.706 180 90C180 40.2944 139.706 0 90 0C40.2944 0 0 40.2944 0 90C0 139.706 40.2944 180 90 180Z"
                 fill="#EDF2F7"
               />
               <path
-                d="m157.6 57.559-62.471-45.318c-2.2637-1.6543-5.3546-1.6543-7.6618 0l-62.383 45.318 66.258 42.184 66.258-42.184z"
-                fill="#ECB85E"
+                d="M90 20C51.4005 20 20 51.4005 20 90C20 128.6 51.4005 160 90 160C128.6 160 160 128.6 160 90C160 51.4005 128.6 20 90 20Z"
+                fill="#F6E080"
               />
               <path
-                d="m132.14 57.559h-81.582v70.742h81.582v-70.742z"
-                fill="#fff"
-              />
-              <path
-                d="m157.56 141.88h0.044v-84.324l-66.258 42.184 66.214 42.14z"
-                fill="#F3BF64"
-              />
-              <path
-                d="m25.087 57.559h-0.0871v84.324h0.1306l66.214-42.14-66.258-42.184z"
-                fill="#F3BF64"
-              />
-              <path
-                d="m91.345 99.743-66.214 42.14h132.43l-66.214-42.14z"
+                d="M129.916 71.925L83.7214 118.127C82.3355 119.513 80.5163 120.211 78.697 120.211C76.8778 120.211 75.0586 119.513 73.6727 118.127L50.5759 95.0259C47.7963 92.2472 47.7963 87.7543 50.5759 84.9755C53.3542 82.1954 57.845 82.1954 60.6245 84.9755L78.697 103.051L119.868 61.8746C122.646 59.0945 127.137 59.0945 129.916 61.8746C132.695 64.6534 132.695 69.145 129.916 71.925V71.925Z"
                 fill="#ECB85E"
               />
             </svg>
 
             <div className="text-center my-8">
               <h1 className="text-2xl 768:text-3xl font-bold">
-                Confirm your email
+                Enter security code
               </h1>
               <div className="mt-1">
-                We sent an 8-digit code to your email address. Please enter the
-                code below.
+                We sent an 8-digit code to your email address to{' '}
+                {getDescriptionText(router.query.type as string)}. Please enter
+                the code below.
               </div>
             </div>
 
@@ -104,7 +118,7 @@ const ConfirmEmail = () => {
               <form onSubmit={formik.handleSubmit} noValidate>
                 <div className="mb-2">
                   <label htmlFor="password" className="text-sm 768:text-base">
-                    <span>Verification code</span>
+                    <span>Security code</span>
                     {formik.errors.verificationCode &&
                     formik.touched.verificationCode ? (
                       <span className="text-red-600 mt-1">
@@ -119,6 +133,17 @@ const ConfirmEmail = () => {
                         numOfFields={8}
                         onInputChange={handleVerificationChange}
                         onComplete={handleVerificationComplete}
+                        values={() => {
+                          const codeValues = Array.from(
+                            formik.values.verificationCode
+                          );
+
+                          const remainingValues = 8 - codeValues.length;
+
+                          return codeValues.concat(
+                            new Array(remainingValues).fill('')
+                          );
+                        }}
                         disabled={isLoading}
                         error={
                           !!(
@@ -132,13 +157,28 @@ const ConfirmEmail = () => {
                 </div>
 
                 <div className="text-center">
-                  <a href="#">Resend code</a>
+                  <a href={`/app/send-code?type=${router.query.type}`}>
+                    Resend code
+                  </a>
                 </div>
 
                 <div className="mt-8">
                   <div className="flex justify-center">
                     <Spinner size={3} active={isLoading} />
                   </div>
+
+                  {infoAlerts.length > 0 && (
+                    <Alert variant="info">
+                      <div className="mr-3">
+                        <AlertInfo size={18} />
+                      </div>
+                      <Alert.Content>
+                        {infoAlerts.map((message: string) => {
+                          return <span key={uuid()}>{message}</span>;
+                        })}
+                      </Alert.Content>
+                    </Alert>
+                  )}
 
                   {serverErrors.length > 0 && (
                     <Alert variant="error">
@@ -207,4 +247,4 @@ const ConfirmEmail = () => {
   );
 };
 
-export { ConfirmEmail };
+export { SecurityCode };
