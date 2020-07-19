@@ -5,8 +5,8 @@ import { AxiosError } from 'axios';
 import { useRouter } from 'next/router';
 import { useFormik } from 'formik';
 import { ServerErrors } from '@components/server-error';
-import { Button, Input, PasswordStrength } from '@components/app';
-import { Google } from '@components/icons';
+import { Button, Input, PasswordStrength, Alert } from '@components/app';
+import { Google, AlertError } from '@components/icons';
 import { request } from '@modules/request';
 import appLogo from '@public/images/logo-sm.svg';
 import registerBg from '@public/images/register-bg.jpg';
@@ -175,9 +175,16 @@ const Register = () => {
                 </div>
 
                 <div className="mt-8">
-                  <div className="text-sm 768:text-base text-red-600 mb-2">
-                    <ServerErrors errors={serverErrors} />
-                  </div>
+                  {serverErrors.length > 0 && (
+                    <Alert variant="error" className="mb-4">
+                      <div className="mr-3">
+                        <AlertError size={18} />
+                      </div>
+                      <Alert.Content>
+                        <ServerErrors errors={serverErrors} />
+                      </Alert.Content>
+                    </Alert>
+                  )}
 
                   <Button type="submit" variant="primary" loading={isLoading}>
                     Sign up

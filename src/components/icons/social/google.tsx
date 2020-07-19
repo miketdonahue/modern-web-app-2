@@ -1,5 +1,5 @@
 import React from 'react';
-import { Icon } from '../typings';
+import { Icon } from '../../typings';
 
 const Google = ({ color, size = 24, ...restOfProps }: Icon) => {
   return (

@@ -20,7 +20,7 @@ const SecurityCode = () => {
   const formik = useFormik({
     validateOnChange: false,
     initialValues: {
-      verificationCode: '',
+      code: '',
     },
     validationSchema: securityCodeValidationSchema,
     onSubmit: () => {},
@@ -32,7 +32,7 @@ const SecurityCode = () => {
       onError: (error: AxiosError) => {
         return error?.response?.data?.error.map((e: Error) => {
           if (e.code === 'CODE_EXPIRED') {
-            formik.setFieldValue('verificationCode', '');
+            formik.setFieldValue('code', '');
             setInfoAlerts([...infoAlerts, e.detail || '']);
           } else {
             setServerErrors([...serverErrors, e]);
@@ -46,13 +46,13 @@ const SecurityCode = () => {
   );
 
   const handleVerificationChange = async (value: string) => {
-    formik.setFieldValue('verificationCode', value);
+    formik.setFieldValue('code', value);
 
     setInfoAlerts([]);
     setServerErrors([]);
 
-    if (formik.errors.verificationCode) {
-      formik.setFieldError('verificationCode', '');
+    if (formik.errors.code) {
+      formik.setFieldError('code', '');
     }
   };
 
@@ -119,24 +119,21 @@ const SecurityCode = () => {
                 <div className="mb-2">
                   <label htmlFor="password" className="text-sm 768:text-base">
                     <span>Security code</span>
-                    {formik.errors.verificationCode &&
-                    formik.touched.verificationCode ? (
+                    {formik.errors.code && formik.touched.code ? (
                       <span className="text-red-600 mt-1">
                         {' '}
-                        {formik.errors.verificationCode}
+                        {formik.errors.code}
                       </span>
                     ) : null}
 
                     <div className="mt-1">
                       <Input.VerificationCode
-                        name="verificationCode"
+                        name="code"
                         numOfFields={8}
                         onInputChange={handleVerificationChange}
                         onComplete={handleVerificationComplete}
                         values={() => {
-                          const codeValues = Array.from(
-                            formik.values.verificationCode
-                          );
+                          const codeValues = Array.from(formik.values.code);
 
                           const remainingValues = 8 - codeValues.length;
 
@@ -145,12 +142,7 @@ const SecurityCode = () => {
                           );
                         }}
                         disabled={isLoading}
-                        error={
-                          !!(
-                            formik.errors.verificationCode &&
-                            formik.touched.verificationCode
-                          )
-                        }
+                        error={!!(formik.errors.code && formik.touched.code)}
                       />
                     </div>
                   </label>
@@ -186,7 +178,6 @@ const SecurityCode = () => {
                         <AlertError size={18} />
                       </div>
                       <Alert.Content>
-                        <Alert.Header>An error has occurred</Alert.Header>
                         <ServerErrors errors={serverErrors} />
                       </Alert.Content>
                     </Alert>
