@@ -8,6 +8,7 @@ import { request } from '@modules/request';
 import { Error } from '@server/modules/api-response';
 import { ServerErrors } from '@components/server-error';
 import { AlertError, AlertInfo } from '@components/icons';
+import { Email, LockOpen } from '@components/illustrations';
 import { Input, Spinner, Alert } from '@components/app';
 import { securityCodeValidationSchema } from './validations';
 import styles from './security-code.module.scss';
@@ -66,6 +67,32 @@ const SecurityCode = () => {
     }, 1000);
   };
 
+  const getIllustration = (type: string) => {
+    switch (type) {
+      case 'confirm-email':
+        return <Email size={196} className="mx-auto" />;
+      case 'unlock-account':
+        return <LockOpen size={196} className="mx-auto" />;
+      default:
+        break;
+    }
+
+    return '';
+  };
+
+  const getHeadingText = (type: string) => {
+    switch (type) {
+      case 'confirm-email':
+        return 'Confirm your email';
+      case 'unlock-account':
+        return 'Unlock your account';
+      default:
+        break;
+    }
+
+    return '';
+  };
+
   const getDescriptionText = (type: string) => {
     switch (type) {
       case 'confirm-email':
@@ -84,30 +111,11 @@ const SecurityCode = () => {
       <div className={styles.gridLeft}>
         <div className={styles.securityCodeGrid}>
           <div className="py-6">
-            <svg
-              width="12rem"
-              height="12rem"
-              className="mx-auto"
-              viewBox="0 0 180 180"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M90 180C139.706 180 180 139.706 180 90C180 40.2944 139.706 0 90 0C40.2944 0 0 40.2944 0 90C0 139.706 40.2944 180 90 180Z"
-                fill="#EDF2F7"
-              />
-              <path
-                d="M90 20C51.4005 20 20 51.4005 20 90C20 128.6 51.4005 160 90 160C128.6 160 160 128.6 160 90C160 51.4005 128.6 20 90 20Z"
-                fill="#F6E080"
-              />
-              <path
-                d="M129.916 71.925L83.7214 118.127C82.3355 119.513 80.5163 120.211 78.697 120.211C76.8778 120.211 75.0586 119.513 73.6727 118.127L50.5759 95.0259C47.7963 92.2472 47.7963 87.7543 50.5759 84.9755C53.3542 82.1954 57.845 82.1954 60.6245 84.9755L78.697 103.051L119.868 61.8746C122.646 59.0945 127.137 59.0945 129.916 61.8746C132.695 64.6534 132.695 69.145 129.916 71.925V71.925Z"
-                fill="#ECB85E"
-              />
-            </svg>
+            {getIllustration(router.query.type as string)}
 
             <div className="text-center my-8">
               <h1 className="text-2xl 768:text-3xl font-bold">
-                Enter security code
+                {getHeadingText(router.query.type as string)}
               </h1>
               <div className="mt-1">
                 We sent an 8-digit code to your email address to{' '}

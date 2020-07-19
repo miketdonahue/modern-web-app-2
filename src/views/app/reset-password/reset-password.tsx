@@ -51,10 +51,13 @@ const ResetPassword = () => {
   });
 
   React.useEffect(() => {
-    if (serverErrors && serverErrors.length) {
+    if (
+      (serverErrors && serverErrors.length) ||
+      (infoAlerts && infoAlerts.length)
+    ) {
       formik.setFieldValue('code', '');
     }
-  }, [serverErrors]);
+  }, [serverErrors, infoAlerts]);
 
   const handleChange = (event: any) => {
     formik.handleChange(event);

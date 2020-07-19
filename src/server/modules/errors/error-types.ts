@@ -29,6 +29,6 @@ export const errorTypes = {
   CODE_EXPIRED: {
     code: 'CODE_EXPIRED',
     detail:
-      "Unfortunately, your code has expired. But, we've just sent a new code to your email address.",
+      'Unfortunately, your code has expired. We have sent a new code to your email.',
   },
 };
