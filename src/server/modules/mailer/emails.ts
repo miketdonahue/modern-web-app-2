@@ -42,7 +42,7 @@ export const RESET_PASSWORD_EMAIL = {
 export const ACCOUNT_LOCKED_EMAIL = {
   from: 'no-reply@local-mdonahue.com',
   subject: 'Your account has been locked',
-  template: 'account-locked',
+  templateId: 'd-45b740c67f054213887265d806682d30',
   substitutionData: (actor: any) => ({
     firstName: actor.first_name,
   }),
@@ -54,7 +54,7 @@ export const ACCOUNT_LOCKED_EMAIL = {
 export const UNLOCK_ACCOUNT_EMAIL = {
   from: 'no-reply@local-mdonahue.com',
   subject: 'Unlock your account',
-  template: 'unlock-account',
+  templateId: 'd-077d6366c5994d50aa1220b2662a54b8',
   substitutionData: (actor: any) => ({
     firstName: actor.first_name,
     code: actor.locked_code,

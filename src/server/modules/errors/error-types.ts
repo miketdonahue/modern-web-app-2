@@ -12,6 +12,11 @@ export const errorTypes = {
     code: 'ACCOUNT_NOT_CONFIRMED',
     detail: 'Your account is not confirmed.',
   },
+  ACCOUNT_LOCKED: {
+    code: 'ACCOUNT_LOCKED',
+    detail:
+      'Your account has been locked. Please check your email for further instructions.',
+  },
   INVALID_CREDENTIALS: {
     code: 'INVALID_CREDENTIALS',
     detail:
