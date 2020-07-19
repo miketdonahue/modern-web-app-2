@@ -19,9 +19,9 @@ export default {
       controller: controller.loginActor,
     },
     {
-      path: '/forgot-password',
+      path: '/reset-password',
       method: 'post',
-      controller: controller.forgotPassword,
+      controller: controller.resetPassword,
     },
     {
       path: '/logout',

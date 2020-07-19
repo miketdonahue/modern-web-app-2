@@ -158,16 +158,12 @@ const confirmCode = async (req: Request, res: Response) => {
       type: 'confirmed',
       email: emails.CONFIRM_EMAIL,
     },
-    'reset-password': {
-      type: 'reset_password',
-      email: emails.RESET_PASSWORD_EMAIL,
-    },
     'account-locked': { type: 'locked', email: emails.UNLOCK_ACCOUNT_EMAIL },
   };
 
   const decoded: any = jwt.decode(token) || { actor_id: null };
   const actor = await db.findOne(Actor, { uuid: decoded.actor_id });
-  const actorAccount = await db.findOne(ActorAccount, {
+  const actorAccount: any = await db.findOne(ActorAccount, {
     actor_id: decoded.actor_id,
     [`${codeType[req.body.type].type}_code`]: req.body.code,
   });
@@ -178,8 +174,11 @@ const confirmCode = async (req: Request, res: Response) => {
   }
 
   if (
-    !actorAccount.confirmed_expires ||
-    compareAsc(actorAccount.confirmed_expires, new Date()) === -1
+    !actorAccount[`${codeType[req.body.type].type}_expires`] ||
+    compareAsc(
+      actorAccount[`${codeType[req.body.type].type}_expires`],
+      new Date()
+    ) === -1
   ) {
     logger.info('AUTH-CONTROLLER: Resetting confirmation code');
     await db.update(
@@ -403,48 +402,109 @@ const loginActor = async (req: Request, res: Response) => {
 };
 
 /**
- * Generate a reset token so a actor can reset their password
+ * Confirm security code and reset an actor's password
  */
-const forgotPassword = async (req: Request, res: Response) => {
+const resetPassword = async (req: Request, res: Response) => {
   const db = getManager();
+  const cookies = new Cookies(req.headers.cookie);
+  const token = cookies.get('actor');
 
-  const [actorAccount] = await db.query(
-    `
-    SELECT
-      actor_account.*
-    FROM
-      actor_account
-      INNER JOIN actor ON actor_account.actor_id = actor.uuid
-    WHERE
-      actor.email = $1
-  `,
-    [req.body.email]
-  );
+  const errorResponse: ApiResponseWithError = {
+    error: [
+      {
+        status: '400',
+        code: errorTypes.CODE_NOT_FOUND.code,
+        detail: errorTypes.CODE_NOT_FOUND.detail,
+      },
+    ],
+  };
 
-  if (!actorAccount) {
-    logger.error('AUTH-CONTROLLER: The actor account was not found');
-
-    return res.end();
+  try {
+    jwt.verify(token, config.server.auth.jwt.secret);
+  } catch (err) {
+    logger.warn({ err }, 'AUTH-CONTROLLER: The actor account was not found');
+    return res.status(400).json(errorResponse);
   }
 
-  logger.info("AUTH-CONTROLLER: Preparing actor's password for reset");
+  const decoded: any = jwt.decode(token) || { actor_id: null };
+  const actor = await db.findOne(Actor, { uuid: decoded.actor_id });
+  const actorAccount: any = await db.findOne(ActorAccount, {
+    actor_id: decoded.actor_id,
+    reset_password_code: req.body.code,
+  });
+
+  if (!actor || !actorAccount) {
+    logger.warn('AUTH-CONTROLLER: The actor account was not found');
+    return res.status(400).json(errorResponse);
+  }
+
+  if (
+    !actorAccount.reset_password_code ||
+    compareAsc(actorAccount.reset_password_expires, new Date()) === -1
+  ) {
+    logger.info('AUTH-CONTROLLER: Resetting password security code');
+
+    await db.update(
+      ActorAccount,
+      { uuid: actorAccount.uuid },
+      {
+        reset_password_code: generateCode(),
+        reset_password_expires: String(
+          addMinutes(new Date(), config.server.auth.codes.expireTime)
+        ),
+      }
+    );
+
+    logger.info(
+      'AUTH-CONTROLLER: Resend password security code email due to expired code'
+    );
+
+    await sendEmail(actor, emails.RESET_PASSWORD_EMAIL);
+
+    const errResponse: ApiResponseWithError = {
+      error: [
+        {
+          status: '400',
+          code: errorTypes.CODE_EXPIRED.code,
+          detail: errorTypes.CODE_EXPIRED.detail,
+        },
+      ],
+    };
+
+    logger.warn(
+      {
+        code: actorAccount.reset_password_code,
+        expires: actorAccount.reset_password_expires,
+      },
+      'AUTH-CONTROLLER: The reset password code has expired'
+    );
+
+    return res.status(400).json(errResponse);
+  }
 
   await db.update(
     ActorAccount,
     { uuid: actorAccount.uuid },
     {
-      reset_password_code: generateCode(),
-      reset_password_expires: String(
-        addMinutes(new Date(), config.server.auth.codes.expireTime)
-      ),
+      reset_password_code: null,
+      reset_password_expires: null,
     }
   );
 
+  logger.info("AUTH-CONTROLLER: Resetting the actor's password");
+  const password = await argon2.hash(req.body.password, {
+    timeCost: 2000,
+    memoryCost: 500,
+  });
+
+  actor.password = password;
+  await db.save(actor);
+
+  // Remove 'actor' cookie
+  res.cookie('actor', '', { expires: new Date(0) });
+
   const response: ApiResponseWithData = {
-    data: {
-      id: actorAccount.actor_id,
-      type: resourceTypes.ACTOR,
-    },
+    data: { id: actorAccount.actor_id, type: resourceTypes.ACTOR },
   };
 
   return res.json(response);
@@ -481,7 +541,7 @@ const sendCode = async (req: Request, res: Response) => {
       type: 'confirmed',
       email: emails.CONFIRM_EMAIL,
     },
-    'reset-password': {
+    'forgot-password': {
       type: 'reset_password',
       email: emails.RESET_PASSWORD_EMAIL,
     },
@@ -571,7 +631,7 @@ export {
   registerActor,
   confirmCode,
   loginActor,
-  forgotPassword,
+  resetPassword,
   sendCode,
   logoutActor,
 };

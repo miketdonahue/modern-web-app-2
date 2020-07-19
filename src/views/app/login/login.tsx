@@ -7,9 +7,9 @@ import { useFormik } from 'formik';
 import { request } from '@modules/request';
 import { Error } from '@server/modules/api-response';
 import { ServerErrors } from '@components/server-error';
-import { Button, Checkbox, Input, Tooltip } from '@components/app';
+import { Button, Checkbox, Input, Tooltip, Alert } from '@components/app';
 import appLogo from '@public/images/logo-sm.svg';
-import { Google } from '@components/icons';
+import { Google, AlertError } from '@components/icons';
 import { loginValidationSchema } from './validations';
 import styles from './login.module.scss';
 
@@ -166,15 +166,25 @@ const Login = () => {
                     </div>
                   </Tooltip>
 
-                  <Link href="/app/forgot-password" as="/app/forgot-password">
+                  <Link
+                    href="/app/send-code?type=forgot-password"
+                    as="/app/send-code?type=forgot-password"
+                  >
                     <a>Forgot your password?</a>
                   </Link>
                 </div>
 
                 <div className="mt-8">
-                  <div className="text-sm 768:text-base text-red-600 mb-2">
-                    <ServerErrors errors={serverErrors} />
-                  </div>
+                  {serverErrors.length > 0 && (
+                    <Alert variant="error" className="mb-4">
+                      <div className="mr-3">
+                        <AlertError size={18} />
+                      </div>
+                      <Alert.Content>
+                        <ServerErrors errors={serverErrors} />
+                      </Alert.Content>
+                    </Alert>
+                  )}
 
                   <Button type="submit" variant="primary" loading={isLoading}>
                     Sign in

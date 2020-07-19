@@ -3,7 +3,7 @@ import cx from 'classnames';
 import styles from './content.module.scss';
 
 interface Content extends React.HTMLAttributes<HTMLDivElement> {
-  children: string | JSX.Element[];
+  children: string | React.ReactNode;
   className?: string;
 }
 

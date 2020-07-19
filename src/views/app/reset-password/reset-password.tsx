@@ -1,26 +1,36 @@
 import React from 'react';
+import { v4 as uuid } from 'uuid';
 import { useMutation } from 'react-query';
 import { AxiosError } from 'axios';
 import { useRouter } from 'next/router';
 import { useFormik } from 'formik';
 import { request } from '@modules/request';
-import { Button, Input, PasswordStrength } from '@components/app';
+import { Error } from '@server/modules/api-response';
+import { Button, Input, PasswordStrength, Alert } from '@components/app';
+import { AlertError, AlertInfo } from '@components/icons';
 import { ServerErrors } from '@components/server-error';
 import { resetPasswordValidationSchema } from './validations';
 import styles from './reset-password.module.scss';
 
 const ResetPassword = () => {
   const router = useRouter();
-  const [serverErrors, setServerErrors] = React.useState([]);
+  const [infoAlerts, setInfoAlerts] = React.useState<string[]>([]);
+  const [serverErrors, setServerErrors] = React.useState<Error[]>([]);
 
   const [mutate, { isLoading }] = useMutation(
-    (variables: any) => request.post('/api/v1/auth/login', variables),
+    (variables: any) => request.post('/api/v1/auth/reset-password', variables),
     {
       onError: (error: AxiosError) => {
-        return setServerErrors(error?.response?.data?.error || []);
+        return error?.response?.data?.error.map((e: Error) => {
+          if (e.code === 'CODE_EXPIRED') {
+            setInfoAlerts([...infoAlerts, e.detail || '']);
+          } else {
+            setServerErrors([...serverErrors, e]);
+          }
+        });
       },
       onSuccess: () => {
-        router.push('/app');
+        router.push('/app/login');
       },
     }
   );
@@ -29,15 +39,22 @@ const ResetPassword = () => {
     validateOnChange: false,
     initialValues: {
       password: '',
-      verificationCode: '',
+      code: '',
     },
     validationSchema: resetPasswordValidationSchema,
     onSubmit: (values) => {
       mutate({
+        code: values.code,
         password: values.password,
       });
     },
   });
+
+  React.useEffect(() => {
+    if (serverErrors && serverErrors.length) {
+      formik.setFieldValue('code', '');
+    }
+  }, [serverErrors]);
 
   const handleChange = (event: any) => {
     formik.handleChange(event);
@@ -48,15 +65,14 @@ const ResetPassword = () => {
   };
 
   const handleVerificationChange = async (value: string) => {
-    formik.setFieldValue('verificationCode', value);
+    formik.setFieldValue('code', value);
 
-    if (formik.errors.verificationCode) {
-      formik.setFieldError('verificationCode', '');
+    setInfoAlerts([]);
+    setServerErrors([]);
+
+    if (formik.errors.code) {
+      formik.setFieldError('code', '');
     }
-  };
-
-  const handleVerificationComplete = (value: string) => {
-    console.log('onComplete', value);
   };
 
   return (
@@ -94,8 +110,8 @@ const ResetPassword = () => {
                 Reset your password
               </h1>
               <div className="mt-1">
-                Enter a new password and the 8-digit verification code we sent
-                to your email address.
+                Enter a new password and the 8-digit security code we sent to
+                your email address.
               </div>
             </div>
 
@@ -136,39 +152,60 @@ const ResetPassword = () => {
                 <div className="mb-2">
                   <label htmlFor="password" className="text-sm 768:text-base">
                     <span>Verification code</span>
-                    {formik.errors.verificationCode &&
-                    formik.touched.verificationCode ? (
+                    {formik.errors.code && formik.touched.code ? (
                       <span className="text-red-600 mt-1">
                         {' '}
-                        {formik.errors.verificationCode}
+                        {formik.errors.code}
                       </span>
                     ) : null}
 
                     <div className="mt-1">
                       <Input.VerificationCode
-                        name="verificationCode"
+                        name="code"
                         numOfFields={8}
+                        values={() => {
+                          const codeValues = Array.from(formik.values.code);
+                          const remainingValues = 8 - codeValues.length;
+
+                          return codeValues.concat(
+                            new Array(remainingValues).fill('')
+                          );
+                        }}
                         onInputChange={handleVerificationChange}
-                        onComplete={handleVerificationComplete}
-                        error={
-                          !!(
-                            formik.errors.verificationCode &&
-                            formik.touched.verificationCode
-                          )
-                        }
+                        error={!!(formik.errors.code && formik.touched.code)}
                       />
                     </div>
                   </label>
                 </div>
 
                 <div className="text-center">
-                  <a href="#">I did not receive a code</a>
+                  <a href="/app/send-code?type=forgot-password">Resend code</a>
                 </div>
 
                 <div className="mt-8">
-                  <div className="text-sm 768:text-base text-red-600 mb-2">
-                    <ServerErrors errors={serverErrors} />
-                  </div>
+                  {infoAlerts.length > 0 && (
+                    <Alert variant="info" className="mb-4">
+                      <div className="mr-3">
+                        <AlertInfo size={18} />
+                      </div>
+                      <Alert.Content>
+                        {infoAlerts.map((message: string) => {
+                          return <span key={uuid()}>{message}</span>;
+                        })}
+                      </Alert.Content>
+                    </Alert>
+                  )}
+
+                  {serverErrors.length > 0 && (
+                    <Alert variant="error" className="mb-4">
+                      <div className="mr-3">
+                        <AlertError size={18} />
+                      </div>
+                      <Alert.Content>
+                        <ServerErrors errors={serverErrors} />
+                      </Alert.Content>
+                    </Alert>
+                  )}
 
                   <Button type="submit" variant="primary" loading={isLoading}>
                     Reset my password

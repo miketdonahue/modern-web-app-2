@@ -1,5 +1,5 @@
 import React from 'react';
-import { Icon } from './typings';
+import { Icon } from '../typings';
 
 const AlertError = ({
   color = 'currentColor',
