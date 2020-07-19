@@ -60,6 +60,7 @@ const Login = () => {
     const { name } = event.target;
 
     formik.handleChange(event);
+    setServerErrors([]);
 
     if ((formik.errors as any)[name]) {
       formik.setFieldError(name, '');

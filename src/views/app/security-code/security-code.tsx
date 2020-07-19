@@ -70,6 +70,8 @@ const SecurityCode = () => {
     switch (type) {
       case 'confirm-email':
         return 'confirm your email';
+      case 'unlock-account':
+        return 'unlock your account';
       default:
         break;
     }

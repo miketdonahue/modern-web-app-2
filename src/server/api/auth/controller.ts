@@ -158,7 +158,7 @@ const confirmCode = async (req: Request, res: Response) => {
       type: 'confirmed',
       email: emails.CONFIRM_EMAIL,
     },
-    'account-locked': { type: 'locked', email: emails.UNLOCK_ACCOUNT_EMAIL },
+    'unlock-account': { type: 'locked', email: emails.UNLOCK_ACCOUNT_EMAIL },
   };
 
   const decoded: any = jwt.decode(token) || { actor_id: null };
@@ -227,9 +227,11 @@ const confirmCode = async (req: Request, res: Response) => {
     ActorAccount,
     { uuid: actorAccount.uuid },
     {
-      confirmed: true,
-      confirmed_code: null,
-      confirmed_expires: null,
+      ...(req.body.type === 'confirm-email'
+        ? { confirmed: true }
+        : { locked: false }),
+      [`${codeType[req.body.type].type}_code`]: null,
+      [`${codeType[req.body.type].type}_expires`]: null,
     }
   );
 
@@ -321,6 +323,51 @@ const loginActor = async (req: Request, res: Response) => {
     };
 
     logger.error('AUTH-CONTROLLER: The actor account is not confirmed');
+    return res.status(403).json(errResponse);
+  }
+
+  if (actorAccount.locked) {
+    logger.info('AUTH-CONTROLLER: Signing actor id token');
+    const actorIdToken = jwt.sign(
+      { actor_id: actor.uuid },
+      config.server.auth.jwt.secret
+    );
+
+    // TODO: change to `secure: true` when HTTPS
+    res.cookie('actor', actorIdToken, {
+      path: '/',
+      secure: false,
+    });
+
+    logger.info('AUTH-CONTROLLER: Resetting locked account code');
+    await db.update(
+      ActorAccount,
+      { uuid: actorAccount.uuid },
+      {
+        locked_code: generateCode(),
+        locked_expires: String(
+          addMinutes(new Date(), config.server.auth.codes.expireTime)
+        ),
+      }
+    );
+
+    logger.info(
+      'AUTH-CONTROLLER: Resend locked account code email due to account being locked'
+    );
+
+    await sendEmail(actor, emails.ACCOUNT_LOCKED_EMAIL);
+
+    const errResponse: ApiResponseWithError = {
+      error: [
+        {
+          status: '403',
+          code: errorTypes.ACCOUNT_LOCKED.code,
+          detail: errorTypes.ACCOUNT_LOCKED.detail,
+        },
+      ],
+    };
+
+    logger.error('AUTH-CONTROLLER: The actor account is locked');
     return res.status(403).json(errResponse);
   }
 
@@ -545,7 +592,7 @@ const sendCode = async (req: Request, res: Response) => {
       type: 'reset_password',
       email: emails.RESET_PASSWORD_EMAIL,
     },
-    'account-locked': { type: 'locked', email: emails.UNLOCK_ACCOUNT_EMAIL },
+    'unlock-account': { type: 'locked', email: emails.UNLOCK_ACCOUNT_EMAIL },
   };
 
   logger.info({ type: req.body.type }, 'AUTH-CONTROLLER: Resetting code');
