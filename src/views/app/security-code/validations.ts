@@ -1,6 +1,6 @@
 import * as Yup from 'yup';
 
-export const confirmEmailValidationSchema = Yup.object().shape({
+export const securityCodeValidationSchema = Yup.object().shape({
   verificationCode: Yup.string()
     .min(8, 'is an 8-digit number')
     .max(8, 'is an 8-digit number')

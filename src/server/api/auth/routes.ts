@@ -9,9 +9,9 @@ export default {
       controller: controller.registerActor,
     },
     {
-      path: '/confirm',
+      path: '/security-code',
       method: 'post',
-      controller: controller.confirmActor,
+      controller: controller.confirmCode,
     },
     {
       path: '/login',
@@ -29,9 +29,9 @@ export default {
       controller: controller.logoutActor,
     },
     {
-      path: '/auth-email',
+      path: '/send-code',
       method: 'post',
-      controller: controller.sendAuthEmail,
+      controller: controller.sendCode,
     },
   ],
 };

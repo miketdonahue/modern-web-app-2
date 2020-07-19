@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import argon2 from 'argon2';
 import jwt from 'jsonwebtoken';
-import { addMinutes, addDays } from 'date-fns';
+import { addMinutes, addDays, compareAsc } from 'date-fns';
 import { v4 as uuid } from 'uuid';
 import Cookies from 'universal-cookie';
 import { getManager } from '@server/modules/db-manager';
@@ -27,6 +27,26 @@ import { transformRoleForToken } from '@server/modules/utilities';
  */
 const registerActor = async (req: Request, res: Response) => {
   const db = getManager();
+
+  const foundActor = await db.findOne(Actor, { email: req.body.email });
+
+  if (foundActor) {
+    const errorResponse: ApiResponseWithError = {
+      error: [
+        {
+          status: '400',
+          code: errorTypes.ACCOUNT_ALREADY_EXISTS.code,
+          detail: errorTypes.ACCOUNT_ALREADY_EXISTS.detail,
+        },
+      ],
+    };
+
+    logger.error(
+      'AUTH-CONTROLLER: An actor with the provided email address already exists'
+    );
+
+    return res.status(400).json(errorResponse);
+  }
 
   const role = await db.findOne(Role, { name: RoleName.ACTOR });
 
@@ -98,8 +118,8 @@ const registerActor = async (req: Request, res: Response) => {
     'AUTH-CONTROLLER: Sending emails'
   );
 
+  await sendEmail(actor, emails.CONFIRM_EMAIL);
   await sendEmail(actor, emails.WELCOME_EMAIL);
-  // await sendEmail.message.sendMessage(actor, CONFIRM_EMAIL);
 
   const response: ApiResponseWithData = {
     data: { id: actor.uuid, type: resourceTypes.ACTOR },
@@ -109,35 +129,101 @@ const registerActor = async (req: Request, res: Response) => {
 };
 
 /**
- * Confirms a new actor's account
+ * Confirms a security code
  */
-const confirmActor = async (req: Request, res: Response) => {
+const confirmCode = async (req: Request, res: Response) => {
   const db = getManager();
   const cookies = new Cookies(req.headers.cookie);
   const token = cookies.get('actor');
-  const decoded: any = jwt.decode(token);
 
+  const errorResponse: ApiResponseWithError = {
+    error: [
+      {
+        status: '400',
+        code: errorTypes.CODE_NOT_FOUND.code,
+        detail: errorTypes.CODE_NOT_FOUND.detail,
+      },
+    ],
+  };
+
+  try {
+    jwt.verify(token, config.server.auth.jwt.secret);
+  } catch (err) {
+    logger.warn({ err }, 'AUTH-CONTROLLER: The actor account was not found');
+    return res.status(400).json(errorResponse);
+  }
+
+  const codeType: any = {
+    'confirm-email': {
+      type: 'confirmed',
+      email: emails.CONFIRM_EMAIL,
+    },
+    'reset-password': {
+      type: 'reset_password',
+      email: emails.RESET_PASSWORD_EMAIL,
+    },
+    'account-locked': { type: 'locked', email: emails.UNLOCK_ACCOUNT_EMAIL },
+  };
+
+  const decoded: any = jwt.decode(token) || { actor_id: null };
+  const actor = await db.findOne(Actor, { uuid: decoded.actor_id });
   const actorAccount = await db.findOne(ActorAccount, {
     actor_id: decoded.actor_id,
-    confirmed_code: req.body.code,
+    [`${codeType[req.body.type].type}_code`]: req.body.code,
   });
 
   if (!actorAccount) {
-    const errorResponse: ApiResponseWithError = {
-      error: [
-        {
-          status: '400',
-          code: errorTypes.CODE_NOT_FOUND.code,
-          detail: errorTypes.CODE_NOT_FOUND.detail,
-        },
-      ],
-    };
-
     logger.warn('AUTH-CONTROLLER: The actor account was not found');
     return res.status(400).json(errorResponse);
   }
 
+  if (
+    !actorAccount.confirmed_expires ||
+    compareAsc(actorAccount.confirmed_expires, new Date()) === -1
+  ) {
+    logger.info('AUTH-CONTROLLER: Resetting confirmation code');
+    await db.update(
+      ActorAccount,
+      { uuid: actorAccount.uuid },
+      {
+        [`${codeType[req.body.type].type}_code`]: generateCode(),
+        [`${codeType[req.body.type].type}_expires`]: String(
+          addMinutes(new Date(), config.server.auth.codes.expireTime)
+        ),
+      }
+    );
+
+    logger.info(
+      'AUTH-CONTROLLER: Resend confirmation code email due to expired code'
+    );
+
+    await sendEmail(actor, codeType[req.body.type].email);
+
+    const errResponse: ApiResponseWithError = {
+      error: [
+        {
+          status: '400',
+          code: errorTypes.CODE_EXPIRED.code,
+          detail: errorTypes.CODE_EXPIRED.detail,
+        },
+      ],
+    };
+
+    logger.warn(
+      {
+        code: (actorAccount as any)[`${codeType[req.body.type].type}_code`],
+        expires: (actorAccount as any)[
+          `${codeType[req.body.type].type}_expires`
+        ],
+      },
+      'AUTH-CONTROLLER: The confirmed code has expired'
+    );
+
+    return res.status(400).json(errResponse);
+  }
+
   logger.info('AUTH-CONTROLLER: Confirming actor account');
+
   await db.update(
     ActorAccount,
     { uuid: actorAccount.uuid },
@@ -165,11 +251,11 @@ const loginActor = async (req: Request, res: Response) => {
   const db = getManager();
 
   const role = await db.findOne(Role, { name: RoleName.ACTOR });
+  const actor = await db.findOne(Actor, { email: req.body.email });
   const [actorAccount] = await db.query(
     `
     SELECT
-      actor_account.*,
-      actor.password
+      actor_account.*
     FROM
       actor_account
       INNER JOIN actor ON actor_account.actor_id = actor.uuid
@@ -189,13 +275,58 @@ const loginActor = async (req: Request, res: Response) => {
     ],
   };
 
-  if (!actorAccount) {
+  if (!actor || !actorAccount) {
     logger.error('AUTH-CONTROLLER: The actor account was not found');
     return res.status(400).json(errorResponse);
   }
 
+  if (!actorAccount.confirmed) {
+    logger.info('AUTH-CONTROLLER: Signing actor id token');
+    const actorIdToken = jwt.sign(
+      { actor_id: actor.uuid },
+      config.server.auth.jwt.secret
+    );
+
+    // TODO: change to `secure: true` when HTTPS
+    res.cookie('actor', actorIdToken, {
+      path: '/',
+      secure: false,
+    });
+
+    logger.info('AUTH-CONTROLLER: Resetting confirmation code');
+    await db.update(
+      ActorAccount,
+      { uuid: actorAccount.uuid },
+      {
+        confirmed_code: generateCode(),
+        confirmed_expires: String(
+          addMinutes(new Date(), config.server.auth.codes.expireTime)
+        ),
+      }
+    );
+
+    logger.info(
+      'AUTH-CONTROLLER: Resend confirmation code email due to account not being confirmed'
+    );
+
+    await sendEmail(actor, emails.CONFIRM_EMAIL);
+
+    const errResponse: ApiResponseWithError = {
+      error: [
+        {
+          status: '403',
+          code: errorTypes.ACCOUNT_NOT_CONFIRMED.code,
+          detail: errorTypes.ACCOUNT_NOT_CONFIRMED.detail,
+        },
+      ],
+    };
+
+    logger.error('AUTH-CONTROLLER: The actor account is not confirmed');
+    return res.status(403).json(errResponse);
+  }
+
   const passwordMatch = await argon2.verify(
-    actorAccount.password,
+    actor.password || '',
     req.body.password
   );
 
@@ -235,7 +366,7 @@ const loginActor = async (req: Request, res: Response) => {
 
   logger.info('AUTH-CONTROLLER: Signing auth tokens');
   const token = jwt.sign(
-    { actor_id: actorAccount.actor_id, role: transformRoleForToken(role) },
+    { actor_id: actor.uuid, role: transformRoleForToken(role) },
     config.server.auth.jwt.secret,
     { expiresIn: config.server.auth.jwt.expiresIn }
   );
@@ -262,7 +393,7 @@ const loginActor = async (req: Request, res: Response) => {
 
   const response: ApiResponseWithData = {
     data: {
-      id: actorAccount.actor_id,
+      id: actor.uuid,
       type: resourceTypes.ACTOR,
       attributes: { token },
     },
@@ -320,20 +451,17 @@ const forgotPassword = async (req: Request, res: Response) => {
 };
 
 /**
- * Send an authentication-related email
- *
- * @description Used when needing to resend an auth related email
+ * Regenerate a code and send a corresponding email
  */
-const sendAuthEmail = async (req: Request, res: Response) => {
+const sendCode = async (req: Request, res: Response) => {
   const db = getManager();
-  const [actor] = await db.query(
+  const [actorAccount] = await db.query(
     `
     SELECT
       actor_account.confirmed_code,
       actor_account.locked_code,
-      actor.uuid,
-      actor.email,
-      actor.first_name
+      actor_account.reset_password_code,
+      actor_account.uuid
     FROM
       actor_account
       INNER JOIN actor ON actor_account.actor_id = actor.uuid
@@ -343,21 +471,76 @@ const sendAuthEmail = async (req: Request, res: Response) => {
     [req.body.email]
   );
 
-  // const emailType = {
-  //   CONFIRM_EMAIL,
-  //   UNLOCK_ACCOUNT_EMAIL,
-  // };
+  if (!actorAccount) {
+    logger.warn('AUTH-CONTROLLER: The actor account was not found');
+    return res.end();
+  }
+
+  const codeType: any = {
+    'confirm-email': {
+      type: 'confirmed',
+      email: emails.CONFIRM_EMAIL,
+    },
+    'reset-password': {
+      type: 'reset_password',
+      email: emails.RESET_PASSWORD_EMAIL,
+    },
+    'account-locked': { type: 'locked', email: emails.UNLOCK_ACCOUNT_EMAIL },
+  };
+
+  logger.info({ type: req.body.type }, 'AUTH-CONTROLLER: Resetting code');
+
+  await db.update(
+    ActorAccount,
+    { uuid: actorAccount.uuid },
+    {
+      [`${codeType[req.body.type].type}_code`]: generateCode(),
+      [`${codeType[req.body.type].type}_expires`]: String(
+        addMinutes(new Date(), config.server.auth.codes.expireTime)
+      ),
+    }
+  );
+
+  const [updatedActor] = await db.query(
+    `
+    SELECT
+      actor_account.confirmed_code,
+      actor_account.locked_code,
+      actor_account.reset_password_code,
+      actor.uuid,
+      actor.email,
+      actor.first_name
+    FROM
+      actor_account
+      INNER JOIN actor ON actor_account.actor_id = actor.uuid
+    WHERE
+      actor_account.uuid = $1
+  `,
+    [actorAccount.uuid]
+  );
 
   logger.info(
     { type: req.body.type },
-    'AUTH-CONTROLLER: Sending email to actor'
+    'AUTH-CONTROLLER: Resending code in email to actor'
   );
 
-  // await mailer.message.sendMessage(actor, (emailType as any)[req.body.type]);
+  await sendEmail(updatedActor, codeType[req.body.type].email);
+
+  logger.info('AUTH-CONTROLLER: Signing actor id token');
+  const actorIdToken = jwt.sign(
+    { actor_id: updatedActor.uuid },
+    config.server.auth.jwt.secret
+  );
+
+  // TODO: change to `secure: true` when HTTPS
+  res.cookie('actor', actorIdToken, {
+    path: '/',
+    secure: false,
+  });
 
   const response: ApiResponseWithData = {
     data: {
-      id: actor.uuid,
+      id: updatedActor.uuid,
       type: resourceTypes.ACTOR,
     },
   };
@@ -386,9 +569,9 @@ const logoutActor = async (req: Request, res: Response) => {
 
 export {
   registerActor,
-  confirmActor,
+  confirmCode,
   loginActor,
   forgotPassword,
-  sendAuthEmail,
+  sendCode,
   logoutActor,
 };

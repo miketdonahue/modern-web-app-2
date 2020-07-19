@@ -2,8 +2,8 @@ export default {
   path: '/app',
   routes: [
     {
-      path: '/confirm-email',
-      page: '/app/confirm-email',
+      path: '/security-code',
+      page: '/app/security-code',
     },
   ],
 };

@@ -24,7 +24,7 @@ const Register = () => {
         return setServerErrors(error?.response?.data?.error || []);
       },
       onSuccess: () => {
-        router.push('/app/confirm-email');
+        router.push('/app/security-code?type=confirm-email');
       },
     }
   );

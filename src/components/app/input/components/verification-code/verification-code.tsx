@@ -6,7 +6,7 @@ import styles from './verification-code.module.scss';
 
 interface VerificationCode extends React.InputHTMLAttributes<HTMLInputElement> {
   numOfFields: number;
-  values?: string[];
+  values?: () => string[];
   onInputChange: (value: string) => void;
   onComplete?: (value: string) => void;
   error?: boolean;
@@ -41,8 +41,9 @@ const VerificationCode = ({
   const refs = generateRefs(numOfFields);
 
   useEffect(() => {
-    if (values && values.length) {
-      setInputValues(values);
+    const vals = values && values();
+    if (vals && vals.length) {
+      setInputValues(vals);
     }
   }, [values]);
 
