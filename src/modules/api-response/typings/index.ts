@@ -14,7 +14,7 @@ interface Links {
   prev?: string | Link;
 }
 
-interface Data {
+export interface Data {
   id: string;
   type: string;
   attributes?: {

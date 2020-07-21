@@ -11,7 +11,7 @@ import {
   resourceTypes,
   ApiResponseWithData,
   ApiResponseWithError,
-} from '@server/modules/api-response';
+} from '@modules/api-response';
 import { errorTypes } from '@server/modules/errors';
 import { Actor } from '@server/entities/actor';
 import { ActorAccount } from '@server/entities/actor-account';

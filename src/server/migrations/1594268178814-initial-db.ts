@@ -23,7 +23,6 @@ export class InitialDb1594268178814 implements MigrationInterface {
           prohibited_routes jsonb,
           created_at timestamp with time zone NOT NULL DEFAULT (now() AT TIME ZONE 'utc')::timestamptz,
           updated_at timestamp with time zone NOT NULL DEFAULT (now() AT TIME ZONE 'utc')::timestamptz,
-          deleted_at timestamp with time zone,
           deleted boolean NOT NULL DEFAULT false
         );
 
@@ -46,7 +45,6 @@ export class InitialDb1594268178814 implements MigrationInterface {
           postal_code character varying,
           created_at timestamp with time zone NOT NULL DEFAULT (now() AT TIME ZONE 'utc')::timestamptz,
           updated_at timestamp with time zone NOT NULL DEFAULT (now() AT TIME ZONE 'utc')::timestamptz,
-          deleted_at timestamp with time zone,
           deleted boolean NOT NULL DEFAULT false
         );
 
@@ -70,7 +68,6 @@ export class InitialDb1594268178814 implements MigrationInterface {
           ip character varying,
           created_at timestamp with time zone NOT NULL DEFAULT (now() AT TIME ZONE 'utc')::timestamptz,
           updated_at timestamp with time zone NOT NULL DEFAULT (now() AT TIME ZONE 'utc')::timestamptz,
-          deleted_at timestamp with time zone,
           deleted boolean NOT NULL DEFAULT false
         );
 
@@ -81,7 +78,6 @@ export class InitialDb1594268178814 implements MigrationInterface {
           stripe_id character varying NOT NULL,
           created_at timestamp with time zone NOT NULL DEFAULT (now() AT TIME ZONE 'utc')::timestamptz,
           updated_at timestamp with time zone NOT NULL DEFAULT (now() AT TIME ZONE 'utc')::timestamptz,
-          deleted_at timestamp with time zone,
           deleted boolean NOT NULL DEFAULT false
         );
 
@@ -93,7 +89,6 @@ export class InitialDb1594268178814 implements MigrationInterface {
           roles character varying [],
           created_at timestamp with time zone NOT NULL DEFAULT (now() AT TIME ZONE 'utc')::timestamptz,
           updated_at timestamp with time zone NOT NULL DEFAULT (now() AT TIME ZONE 'utc')::timestamptz,
-          deleted_at timestamp with time zone,
           deleted boolean NOT NULL DEFAULT false
         );
 
@@ -106,7 +101,6 @@ export class InitialDb1594268178814 implements MigrationInterface {
           expires_at timestamp with time zone,
           created_at timestamp with time zone NOT NULL DEFAULT (now() AT TIME ZONE 'utc')::timestamptz,
           updated_at timestamp with time zone NOT NULL DEFAULT (now() AT TIME ZONE 'utc')::timestamptz,
-          deleted_at timestamp with time zone,
           deleted boolean NOT NULL DEFAULT false
         );
 
@@ -116,7 +110,6 @@ export class InitialDb1594268178814 implements MigrationInterface {
           token character varying NOT NULL,
           created_at timestamp with time zone NOT NULL DEFAULT (now() AT TIME ZONE 'utc')::timestamptz,
           updated_at timestamp with time zone NOT NULL DEFAULT (now() AT TIME ZONE 'utc')::timestamptz,
-          deleted_at timestamp with time zone,
           deleted boolean NOT NULL DEFAULT false
         );
 
@@ -126,7 +119,20 @@ export class InitialDb1594268178814 implements MigrationInterface {
           flag boolean NOT NULL DEFAULT false,
           created_at timestamp with time zone NOT NULL DEFAULT (now() AT TIME ZONE 'utc')::timestamptz,
           updated_at timestamp with time zone NOT NULL DEFAULT (now() AT TIME ZONE 'utc')::timestamptz,
-          deleted_at timestamp with time zone,
+          deleted boolean NOT NULL DEFAULT false
+        );
+
+        CREATE TABLE product(
+          id serial PRIMARY KEY,
+          uuid uuid UNIQUE DEFAULT uuid_generate_v4(),
+          name character varying NOT NULL,
+          short_description character varying NOT NULL,
+          description text NOT NULL,
+          thumbnail character varying NOT NULL,
+          image character varying NOT NULL,
+          price double precision NOT NULL,
+          created_at timestamp with time zone NOT NULL DEFAULT (now() AT TIME ZONE 'utc')::timestamptz,
+          updated_at timestamp with time zone NOT NULL DEFAULT (now() AT TIME ZONE 'utc')::timestamptz,
           deleted boolean NOT NULL DEFAULT false
         );
       `
@@ -143,6 +149,7 @@ export class InitialDb1594268178814 implements MigrationInterface {
         DROP TABLE IF EXISTS permission;
         DROP TABLE IF EXISTS oauth;
         DROP TABLE IF EXISTS blacklisted_token;
+        DROP TABLE IF EXISTS product;
       `
     );
   }

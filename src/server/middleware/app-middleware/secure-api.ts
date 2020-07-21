@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 import Cookies from 'universal-cookie';
-import { ApiResponseWithError } from '@server/modules/api-response';
+import { ApiResponseWithError } from '@modules/api-response';
 import { errorTypes } from '@server/modules/errors';
 import { logger } from '@server/modules/logger';
 import { config } from '@config';
