@@ -5,7 +5,7 @@ import { AxiosError } from 'axios';
 import { useRouter } from 'next/router';
 import { useFormik } from 'formik';
 import { request } from '@modules/request';
-import { Error } from '@server/modules/api-response';
+import { Error } from '@modules/api-response';
 import { Button, Input, PasswordStrength, Alert } from '@components/app';
 import { AlertError, AlertInfo } from '@components/icons';
 import { ServerErrors } from '@components/server-error';

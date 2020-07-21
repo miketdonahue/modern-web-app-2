@@ -1,7 +1,9 @@
 export { Alert } from './alert';
+export { Badge } from './badge';
 export { Button } from './button';
 export { Checkbox } from './checkbox';
 export { Input } from './input';
 export { PasswordStrength } from './password-strength';
+export { ShoppingCart } from './shopping-cart';
 export { Spinner } from './spinner';
 export { Tooltip } from './tooltip';

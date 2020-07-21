@@ -5,7 +5,7 @@ import { AxiosError } from 'axios';
 import { useRouter } from 'next/router';
 import { useFormik } from 'formik';
 import { request } from '@modules/request';
-import { Error } from '@server/modules/api-response';
+import { Error } from '@modules/api-response';
 import { ServerErrors } from '@components/server-error';
 import { Button, Checkbox, Input, Tooltip, Alert } from '@components/app';
 import appLogo from '@public/images/logo-sm.svg';

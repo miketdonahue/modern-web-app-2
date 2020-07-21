@@ -3,6 +3,7 @@ export { AlertInfo } from './alert-info';
 export { CheckMark } from './check-mark';
 export { EyeOpen } from './eye-open';
 export { EyeClosed } from './eye-closed';
+export { ShoppingCart } from './shopping-cart';
 
 // Social icons
 export { Google } from './social/google';

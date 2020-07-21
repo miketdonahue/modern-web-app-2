@@ -1,0 +1,14 @@
+.badge {
+  align-items: center;
+  background-color: theme('colors.green.600');
+  border-radius: 50%;
+  color: theme('colors.white');
+  display: flex;
+  height: theme('height.6');
+  justify-content: center;
+  line-height: 0;
+  position: absolute;
+  right: -8px;
+  top: -8px;
+  width: theme('width.6');
+}
