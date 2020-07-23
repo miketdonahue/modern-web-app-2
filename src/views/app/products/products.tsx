@@ -1,5 +1,5 @@
 import React from 'react';
-// import Link from 'next/link';
+import Link from 'next/link';
 import { getProducts } from '@modules/queries/products';
 import { Product as ProductModel } from '@server/entities/product';
 // import { useRouter } from 'next/router';
@@ -54,7 +54,9 @@ const Products = () => {
             </li>
           </ul>
 
-          <Button>Go to Cart</Button>
+          <Link href="/app/cart" as="/app/cart">
+            <Button>Go to Cart</Button>
+          </Link>
         </Dropdown>
       </div>
       <div className="grid grid-cols-4 gap-4">

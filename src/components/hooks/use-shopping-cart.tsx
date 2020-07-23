@@ -15,10 +15,11 @@ type ShoppingCart = {
   cart: Product[];
   cartTotal: number;
   addCartItem: (item: Product) => void;
+  removeCartItem: (item: Product) => void;
 };
 
 export const useShoppingCart = (): ShoppingCart => {
-  if (typeof window === 'undefined') return undefined as any;
+  if (typeof window === 'undefined') return { cart: [], cartTotal: 0 } as any;
 
   const storage = window.localStorage;
   const [state, setState] = React.useState<CartState>({
@@ -43,7 +44,18 @@ export const useShoppingCart = (): ShoppingCart => {
     const newCart = currentCart.concat(item);
 
     storage.setItem('cart', JSON.stringify(newCart));
-    setState({ ...state, cart: [...state.cart, item] });
+    setState({ ...state, cart: [...state.cart, item], cartTotal: cartTotal() });
+  };
+
+  const removeCartItem = (item: Product) => {
+    const storageCart = storage.getItem('cart') || '[]';
+    const currentCart = JSON.parse(storageCart);
+    const newCart = currentCart.filter(
+      (product: Product) => item.id !== product.id
+    );
+
+    storage.setItem('cart', JSON.stringify(newCart));
+    setState({ ...state, cart: newCart, cartTotal: cartTotal() });
   };
 
   React.useEffect(() => {
@@ -57,5 +69,10 @@ export const useShoppingCart = (): ShoppingCart => {
     }
   }, []);
 
-  return { cart: state.cart, cartTotal: state.cartTotal, addCartItem };
+  return {
+    cart: state.cart,
+    cartTotal: state.cartTotal,
+    addCartItem,
+    removeCartItem,
+  };
 };

@@ -143,7 +143,12 @@ const SendCode = () => {
                 </div>
 
                 <div className="mt-8">
-                  <Button type="submit" variant="primary" loading={isLoading}>
+                  <Button
+                    type="submit"
+                    variant="primary"
+                    loading={isLoading}
+                    fullWidth
+                  >
                     Send code
                   </Button>
                 </div>

@@ -81,7 +81,7 @@ const Login = () => {
               </h1>
             </div>
             <div>
-              <Button component="a" href="/app/oauth/google">
+              <Button component="a" href="/app/oauth/google" fullWidth>
                 <div className="flex items-center justify-center">
                   <Google size={32} />
                   <span className="ml-2">Sign in with Google</span>
@@ -187,7 +187,12 @@ const Login = () => {
                     </Alert>
                   )}
 
-                  <Button type="submit" variant="primary" loading={isLoading}>
+                  <Button
+                    type="submit"
+                    variant="primary"
+                    loading={isLoading}
+                    fullWidth
+                  >
                     Sign in
                   </Button>
                 </div>
