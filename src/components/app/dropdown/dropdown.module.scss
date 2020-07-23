@@ -1,0 +1,37 @@
+.container {
+  position: relative;
+}
+
+.dropdown {
+  position: absolute;
+  top: 25px;
+}
+
+.bottomLeft {
+  left: 0;
+}
+
+.bottomRight {
+  right: 0;
+}
+
+.bottomCenter {
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.dropdownClick {
+  display: inline;
+}
+
+.dropdownHover {
+  display: none;
+}
+
+.dropdownWithHover {
+  &:hover > span {
+    & + div {
+      display: block;
+    }
+  }
+}
