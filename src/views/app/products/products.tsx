@@ -1,39 +1,61 @@
 import React from 'react';
-import Link from 'next/link';
+// import Link from 'next/link';
 import { getProducts } from '@modules/queries/products';
 import { Product as ProductModel } from '@server/entities/product';
-import { AxiosError } from 'axios';
-import { useRouter } from 'next/router';
-import { useFormik } from 'formik';
-import { request } from '@modules/request';
-import { Error } from '@modules/api-response';
-import { ServerErrors } from '@components/server-error';
-import {
-  Button,
-  Checkbox,
-  Input,
-  Tooltip,
-  Alert,
-  Badge,
-  ShoppingCart,
-} from '@components/app';
-import appLogo from '@public/images/logo-sm.svg';
-import { Google, AlertError } from '@components/icons';
+// import { useRouter } from 'next/router';
+import { useShoppingCart } from '@components/hooks/use-shopping-cart';
+import { Button, ShoppingCart, Dropdown } from '@components/app';
 import { Data } from '@modules/api-response/typings';
-import styles from './products.module.scss';
+// import styles from './products.module.scss';
 
 type Product = Data & {
   attributes: ProductModel;
 };
 
 const Products = () => {
-  const { data: response, error, isLoading } = getProducts();
+  const { cart, cartTotal, addCartItem } = useShoppingCart();
+  const { data: response, isLoading } = getProducts();
   const products = response?.data;
 
   return (
     <div className="my-4 mx-8">
       <div className="flex justify-end mb-4">
-        <ShoppingCart count={5} />
+        <Dropdown
+          triggerElement={<ShoppingCart count={5} />}
+          placement="bottom-right"
+          offset={30}
+          className="p-2 shadow-md bg-white space-y-2 rounded-sm"
+        >
+          <ul>
+            {cart?.map((item: Product) => {
+              return (
+                <li key={item.id}>
+                  <div className="flex justify-between space-x-4">
+                    <div className="whitespace-no-wrap">
+                      {item.attributes.name}
+                    </div>
+                    <div>
+                      {item.attributes?.price.toLocaleString('en-US', {
+                        style: 'currency',
+                        currency: 'USD',
+                      })}
+                    </div>
+                  </div>
+                </li>
+              );
+            })}
+
+            <li className="text-right">
+              Total:{' '}
+              {cartTotal.toLocaleString('en-US', {
+                style: 'currency',
+                currency: 'USD',
+              })}
+            </li>
+          </ul>
+
+          <Button>Go to Cart</Button>
+        </Dropdown>
       </div>
       <div className="grid grid-cols-4 gap-4">
         {!isLoading &&
@@ -52,7 +74,7 @@ const Products = () => {
                     currency: 'USD',
                   })}
                 </div>
-                <Button>Buy Now</Button>
+                <Button onClick={() => addCartItem(product)}>Buy Now</Button>
               </div>
             );
           })}

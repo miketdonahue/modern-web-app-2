@@ -14,6 +14,7 @@ export class Product1595200923270 implements MigrationInterface {
       const name = chance.company();
       const shortDescription = chance.paragraph({ sentences: 1 });
       const description = chance.paragraph({ sentences: 5 });
+      const price = chance.floating({ min: 0, max: 100, fixed: 2 });
 
       const index = i + 1;
 
@@ -24,7 +25,7 @@ export class Product1595200923270 implements MigrationInterface {
           description,
           thumbnail: `https://rickandmortyapi.com/api/character/avatar/${index}.jpeg`,
           image: `https://rickandmortyapi.com/api/character/avatar/${index}.jpeg`,
-          price: 19.99,
+          price,
         },
       ]);
     }
