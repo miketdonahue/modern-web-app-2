@@ -10,7 +10,6 @@
   position: relative;
   transition-duration: theme('transitionDuration.300');
   transition-property: theme('transitionProperty.colors');
-  width: 100%;
 
   &:focus {
     box-shadow: theme('boxShadow.outline');
@@ -44,6 +43,10 @@
     background-color: theme('backgroundColor.green.500');
     border-color: theme('colors.green.500');
   }
+}
+
+.fullWidth {
+  width: 100%;
 }
 
 // States

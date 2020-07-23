@@ -210,7 +210,12 @@ const ResetPassword = () => {
                     </Alert>
                   )}
 
-                  <Button type="submit" variant="primary" loading={isLoading}>
+                  <Button
+                    type="submit"
+                    variant="primary"
+                    loading={isLoading}
+                    fullWidth
+                  >
                     Reset my password
                   </Button>
                 </div>

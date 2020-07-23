@@ -9,6 +9,7 @@ interface Button extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: 'default' | 'primary';
   href?: string;
   children: string | JSX.Element;
+  fullWidth?: boolean;
   loading?: boolean;
   disabled?: boolean;
   className?: string;
@@ -24,6 +25,7 @@ const Button = ({
   variant = 'default',
   href,
   children,
+  fullWidth = false,
   loading = false,
   disabled = false,
   className,
@@ -36,6 +38,7 @@ const Button = ({
     {
       [styles.default]: variant === 'default',
       [styles.primary]: variant === 'primary',
+      [styles.fullWidth]: fullWidth,
       [styles.disabled]: disabled,
       [styles.loading]: loading,
       [styles.link]: component === 'a',

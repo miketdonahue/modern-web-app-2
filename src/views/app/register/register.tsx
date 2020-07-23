@@ -70,7 +70,7 @@ const Register = () => {
               </h1>
             </div>
             <div>
-              <Button component="a" href="/app/oauth/google">
+              <Button component="a" href="/app/oauth/google" fullWidth>
                 <div className="flex items-center justify-center">
                   <Google size={32} />
                   <span className="ml-2">Sign up with Google</span>
@@ -186,7 +186,12 @@ const Register = () => {
                     </Alert>
                   )}
 
-                  <Button type="submit" variant="primary" loading={isLoading}>
+                  <Button
+                    type="submit"
+                    variant="primary"
+                    loading={isLoading}
+                    fullWidth
+                  >
                     Sign up
                   </Button>
 
