@@ -1,15 +1,13 @@
 import React from 'react';
+import cx from 'classnames';
 import { ModalContext } from '../../modal-context';
+import styles from './body.module.scss';
 
-const Body = ({ children }: any) => {
+const Body = ({ className, children }: any) => {
   return (
     <ModalContext.Consumer>
       {() => {
-        return (
-          <div>
-            <div>{children}</div>
-          </div>
-        );
+        return <div className={cx(styles.body, className)}>{children}</div>;
       }}
     </ModalContext.Consumer>
   );

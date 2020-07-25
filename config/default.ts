@@ -21,7 +21,11 @@ export default {
     },
     auth: {
       enabled: true,
-      confirmable: true,
+      confirmable: false,
+      lockable: {
+        enabled: true,
+        maxAttempts: 5,
+      },
       cookieExpiresIn: '14', // time in days
       jwt: {
         secret: process.env.JWT_SECRET,
@@ -33,10 +37,6 @@ export default {
       codes: {
         // time in minutes
         expireTime: 30,
-      },
-      lockable: {
-        enabled: true,
-        maxAttempts: 5,
       },
       securityQuestions: {
         number: 3,

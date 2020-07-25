@@ -73,10 +73,12 @@ const registerActor = async (req: Request, res: Response) => {
       logger.info('AUTH-CONTROLLER: Creating actor account');
       const createdActorAccount = await db.create(ActorAccount, {
         actor_id: createdActor.uuid,
-        confirmed_code: config.server.auth.confirmable ? generateCode() : null,
-        confirmed_expires: String(
-          addMinutes(new Date(), config.server.auth.codes.expireTime)
-        ),
+        ...(config.server.auth.confirmable && {
+          confirmed_code: generateCode(),
+          confirmed_expires: String(
+            addMinutes(new Date(), config.server.auth.codes.expireTime)
+          ),
+        }),
         last_visit: new Date(),
         ip: req.ip,
       });
@@ -289,7 +291,7 @@ const loginActor = async (req: Request, res: Response) => {
     return res.status(400).json(errorResponse);
   }
 
-  if (!actorAccount.confirmed) {
+  if (config.server.auth.confirmable && !actorAccount.confirmed) {
     logger.info('AUTH-CONTROLLER: Signing actor id token');
     const actorIdToken = jwt.sign(
       { actor_id: actor.uuid },
@@ -307,10 +309,12 @@ const loginActor = async (req: Request, res: Response) => {
       ActorAccount,
       { uuid: actorAccount.uuid },
       {
-        confirmed_code: generateCode(),
-        confirmed_expires: String(
-          addMinutes(new Date(), config.server.auth.codes.expireTime)
-        ),
+        ...(config.server.auth.confirmable && {
+          confirmed_code: generateCode(),
+          confirmed_expires: String(
+            addMinutes(new Date(), config.server.auth.codes.expireTime)
+          ),
+        }),
       }
     );
 

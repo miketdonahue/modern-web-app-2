@@ -6,6 +6,8 @@ import { useShoppingCart } from '@components/hooks/use-shopping-cart';
 import { isAuthenticated } from '@modules/queries/auth';
 import { Button, Modal } from '@components/app';
 import { Data, Error } from '@modules/api-response/typings';
+import { SignInForm } from '../login/partials/sign-in-form';
+import { SignUpForm } from '../register/partials/sign-up-form';
 // import styles from './cart.module.scss';
 
 type Product = Data & {
@@ -16,6 +18,7 @@ const Cart = () => {
   const { cart, cartTotal, removeCartItem } = useShoppingCart();
   const [showModal, setShowModal] = React.useState(false);
   const [checkingOut, setCheckingOut] = React.useState(false);
+  const [isRegisterView, setRegisterView] = React.useState(false);
 
   isAuthenticated({
     enabled: checkingOut,
@@ -28,6 +31,10 @@ const Cart = () => {
       });
     },
   });
+
+  const toggleAuthView = () => {
+    setRegisterView(!isRegisterView);
+  };
 
   return (
     <div>
@@ -70,7 +77,21 @@ const Cart = () => {
           Header
           <Modal.Close>X</Modal.Close>
         </Modal.Header>
-        <Modal.Body>Body</Modal.Body>
+        <Modal.Body>
+          <div className="py-4 px-8">
+            {isRegisterView ? (
+              <SignUpForm
+                successUrl="/app/cart/checkout"
+                onLogin={toggleAuthView}
+              />
+            ) : (
+              <SignInForm
+                successUrl="/app/cart/checkout"
+                onRegister={toggleAuthView}
+              />
+            )}
+          </div>
+        </Modal.Body>
         <Modal.Footer>Footer</Modal.Footer>
       </Modal>
 

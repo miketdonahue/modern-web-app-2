@@ -12,7 +12,7 @@ export default merge(
       },
       auth: {
         enabled: true,
-        confirmable: true,
+        confirmable: false,
         lockable: {
           enabled: true,
         },
