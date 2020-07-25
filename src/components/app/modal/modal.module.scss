@@ -14,8 +14,12 @@
 .modal {
   background: theme('colors.white');
   border-radius: theme('borderRadius.sm');
+  display: flex;
+  flex-direction: column;
+  height: 100%;
   height: auto;
   left: 50%;
+  max-height: 80%;
   position: fixed;
   top: 50%;
   transform: translate(-50%, -50%);
