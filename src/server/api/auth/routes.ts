@@ -33,5 +33,10 @@ export default {
       method: 'post',
       controller: controller.sendCode,
     },
+    {
+      path: '/authenticated',
+      method: 'get',
+      controller: controller.isAuthenticated,
+    },
   ],
 };

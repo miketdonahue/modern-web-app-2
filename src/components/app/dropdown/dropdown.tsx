@@ -1,6 +1,6 @@
 import React from 'react';
 import cx from 'classnames';
-import { OutsideClick } from '../outside-click';
+import { HandleOutsideClose } from '../outside-click';
 import styles from './dropdown.module.scss';
 
 type Dropdown = {
@@ -52,7 +52,7 @@ const Dropdown = ({
 
   return (
     <div className={containerClasses}>
-      <OutsideClick onOutsideClick={() => setIsOpen(false)}>
+      <HandleOutsideClose onHandleOutsideClose={() => setIsOpen(false)}>
         <TriggerElement
           onClick={isClickBehavior ? () => setIsOpen(!isOpen) : null}
         >
@@ -63,7 +63,7 @@ const Dropdown = ({
           {isClickBehavior && isOpen && children}
           {!isClickBehavior && children}
         </div>
-      </OutsideClick>
+      </HandleOutsideClose>
     </div>
   );
 };

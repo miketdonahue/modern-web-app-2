@@ -12,6 +12,7 @@ import {
   ApiResponseWithData,
   ApiResponseWithError,
 } from '@modules/api-response';
+import { verifyJwt } from '@server/middleware/app-middleware/secure-page';
 import { errorTypes } from '@server/modules/errors';
 import { Actor } from '@server/entities/actor';
 import { ActorAccount } from '@server/entities/actor-account';
@@ -692,6 +693,32 @@ const logoutActor = async (req: Request, res: Response) => {
   return res.end();
 };
 
+/**
+ * Checks if a user is authenticated
+ */
+const isAuthenticated = async (req: Request, res: Response) => {
+  return verifyJwt(req, (err: any) => {
+    if (err) {
+      const errorResponse: ApiResponseWithError = {
+        error: [
+          {
+            status: '401',
+            code: errorTypes.UNAUTHENTICATED.code,
+            detail: errorTypes.UNAUTHENTICATED.detail,
+            meta: {
+              bypassFailureRedirect: true,
+            },
+          },
+        ],
+      };
+
+      return res.status(401).json(errorResponse);
+    }
+
+    return res.end();
+  });
+};
+
 export {
   registerActor,
   confirmCode,
@@ -699,4 +726,5 @@ export {
   resetPassword,
   sendCode,
   logoutActor,
+  isAuthenticated,
 };

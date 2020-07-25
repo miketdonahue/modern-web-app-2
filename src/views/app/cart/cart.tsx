@@ -3,8 +3,9 @@ import React from 'react';
 import { Product as ProductModel } from '@server/entities/product';
 // import { useRouter } from 'next/router';
 import { useShoppingCart } from '@components/hooks/use-shopping-cart';
-import { Button } from '@components/app';
-import { Data } from '@modules/api-response/typings';
+import { isAuthenticated } from '@modules/queries/auth';
+import { Button, Modal } from '@components/app';
+import { Data, Error } from '@modules/api-response/typings';
 // import styles from './cart.module.scss';
 
 type Product = Data & {
@@ -13,6 +14,20 @@ type Product = Data & {
 
 const Cart = () => {
   const { cart, cartTotal, removeCartItem } = useShoppingCart();
+  const [showModal, setShowModal] = React.useState(false);
+  const [checkingOut, setCheckingOut] = React.useState(false);
+
+  isAuthenticated({
+    enabled: checkingOut,
+    onError: (error) => {
+      return error?.response?.data?.error.map((e: Error) => {
+        if (e.code === 'UNAUTHENTICATED') {
+          setShowModal(true);
+          setCheckingOut(false);
+        }
+      });
+    },
+  });
 
   return (
     <div>
@@ -50,7 +65,22 @@ const Cart = () => {
         })}
       </div>
 
-      <Button className="mt-4">Checkout</Button>
+      <Modal show={showModal} onClose={() => setShowModal(false)}>
+        <Modal.Header>
+          Header
+          <Modal.Close>X</Modal.Close>
+        </Modal.Header>
+        <Modal.Body>Body</Modal.Body>
+        <Modal.Footer>Footer</Modal.Footer>
+      </Modal>
+
+      <Button
+        href="/app/cart/checkout"
+        className="mt-4"
+        onClick={() => setCheckingOut(true)}
+      >
+        Checkout
+      </Button>
     </div>
   );
 };

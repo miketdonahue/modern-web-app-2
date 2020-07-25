@@ -1,13 +1,7 @@
 import { Request, Response } from 'express';
 import { getManager } from '@server/modules/db-manager';
-import { logger } from '@server/modules/logger';
-import {
-  resourceTypes,
-  ApiResponseWithData,
-  ApiResponseWithError,
-} from '@modules/api-response';
+import { resourceTypes, ApiResponseWithData } from '@modules/api-response';
 import { Product } from '@server/entities/product';
-import { errorTypes } from '@server/modules/errors';
 
 /**
  * Get all products
