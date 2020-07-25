@@ -1,0 +1,38 @@
+.grid {
+  display: grid;
+  grid-template-columns: 1fr;
+
+  @media screen and (min-width: theme('screens.1024')) {
+    grid-template-columns: 1fr 32rem;
+  }
+}
+
+.gridLeft {
+  grid-column: 1 / 2;
+}
+
+.gridRight {
+  display: none;
+
+  @media screen and (min-width: theme('screens.1024')) {
+    background-image: url('/images/auth-bg.png');
+    background-size: 100% 100%;
+    background-size: cover;
+    display: block;
+    grid-column: 2 / 3;
+  }
+}
+
+.loginGrid {
+  align-items: center;
+  display: grid;
+  grid-column-gap: 1rem;
+  grid-template-columns: minmax(0, 1fr);
+  height: 100vh;
+  margin: 1rem;
+
+  @media screen and (min-width: theme('screens.480')) {
+    margin: auto;
+    max-width: theme('screens.360');
+  }
+}

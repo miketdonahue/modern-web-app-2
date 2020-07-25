@@ -10,7 +10,20 @@ import '../styles/core/app-base.scss';
 const reactQueryConfig = {
   queries: {
     retry: (failureCount: number, error: any) => {
-      if (error?.response?.status === 401) {
+      const unauthorizedError = error.response.data.error.find(
+        (err: any) => err.status === '401'
+      );
+
+      /*
+        If bypass failure redirect is set do not redirect, but also fail immediately
+        because the request should not be retried
+      */
+      if (unauthorizedError && unauthorizedError.meta.bypassFailureRedirect) {
+        return false;
+      }
+
+      /* If the error is a 401 unauthenticated, redirect to login */
+      if (unauthorizedError && !unauthorizedError.meta.bypassFailureRedirect) {
         /* Ensure actor is logged out when client-side XHR is unauthenticated */
         request.post('/api/v1/auth/logout');
         Router.push('/app/login');
