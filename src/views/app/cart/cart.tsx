@@ -15,10 +15,10 @@ type Product = Data & {
 };
 
 const Cart = () => {
-  const { cart, cartTotal, removeCartItem } = useShoppingCart();
+  const { items, total, removeCartItem } = useShoppingCart();
   const [showModal, setShowModal] = React.useState(false);
   const [checkingOut, setCheckingOut] = React.useState(false);
-  const [isRegisterView, setRegisterView] = React.useState(false);
+  const [isRegisterView, setRegisterView] = React.useState(true);
 
   isAuthenticated({
     enabled: checkingOut,
@@ -32,6 +32,11 @@ const Cart = () => {
     },
   });
 
+  const handleCloseModal = () => {
+    setShowModal(false);
+    setRegisterView(true);
+  };
+
   const toggleAuthView = () => {
     setRegisterView(!isRegisterView);
   };
@@ -39,7 +44,7 @@ const Cart = () => {
   return (
     <div>
       <ul>
-        {cart?.map((item: Product) => {
+        {items?.map((item: Product) => {
           return (
             <li key={item.id} className="flex space-x-8">
               <div>
@@ -66,13 +71,13 @@ const Cart = () => {
 
       <div className="mt-8">
         Subtotal:{' '}
-        {cartTotal.toLocaleString('en-US', {
+        {total.toLocaleString('en-US', {
           style: 'currency',
           currency: 'USD',
         })}
       </div>
 
-      <Modal show={showModal} onClose={() => setShowModal(false)}>
+      <Modal show={showModal} onClose={handleCloseModal}>
         <Modal.Header>
           Header
           <Modal.Close>X</Modal.Close>

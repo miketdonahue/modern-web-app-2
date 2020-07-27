@@ -1,3 +1,9 @@
+type OneProp<T> = {
+  [P in keyof T]-?: Record<P, T[P]>;
+}[keyof T];
+
+type RequireAtLeastOne<T> = T & OneProp<T>;
+
 interface Link {
   href?: string;
   meta?: {
@@ -18,10 +24,20 @@ export interface Data {
   id: string;
   type: string;
   attributes?: {
-    [key: string]: string & { relationships?: never; links?: never };
+    [key: string]: (string | number) & { relationships?: never; links?: never };
   };
-  relationships?: Pick<Relationships, 'links' | 'data' | 'meta'>;
-  links?: Pick<Links, 'self' | 'related'>;
+  relationships?: {
+    [key: string]: RequireAtLeastOne<Relationships>;
+  };
+  links?: RequireAtLeastOne<Links>;
+  meta?: {
+    [key: string]: any;
+  };
+}
+
+interface RelationshipData {
+  id: string;
+  type: string;
   meta?: {
     [key: string]: any;
   };
@@ -29,7 +45,7 @@ export interface Data {
 
 interface Relationships {
   links?: Links;
-  data?: Data | Data[] | null | [];
+  data?: RelationshipData | RelationshipData[] | null | [];
   meta?: {
     [key: string]: any;
   };

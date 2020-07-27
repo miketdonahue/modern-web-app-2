@@ -31,4 +31,8 @@ export const errorTypes = {
     detail:
       'Unfortunately, your code has expired. We have sent a new code to your email.',
   },
+  INVALID_CART_ITEMS: {
+    code: 'INVALID_CART_ITEMS',
+    detail: 'Oops, there is an error with your cart. Please try again later.',
+  },
 };
