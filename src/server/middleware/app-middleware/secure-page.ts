@@ -42,7 +42,7 @@ const securePageMiddleware = (
     logger.info(`AUTHENTICATE-MIDDLEWARE: Authenticating user`);
 
     // Add the decoded actor to req for continued access
-    (req as any).user = decoded;
+    (req as any).actor = decoded;
     return next();
   });
 };

@@ -15,9 +15,18 @@ export class InitialDb1594268178814 implements MigrationInterface {
           'google'
         );
 
+        CREATE TYPE cart_status_enum AS ENUM (
+          'new',
+          'active',
+          'checkout',
+          'paid',
+          'completed',
+          'abandoned'
+        );
+
         CREATE TABLE role(
-          id serial PRIMARY KEY,
-          uuid uuid UNIQUE DEFAULT uuid_generate_v4(),
+          id serial,
+          uuid uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
           name role_enum NOT NULL,
           permissions character varying [],
           prohibited_routes jsonb,
@@ -27,8 +36,8 @@ export class InitialDb1594268178814 implements MigrationInterface {
         );
 
         CREATE TABLE actor(
-          id serial PRIMARY KEY,
-          uuid uuid UNIQUE DEFAULT uuid_generate_v4(),
+          id serial,
+          uuid uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
           role_id uuid NOT NULL,
           customer_id uuid,
           first_name character varying,
@@ -49,8 +58,8 @@ export class InitialDb1594268178814 implements MigrationInterface {
         );
 
         CREATE TABLE actor_account(
-          id serial PRIMARY KEY,
-          uuid uuid UNIQUE DEFAULT uuid_generate_v4(),
+          id serial,
+          uuid uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
           actor_id uuid NOT NULL,
           confirmed boolean NOT NULL DEFAULT false,
           confirmed_code character varying,
@@ -72,8 +81,8 @@ export class InitialDb1594268178814 implements MigrationInterface {
         );
 
         CREATE TABLE customer(
-          id serial PRIMARY KEY,
-          uuid uuid UNIQUE DEFAULT uuid_generate_v4(),
+          id serial,
+          uuid uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
           actor_id uuid NOT NULL,
           stripe_id character varying NOT NULL,
           created_at timestamp with time zone NOT NULL DEFAULT (now() AT TIME ZONE 'utc')::timestamptz,
@@ -82,8 +91,8 @@ export class InitialDb1594268178814 implements MigrationInterface {
         );
 
         CREATE TABLE permission(
-          id serial PRIMARY KEY,
-          uuid uuid UNIQUE DEFAULT uuid_generate_v4(),
+          id serial,
+          uuid uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
           name character varying NOT NULL UNIQUE,
           key character varying NOT NULL UNIQUE,
           roles character varying [],
@@ -93,8 +102,8 @@ export class InitialDb1594268178814 implements MigrationInterface {
         );
 
         CREATE TABLE oauth(
-          id serial PRIMARY KEY,
-          uuid uuid UNIQUE DEFAULT uuid_generate_v4(),
+          id serial,
+          uuid uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
           actor_id uuid NOT NULL,
           provider provider_enum NOT NULL,
           refresh_token character varying,
@@ -105,8 +114,8 @@ export class InitialDb1594268178814 implements MigrationInterface {
         );
 
         CREATE TABLE blacklisted_token(
-          id serial PRIMARY KEY,
-          uuid uuid UNIQUE DEFAULT uuid_generate_v4(),
+          id serial,
+          uuid uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
           token character varying NOT NULL,
           created_at timestamp with time zone NOT NULL DEFAULT (now() AT TIME ZONE 'utc')::timestamptz,
           updated_at timestamp with time zone NOT NULL DEFAULT (now() AT TIME ZONE 'utc')::timestamptz,
@@ -123,14 +132,36 @@ export class InitialDb1594268178814 implements MigrationInterface {
         );
 
         CREATE TABLE product(
-          id serial PRIMARY KEY,
-          uuid uuid UNIQUE DEFAULT uuid_generate_v4(),
+          id serial,
+          uuid uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
           name character varying NOT NULL,
           short_description character varying NOT NULL,
           description text NOT NULL,
           thumbnail character varying NOT NULL,
           image character varying NOT NULL,
           price double precision NOT NULL,
+          discount float DEFAULT 0.0,
+          created_at timestamp with time zone NOT NULL DEFAULT (now() AT TIME ZONE 'utc')::timestamptz,
+          updated_at timestamp with time zone NOT NULL DEFAULT (now() AT TIME ZONE 'utc')::timestamptz,
+          deleted boolean NOT NULL DEFAULT false
+        );
+
+        CREATE TABLE cart(
+          id serial,
+          uuid uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
+          actor_id uuid NOT NULL,
+          status cart_status_enum NOT NULL,
+          created_at timestamp with time zone NOT NULL DEFAULT (now() AT TIME ZONE 'utc')::timestamptz,
+          updated_at timestamp with time zone NOT NULL DEFAULT (now() AT TIME ZONE 'utc')::timestamptz,
+          deleted boolean NOT NULL DEFAULT false
+        );
+
+        CREATE TABLE cart_item(
+          id serial,
+          uuid uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
+          cart_id uuid NOT NULL,
+          product_id uuid NOT NULL,
+          quantity integer NOT NULL,
           created_at timestamp with time zone NOT NULL DEFAULT (now() AT TIME ZONE 'utc')::timestamptz,
           updated_at timestamp with time zone NOT NULL DEFAULT (now() AT TIME ZONE 'utc')::timestamptz,
           deleted boolean NOT NULL DEFAULT false
@@ -150,6 +181,8 @@ export class InitialDb1594268178814 implements MigrationInterface {
         DROP TABLE IF EXISTS oauth;
         DROP TABLE IF EXISTS blacklisted_token;
         DROP TABLE IF EXISTS product;
+        DROP TABLE IF EXISTS cart;
+        DROP TABLE IF EXISTS cart_item;
       `
     );
   }

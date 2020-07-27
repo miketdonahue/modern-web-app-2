@@ -7,7 +7,7 @@ import {
 } from 'typeorm';
 
 export abstract class BaseTable {
-  @PrimaryGeneratedColumn()
+  @Column('integer')
   public id: number;
 
   @PrimaryGeneratedColumn('uuid')

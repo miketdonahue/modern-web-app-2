@@ -13,7 +13,7 @@ type Product = Data & {
 };
 
 const Products = () => {
-  const { cart, cartTotal, addCartItem } = useShoppingCart();
+  const { items, total, addCartItem } = useShoppingCart();
   const { data: response, isLoading } = getProducts();
   const products = response?.data;
 
@@ -27,7 +27,7 @@ const Products = () => {
           className="p-2 shadow-md bg-white space-y-2 rounded-sm"
         >
           <ul>
-            {cart?.map((item: Product) => {
+            {items?.map((item: Product) => {
               return (
                 <li key={item.id}>
                   <div className="flex justify-between space-x-4">
@@ -47,7 +47,7 @@ const Products = () => {
 
             <li className="text-right">
               Total:{' '}
-              {cartTotal.toLocaleString('en-US', {
+              {total.toLocaleString('en-US', {
                 style: 'currency',
                 currency: 'USD',
               })}

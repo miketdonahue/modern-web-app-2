@@ -20,4 +20,7 @@ export class Product extends BaseTable {
 
   @Column('double precision')
   public price: number;
+
+  @Column('float', { default: 0 })
+  public discount: number;
 }

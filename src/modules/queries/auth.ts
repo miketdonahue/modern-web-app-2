@@ -5,7 +5,7 @@ import { request } from '@modules/request';
 const isAuthenticated = (options?: BaseQueryOptions<unknown, AxiosError>) => {
   const url = '/api/v1/auth/authenticated';
 
-  const variables = useQuery(
+  return useQuery(
     url,
     async () => {
       const response = await request.get(url);
@@ -13,8 +13,6 @@ const isAuthenticated = (options?: BaseQueryOptions<unknown, AxiosError>) => {
     },
     options || {}
   );
-
-  return { ...variables };
 };
 
 export { isAuthenticated };
