@@ -10,9 +10,7 @@ import { SignInForm } from '../login/partials/sign-in-form';
 import { SignUpForm } from '../register/partials/sign-up-form';
 // import styles from './cart.module.scss';
 
-type Product = Data & {
-  attributes: ProductModel;
-};
+type Product = Data<ProductModel>;
 
 const Cart = () => {
   const { items, total, removeCartItem } = useShoppingCart();
@@ -49,17 +47,17 @@ const Cart = () => {
             <li key={item.id} className="flex space-x-8">
               <div>
                 <img
-                  src={item.attributes.thumbnail}
-                  alt={item.attributes.name}
+                  src={item.attributes?.thumbnail}
+                  alt={item.attributes?.name}
                   width="75"
                 />
               </div>
-              <div>{item.attributes.name}</div>
+              <div>{item.attributes?.name}</div>
               <button type="button" onClick={() => removeCartItem(item)}>
                 Remove
               </button>
               <div>
-                {item.attributes.price.toLocaleString('en-US', {
+                {item.attributes?.price.toLocaleString('en-US', {
                   style: 'currency',
                   currency: 'USD',
                 })}

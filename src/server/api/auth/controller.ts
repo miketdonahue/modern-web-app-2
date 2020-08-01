@@ -8,10 +8,10 @@ import { getManager } from '@server/modules/db-manager';
 import generateCode from '@server/modules/code';
 import { logger } from '@server/modules/logger';
 import {
-  resourceTypes,
   ApiResponseWithData,
   ApiResponseWithError,
 } from '@modules/api-response';
+import { Token } from '@modules/types/entities';
 import { verifyJwt } from '@server/middleware/app-middleware/secure-page';
 import { errorTypes } from '@server/modules/errors';
 import { Actor } from '@server/entities/actor';
@@ -125,7 +125,7 @@ const registerActor = async (req: Request, res: Response) => {
   await sendEmail(actor, emails.CONFIRM_EMAIL);
 
   const response: ApiResponseWithData = {
-    data: { id: actor.uuid, type: resourceTypes.ACTOR },
+    data: { id: actor.uuid },
   };
 
   return res.json(response);
@@ -249,7 +249,7 @@ const confirmCode = async (req: Request, res: Response) => {
   res.cookie('actor', '', { expires: new Date(0) });
 
   const response: ApiResponseWithData = {
-    data: { id: actorAccount.actor_id, type: resourceTypes.ACTOR },
+    data: { id: actorAccount.actor_id },
   };
 
   return res.json(response);
@@ -453,10 +453,9 @@ const loginActor = async (req: Request, res: Response) => {
     ...(req.body.rememberMe && { expires: rememberMeDate }),
   });
 
-  const response: ApiResponseWithData = {
+  const response: ApiResponseWithData<Token> = {
     data: {
       id: actor.uuid,
-      type: resourceTypes.ACTOR,
       attributes: { token },
     },
   };
@@ -574,7 +573,7 @@ const resetPassword = async (req: Request, res: Response) => {
   res.cookie('actor', '', { expires: new Date(0) });
 
   const response: ApiResponseWithData = {
-    data: { id: actorAccount.actor_id, type: resourceTypes.ACTOR },
+    data: { id: actorAccount.actor_id },
   };
 
   return res.json(response);
@@ -671,7 +670,6 @@ const sendCode = async (req: Request, res: Response) => {
   const response: ApiResponseWithData = {
     data: {
       id: updatedActor.uuid,
-      type: resourceTypes.ACTOR,
     },
   };
 

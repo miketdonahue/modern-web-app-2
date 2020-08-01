@@ -1,8 +1,7 @@
 import { Request, Response } from 'express';
 import { getManager } from '@server/modules/db-manager';
-import { resourceTypes, ApiResponseWithData } from '@modules/api-response';
+import { ApiResponseWithData } from '@modules/api-response';
 import { Product } from '@server/entities/product';
-import { config } from '@config';
 
 /**
  * Get all products
@@ -14,7 +13,6 @@ const getProducts = async (req: Request, res: Response) => {
   const productsForResponse = products.map((product: any) => {
     return {
       id: product.uuid,
-      type: resourceTypes.PRODUCT,
       attributes: {
         name: product.name,
         shortDescription: product.short_description,
@@ -22,17 +20,11 @@ const getProducts = async (req: Request, res: Response) => {
         image: product.image,
         price: product.price,
       },
-      links: {
-        self: `${config.server.domain}/api/v1/products/${product.uuid}`,
-      },
     };
   });
 
-  const response: ApiResponseWithData = {
+  const response: ApiResponseWithData<Product> = {
     data: [...productsForResponse],
-    links: {
-      self: `${config.server.domain}/api/v1/products`,
-    },
   };
 
   return res.json(response);

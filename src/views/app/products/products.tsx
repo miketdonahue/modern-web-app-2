@@ -8,9 +8,7 @@ import { Button, ShoppingCart, Dropdown } from '@components/app';
 import { Data } from '@modules/api-response/typings';
 // import styles from './products.module.scss';
 
-type Product = Data & {
-  attributes: ProductModel;
-};
+type Product = Data<ProductModel>;
 
 const Products = () => {
   const { items, total, addCartItem } = useShoppingCart();
@@ -32,7 +30,7 @@ const Products = () => {
                 <li key={item.id}>
                   <div className="flex justify-between space-x-4">
                     <div className="whitespace-no-wrap">
-                      {item.attributes.name}
+                      {item.attributes?.name}
                     </div>
                     <div>
                       {item.attributes?.price.toLocaleString('en-US', {

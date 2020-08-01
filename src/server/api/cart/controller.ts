@@ -5,16 +5,13 @@ import { Cart } from '@server/entities/cart';
 import { CartItem } from '@server/entities/cart-item';
 import { Product as ProductModel } from '@server/entities/product';
 import {
-  resourceTypes,
   ApiResponseWithData,
   ApiResponseWithError,
   Data,
 } from '@modules/api-response';
 import { errorTypes } from '@server/modules/errors';
 
-type Product = Data & {
-  attributes: ProductModel;
-};
+type Product = Data<ProductModel>;
 
 /**
  * Get the user's own cart
@@ -38,10 +35,9 @@ const createCart = async (req: Request, res: Response) => {
       'CART-CONTROLLER: Found existing cart'
     );
 
-    const response: ApiResponseWithData = {
+    const response: ApiResponseWithData<Partial<Cart>> = {
       data: {
         id: existingCart.uuid,
-        type: resourceTypes.CART,
         attributes: { status: existingCart.status },
       },
     };
@@ -61,10 +57,9 @@ const createCart = async (req: Request, res: Response) => {
 
   await db.save(createdCart);
 
-  const response: ApiResponseWithData = {
+  const response: ApiResponseWithData<Partial<Cart>> = {
     data: {
       id: createdCart.uuid,
-      type: resourceTypes.CART,
       attributes: { status: createdCart.status },
     },
   };
@@ -105,12 +100,11 @@ const createCartItems = async (req: Request, res: Response) => {
     const responseItems = createdCartItems.map((item: CartItem) => {
       return {
         id: item.uuid,
-        type: resourceTypes.CART_ITEM,
         attributes: { quantity: item.quantity },
       };
     });
 
-    const response: ApiResponseWithData = {
+    const response: ApiResponseWithData<Partial<CartItem>> = {
       data: responseItems,
     };
 
