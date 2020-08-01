@@ -9,15 +9,15 @@ interface ProhibitedRoutes {
   paths?: string[];
 }
 
-export enum RoleName {
-  ADMIN = 'admin',
-  ACTOR = 'actor',
-}
+export const ROLE_NAME = {
+  ADMIN: 'admin',
+  ACTOR: 'actor',
+};
 
 @Entity('role')
 export class Role extends BaseTable {
-  @Column('enum', { enum: RoleName, default: RoleName.ACTOR })
-  public name: RoleName;
+  @Column('character varying', { default: ROLE_NAME.ACTOR })
+  public name: string;
 
   @Column('character varying', { array: true, nullable: true })
   public permissions: Permission[];

@@ -7,8 +7,8 @@ import generateCode from '@server/modules/code';
 import { logger } from '@server/modules/logger';
 import { Actor } from '@server/entities/actor';
 import { ActorAccount } from '@server/entities/actor-account';
-import { Role, RoleName } from '@server/entities/role';
-import { Oauth, ProviderName } from '@server/entities/oauth';
+import { Role, ROLE_NAME } from '@server/entities/role';
+import { Oauth, PROVIDER_NAME } from '@server/entities/oauth';
 import { config } from '@config';
 import { transformRoleForToken } from '@server/modules/utilities';
 
@@ -16,7 +16,7 @@ const isDev = process.env.NODE_ENV !== 'production';
 const dbConnectionName = isDev ? 'development' : 'production';
 
 const oauthConfig = {
-  callbackUrl: 'http://localhost:8080/app/oauth/google/callback',
+  callbackUrl: `${config.server.domain}/app/oauth/google/callback`,
   successRedirect: '/app',
   failureRedirect: '/app/login',
 };
@@ -100,7 +100,7 @@ export const verify = {
 
     if (!actor) {
       const role: any = await db.manager.findOne(Role, {
-        name: RoleName.ACTOR,
+        name: ROLE_NAME.ACTOR,
       });
 
       logger.info(
@@ -131,7 +131,7 @@ export const verify = {
     try {
       const existingOauth = await db.manager.findOne(Oauth, {
         actor_id: actor.uuid,
-        provider: ProviderName.GOOGLE,
+        provider: PROVIDER_NAME.GOOGLE,
       });
 
       if (existingOauth) {
@@ -156,7 +156,7 @@ export const verify = {
 
         await db.manager.insert(Oauth, {
           actor_id: actor.uuid,
-          provider: ProviderName.GOOGLE,
+          provider: PROVIDER_NAME.GOOGLE,
           refresh_token: refreshToken,
           expires_at: new Date(expiresAt),
         });

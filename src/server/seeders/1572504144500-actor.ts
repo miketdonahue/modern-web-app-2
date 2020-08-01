@@ -4,7 +4,7 @@ import argon2 from 'argon2';
 import { Chance } from 'chance';
 import { Actor } from '@server/entities/actor';
 import { ActorAccount } from '@server/entities/actor-account';
-import { Role, RoleName } from '@server/entities/role';
+import { Role, ROLE_NAME } from '@server/entities/role';
 
 const chance = new Chance();
 const numberOfActors = 5;
@@ -12,7 +12,7 @@ const numberOfActors = 5;
 export class Actor1572504144500 implements MigrationInterface {
   public up = async (): Promise<any> => {
     const db = getManager('seed');
-    const role = await db.findOne(Role, { name: RoleName.ACTOR });
+    const role = await db.findOne(Role, { name: ROLE_NAME.ACTOR });
 
     const password = await argon2.hash('Welcome123', {
       timeCost: 2000,
