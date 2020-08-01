@@ -2,9 +2,7 @@ import React from 'react';
 import { Data } from '@modules/api-response/typings';
 import { Product as ProductModel } from '@server/entities/product';
 
-type Product = Data & {
-  attributes: ProductModel;
-};
+type Product = Data<ProductModel>;
 
 type CartState = {
   items: Product[];
@@ -33,7 +31,7 @@ export const useShoppingCart = (): ShoppingCart => {
   const getCartTotal = (items: Product[] = []) => {
     return items.reduce((acc: number, item: Product) => {
       let result = acc;
-      result += item.attributes.price;
+      result += item.attributes?.price || 0;
       return Number(result.toFixed(2));
     }, 0);
   };
