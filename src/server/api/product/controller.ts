@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import { getManager } from '@server/modules/db-manager';
 import { resourceTypes, ApiResponseWithData } from '@modules/api-response';
 import { Product } from '@server/entities/product';
+import { config } from '@config';
 
 /**
  * Get all products
@@ -22,7 +23,7 @@ const getProducts = async (req: Request, res: Response) => {
         price: product.price,
       },
       links: {
-        self: `http://localhost:8080/api/v1/products/${product.uuid}`,
+        self: `${config.server.domain}/api/v1/products/${product.uuid}`,
       },
     };
   });
@@ -30,7 +31,7 @@ const getProducts = async (req: Request, res: Response) => {
   const response: ApiResponseWithData = {
     data: [...productsForResponse],
     links: {
-      self: 'http://localhost:8080/api/v1/products',
+      self: `${config.server.domain}/api/v1/products`,
     },
   };
 

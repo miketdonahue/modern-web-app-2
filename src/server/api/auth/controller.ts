@@ -16,7 +16,7 @@ import { verifyJwt } from '@server/middleware/app-middleware/secure-page';
 import { errorTypes } from '@server/modules/errors';
 import { Actor } from '@server/entities/actor';
 import { ActorAccount } from '@server/entities/actor-account';
-import { Role, RoleName } from '@server/entities/role';
+import { Role, ROLE_NAME } from '@server/entities/role';
 import { BlacklistedToken } from '@server/entities/blacklisted-token';
 import { sendEmail } from '@server/modules/mailer';
 import * as emails from '@server/modules/mailer/emails';
@@ -49,7 +49,7 @@ const registerActor = async (req: Request, res: Response) => {
     return res.status(400).json(errorResponse);
   }
 
-  const role = await db.findOne(Role, { name: RoleName.ACTOR });
+  const role = await db.findOne(Role, { name: ROLE_NAME.ACTOR });
 
   logger.info('AUTH-CONTROLLER: Hashing password');
   const password = await argon2.hash(req.body.password, {
@@ -261,7 +261,7 @@ const confirmCode = async (req: Request, res: Response) => {
 const loginActor = async (req: Request, res: Response) => {
   const db = getManager();
 
-  const role = await db.findOne(Role, { name: RoleName.ACTOR });
+  const role = await db.findOne(Role, { name: ROLE_NAME.ACTOR });
   const actor = await db.findOne(Actor, { email: req.body.email });
   const [actorAccount] = await db.query(
     `

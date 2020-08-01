@@ -1,5 +1,5 @@
 import { MigrationInterface, getManager } from 'typeorm';
-import { Role, RoleName } from '@server/entities/role';
+import { Role, ROLE_NAME } from '@server/entities/role';
 
 export class Role1572501311627 implements MigrationInterface {
   public up = async (): Promise<any> => {
@@ -7,10 +7,10 @@ export class Role1572501311627 implements MigrationInterface {
 
     await db.insert(Role, [
       {
-        name: RoleName.ADMIN,
+        name: ROLE_NAME.ADMIN,
       },
       {
-        name: RoleName.ACTOR,
+        name: ROLE_NAME.ACTOR,
         permissions: [{ key: 'post:write:any' }, { key: 'post:read:any' }],
         prohibited_routes: { paths: ['/about'] },
       },

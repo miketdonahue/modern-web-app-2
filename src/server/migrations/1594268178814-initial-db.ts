@@ -6,28 +6,10 @@ export class InitialDb1594268178814 implements MigrationInterface {
       `
         CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
-        CREATE TYPE role_enum AS ENUM (
-          'admin',
-          'actor'
-        );
-
-        CREATE TYPE provider_enum AS ENUM (
-          'google'
-        );
-
-        CREATE TYPE cart_status_enum AS ENUM (
-          'new',
-          'active',
-          'checkout',
-          'paid',
-          'completed',
-          'abandoned'
-        );
-
         CREATE TABLE role(
           id serial,
           uuid uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
-          name role_enum NOT NULL,
+          name character varying NOT NULL,
           permissions character varying [],
           prohibited_routes jsonb,
           created_at timestamp with time zone NOT NULL DEFAULT (now() AT TIME ZONE 'utc')::timestamptz,
@@ -105,7 +87,7 @@ export class InitialDb1594268178814 implements MigrationInterface {
           id serial,
           uuid uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
           actor_id uuid NOT NULL,
-          provider provider_enum NOT NULL,
+          provider character varying NOT NULL,
           refresh_token character varying,
           expires_at timestamp with time zone,
           created_at timestamp with time zone NOT NULL DEFAULT (now() AT TIME ZONE 'utc')::timestamptz,
@@ -150,7 +132,7 @@ export class InitialDb1594268178814 implements MigrationInterface {
           id serial,
           uuid uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
           actor_id uuid NOT NULL,
-          status cart_status_enum NOT NULL,
+          status character varying NOT NULL,
           created_at timestamp with time zone NOT NULL DEFAULT (now() AT TIME ZONE 'utc')::timestamptz,
           updated_at timestamp with time zone NOT NULL DEFAULT (now() AT TIME ZONE 'utc')::timestamptz,
           deleted boolean NOT NULL DEFAULT false
