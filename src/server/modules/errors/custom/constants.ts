@@ -45,11 +45,6 @@ export default {
     code: 'CODE_NOT_FOUND',
     meta: { level: 'warn' },
   },
-  INVALID_SECURITY_QUESTIONS: {
-    message: 'Invalid security question answer',
-    code: 'INVALID_SECURITY_QUESTIONS',
-    meta: { level: 'warn' },
-  },
   CUSTOMER_NOT_FOUND: {
     message: 'Customer was not found',
     code: 'CUSTOMER_NOT_FOUND',
