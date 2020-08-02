@@ -39,9 +39,6 @@ export default {
         // time in minutes
         expireTime: 30,
       },
-      securityQuestions: {
-        number: 3,
-      },
     },
     mailer: {
       sendEmails: true,

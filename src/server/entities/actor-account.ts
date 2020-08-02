@@ -30,17 +30,8 @@ export class ActorAccount extends Base {
   @Column('timestamp with time zone', { nullable: true })
   public reset_password_expires: Date | null;
 
-  @Column('text', {
-    array: true,
-    nullable: true,
-  })
-  public security_questions: string[];
-
   @Column('int', { default: '0' })
   public login_attempts: number;
-
-  @Column('int', { default: '0' })
-  public security_question_attempts: number;
 
   @Column('character varying', { nullable: true })
   public refresh_token: string | null;
