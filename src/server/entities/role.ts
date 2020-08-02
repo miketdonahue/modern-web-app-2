@@ -1,5 +1,5 @@
 import { Entity, Column } from 'typeorm';
-import { BaseTable } from './partials/base-table';
+import { Base } from './partials/base';
 
 interface Permission {
   key?: string;
@@ -15,7 +15,7 @@ export const ROLE_NAME = {
 };
 
 @Entity('role')
-export class Role extends BaseTable {
+export class Role extends Base {
   @Column('character varying', { default: ROLE_NAME.ACTOR })
   public name: string;
 

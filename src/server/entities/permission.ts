@@ -1,8 +1,8 @@
 import { Entity, Column } from 'typeorm';
-import { BaseTable } from './partials/base-table';
+import { Base } from './partials/base';
 
 @Entity('permission')
-export class Permission extends BaseTable {
+export class Permission extends Base {
   @Column('character varying', { unique: true })
   public name: string;
 

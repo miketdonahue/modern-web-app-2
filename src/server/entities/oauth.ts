@@ -1,12 +1,12 @@
 import { Entity, Column } from 'typeorm';
-import { BaseTable } from './partials/base-table';
+import { Base } from './partials/base';
 
 export const PROVIDER_NAME = {
   GOOGLE: 'google',
 };
 
 @Entity('oauth')
-export class Oauth extends BaseTable {
+export class Oauth extends Base {
   @Column('uuid')
   public actor_id: string;
 

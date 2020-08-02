@@ -1,34 +1,34 @@
 import React from 'react';
 import { createCart, createCartItems } from '@modules/queries/carts';
+import { Data } from '@modules/api-response/typings';
 import { useShoppingCart } from '@components/hooks/use-shopping-cart';
 
 const Checkout = () => {
-  const { items } = useShoppingCart();
-  const [mutate /* { data, isLoading } */] = createCart();
-  const [addCartItems /* { data: cartItems } */] = createCartItems();
+  const { items, updateCart } = useShoppingCart();
+  const [createACart, { data: createdCart }] = createCart();
+  const [addCartItems] = createCartItems({
+    onSuccess: (result) => {
+      const products = result.data.map(
+        (item: Data) => item.relationships?.product
+      );
+
+      updateCart(products);
+    },
+  });
+
+  React.useEffect(() => {
+    createACart({});
+  }, []);
+
+  React.useEffect(() => {
+    if (createdCart) {
+      addCartItems({ cartId: createdCart.data.id, cartItems: items });
+    }
+  }, [createdCart]);
 
   return (
     <div>
       <div>Checkout</div>
-      <button
-        type="button"
-        onClick={() => {
-          mutate({});
-        }}
-      >
-        Create Cart
-      </button>
-      <button
-        type="button"
-        onClick={() => {
-          addCartItems({
-            cartId: '002fad02-b072-4dd5-a952-b25f1bbc9468',
-            cartItems: items,
-          });
-        }}
-      >
-        Add Cart Items
-      </button>
     </div>
   );
 };

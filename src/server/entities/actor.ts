@@ -1,8 +1,8 @@
 import { Entity, Column } from 'typeorm';
-import { BaseTable } from './partials/base-table';
+import { Base } from './partials/base';
 
 @Entity('actor')
-export class Actor extends BaseTable {
+export class Actor extends Base {
   @Column('uuid')
   public role_id: string;
 

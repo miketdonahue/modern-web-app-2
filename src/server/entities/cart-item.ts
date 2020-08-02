@@ -1,8 +1,8 @@
 import { Entity, Column } from 'typeorm';
-import { BaseTable } from './partials/base-table';
+import { Base } from './partials/base';
 
 @Entity('cart_item')
-export class CartItem extends BaseTable {
+export class CartItem extends Base {
   @Column('uuid')
   public cart_id: string;
 

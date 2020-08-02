@@ -1,7 +1,6 @@
 import React from 'react';
-// import Link from 'next/link';
 import { Product as ProductModel } from '@server/entities/product';
-// import { useRouter } from 'next/router';
+import { useRouter } from 'next/router';
 import { useShoppingCart } from '@components/hooks/use-shopping-cart';
 import { isAuthenticated } from '@modules/queries/auth';
 import { Button, Modal } from '@components/app';
@@ -13,6 +12,7 @@ import { SignUpForm } from '../register/partials/sign-up-form';
 type Product = Data<ProductModel>;
 
 const Cart = () => {
+  const router = useRouter();
   const { items, total, removeCartItem } = useShoppingCart();
   const [showModal, setShowModal] = React.useState(false);
   const [checkingOut, setCheckingOut] = React.useState(false);
@@ -20,6 +20,9 @@ const Cart = () => {
 
   isAuthenticated({
     enabled: checkingOut,
+    onSuccess: () => {
+      router.push('/app/cart/checkout');
+    },
     onError: (error) => {
       return error?.response?.data?.error.map((e: Error) => {
         if (e.code === 'UNAUTHENTICATED') {

@@ -1,8 +1,8 @@
 import { Entity, Column } from 'typeorm';
-import { BaseTable } from './partials/base-table';
+import { Base } from './partials/base';
 
 @Entity('product')
-export class Product extends BaseTable {
+export class Product extends Base {
   @Column('character varying')
   public name: string;
 
