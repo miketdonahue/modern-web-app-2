@@ -1,6 +1,14 @@
+type Relationships = {
+  id: string;
+  attributes?: object;
+};
+
 export interface Data<T = {}> {
   id: string;
   attributes?: T;
+  relationships?: {
+    [key: string]: Relationships | Relationships[] | null | [];
+  };
   meta?: {
     [key: string]: any;
   };

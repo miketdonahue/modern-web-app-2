@@ -1,8 +1,8 @@
 import { Entity, Column } from 'typeorm';
-import { BaseTable } from './partials/base-table';
+import { Base } from './partials/base';
 
 @Entity('feature_flag')
-export class FeatureFlag extends BaseTable {
+export class FeatureFlag extends Base {
   @Column('character varying')
   public name: string;
 

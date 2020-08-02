@@ -18,6 +18,7 @@ export class InitialConstraints1594269292840 implements MigrationInterface {
 
       -- cart_item
       ALTER TABLE cart_item
+        ADD CONSTRAINT cart_item_unique UNIQUE (cart_id, product_id),
         ADD CONSTRAINT cart_item_cart_id_fkey FOREIGN KEY (cart_id) REFERENCES cart (uuid),
         ADD CONSTRAINT cart_item_product_id_fkey FOREIGN KEY (product_id) REFERENCES product (uuid);
       `

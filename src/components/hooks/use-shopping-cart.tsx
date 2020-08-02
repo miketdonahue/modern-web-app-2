@@ -15,6 +15,7 @@ type ShoppingCart = {
   total: number;
   status: string;
   addCartItem: (item: Product) => void;
+  updateCart: (items: Product[]) => void;
   removeCartItem: (item: Product) => void;
 };
 
@@ -84,6 +85,25 @@ export const useShoppingCart = (): ShoppingCart => {
     });
   };
 
+  const updateCart = (items: Product[]) => {
+    const newCartTotal = getCartTotal(items);
+
+    storage.setItem(
+      'cart',
+      JSON.stringify({
+        items,
+        total: newCartTotal,
+        status: 'active',
+      })
+    );
+
+    setState({
+      ...state,
+      items,
+      total: newCartTotal,
+    });
+  };
+
   React.useEffect(() => {
     const storageCart = storage.getItem('cart') || '{}';
     const currentCart: CartState = JSON.parse(storageCart);
@@ -105,6 +125,7 @@ export const useShoppingCart = (): ShoppingCart => {
     total: state.total,
     status: state.status,
     addCartItem,
+    updateCart,
     removeCartItem,
   };
 };

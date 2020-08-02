@@ -1,5 +1,5 @@
 import { Entity, Column } from 'typeorm';
-import { BaseTable } from './partials/base-table';
+import { Base } from './partials/base';
 
 export const CART_STATUS = {
   NEW: 'new',
@@ -11,7 +11,7 @@ export const CART_STATUS = {
 };
 
 @Entity('cart')
-export class Cart extends BaseTable {
+export class Cart extends Base {
   @Column('uuid')
   public actor_id: string;
 

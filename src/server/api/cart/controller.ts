@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { getManager } from '@server/modules/db-manager';
 import { logger } from '@server/modules/logger';
-import { Cart } from '@server/entities/cart';
+import { Cart, CART_STATUS } from '@server/entities/cart';
 import { CartItem } from '@server/entities/cart-item';
 import { Product as ProductModel } from '@server/entities/product';
 import {
@@ -79,7 +79,6 @@ const createCartItems = async (req: Request, res: Response) => {
     const cartItemIds =
       req.body?.cartItems.map((item: Product) => item.id) || [];
     const productsInCart = await db.findByIds(ProductModel, cartItemIds);
-
     const items = productsInCart.map((product: ProductModel) => {
       return {
         cart_id: existingCart.uuid,
@@ -88,19 +87,55 @@ const createCartItems = async (req: Request, res: Response) => {
       };
     });
 
-    const createdCartItems = db.create(CartItem, items);
+    logger.info(
+      { cartId: existingCart.uuid },
+      'CART-CONTROLLER: Setting cart to "active"'
+    );
+
+    await db.update(
+      Cart,
+      { id: existingCart.id },
+      { status: CART_STATUS.ACTIVE }
+    );
 
     logger.info(
       { cartId: existingCart.uuid },
       'CART-CONTROLLER: Creating cart items'
     );
 
-    await db.save(createdCartItems);
+    const createdCartItems = db.create(CartItem, items);
+    await db
+      .createQueryBuilder()
+      .insert()
+      .into(CartItem)
+      .values(createdCartItems)
+      .onConflict(
+        `("cart_id", "product_id") DO UPDATE SET "quantity" = excluded.quantity`
+      )
+      .execute();
 
     const responseItems = createdCartItems.map((item: CartItem) => {
+      const cartProduct = productsInCart.find(
+        (i) => i.uuid === item.product_id
+      );
+
       return {
         id: item.uuid,
         attributes: { quantity: item.quantity },
+        relationships: {
+          product: {
+            id: cartProduct?.uuid || '',
+            attributes: {
+              name: cartProduct?.name || '',
+              short_description: cartProduct?.short_description || '',
+              description: cartProduct?.description || '',
+              thumbnail: cartProduct?.thumbnail || '',
+              image: cartProduct?.image || '',
+              price: cartProduct?.price || null,
+              discount: cartProduct?.discount || 0,
+            },
+          },
+        },
       };
     });
 

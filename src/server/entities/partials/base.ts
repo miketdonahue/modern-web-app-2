@@ -6,7 +6,7 @@ import {
   BeforeUpdate,
 } from 'typeorm';
 
-export abstract class BaseTable {
+export abstract class Base {
   @Column('integer')
   public id: number;
 

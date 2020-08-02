@@ -1,8 +1,8 @@
 import { Entity, Column } from 'typeorm';
-import { BaseTable } from './partials/base-table';
+import { Base } from './partials/base';
 
 @Entity('blacklisted_token')
-export class BlacklistedToken extends BaseTable {
+export class BlacklistedToken extends Base {
   @Column('character varying')
   public token: string;
 }
