@@ -21,6 +21,15 @@ export class InitialConstraints1594269292840 implements MigrationInterface {
         ADD CONSTRAINT cart_item_unique UNIQUE (cart_id, product_id),
         ADD CONSTRAINT cart_item_cart_id_fkey FOREIGN KEY (cart_id) REFERENCES cart (uuid),
         ADD CONSTRAINT cart_item_product_id_fkey FOREIGN KEY (product_id) REFERENCES product (uuid);
+
+      -- purchase
+      ALTER TABLE purchase ADD CONSTRAINT purchase_customer_id_fkey FOREIGN KEY (customer_id) REFERENCES customer (uuid);
+
+      -- purchase_item
+      ALTER TABLE purchase_item
+        ADD CONSTRAINT purchase_item_unique UNIQUE (purchase_id, product_id),
+        ADD CONSTRAINT purchase_item_purchase_id_fkey FOREIGN KEY (purchase_id) REFERENCES purchase (uuid),
+        ADD CONSTRAINT purchase_item_product_id_fkey FOREIGN KEY (product_id) REFERENCES product (uuid);
       `
     );
   };
@@ -43,8 +52,18 @@ export class InitialConstraints1594269292840 implements MigrationInterface {
 
       -- cart_item
       ALTER TABLE cart_item
+        DROP CONSTRAINT cart_item_unique,
         DROP CONSTRAINT cart_item_cart_id_fkey,
         DROP CONSTRAINT cart_item_product_id_fkey;
+
+      -- purchase
+      ALTER TABLE purchase DROP CONSTRAINT purchase_customer_id_fkey;
+
+      -- purchase_item
+      ALTER TABLE purchase_item
+        DROP CONSTRAINT purchase_item_unique,
+        DROP CONSTRAINT purchase_item_purchase_id_fkey,
+        DROP CONSTRAINT purchase_item_product_id_fkey;
       `
     );
   };
