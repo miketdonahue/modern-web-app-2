@@ -6,9 +6,6 @@ export class Actor extends Base {
   @Column('uuid')
   public role_id: string;
 
-  @Column('uuid', { nullable: true })
-  public customer_id: string | null;
-
   @Column('character varying', { nullable: true })
   public first_name: string | null;
 

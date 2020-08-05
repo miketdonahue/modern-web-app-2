@@ -21,7 +21,6 @@ export class InitialDb1594268178814 implements MigrationInterface {
           id serial,
           uuid uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
           role_id uuid NOT NULL,
-          customer_id uuid,
           first_name character varying,
           last_name character varying,
           email character varying UNIQUE NOT NULL,
@@ -146,6 +145,29 @@ export class InitialDb1594268178814 implements MigrationInterface {
           updated_at timestamp with time zone NOT NULL DEFAULT (now() AT TIME ZONE 'utc')::timestamptz,
           deleted boolean NOT NULL DEFAULT false
         );
+
+        CREATE TABLE purchase(
+          id serial,
+          uuid uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
+          customer_id uuid NOT NULL,
+          tax integer NOT NULL DEFAULT 0,
+          subtotal integer NOT NULL,
+          total integer NOT NULL,
+          created_at timestamp with time zone NOT NULL DEFAULT (now() AT TIME ZONE 'utc')::timestamptz,
+          updated_at timestamp with time zone NOT NULL DEFAULT (now() AT TIME ZONE 'utc')::timestamptz,
+          deleted boolean NOT NULL DEFAULT false
+        );
+
+        CREATE TABLE purchase_item(
+          id serial,
+          uuid uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
+          purchase_id uuid NOT NULL,
+          product_id uuid NOT NULL,
+          quantity integer NOT NULL,
+          created_at timestamp with time zone NOT NULL DEFAULT (now() AT TIME ZONE 'utc')::timestamptz,
+          updated_at timestamp with time zone NOT NULL DEFAULT (now() AT TIME ZONE 'utc')::timestamptz,
+          deleted boolean NOT NULL DEFAULT false
+        );
       `
     );
   }
@@ -163,6 +185,8 @@ export class InitialDb1594268178814 implements MigrationInterface {
         DROP TABLE IF EXISTS product;
         DROP TABLE IF EXISTS cart;
         DROP TABLE IF EXISTS cart_item;
+        DROP TABLE IF EXISTS purchase;
+        DROP TABLE IF EXISTS purchase_item;
       `
     );
   }
