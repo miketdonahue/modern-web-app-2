@@ -34,10 +34,14 @@ export default {
         refreshSecret: process.env.JWT_REFRESH_SECRET,
         expiresIn: '15m',
         refreshExpiresIn: '7d',
+        tokenNames: {
+          payload: 'token-payload',
+          signature: 'token-signature',
+          refresh: 'token-refresh',
+        },
       },
       codes: {
-        // time in minutes
-        expireTime: 30,
+        expireTime: 30, // time in minutes
       },
     },
     mailer: {

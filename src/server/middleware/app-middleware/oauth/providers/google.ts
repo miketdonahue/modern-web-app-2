@@ -235,12 +235,16 @@ export const authenticate = async (
   );
 
   // TODO: change to `secure: true` when HTTPS
-  res.cookie('token-payload', `${tokenHeader}.${tokenBody}`, {
-    path: '/',
-    secure: false,
-  });
+  res.cookie(
+    config.server.auth.jwt.tokenNames.payload,
+    `${tokenHeader}.${tokenBody}`,
+    {
+      path: '/',
+      secure: false,
+    }
+  );
 
-  res.cookie('token-signature', tokenSignature, {
+  res.cookie(config.server.auth.jwt.tokenNames.signature, tokenSignature, {
     path: '/',
     httpOnly: true,
     secure: false,

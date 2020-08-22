@@ -5,6 +5,7 @@ import { ApiResponseWithError } from '@modules/api-response';
 import { errorTypes } from '@server/modules/errors';
 import { logger } from '@server/modules/logger';
 import { config } from '@config';
+import { verifyRefreshToken } from '@server/middleware/app-middleware';
 
 /**
  * Checks if a user is authenticated
@@ -29,16 +30,60 @@ const secureApiMiddleware = (
 
   const uc = new Cookies(req.headers && req.headers.cookie);
   const uCookies = uc.getAll();
+  const tokenSignature = config.server.auth.jwt.tokenNames.signature;
+
   const constructedToken =
-    uCookies && uCookies['token-signature']
-      ? `${token}.${uCookies['token-signature']}`
+    uCookies && uCookies[tokenSignature]
+      ? `${token}.${uCookies[tokenSignature]}`
       : token;
 
   return jwt.verify(
     constructedToken,
     config.server.auth.jwt.secret,
-    (err: any, decoded: any) => {
+    async (err: any, decoded: any) => {
       if (err) {
+        if (err.name === 'TokenExpiredError') {
+          logger.info('SECURE-API-MIDDLEWARE: Auth token has expired');
+
+          const newToken = await verifyRefreshToken(
+            uCookies[config.server.auth.jwt.tokenNames.refresh]
+          );
+
+          if (!newToken) {
+            logger.warn(
+              'SECURE-API-MIDDLEWARE: Refresh token error, redirecting'
+            );
+
+            return res.redirect(302, '/app/login');
+          }
+
+          // TODO: change to `secure: true` when HTTPS
+          res.cookie(
+            config.server.auth.jwt.tokenNames.payload,
+            `${newToken.header}.${newToken.body}`,
+            {
+              path: '/',
+              secure: false,
+            }
+          );
+
+          res.cookie(
+            config.server.auth.jwt.tokenNames.signature,
+            newToken.signature,
+            {
+              path: '/',
+              httpOnly: true,
+              secure: false,
+            }
+          );
+
+          logger.info('SECURE-API-MIDDLEWARE: Authenticating user');
+
+          // Add the decoded actor to req for continued access
+          (req as any).actor = decoded;
+          return next();
+        }
+
         logger.error(
           { err },
           `AUTHENTICATE-MIDDLEWARE: Failed to verify token`

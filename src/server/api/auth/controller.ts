@@ -12,7 +12,7 @@ import {
   ApiResponseWithError,
 } from '@modules/api-response';
 import { Token } from '@modules/types/entities';
-import { verifyJwt } from '@server/middleware/app-middleware/secure-page';
+import { verifyRefreshToken } from '@server/middleware/app-middleware';
 import { errorTypes } from '@server/modules/errors';
 import { Actor } from '@server/entities/actor';
 import { ActorAccount } from '@server/entities/actor-account';
@@ -440,17 +440,27 @@ const loginActor = async (req: Request, res: Response) => {
   );
 
   // TODO: change to `secure: true` when HTTPS
-  res.cookie('token-payload', `${tokenHeader}.${tokenBody}`, {
-    path: '/',
-    secure: false,
-    ...(req.body.rememberMe && { expires: rememberMeDate }),
-  });
+  res.cookie(
+    config.server.auth.jwt.tokenNames.payload,
+    `${tokenHeader}.${tokenBody}`,
+    {
+      path: '/',
+      secure: false,
+      ...(req.body.rememberMe && { expires: rememberMeDate }),
+    }
+  );
 
-  res.cookie('token-signature', tokenSignature, {
+  res.cookie(config.server.auth.jwt.tokenNames.signature, tokenSignature, {
     path: '/',
     httpOnly: true,
     secure: false,
     ...(req.body.rememberMe && { expires: rememberMeDate }),
+  });
+
+  res.cookie(config.server.auth.jwt.tokenNames.refresh, refreshToken, {
+    path: '/',
+    httpOnly: true,
+    secure: false,
   });
 
   const response: ApiResponseWithData<Token> = {
@@ -682,43 +692,128 @@ const sendCode = async (req: Request, res: Response) => {
 const logoutActor = async (req: Request, res: Response) => {
   const db = getManager();
   const cookies = new Cookies(req.headers.cookie);
-  const signature = cookies.get('token-signature');
+  const signature = cookies.get(config.server.auth.jwt.tokenNames.signature);
 
   logger.info('AUTH-CONTROLLER: Logging out actor');
+  logger.info('AUTH-CONTROLLER: Blacklisting current auth token');
   await db.insert(BlacklistedToken, {
     token: `${req.body.token}.${signature}`,
   });
 
-  res.cookie('token-payload', '', { expires: new Date(0) });
-  res.cookie('token-signature', '', { expires: new Date(0) });
+  logger.info('AUTH-CONTROLLER: Removing auth tokens from browser cookies');
+  res.cookie(config.server.auth.jwt.tokenNames.payload, '', {
+    expires: new Date(0),
+  });
+  res.cookie(config.server.auth.jwt.tokenNames.signature, '', {
+    expires: new Date(0),
+  });
+  res.cookie(config.server.auth.jwt.tokenNames.refresh, '', {
+    expires: new Date(0),
+  });
 
   return res.end();
 };
 
 /**
  * Checks if a user is authenticated
+ *
+ * Will only fail when the refresh token has expired a.k.a when the user is fully unauthenticated
+ * Bypasses the automatic redirect to the login page on the client so further action can be taken on the client
  */
 const isAuthenticated = async (req: Request, res: Response) => {
-  return verifyJwt(req, (err: any) => {
-    if (err) {
-      const errorResponse: ApiResponseWithError = {
-        error: [
-          {
-            status: '401',
-            code: errorTypes.UNAUTHENTICATED.code,
-            detail: errorTypes.UNAUTHENTICATED.detail,
-            meta: {
-              bypassFailureRedirect: true,
-            },
+  const uc = new Cookies(req.headers && req.headers.cookie);
+  const uCookies = uc.getAll();
+
+  const newToken = await verifyRefreshToken(
+    uCookies[config.server.auth.jwt.tokenNames.refresh]
+  );
+
+  if (!newToken) {
+    logger.warn(
+      'SECURE-PAGE-MIDDLEWARE: Could not get new token with refresh token'
+    );
+
+    const errorResponse: ApiResponseWithError = {
+      error: [
+        {
+          status: '401',
+          code: errorTypes.UNAUTHENTICATED.code,
+          detail: errorTypes.UNAUTHENTICATED.detail,
+          meta: {
+            bypassFailureRedirect: true,
           },
-        ],
-      };
+        },
+      ],
+    };
 
-      return res.status(401).json(errorResponse);
+    return res.status(401).json(errorResponse);
+  }
+
+  // TODO: change to `secure: true` when HTTPS
+  res.cookie(
+    config.server.auth.jwt.tokenNames.payload,
+    `${newToken.header}.${newToken.body}`,
+    {
+      path: '/',
+      secure: false,
     }
+  );
 
-    return res.end();
+  res.cookie(config.server.auth.jwt.tokenNames.signature, newToken.signature, {
+    path: '/',
+    httpOnly: true,
+    secure: false,
   });
+
+  return res.end();
+};
+
+/**
+ * Gets a new authentication token provided a valid refresh token
+ */
+const getToken = async (req: Request, res: Response) => {
+  const uc = new Cookies(req.headers && req.headers.cookie);
+  const uCookies = uc.getAll();
+
+  const newToken = await verifyRefreshToken(
+    uCookies[config.server.auth.jwt.tokenNames.refresh]
+  );
+
+  if (!newToken) {
+    logger.warn(
+      'SECURE-PAGE-MIDDLEWARE: Could not get new token with refresh token'
+    );
+
+    const errorResponse: ApiResponseWithError = {
+      error: [
+        {
+          status: '401',
+          code: errorTypes.UNAUTHENTICATED.code,
+          detail: errorTypes.UNAUTHENTICATED.detail,
+        },
+      ],
+    };
+
+    return res.status(401).json(errorResponse);
+  }
+
+  // TODO: change to `secure: true` when HTTPS
+  res.cookie(
+    config.server.auth.jwt.tokenNames.payload,
+    `${newToken.header}.${newToken.body}`,
+    {
+      path: '/',
+      secure: false,
+    }
+  );
+
+  res.cookie(config.server.auth.jwt.tokenNames.signature, newToken.signature, {
+    path: '/',
+    httpOnly: true,
+    secure: false,
+  });
+
+  return res.end();
 };
 
 export {
@@ -729,4 +824,5 @@ export {
   sendCode,
   logoutActor,
   isAuthenticated,
+  getToken,
 };

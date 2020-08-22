@@ -1,9 +1,10 @@
 import jwt from 'jsonwebtoken';
 import Cookies from 'universal-cookie';
+import { config } from '@config';
 
 const Policy = ({ can, children }: any) => {
   const cookies = new Cookies();
-  const token = cookies.get('token-payload');
+  const token = cookies.get(config.server.auth.jwt.tokenNames.payload);
 
   /*
     Last dot makes full JWT valid so decode works

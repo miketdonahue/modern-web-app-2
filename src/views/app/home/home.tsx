@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { useMutation } from 'react-query';
 import { useRouter } from 'next/router';
 import Cookies from 'universal-cookie';
+import { config } from '@config';
 import { request } from '@modules/request';
 import { Policy } from '@components/policy';
 
@@ -23,7 +24,7 @@ const PostLink = (props: Props) => {
 const Home = () => {
   const router = useRouter();
   const cookies = new Cookies();
-  const token = cookies.get('token-payload');
+  const token = cookies.get(config.server.auth.jwt.tokenNames.payload);
 
   const [logOut] = useMutation(
     (variables: any) => request.post('/api/v1/auth/logout', variables),

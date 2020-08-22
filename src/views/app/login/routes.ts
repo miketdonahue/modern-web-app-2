@@ -1,5 +1,4 @@
-import { oauth } from '@server/middleware/app-middleware';
-import { verifyJwt } from '@server/middleware/app-middleware/secure-page';
+import { oauth, verifyJwt } from '@server/middleware/app-middleware';
 
 export default {
   path: '/app',
@@ -11,7 +10,7 @@ export default {
         {
           name: 'redirect-page',
           function: (req: any, res: any, next: any) => {
-            verifyJwt(req, (err: any) => {
+            verifyJwt(req.headers?.cookie || '', (err: any) => {
               if (err) {
                 /* If error on verifying, continue to /login */
                 return next();

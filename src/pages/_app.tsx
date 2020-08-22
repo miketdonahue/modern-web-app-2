@@ -24,10 +24,11 @@ const reactQueryConfig = {
 
       /* If the error is a 401 unauthenticated, redirect to login */
       if (unauthorizedError && !unauthorizedError.meta.bypassFailureRedirect) {
-        /* Ensure actor is logged out when client-side XHR is unauthenticated */
-        request.post('/api/v1/auth/logout');
-        Router.push('/app/login');
-        return false;
+        /* Try to get a new token to stay logged in */
+        request.get('/api/v1/auth/get-token').catch(() => {
+          request.post('/api/v1/auth/logout');
+          Router.push('/app/login');
+        });
       }
 
       if (failureCount > 3) return false;

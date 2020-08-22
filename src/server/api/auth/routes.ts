@@ -38,5 +38,10 @@ export default {
       method: 'get',
       controller: controller.isAuthenticated,
     },
+    {
+      path: '/get-token',
+      method: 'get',
+      controller: controller.getToken,
+    },
   ],
 };
