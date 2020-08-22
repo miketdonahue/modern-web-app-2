@@ -29,13 +29,6 @@ export class Actor1572504144500 implements MigrationInterface {
           last_name: chance.last(),
           email,
           password,
-          phone_country_code: 1,
-          phone: chance.phone({ formatted: false, country: 'us' }),
-          country: 'United States',
-          address1: chance.address(),
-          city: chance.city(),
-          state: chance.state(),
-          postal_code: chance.zip(),
         });
 
         await transactionalEntityManager.save(actor);
