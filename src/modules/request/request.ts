@@ -16,9 +16,10 @@ request.interceptors.request.use((configuration) => {
   if (typeof window !== 'undefined') {
     const uc = new Cookies(document.cookie);
     const uCookies = uc.getAll();
+    const tokenPayload = config.server.auth.jwt.tokenNames.payload;
 
-    if (uCookies['token-payload']) {
-      cfg.headers.Authorization = `Bearer ${uCookies['token-payload']}`;
+    if (uCookies[tokenPayload]) {
+      cfg.headers.Authorization = `Bearer ${uCookies[tokenPayload]}`;
     }
   }
 
