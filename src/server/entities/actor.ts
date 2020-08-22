@@ -17,28 +17,4 @@ export class Actor extends Base {
 
   @Column('character varying', { nullable: true })
   public password: string | null;
-
-  @Column('character varying', { nullable: true })
-  public phone_country_code: string | null;
-
-  @Column('character varying', { nullable: true })
-  public phone: string | null;
-
-  @Column('character varying', { nullable: true })
-  public country: string | null;
-
-  @Column('character varying', { nullable: true })
-  public address1: string | null;
-
-  @Column('character varying', { nullable: true })
-  public address2: string | null;
-
-  @Column('character varying', { nullable: true })
-  public city: string | null;
-
-  @Column('character varying', { nullable: true })
-  public state: string | null;
-
-  @Column('character varying', { nullable: true })
-  public postal_code: string | null;
 }
