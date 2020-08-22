@@ -109,7 +109,7 @@ export const verify = {
       );
 
       await db.manager.insert(Actor, {
-        role_id: role.uuid,
+        role_id: role.id,
         email: decoded.email,
       });
 
@@ -120,7 +120,7 @@ export const verify = {
       actor = actorData;
 
       await db.manager.insert(ActorAccount, {
-        actor_id: actor.uuid,
+        actor_id: actor.id,
         confirmed_code: config.server.auth.confirmable ? generateCode() : null,
       });
     }
@@ -130,19 +130,19 @@ export const verify = {
 
     try {
       const existingOauth = await db.manager.findOne(Oauth, {
-        actor_id: actor.uuid,
+        actor_id: actor.id,
         provider: PROVIDER_NAME.GOOGLE,
       });
 
       if (existingOauth) {
         logger.info(
-          { id: existingOauth.uuid, provider: 'google', method: 'verify' },
+          { id: existingOauth.id, provider: 'google', method: 'verify' },
           'OPEN-AUTH-MIDDLEWARE: Updating existing oauth record'
         );
 
         await db.manager.update(
           Oauth,
-          { uuid: existingOauth.uuid },
+          { id: existingOauth.id },
           {
             refresh_token: refreshToken,
             expires_at: new Date(expiresAt),
@@ -155,7 +155,7 @@ export const verify = {
         );
 
         await db.manager.insert(Oauth, {
-          actor_id: actor.uuid,
+          actor_id: actor.id,
           provider: PROVIDER_NAME.GOOGLE,
           refresh_token: refreshToken,
           expires_at: new Date(expiresAt),
@@ -163,16 +163,16 @@ export const verify = {
       }
     } catch (err) {
       logger.error(
-        { actorId: actor.uuid, err },
+        { actorId: actor.id, err },
         'OPEN-AUTH-MIDDLEWARE: Could not update or add open auth details to database'
       );
 
       return res.redirect(302, oauthConfig.failureRedirect);
     }
 
-    const role = await db.manager.findOne(Role, { uuid: actor.role_id });
+    const role = await db.manager.findOne(Role, { id: actor.role_id });
     (req as any).actor = {
-      uuid: actor.uuid,
+      id: actor.id,
       role: transformRoleForToken(role),
     };
 
@@ -202,12 +202,12 @@ export const authenticate = async (
   try {
     await db.manager.update(
       ActorAccount,
-      { actor_id: actor.uuid },
+      { actor_id: actor.id },
       { last_visit: new Date(), ip: req.ip }
     );
   } catch (err) {
     logger.error(
-      { actorId: actor.uuid, err },
+      { actorId: actor.id, err },
       'OPEN-AUTH-MIDDLEWARE: Could not update user account database table'
     );
 
@@ -220,7 +220,7 @@ export const authenticate = async (
   );
 
   const token = jwt.sign(
-    { actor_id: actor.uuid, role: actor.role },
+    { actor_id: actor.id, role: actor.role },
     config.server.auth.jwt.secret,
     { expiresIn: config.server.auth.jwt.expiresIn }
   );

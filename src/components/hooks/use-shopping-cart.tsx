@@ -38,6 +38,7 @@ export const useShoppingCart = (): ShoppingCart => {
   };
 
   const addCartItem = (item: Product) => {
+    console.log('P ITEM', item);
     const storageCart = storage.getItem('cart') || '{}';
     const currentCart: CartState = JSON.parse(storageCart);
     const newCartItems = currentCart.items.concat(item);

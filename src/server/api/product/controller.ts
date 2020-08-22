@@ -12,7 +12,7 @@ const getProducts = async (req: Request, res: Response) => {
   const products = await db.find(Product, { deleted: false });
   const productsForResponse = products.map((product: any) => {
     return {
-      id: product.uuid,
+      id: product.id,
       attributes: {
         name: product.name,
         shortDescription: product.short_description,

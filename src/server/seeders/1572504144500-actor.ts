@@ -24,7 +24,7 @@ export class Actor1572504144500 implements MigrationInterface {
 
       await db.transaction(async (transactionalEntityManager) => {
         const actor = await db.create(Actor as any, {
-          role_id: role && role.uuid,
+          role_id: role && role.id,
           first_name: chance.first(),
           last_name: chance.last(),
           email,
@@ -41,7 +41,7 @@ export class Actor1572504144500 implements MigrationInterface {
         await transactionalEntityManager.save(actor);
 
         await transactionalEntityManager.insert(ActorAccount, {
-          actor_id: (actor as any).uuid,
+          actor_id: (actor as any).id,
         });
       });
     }
