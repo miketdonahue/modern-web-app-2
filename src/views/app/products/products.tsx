@@ -2,7 +2,6 @@ import React from 'react';
 import Link from 'next/link';
 import { getProducts } from '@modules/queries/products';
 import { Product as ProductModel } from '@server/entities/product';
-// import { useRouter } from 'next/router';
 import { useShoppingCart } from '@components/hooks/use-shopping-cart';
 import { Button, ShoppingCart, Dropdown } from '@components/app';
 import { Data } from '@modules/api-response/typings';
@@ -14,7 +13,7 @@ const Products = () => {
   const { items, total, addCartItem } = useShoppingCart();
   const { data: response, isLoading } = getProducts();
   const products = response?.data;
-
+  console.log('P', products);
   return (
     <div className="my-4 mx-8">
       <div className="flex justify-end mb-4">

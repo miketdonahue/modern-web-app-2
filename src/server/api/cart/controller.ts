@@ -31,13 +31,13 @@ const createCart = async (req: Request, res: Response) => {
 
   if (existingCart) {
     logger.info(
-      { cart: { uuid: existingCart.uuid } },
+      { cart: { id: existingCart.id } },
       'CART-CONTROLLER: Found existing cart'
     );
 
     const response: ApiResponseWithData<Partial<Cart>> = {
       data: {
-        id: existingCart.uuid,
+        id: existingCart.id,
         attributes: { status: existingCart.status },
       },
     };
@@ -51,7 +51,7 @@ const createCart = async (req: Request, res: Response) => {
   });
 
   logger.info(
-    { cart: { uuid: createdCart.uuid } },
+    { cart: { id: createdCart.id } },
     'CART-CONTROLLER: Creating new cart'
   );
 
@@ -59,7 +59,7 @@ const createCart = async (req: Request, res: Response) => {
 
   const response: ApiResponseWithData<Partial<Cart>> = {
     data: {
-      id: createdCart.uuid,
+      id: createdCart.id,
       attributes: { status: createdCart.status },
     },
   };
@@ -72,23 +72,24 @@ const createCart = async (req: Request, res: Response) => {
  */
 const createCartItems = async (req: Request, res: Response) => {
   const db = getManager();
-  const existingCart = await db.findOne(Cart, { uuid: req.params.cartId });
+  const existingCart = await db.findOne(Cart, { id: req.params.cartId });
   const cartHasItems = req.body.cartItems && req.body.cartItems.length > 0;
-
+  console.log('C XX', existingCart);
   if (existingCart && cartHasItems) {
     const cartItemIds =
       req.body?.cartItems.map((item: Product) => item.id) || [];
+    console.log('C ITEMS', cartItemIds);
     const productsInCart = await db.findByIds(ProductModel, cartItemIds);
     const items = productsInCart.map((product: ProductModel) => {
       return {
-        cart_id: existingCart.uuid,
-        product_id: product.uuid,
+        cart_id: existingCart.id,
+        product_id: product.id,
         quantity: 1,
       };
     });
-
+    console.log('MMMM ITEMS', items);
     logger.info(
-      { cartId: existingCart.uuid },
+      { cartId: existingCart.id },
       'CART-CONTROLLER: Setting cart to "active"'
     );
 
@@ -99,7 +100,7 @@ const createCartItems = async (req: Request, res: Response) => {
     );
 
     logger.info(
-      { cartId: existingCart.uuid },
+      { cartId: existingCart.id },
       'CART-CONTROLLER: Creating cart items'
     );
 
@@ -115,16 +116,14 @@ const createCartItems = async (req: Request, res: Response) => {
       .execute();
 
     const responseItems = createdCartItems.map((item: CartItem) => {
-      const cartProduct = productsInCart.find(
-        (i) => i.uuid === item.product_id
-      );
+      const cartProduct = productsInCart.find((i) => i.id === item.product_id);
 
       return {
-        id: item.uuid,
+        id: item.id,
         attributes: { quantity: item.quantity },
         relationships: {
           product: {
-            id: cartProduct?.uuid || '',
+            id: cartProduct?.id || '',
             attributes: {
               name: cartProduct?.name || '',
               short_description: cartProduct?.short_description || '',

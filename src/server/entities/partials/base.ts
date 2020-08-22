@@ -7,11 +7,8 @@ import {
 } from 'typeorm';
 
 export abstract class Base {
-  @Column('integer')
-  public id: number;
-
   @PrimaryGeneratedColumn('uuid')
-  public uuid: string;
+  public id: string;
 
   @CreateDateColumn()
   public created_at: Date;

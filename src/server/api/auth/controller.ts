@@ -61,7 +61,7 @@ const registerActor = async (req: Request, res: Response) => {
     async (transactionalEntityManager: any) => {
       logger.info('AUTH-CONTROLLER: Creating actor');
       const createdActor = await transactionalEntityManager.create(Actor, {
-        role_id: role?.uuid,
+        role_id: role?.id,
         first_name: req.body.firstName,
         last_name: req.body.lastName,
         email: req.body.email,
@@ -72,7 +72,7 @@ const registerActor = async (req: Request, res: Response) => {
 
       logger.info('AUTH-CONTROLLER: Creating actor account');
       const createdActorAccount = await db.create(ActorAccount, {
-        actor_id: createdActor.uuid,
+        actor_id: createdActor.id,
         ...(config.server.auth.confirmable && {
           confirmed_code: generateCode(),
           confirmed_expires: String(
@@ -96,16 +96,16 @@ const registerActor = async (req: Request, res: Response) => {
       actor_account.confirmed_code
     FROM
       actor
-      INNER JOIN actor_account ON actor_account.actor_id = actor.uuid
+      INNER JOIN actor_account ON actor_account.actor_id = actor.id
     WHERE
-      actor.uuid = $1
+      actor.id = $1
   `,
     [actorAccount.actor_id]
   );
 
   logger.info('AUTH-CONTROLLER: Signing actor id token');
   const actorIdToken = jwt.sign(
-    { actor_id: actor.uuid },
+    { actor_id: actor.id },
     config.server.auth.jwt.secret
   );
 
@@ -125,7 +125,7 @@ const registerActor = async (req: Request, res: Response) => {
   await sendEmail(actor, emails.CONFIRM_EMAIL);
 
   const response: ApiResponseWithData = {
-    data: { id: actor.uuid },
+    data: { id: actor.id },
   };
 
   return res.json(response);
@@ -165,7 +165,7 @@ const confirmCode = async (req: Request, res: Response) => {
   };
 
   const decoded: any = jwt.decode(token) || { actor_id: null };
-  const actor = await db.findOne(Actor, { uuid: decoded.actor_id });
+  const actor = await db.findOne(Actor, { id: decoded.actor_id });
   const actorAccount: any = await db.findOne(ActorAccount, {
     actor_id: decoded.actor_id,
     [`${codeType[req.body.type].type}_code`]: req.body.code,
@@ -186,7 +186,7 @@ const confirmCode = async (req: Request, res: Response) => {
     logger.info('AUTH-CONTROLLER: Resetting confirmation code');
     await db.update(
       ActorAccount,
-      { uuid: actorAccount.uuid },
+      { id: actorAccount.id },
       {
         [`${codeType[req.body.type].type}_code`]: generateCode(),
         [`${codeType[req.body.type].type}_expires`]: String(
@@ -200,7 +200,7 @@ const confirmCode = async (req: Request, res: Response) => {
     );
 
     const updatedActorAccount = await db.findOne(ActorAccount, {
-      uuid: actorAccount.uuid,
+      id: actorAccount.id,
     });
 
     await sendEmail(
@@ -235,7 +235,7 @@ const confirmCode = async (req: Request, res: Response) => {
 
   await db.update(
     ActorAccount,
-    { uuid: actorAccount.uuid },
+    { id: actorAccount.id },
     {
       ...(req.body.type === 'confirm-email'
         ? { confirmed: true }
@@ -269,7 +269,7 @@ const loginActor = async (req: Request, res: Response) => {
       actor_account.*
     FROM
       actor_account
-      INNER JOIN actor ON actor_account.actor_id = actor.uuid
+      INNER JOIN actor ON actor_account.actor_id = actor.id
     WHERE
       actor.email = $1
   `,
@@ -294,7 +294,7 @@ const loginActor = async (req: Request, res: Response) => {
   if (config.server.auth.confirmable && !actorAccount.confirmed) {
     logger.info('AUTH-CONTROLLER: Signing actor id token');
     const actorIdToken = jwt.sign(
-      { actor_id: actor.uuid },
+      { actor_id: actor.id },
       config.server.auth.jwt.secret
     );
 
@@ -307,7 +307,7 @@ const loginActor = async (req: Request, res: Response) => {
     logger.info('AUTH-CONTROLLER: Resetting confirmation code');
     await db.update(
       ActorAccount,
-      { uuid: actorAccount.uuid },
+      { id: actorAccount.id },
       {
         ...(config.server.auth.confirmable && {
           confirmed_code: generateCode(),
@@ -323,7 +323,7 @@ const loginActor = async (req: Request, res: Response) => {
     );
 
     const updatedActorAccount = await db.findOne(ActorAccount, {
-      actor_id: actor.uuid,
+      actor_id: actor.id,
     });
 
     await sendEmail({ ...actor, ...updatedActorAccount }, emails.CONFIRM_EMAIL);
@@ -345,7 +345,7 @@ const loginActor = async (req: Request, res: Response) => {
   if (actorAccount.locked) {
     logger.info('AUTH-CONTROLLER: Signing actor id token');
     const actorIdToken = jwt.sign(
-      { actor_id: actor.uuid },
+      { actor_id: actor.id },
       config.server.auth.jwt.secret
     );
 
@@ -358,7 +358,7 @@ const loginActor = async (req: Request, res: Response) => {
     logger.info('AUTH-CONTROLLER: Resetting locked account code');
     await db.update(
       ActorAccount,
-      { uuid: actorAccount.uuid },
+      { id: actorAccount.id },
       {
         locked_code: generateCode(),
         locked_expires: String(
@@ -402,7 +402,7 @@ const loginActor = async (req: Request, res: Response) => {
 
   await db.update(
     ActorAccount,
-    { uuid: actorAccount.uuid },
+    { id: actorAccount.id },
     !passwordMatch
       ? {
           login_attempts: actorAccount.login_attempts + 1,
@@ -428,7 +428,7 @@ const loginActor = async (req: Request, res: Response) => {
 
   logger.info('AUTH-CONTROLLER: Signing auth tokens');
   const token = jwt.sign(
-    { actor_id: actor.uuid, role: transformRoleForToken(role) },
+    { actor_id: actor.id, role: transformRoleForToken(role) },
     config.server.auth.jwt.secret,
     { expiresIn: config.server.auth.jwt.expiresIn }
   );
@@ -465,7 +465,7 @@ const loginActor = async (req: Request, res: Response) => {
 
   const response: ApiResponseWithData<Token> = {
     data: {
-      id: actor.uuid,
+      id: actor.id,
       attributes: { token },
     },
   };
@@ -499,7 +499,7 @@ const resetPassword = async (req: Request, res: Response) => {
   }
 
   const decoded: any = jwt.decode(token) || { actor_id: null };
-  const actor = await db.findOne(Actor, { uuid: decoded.actor_id });
+  const actor = await db.findOne(Actor, { id: decoded.actor_id });
   const actorAccount: any = await db.findOne(ActorAccount, {
     actor_id: decoded.actor_id,
     reset_password_code: req.body.code,
@@ -518,7 +518,7 @@ const resetPassword = async (req: Request, res: Response) => {
 
     await db.update(
       ActorAccount,
-      { uuid: actorAccount.uuid },
+      { id: actorAccount.id },
       {
         reset_password_code: generateCode(),
         reset_password_expires: String(
@@ -532,7 +532,7 @@ const resetPassword = async (req: Request, res: Response) => {
     );
 
     const updatedActorAccount = await db.findOne(ActorAccount, {
-      actor_id: actor.uuid,
+      actor_id: actor.id,
     });
 
     await sendEmail(
@@ -563,7 +563,7 @@ const resetPassword = async (req: Request, res: Response) => {
 
   await db.update(
     ActorAccount,
-    { uuid: actorAccount.uuid },
+    { id: actorAccount.id },
     {
       reset_password_code: null,
       reset_password_expires: null,
@@ -600,10 +600,10 @@ const sendCode = async (req: Request, res: Response) => {
       actor_account.confirmed_code,
       actor_account.locked_code,
       actor_account.reset_password_code,
-      actor_account.uuid
+      actor_account.id
     FROM
       actor_account
-      INNER JOIN actor ON actor_account.actor_id = actor.uuid
+      INNER JOIN actor ON actor_account.actor_id = actor.id
     WHERE
       actor.email = $1
   `,
@@ -631,7 +631,7 @@ const sendCode = async (req: Request, res: Response) => {
 
   await db.update(
     ActorAccount,
-    { uuid: actorAccount.uuid },
+    { id: actorAccount.id },
     {
       [`${codeType[req.body.type].type}_code`]: generateCode(),
       [`${codeType[req.body.type].type}_expires`]: String(
@@ -646,16 +646,16 @@ const sendCode = async (req: Request, res: Response) => {
       actor_account.confirmed_code,
       actor_account.locked_code,
       actor_account.reset_password_code,
-      actor.uuid,
+      actor.id,
       actor.email,
       actor.first_name
     FROM
       actor_account
-      INNER JOIN actor ON actor_account.actor_id = actor.uuid
+      INNER JOIN actor ON actor_account.actor_id = actor.id
     WHERE
-      actor_account.uuid = $1
+      actor_account.id = $1
   `,
-    [actorAccount.uuid]
+    [actorAccount.id]
   );
 
   logger.info(
@@ -667,7 +667,7 @@ const sendCode = async (req: Request, res: Response) => {
 
   logger.info('AUTH-CONTROLLER: Signing actor id token');
   const actorIdToken = jwt.sign(
-    { actor_id: updatedActor.uuid },
+    { actor_id: updatedActor.id },
     config.server.auth.jwt.secret
   );
 
@@ -679,7 +679,7 @@ const sendCode = async (req: Request, res: Response) => {
 
   const response: ApiResponseWithData = {
     data: {
-      id: updatedActor.uuid,
+      id: updatedActor.id,
     },
   };
 

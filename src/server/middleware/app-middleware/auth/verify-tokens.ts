@@ -53,7 +53,7 @@ export const verifyRefreshToken = async (refreshToken: string) => {
       actor.role_id as role_id
     FROM
       actor_account
-      JOIN actor ON actor_account.actor_id = actor.uuid
+      JOIN actor ON actor_account.actor_id = actor.id
     WHERE
       actor_account.refresh_token = $1
   `,
@@ -64,7 +64,7 @@ export const verifyRefreshToken = async (refreshToken: string) => {
     return undefined;
   }
 
-  const role = await db.findOne(Role, { uuid: actorAccount.role_id });
+  const role = await db.findOne(Role, { id: actorAccount.role_id });
 
   const newToken = jwt.sign(
     {
