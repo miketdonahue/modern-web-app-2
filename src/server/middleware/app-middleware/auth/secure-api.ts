@@ -5,7 +5,7 @@ import { ApiResponseWithError } from '@modules/api-response';
 import { errorTypes } from '@server/modules/errors';
 import { logger } from '@server/modules/logger';
 import { config } from '@config';
-import { verifyRefreshToken } from '@server/middleware/app-middleware';
+import { verifyRefreshToken } from './verify-tokens';
 
 /**
  * Checks if a user is authenticated
