@@ -8,14 +8,6 @@
   padding: theme('padding.2') theme('padding.3');
   width: 100%;
 
-  &:focus {
-    box-shadow: theme('boxShadow.outline');
-    outline: none;
-    transition-duration: theme('transitionDuration.300');
-    transition-property: theme('transitionProperty.colors');
-    transition-timing-function: theme('transitionTimingFunction.in-out');
-  }
-
   @media screen and (min-width: theme('screens.768')) {
     font-size: theme('fontSize.base');
     line-height: theme('lineHeight.6');
@@ -29,9 +21,4 @@
   transition-duration: theme('transitionDuration.300');
   transition-property: theme('transitionProperty.colors');
   transition-timing-function: theme('transitionTimingFunction.in-out');
-
-  &:focus {
-    box-shadow: none;
-    outline: none;
-  }
 }

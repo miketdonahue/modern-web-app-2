@@ -11,11 +11,6 @@
   transition-duration: theme('transitionDuration.300');
   transition-property: theme('transitionProperty.colors');
 
-  &:focus {
-    box-shadow: theme('boxShadow.outline');
-    outline: none;
-  }
-
   @media screen and (min-width: theme('screens.768')) {
     font-size: theme('fontSize.base');
     line-height: theme('lineHeight.6');

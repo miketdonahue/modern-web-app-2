@@ -7,6 +7,7 @@ export { Input } from './input';
 export { Modal } from './modal';
 export { HandleOutsideClose } from './outside-click';
 export { PasswordStrength } from './password-strength';
+export { Select } from './select';
 export { ShoppingCart } from './shopping-cart';
 export { Spinner } from './spinner';
 export { Tooltip } from './tooltip';

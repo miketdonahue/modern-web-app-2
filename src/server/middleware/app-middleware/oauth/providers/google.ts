@@ -220,7 +220,7 @@ export const authenticate = async (
   );
 
   const token = jwt.sign(
-    { actor_id: actor.id, role: actor.role },
+    { id: actor.id, role: actor.role },
     config.server.auth.jwt.secret,
     { expiresIn: config.server.auth.jwt.expiresIn }
   );

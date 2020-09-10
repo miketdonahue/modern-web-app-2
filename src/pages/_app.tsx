@@ -4,6 +4,7 @@ import Router from 'next/router';
 import { request } from '@modules/request';
 import { ReactQueryConfigProvider } from 'react-query';
 import { motion, AnimatePresence } from 'framer-motion';
+import 'focus-visible/dist/focus-visible.min';
 import '../styles/core/tailwind.css';
 import '../styles/core/app-base.scss';
 
