@@ -13,6 +13,7 @@ export default merge(
           "'unsafe-inline'",
           "'unsafe-eval'",
           'cdn.jsdelivr.net',
+          'js.stripe.com',
         ],
         styleSrc: [
           "'self'",
@@ -28,6 +29,7 @@ export default merge(
           'graphcool-playground.netlify.com',
         ],
         connectSrc: ["'self'", 'devtools.apollodata.com'],
+        frameSrc: ['js.stripe.com'],
       },
     },
   },
