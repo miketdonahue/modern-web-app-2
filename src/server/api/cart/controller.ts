@@ -25,7 +25,7 @@ const getMine = async (req: Request, res: Response) => {
  */
 const createCart = async (req: Request, res: Response) => {
   const db = getManager();
-  const actorId = (req as any).actor.actor_id;
+  const actorId = (req as any).actor.id;
 
   const existingCart = await db.findOne(Cart, { actor_id: actorId });
 
@@ -74,11 +74,10 @@ const createCartItems = async (req: Request, res: Response) => {
   const db = getManager();
   const existingCart = await db.findOne(Cart, { id: req.params.cartId });
   const cartHasItems = req.body.cartItems && req.body.cartItems.length > 0;
-  console.log('C XX', existingCart);
+
   if (existingCart && cartHasItems) {
     const cartItemIds =
       req.body?.cartItems.map((item: Product) => item.id) || [];
-    console.log('C ITEMS', cartItemIds);
     const productsInCart = await db.findByIds(ProductModel, cartItemIds);
     const items = productsInCart.map((product: ProductModel) => {
       return {
@@ -87,7 +86,7 @@ const createCartItems = async (req: Request, res: Response) => {
         quantity: 1,
       };
     });
-    console.log('MMMM ITEMS', items);
+
     logger.info(
       { cartId: existingCart.id },
       'CART-CONTROLLER: Setting cart to "active"'

@@ -55,11 +55,11 @@ export class InitialDb1594268178814 implements MigrationInterface {
           phone_country_code character varying,
           phone character varying,
           country character varying,
-          address1 character varying,
+          address character varying,
           address2 character varying,
           city character varying,
           state character varying,
-          postal_code character varying,
+          zip_code character varying,
           created_at timestamp with time zone NOT NULL DEFAULT (now() AT TIME ZONE 'utc')::timestamptz,
           updated_at timestamp with time zone NOT NULL DEFAULT (now() AT TIME ZONE 'utc')::timestamptz,
           deleted boolean NOT NULL DEFAULT false

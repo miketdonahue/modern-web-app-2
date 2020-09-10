@@ -17,11 +17,6 @@
   vertical-align: middle;
   width: theme('width.4');
 
-  &:focus {
-    box-shadow: theme('boxShadow.outline');
-    outline: none;
-  }
-
   @media screen and (min-width: theme('screens.768')) {
     height: theme('height.5');
     width: theme('width.5');

@@ -23,18 +23,12 @@ body {
 a {
   color: theme('colors.link');
   font-family: inherit;
-  outline: none;
   text-decoration: none;
 
   &:hover,
   &:focus,
   &:active {
     text-decoration: underline;
-  }
-
-  &:focus {
-    box-shadow: theme('boxShadow.outline');
-    outline: none;
   }
 
   &:visited {
@@ -68,4 +62,12 @@ sup {
 
 sub {
   vertical-align: sub;
+}
+
+/*
+  This will hide the focus indicator if the element receives focus via the mouse,
+  but it will still show up on keyboard focus.
+*/
+.js-focus-visible :focus:not(.focus-visible) {
+  outline: none;
 }

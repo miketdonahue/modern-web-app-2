@@ -68,7 +68,7 @@ export const verifyRefreshToken = async (refreshToken: string) => {
 
   const newToken = jwt.sign(
     {
-      actor_id: actorAccount.actor_id,
+      id: actorAccount.actor_id,
       role: transformRoleForToken(role),
     },
     config.server.auth.jwt.secret,

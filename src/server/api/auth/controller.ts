@@ -105,7 +105,7 @@ const registerActor = async (req: Request, res: Response) => {
 
   logger.info('AUTH-CONTROLLER: Signing actor id token');
   const actorIdToken = jwt.sign(
-    { actor_id: actor.id },
+    { id: actor.id },
     config.server.auth.jwt.secret
   );
 
@@ -294,7 +294,7 @@ const loginActor = async (req: Request, res: Response) => {
   if (config.server.auth.confirmable && !actorAccount.confirmed) {
     logger.info('AUTH-CONTROLLER: Signing actor id token');
     const actorIdToken = jwt.sign(
-      { actor_id: actor.id },
+      { id: actor.id },
       config.server.auth.jwt.secret
     );
 
@@ -345,7 +345,7 @@ const loginActor = async (req: Request, res: Response) => {
   if (actorAccount.locked) {
     logger.info('AUTH-CONTROLLER: Signing actor id token');
     const actorIdToken = jwt.sign(
-      { actor_id: actor.id },
+      { id: actor.id },
       config.server.auth.jwt.secret
     );
 
@@ -428,7 +428,7 @@ const loginActor = async (req: Request, res: Response) => {
 
   logger.info('AUTH-CONTROLLER: Signing auth tokens');
   const token = jwt.sign(
-    { actor_id: actor.id, role: transformRoleForToken(role) },
+    { id: actor.id, role: transformRoleForToken(role) },
     config.server.auth.jwt.secret,
     { expiresIn: config.server.auth.jwt.expiresIn }
   );
@@ -667,7 +667,7 @@ const sendCode = async (req: Request, res: Response) => {
 
   logger.info('AUTH-CONTROLLER: Signing actor id token');
   const actorIdToken = jwt.sign(
-    { actor_id: updatedActor.id },
+    { id: updatedActor.id },
     config.server.auth.jwt.secret
   );
 
