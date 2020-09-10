@@ -22,11 +22,17 @@ export default merge(
       },
       contentSecurityPolicy: {
         defaultSrc: ["'self'"],
-        scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'"],
+        scriptSrc: [
+          "'self'",
+          "'unsafe-inline'",
+          "'unsafe-eval'",
+          'js.stripe.com',
+        ],
         styleSrc: ["'self'", "'unsafe-inline'", 'fonts.googleapis.com'],
         fontSrc: ["'self'", 'data:', 'fonts.gstatic.com'],
         imgSrc: ["'self'", 'data:', 'rickandmortyapi.com'],
         connectSrc: ["'self'"],
+        frameSrc: ['js.stripe.com'],
       },
       dirs: {
         routes: ['src/views/**/routes.ts', 'src/server/api/**/*.ts'],
