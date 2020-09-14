@@ -19,10 +19,10 @@ export class Customer extends Base {
   public country: string | null;
 
   @Column('character varying', { nullable: true })
-  public address: string | null;
+  public address_line1: string | null;
 
   @Column('character varying', { nullable: true })
-  public address2: string | null;
+  public address_line2: string | null;
 
   @Column('character varying', { nullable: true })
   public city: string | null;

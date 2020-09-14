@@ -5,16 +5,14 @@ import { createCart, createCartItems } from '@modules/queries/carts';
 import { Data } from '@modules/api-response/typings';
 import { useShoppingCart } from '@components/hooks/use-shopping-cart';
 import { BillingForm } from './components/billing-form';
-import { PaymentForm } from './components/payment-form';
 
 const promise = loadStripe(process.env.NEXT_PUBLIC_STRIPE || '');
 
 const Checkout = () => {
   const { items, updateCart } = useShoppingCart();
-  const [view, setView] = React.useState('billing');
 
   const [createACart, { data: createdCart }] = createCart();
-  const [addCartItems] = createCartItems({
+  const [addCartItems, { data: createdCartItems }] = createCartItems({
     onSuccess: (result) => {
       const products = result.data.map(
         (item: Data) => item.relationships?.product
@@ -36,16 +34,9 @@ const Checkout = () => {
 
   return (
     <div className="p-8">
-      <div>Checkout</div>
-      {view === 'billing' && (
-        <BillingForm onSuccess={() => setView('payment')} />
-      )}
-
-      {view === 'payment' && (
-        <Elements stripe={promise}>
-          <PaymentForm />
-        </Elements>
-      )}
+      <Elements stripe={promise}>
+        <BillingForm orderItems={createdCartItems?.data} />
+      </Elements>
     </div>
   );
 };

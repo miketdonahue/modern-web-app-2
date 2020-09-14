@@ -2,18 +2,19 @@ import React from 'react';
 import cx from 'classnames';
 import { useSelect } from 'downshift';
 import { ChevronDown } from '@components/icons';
+import { SelectItem } from './typings';
 import styles from './select.module.scss';
 
 interface Select extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   id?: string;
   menuId: string;
   className?: string;
-  items: string[];
-  value?: string;
+  items: SelectItem[];
+  currentValue?: SelectItem;
   placeholder: string;
-  onSelection?: (selected: string | null) => void;
+  onSelection?: (selected: SelectItem | null) => void;
   error?: boolean;
-  children: (item: string) => void;
+  children: (item: SelectItem) => void;
 }
 
 export const Select = ({
@@ -21,7 +22,7 @@ export const Select = ({
   menuId,
   className,
   items,
-  value,
+  currentValue,
   placeholder,
   onSelection,
   error = false,
@@ -35,7 +36,7 @@ export const Select = ({
     getMenuProps,
     highlightedIndex,
     getItemProps,
-  } = useSelect({ id, menuId, items, defaultSelectedItem: value });
+  } = useSelect({ id, menuId, items, defaultSelectedItem: currentValue });
 
   React.useEffect(() => {
     if (onSelection) onSelection(selectedItem);
@@ -70,7 +71,7 @@ export const Select = ({
         {...restOfProps}
       >
         <span className={placeholderClasses}>
-          {selectedItem || placeholder}
+          {selectedItem?.label || placeholder}
         </span>
         <ChevronDown size={16} className={arrowClasses} />
       </button>
@@ -84,8 +85,8 @@ export const Select = ({
             return (
               <li
                 className={itemClasses}
-                key={item}
-                {...getItemProps({ item, index })}
+                key={item.id}
+                {...getItemProps({ key: item.id, item, index })}
               >
                 {children(item)}
               </li>

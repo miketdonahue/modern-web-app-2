@@ -8,6 +8,10 @@
   padding: theme('padding.2') theme('padding.3');
   width: 100%;
 
+  &::placeholder {
+    color: theme('colors.gray.500');
+  }
+
   @media screen and (min-width: theme('screens.768')) {
     font-size: theme('fontSize.base');
     line-height: theme('lineHeight.6');

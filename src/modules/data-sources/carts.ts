@@ -14,6 +14,7 @@ const createCartItems = async ({ cartId, cartItems }: CreateCartItems) => {
   const response = await request.post(`/api/v1/carts/${cartId}/items`, {
     cartItems,
   });
+
   return response.data;
 };
 
