@@ -3,15 +3,12 @@ import Stripe from 'stripe';
 import { getManager } from '@server/modules/db-manager';
 import { logger } from '@server/modules/logger';
 import { Customer } from '@server/entities/customer';
-import { Product as ProductModel } from '@server/entities/product';
+import { SelectItem } from '@components/app/select/typings';
 import {
   ApiResponseWithData,
   // ApiResponseWithError,
-  Data,
 } from '@modules/api-response';
 // import { errorTypes } from '@server/modules/errors';
-
-type Product = Data<ProductModel>;
 
 const stripe = new Stripe(process.env.STRIPE || '', {
   apiVersion: '2020-03-02',
@@ -23,7 +20,12 @@ const stripe = new Stripe(process.env.STRIPE || '', {
 const createCustomer = async (req: Request, res: Response) => {
   const db = getManager();
   const actorId = (req as any).actor.id;
-  const values: Partial<Customer> = req.body.values;
+  const values: Partial<Customer> & {
+    name: string;
+    email: string;
+    state: SelectItem;
+    country: SelectItem;
+  } = req.body.values;
 
   const stripeCustomer = await stripe.customers.create();
 
@@ -35,12 +37,12 @@ const createCustomer = async (req: Request, res: Response) => {
   const newCustomer = db.create(Customer, {
     actor_id: actorId,
     vendor_id: stripeCustomer.id,
-    address: values.address,
-    address2: values.address2,
+    address_line1: values.address_line1,
+    address_line2: values.address_line2,
     city: values.city,
-    state: values.state,
+    state: values.state.label,
     zip_code: values.zip_code,
-    country: values.country,
+    country: values.country.label,
   });
 
   const savedCustomer = await db.save(newCustomer);
@@ -51,13 +53,18 @@ const createCustomer = async (req: Request, res: Response) => {
   );
 
   await stripe.customers.update(savedCustomer.vendor_id || '', {
+    email: values.email,
+    name: values.name,
     address: {
-      line1: savedCustomer.address || '',
-      line2: savedCustomer.address2 || '',
+      line1: savedCustomer.address_line1 || '',
+      line2: savedCustomer.address_line2 || '',
       city: savedCustomer.city || '',
       state: savedCustomer.state || '',
       postal_code: savedCustomer.zip_code || '',
       country: savedCustomer.country || '',
+    },
+    metadata: {
+      internal_id: savedCustomer.id,
     },
   });
 
