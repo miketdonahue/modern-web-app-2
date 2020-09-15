@@ -10,18 +10,10 @@ import { SelectItem } from '@components/app/select/typings';
 import { states } from '@modules/data/states';
 import { countries } from '@modules/data/countries';
 import { CartItem } from '@server/entities/cart-item';
+import { CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
 import {
-  CardNumberElement,
-  CardExpiryElement,
-  CardCvcElement,
-  useStripe,
-  useElements,
-} from '@stripe/react-stripe-js';
-import {
-  StripeCardNumberElementChangeEvent,
-  StripeCardExpiryElementChangeEvent,
-  StripeCardCvcElementChangeEvent,
-  StripeCardNumberElement,
+  StripeCardElementChangeEvent,
+  StripeCardElement,
 } from '@stripe/stripe-js';
 import { styles as inputStyles } from '@components/app/input';
 import { createPaymentIntent } from '@modules/queries/payments';
@@ -41,7 +33,7 @@ export const BillingForm = ({ orderItems }: BillingForm) => {
   const stripe = useStripe();
   const elements = useElements();
 
-  const [errors, setErrors] = React.useState({ card: '', expiry: '', cvc: '' });
+  const [cardErrors, setCardErrors] = React.useState('');
   const [clientSecret, setClientSecret] = React.useState('');
 
   React.useEffect(() => {
@@ -64,7 +56,7 @@ export const BillingForm = ({ orderItems }: BillingForm) => {
       address_line2: '',
       city: '',
       state: { id: '', value: '', label: '' },
-      zip_code: '',
+      postal_code: '',
       country: { id: '', value: '', label: '' },
       name: '',
       email: '',
@@ -75,16 +67,14 @@ export const BillingForm = ({ orderItems }: BillingForm) => {
 
       const confirmedPayment = await stripe?.confirmCardPayment(clientSecret, {
         payment_method: {
-          card: elements?.getElement(
-            CardNumberElement
-          ) as StripeCardNumberElement,
+          card: elements?.getElement(CardElement) as StripeCardElement,
           billing_details: {
             address: {
               line1: values.address_line1,
               line2: values.address_line2,
               city: values.city,
               state: values.state.value,
-              postal_code: values.zip_code,
+              postal_code: values.postal_code,
               country: values.country.value,
             },
             email: values.email,
@@ -107,23 +97,12 @@ export const BillingForm = ({ orderItems }: BillingForm) => {
     }
   };
 
-  const handleCardNumberChange = async (
-    event: StripeCardNumberElementChangeEvent
-  ) => {
-    setErrors({ ...errors, card: event.error ? event.error.code : '' });
-  };
-
-  const handleExpiryChange = async (
-    event: StripeCardExpiryElementChangeEvent
-  ) => {
-    setErrors({ ...errors, expiry: event.error ? event.error.code : '' });
-  };
-
-  const handleCvcChange = async (event: StripeCardCvcElementChangeEvent) => {
-    setErrors({ ...errors, cvc: event.error ? event.error.code : '' });
+  const handleCardChange = async (event: StripeCardElementChangeEvent) => {
+    setCardErrors(event.error ? event.error.code : '');
   };
 
   const elementOptions = {
+    hidePostalCode: true,
     style: {
       base: {
         fontFamily: tailwind.theme.fontFamily.sans.join(','),
@@ -261,24 +240,26 @@ export const BillingForm = ({ orderItems }: BillingForm) => {
           </div>
 
           <div>
-            <label htmlFor="zip_code" className="text-sm 768:text-base">
+            <label htmlFor="postal_code" className="text-sm 768:text-base">
               <span>Postal code</span>
-              {formik.errors.zip_code && formik.touched.zip_code ? (
+              {formik.errors.postal_code && formik.touched.postal_code ? (
                 <span className="text-red-600 mt-1">
                   {' '}
-                  {formik.errors.zip_code}
+                  {formik.errors.postal_code}
                 </span>
               ) : null}
 
               <div className="mt-1">
                 <Input
-                  id="zip_code"
-                  name="zip_code"
+                  id="postal_code"
+                  name="postal_code"
                   type="text"
-                  value={formik.values.zip_code}
+                  value={formik.values.postal_code}
                   onChange={handleChange}
                   onBlur={formik.handleBlur}
-                  error={!!(formik.errors.zip_code && formik.touched.zip_code)}
+                  error={
+                    !!(formik.errors.postal_code && formik.touched.postal_code)
+                  }
                 />
               </div>
             </label>
@@ -363,70 +344,22 @@ export const BillingForm = ({ orderItems }: BillingForm) => {
           <div>
             <label htmlFor="name" className="text-sm 768:text-base">
               <span>Card number</span>
-              {errors.card ? (
+              {cardErrors ? (
                 <span className="text-red-600 mt-1">
                   {' '}
-                  {stripeCardErrors[errors.card]}
+                  {stripeCardErrors[cardErrors]}
                 </span>
               ) : null}
 
               <div
                 className={cx(inputStyles.input, {
-                  [inputStyles.error]: errors.card,
+                  [inputStyles.error]: cardErrors,
                 })}
               >
-                <CardNumberElement
-                  id="card-number-element"
+                <CardElement
+                  id="card-element"
                   options={elementOptions}
-                  onChange={handleCardNumberChange}
-                />
-              </div>
-            </label>
-          </div>
-
-          <div>
-            <label htmlFor="name" className="text-sm 768:text-base">
-              <span>Expiration date</span>
-              {errors.expiry ? (
-                <span className="text-red-600 mt-1">
-                  {' '}
-                  {stripeCardErrors[errors.expiry]}
-                </span>
-              ) : null}
-
-              <div
-                className={cx(inputStyles.input, {
-                  [inputStyles.error]: errors.expiry,
-                })}
-              >
-                <CardExpiryElement
-                  id="card-expiry-element"
-                  options={elementOptions}
-                  onChange={handleExpiryChange}
-                />
-              </div>
-            </label>
-          </div>
-
-          <div>
-            <label htmlFor="name" className="text-sm 768:text-base">
-              <span>CVC</span>
-              {errors.cvc ? (
-                <span className="text-red-600 mt-1">
-                  {' '}
-                  {stripeCardErrors[errors.cvc]}
-                </span>
-              ) : null}
-
-              <div
-                className={cx(inputStyles.input, {
-                  [inputStyles.error]: errors.cvc,
-                })}
-              >
-                <CardCvcElement
-                  id="card-cvc-element"
-                  options={{ ...elementOptions, placeholder: '' }}
-                  onChange={handleCvcChange}
+                  onChange={handleCardChange}
                 />
               </div>
             </label>
