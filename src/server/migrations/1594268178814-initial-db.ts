@@ -59,7 +59,7 @@ export class InitialDb1594268178814 implements MigrationInterface {
           address_line2 character varying,
           city character varying,
           state character varying,
-          zip_code character varying,
+          postal_code character varying,
           created_at timestamp with time zone NOT NULL DEFAULT (now() AT TIME ZONE 'utc')::timestamptz,
           updated_at timestamp with time zone NOT NULL DEFAULT (now() AT TIME ZONE 'utc')::timestamptz,
           deleted boolean NOT NULL DEFAULT false

@@ -31,5 +31,5 @@ export class Customer extends Base {
   public state: string | null;
 
   @Column('character varying', { nullable: true })
-  public zip_code: string | null;
+  public postal_code: string | null;
 }

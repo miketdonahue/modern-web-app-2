@@ -41,7 +41,7 @@ const createCustomer = async (req: Request, res: Response) => {
     address_line2: values.address_line2,
     city: values.city,
     state: values.state.label,
-    zip_code: values.zip_code,
+    postal_code: values.postal_code,
     country: values.country.label,
   });
 
@@ -60,7 +60,7 @@ const createCustomer = async (req: Request, res: Response) => {
       line2: savedCustomer.address_line2 || '',
       city: savedCustomer.city || '',
       state: savedCustomer.state || '',
-      postal_code: savedCustomer.zip_code || '',
+      postal_code: savedCustomer.postal_code || '',
       country: savedCustomer.country || '',
     },
     metadata: {
