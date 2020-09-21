@@ -1,34 +1,32 @@
+import { NormalizedError } from '@modules/api-response';
+
 /**
  * Stripe error normalizer
- *
- * @param error - GraphQL Error object from Apollo Server
- * @returns A standardized error code and logger level
  */
-export default (error: any) => {
-  const errorInfo = { code: 'STRIPE', level: 'error' };
+export const handleStripeError = (error: any) => {
+  switch (error.type) {
+    case 'StripeCardError': // A declined card error
+    case 'StripeRateLimitError': // Too many requests made to the API too quickly
+    case 'StripeInvalidRequestError': // Invalid parameters were supplied to Stripe's API
+    case 'StripeAPIError': // An error occurred internally with Stripe's API
+    case 'StripeConnectionError': // Some kind of error occurred during the HTTPS communication
+    case 'StripeAuthenticationError': // You probably used an incorrect API key
+    default: {
+      const errorResponse: NormalizedError = {
+        statusCode: 500,
+        response: {
+          error: [
+            {
+              status: '500',
+              code: error.code || null,
+              detail:
+                'Oops. Something went wrong. Please try again or contact support.',
+            },
+          ],
+        },
+      };
 
-  switch (error.extensions.exception.type) {
-    case 'StripeCardError':
-      errorInfo.code = 'STRIPE_CARD';
-      break;
-    case 'RateLimitError':
-      errorInfo.code = 'STRIPE_RATE_LIMIT';
-      break;
-    case 'StripeInvalidRequestError':
-      errorInfo.code = 'STRIPE_INVALID_REQUEST';
-      break;
-    case 'StripeAPIError':
-      errorInfo.code = 'STRIPE_API';
-      break;
-    case 'StripeConnectionError':
-      errorInfo.code = 'STRIPE_CONNECTION';
-      break;
-    case 'StripeAuthenticationError':
-      errorInfo.code = 'STRIPE_AUTHENTICATION';
-      break;
-    default:
-      break;
+      return errorResponse;
+    }
   }
-
-  return errorInfo;
 };

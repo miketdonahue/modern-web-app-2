@@ -5,30 +5,33 @@ import { ChevronDown } from '@components/icons';
 import { SelectItem } from './typings';
 import styles from './select.module.scss';
 
-interface Select extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+type Select = {
   id?: string;
+  name?: string;
   menuId: string;
   className?: string;
   items: SelectItem[];
-  currentValue?: SelectItem;
+  value?: SelectItem;
   placeholder: string;
   onSelection?: (selected: SelectItem | null) => void;
   error?: boolean;
   children: (item: SelectItem) => void;
-}
+};
 
 export const Select = ({
   id,
   menuId,
+  name,
   className,
   items,
-  currentValue,
+  value,
   placeholder,
   onSelection,
   error = false,
   children,
-  ...restOfProps
 }: Select) => {
+  const itemToString = (item: SelectItem | null) =>
+    item?.label ? item.label : '';
   const {
     isOpen,
     selectedItem,
@@ -36,7 +39,13 @@ export const Select = ({
     getMenuProps,
     highlightedIndex,
     getItemProps,
-  } = useSelect({ id, menuId, items, defaultSelectedItem: currentValue });
+  } = useSelect({
+    id,
+    menuId,
+    items,
+    defaultSelectedItem: value,
+    itemToString,
+  });
 
   React.useEffect(() => {
     if (onSelection) onSelection(selectedItem);
@@ -55,7 +64,7 @@ export const Select = ({
   });
 
   const placeholderClasses = cx({
-    [styles.placeholder]: !selectedItem,
+    [styles.placeholder]: !selectedItem?.label,
   });
 
   const menuStyles = cx(styles.menu, {
@@ -66,12 +75,12 @@ export const Select = ({
     <div className={styles.container}>
       <button
         type="button"
+        name={name}
         className={selectClasses}
         {...getToggleButtonProps()}
-        {...restOfProps}
       >
         <span className={placeholderClasses}>
-          {selectedItem?.label || placeholder}
+          {selectedItem?.label ? itemToString(selectedItem) : placeholder}
         </span>
         <ChevronDown size={16} className={arrowClasses} />
       </button>
@@ -84,9 +93,13 @@ export const Select = ({
 
             return (
               <li
-                className={itemClasses}
-                key={item.id}
-                {...getItemProps({ key: item.id, item, index })}
+                {...getItemProps({
+                  key: item.id,
+                  className: itemClasses,
+                  item,
+                  value: item.label,
+                  index,
+                })}
               >
                 {children(item)}
               </li>

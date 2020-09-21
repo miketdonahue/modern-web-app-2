@@ -1,14 +1,16 @@
-type Relationships = {
+export type Relationship = {
   id: string;
   attributes?: object;
 };
 
-export interface Data<T = {}> {
+export type Relationships = {
+  [key: string]: Relationship;
+};
+
+export interface Data<T = {}, U extends Relationships = {}> {
   id: string;
   attributes?: T;
-  relationships?: {
-    [key: string]: Relationships | Relationships[] | null | [];
-  };
+  relationships?: U;
   meta?: {
     [key: string]: any;
   };
@@ -42,4 +44,9 @@ export type ApiResponseWithError = {
   meta?: {
     [key: string]: any;
   };
+};
+
+export type NormalizedError = {
+  statusCode: number;
+  response: ApiResponseWithError;
 };
