@@ -1,11 +1,10 @@
 import React from 'react';
-import { useMutation } from 'react-query';
+import { AxiosError } from 'axios';
 import { useFormik } from 'formik';
 import cx from 'classnames';
-import { request } from '@modules/request';
 import { useTailwind } from '@components/hooks/use-tailwind';
 import { useMediaQuery } from '@components/hooks/use-media-query';
-import { Input, Button, Select } from '@components/app';
+import { Input, Button, Select, Alert } from '@components/app';
 import { SelectItem } from '@components/app/select/typings';
 import { states } from '@modules/data/states';
 import { countries } from '@modules/data/countries';
@@ -15,8 +14,11 @@ import {
   StripeCardElementChangeEvent,
   StripeCardElement,
 } from '@stripe/stripe-js';
+import { AlertError } from '@components/icons';
+import { ServerErrors } from '@components/server-error';
 import { styles as inputStyles } from '@components/app/input';
 import { createPaymentIntent } from '@modules/queries/payments';
+import { createCustomer } from '@modules/queries/customers';
 import { billingFormValidationSchema } from './validations';
 import { stripeCardErrors } from './error-map';
 
@@ -25,28 +27,36 @@ type BillingForm = {
 };
 
 export const BillingForm = ({ orderItems }: BillingForm) => {
-  // const [serverErrors, setServerErrors] = React.useState<Error[]>([]);
+  const [paymentIntentErrors, setPaymentIntentErrors] = React.useState<Error[]>(
+    []
+  );
+  const [serverErrors, setServerErrors] = React.useState<Error[]>([]);
+  const [cardBlurred, setCardBlurred] = React.useState(false);
+  const [cardErrors, setCardErrors] = React.useState('incomplete');
+  const [clientSecret, setClientSecret] = React.useState('');
 
   const tailwind = useTailwind();
   const { matchesMediaQuery } = useMediaQuery();
-  const [createAPaymentIntent] = createPaymentIntent();
+  const [createAPaymentIntent] = createPaymentIntent({
+    onError: (error: AxiosError) => {
+      setPaymentIntentErrors(error?.response?.data?.error || []);
+    },
+  });
+  const [createACustomer] = createCustomer({
+    onError: (error: AxiosError) => {
+      setServerErrors(error?.response?.data?.error || []);
+    },
+  });
   const stripe = useStripe();
   const elements = useElements();
-
-  const [cardErrors, setCardErrors] = React.useState('');
-  const [clientSecret, setClientSecret] = React.useState('');
 
   React.useEffect(() => {
     if (orderItems) {
       createAPaymentIntent({ orderItems }).then((response) => {
-        setClientSecret(response.data.attributes.clientSecret);
+        setClientSecret(response?.data.attributes.clientSecret);
       });
     }
   }, [orderItems]);
-
-  const [createCustomer] = useMutation((values: any) =>
-    request.post('/api/v1/customers', values)
-  );
 
   const formik = useFormik({
     validateOnChange: false,
@@ -63,7 +73,13 @@ export const BillingForm = ({ orderItems }: BillingForm) => {
     },
     validationSchema: billingFormValidationSchema,
     onSubmit: async (values) => {
-      await createCustomer({ values });
+      const valuesToSend = {
+        ...values,
+        state: values.state.label,
+        country: values.country.label,
+      };
+
+      await createACustomer(valuesToSend);
 
       const confirmedPayment = await stripe?.confirmCardPayment(clientSecret, {
         payment_method: {
@@ -86,19 +102,23 @@ export const BillingForm = ({ orderItems }: BillingForm) => {
   });
 
   const handleChange = (event: React.ChangeEvent<any>) => {
-    const { name } = event.target;
+    const { name, id } = event.target;
 
     formik.handleChange(event);
-    // setServerErrors([]);
+    setServerErrors([]);
 
-    if ((formik.errors as any)[name]) {
-      formik.setFieldError(name, undefined);
+    if ((formik.errors as any)[name || id]) {
+      formik.setFieldError(name || id, undefined);
       formik.validateForm(formik.values);
     }
   };
 
   const handleCardChange = async (event: StripeCardElementChangeEvent) => {
-    setCardErrors(event.error ? event.error.code : '');
+    if (!event.complete || event.empty) {
+      return setCardErrors('incomplete');
+    }
+
+    return setCardErrors(event.error ? event.error.code : '');
   };
 
   const elementOptions = {
@@ -126,6 +146,17 @@ export const BillingForm = ({ orderItems }: BillingForm) => {
 
   return (
     <div>
+      {paymentIntentErrors.length > 0 && (
+        <Alert variant="error" className="mb-4">
+          <div className="mr-3">
+            <AlertError size={18} />
+          </div>
+          <Alert.Content>
+            <ServerErrors errors={paymentIntentErrors} />
+          </Alert.Content>
+        </Alert>
+      )}
+
       <form onSubmit={formik.handleSubmit}>
         <div className="space-y-4">
           <div>
@@ -159,7 +190,7 @@ export const BillingForm = ({ orderItems }: BillingForm) => {
 
           <div>
             <label htmlFor="address_line2" className="text-sm 768:text-base">
-              <span>Address Line 2</span>
+              <span>Address line 2</span>
               {formik.errors.address_line2 && formik.touched.address_line2 ? (
                 <span className="text-red-600 mt-1">
                   {' '}
@@ -224,7 +255,7 @@ export const BillingForm = ({ orderItems }: BillingForm) => {
                   name="state"
                   placeholder="Select your state"
                   items={states}
-                  currentValue={formik.values.state}
+                  value={formik.values.state}
                   onSelection={(selected: SelectItem | null) => {
                     formik.setFieldValue('state', selected);
                     formik.setFieldError('state', undefined);
@@ -282,7 +313,7 @@ export const BillingForm = ({ orderItems }: BillingForm) => {
                   name="country"
                   placeholder="Select your country"
                   items={countries}
-                  currentValue={formik.values.country}
+                  value={formik.values.country}
                   onSelection={(selected: SelectItem | null) => {
                     formik.setFieldValue('country', selected);
                     formik.setFieldError('country', undefined);
@@ -290,36 +321,37 @@ export const BillingForm = ({ orderItems }: BillingForm) => {
                   error={!!(formik.errors.country && formik.touched.country)}
                 >
                   {(item) => {
-                    return <span>{item.label}</span>;
+                    return item.label;
                   }}
                 </Select>
               </div>
             </label>
           </div>
-        </div>
 
-        <div>
-          <label htmlFor="email" className="text-sm 768:text-base">
-            <span>Email address</span>
-            {formik.errors.email && formik.touched.email ? (
-              <span className="text-red-600 mt-1"> {formik.errors.email}</span>
-            ) : null}
+          <div>
+            <label htmlFor="email" className="text-sm 768:text-base">
+              <span>Email address</span>
+              {formik.errors.email && formik.touched.email ? (
+                <span className="text-red-600 mt-1">
+                  {' '}
+                  {formik.errors.email}
+                </span>
+              ) : null}
 
-            <div className="mt-1">
-              <Input
-                id="email"
-                name="email"
-                type="text"
-                value={formik.values.email}
-                onChange={handleChange}
-                onBlur={formik.handleBlur}
-                error={!!(formik.errors.email && formik.touched.email)}
-              />
-            </div>
-          </label>
-        </div>
+              <div className="mt-1">
+                <Input
+                  id="email"
+                  name="email"
+                  type="text"
+                  value={formik.values.email}
+                  onChange={handleChange}
+                  onBlur={formik.handleBlur}
+                  error={!!(formik.errors.email && formik.touched.email)}
+                />
+              </div>
+            </label>
+          </div>
 
-        <div>
           <div>
             <label htmlFor="name" className="text-sm 768:text-base">
               <span>Name on card</span>
@@ -344,7 +376,7 @@ export const BillingForm = ({ orderItems }: BillingForm) => {
           <div>
             <label htmlFor="name" className="text-sm 768:text-base">
               <span>Card number</span>
-              {cardErrors ? (
+              {cardBlurred && cardErrors ? (
                 <span className="text-red-600 mt-1">
                   {' '}
                   {stripeCardErrors[cardErrors]}
@@ -353,23 +385,36 @@ export const BillingForm = ({ orderItems }: BillingForm) => {
 
               <div
                 className={cx(inputStyles.input, {
-                  [inputStyles.error]: cardErrors,
+                  [inputStyles.error]: cardBlurred && cardErrors,
                 })}
               >
                 <CardElement
                   id="card-element"
                   options={elementOptions}
                   onChange={handleCardChange}
+                  onFocus={() => setCardBlurred(false)}
+                  onBlur={() => setCardBlurred(true)}
                 />
               </div>
             </label>
           </div>
         </div>
 
+        {serverErrors.length > 0 && (
+          <Alert variant="error" className="mb-4">
+            <div className="mr-3">
+              <AlertError size={18} />
+            </div>
+            <Alert.Content>
+              <ServerErrors errors={serverErrors} />
+            </Alert.Content>
+          </Alert>
+        )}
+
         <Button
           type="submit"
           variant="primary"
-          disabled={!formik.isValid || !clientSecret}
+          disabled={!formik.isValid || !clientSecret || !!cardErrors}
         >
           Pay
         </Button>

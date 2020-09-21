@@ -3,12 +3,8 @@ import Stripe from 'stripe';
 import { getManager } from '@server/modules/db-manager';
 import { logger } from '@server/modules/logger';
 import { Customer } from '@server/entities/customer';
-import { SelectItem } from '@components/app/select/typings';
-import {
-  ApiResponseWithData,
-  // ApiResponseWithError,
-} from '@modules/api-response';
-// import { errorTypes } from '@server/modules/errors';
+import { ApiResponseWithData, NormalizedError } from '@modules/api-response';
+import { handleStripeError } from '@server/modules/errors/normalizers/stripe';
 
 const stripe = new Stripe(process.env.STRIPE || '', {
   apiVersion: '2020-03-02',
@@ -23,9 +19,7 @@ const createCustomer = async (req: Request, res: Response) => {
   const values: Partial<Customer> & {
     name: string;
     email: string;
-    state: SelectItem;
-    country: SelectItem;
-  } = req.body.values;
+  } = req.body;
 
   const stripeCustomer = await stripe.customers.create();
 
@@ -40,9 +34,9 @@ const createCustomer = async (req: Request, res: Response) => {
     address_line1: values.address_line1,
     address_line2: values.address_line2,
     city: values.city,
-    state: values.state.label,
+    state: values.state,
     postal_code: values.postal_code,
-    country: values.country.label,
+    country: values.country,
   });
 
   const savedCustomer = await db.save(newCustomer);
@@ -52,21 +46,28 @@ const createCustomer = async (req: Request, res: Response) => {
     'CUSTOMER-CONTROLLER: Saved customer'
   );
 
-  await stripe.customers.update(savedCustomer.vendor_id || '', {
-    email: values.email,
-    name: values.name,
-    address: {
-      line1: savedCustomer.address_line1 || '',
-      line2: savedCustomer.address_line2 || '',
-      city: savedCustomer.city || '',
-      state: savedCustomer.state || '',
-      postal_code: savedCustomer.postal_code || '',
-      country: savedCustomer.country || '',
-    },
-    metadata: {
-      internal_id: savedCustomer.id,
-    },
-  });
+  try {
+    await stripe.customers.update(savedCustomer.vendor_id || '', {
+      email: values.email,
+      name: values.name,
+      address: {
+        line1: savedCustomer.address_line1 || '',
+        line2: savedCustomer.address_line2 || '',
+        city: savedCustomer.city || '',
+        state: savedCustomer.state || '',
+        postal_code: savedCustomer.postal_code || '',
+        country: savedCustomer.country || '',
+      },
+      metadata: {
+        internal_id: savedCustomer.id,
+      },
+    });
+  } catch (error) {
+    const err: NormalizedError = handleStripeError(error);
+
+    logger.error({ err: error }, `CUSTOMER-CONTROLLER: ${error.message}`);
+    return res.status(err.statusCode).json(err.response);
+  }
 
   const { id, ...restOfAttributes } = savedCustomer;
   const response: ApiResponseWithData<Partial<Customer>> = {

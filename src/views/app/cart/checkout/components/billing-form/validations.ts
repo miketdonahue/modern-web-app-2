@@ -8,4 +8,6 @@ export const billingFormValidationSchema = Yup.object().shape({
   postal_code: Yup.string()
     .required('is required')
     .length(5, 'must be 5 numbers'),
+  email: Yup.string().email('must be a valid email').required('is required'),
+  name: Yup.string().required('is required'),
 });

@@ -3,6 +3,7 @@ export const stripeCardErrors: { [key: string]: string } = {
   invalid_expiry_month: 'month is invalid',
   invalid_expiry_year: 'year is invalid',
   invalid_cvc: 'code is invalid',
+  incomplete: 'details are incomplete',
   incorrect_number: 'is incorrect',
   incomplete_number: 'is incomplete',
   incomplete_cvc: 'code is incomplete',
