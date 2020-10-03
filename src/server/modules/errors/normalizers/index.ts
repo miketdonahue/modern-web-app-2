@@ -1,11 +1,11 @@
 import jwt from './jwt';
-import stripe from './stripe';
+import { handleStripeError } from './stripe';
 import mailgun from './mailgun';
 import validation from './validation';
 
 export default {
   jwt,
-  stripe,
+  handleStripeError,
   mailgun,
   validation,
 };
