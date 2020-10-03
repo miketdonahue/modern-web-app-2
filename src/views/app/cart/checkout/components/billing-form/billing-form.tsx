@@ -19,6 +19,7 @@ import { ServerErrors } from '@components/server-error';
 import { styles as inputStyles } from '@components/app/input';
 import { createPaymentIntent } from '@modules/queries/payments';
 import { createCustomer } from '@modules/queries/customers';
+import { Error } from '@modules/api-response';
 import { billingFormValidationSchema } from './validations';
 import { stripeCardErrors } from './error-map';
 
@@ -27,28 +28,28 @@ type BillingForm = {
 };
 
 export const BillingForm = ({ orderItems }: BillingForm) => {
-  const [paymentIntentErrors, setPaymentIntentErrors] = React.useState<Error[]>(
-    []
-  );
+  const tailwind = useTailwind();
+  const { matchesMediaQuery } = useMediaQuery();
+  const stripe = useStripe();
+  const elements = useElements();
+
   const [serverErrors, setServerErrors] = React.useState<Error[]>([]);
   const [cardBlurred, setCardBlurred] = React.useState(false);
   const [cardErrors, setCardErrors] = React.useState('incomplete');
   const [clientSecret, setClientSecret] = React.useState('');
+  const [processing, setProcessing] = React.useState(false);
 
-  const tailwind = useTailwind();
-  const { matchesMediaQuery } = useMediaQuery();
   const [createAPaymentIntent] = createPaymentIntent({
     onError: (error: AxiosError) => {
-      setPaymentIntentErrors(error?.response?.data?.error || []);
+      setServerErrors(error?.response?.data?.error || []);
     },
   });
+
   const [createACustomer] = createCustomer({
     onError: (error: AxiosError) => {
       setServerErrors(error?.response?.data?.error || []);
     },
   });
-  const stripe = useStripe();
-  const elements = useElements();
 
   React.useEffect(() => {
     if (orderItems) {
@@ -73,6 +74,8 @@ export const BillingForm = ({ orderItems }: BillingForm) => {
     },
     validationSchema: billingFormValidationSchema,
     onSubmit: async (values) => {
+      setProcessing(true);
+
       const valuesToSend = {
         ...values,
         state: values.state.label,
@@ -98,6 +101,20 @@ export const BillingForm = ({ orderItems }: BillingForm) => {
           },
         },
       });
+
+      if (confirmedPayment?.error) {
+        setServerErrors([
+          {
+            status: '500',
+            code: 'CARD_ERROR',
+            detail: confirmedPayment.error.message || '',
+          },
+        ]);
+
+        setProcessing(false);
+      } else {
+        setProcessing(false);
+      }
     },
   });
 
@@ -146,17 +163,6 @@ export const BillingForm = ({ orderItems }: BillingForm) => {
 
   return (
     <div>
-      {paymentIntentErrors.length > 0 && (
-        <Alert variant="error" className="mb-4">
-          <div className="mr-3">
-            <AlertError size={18} />
-          </div>
-          <Alert.Content>
-            <ServerErrors errors={paymentIntentErrors} />
-          </Alert.Content>
-        </Alert>
-      )}
-
       <form onSubmit={formik.handleSubmit}>
         <div className="space-y-4">
           <div>
@@ -414,6 +420,7 @@ export const BillingForm = ({ orderItems }: BillingForm) => {
         <Button
           type="submit"
           variant="primary"
+          loading={processing}
           disabled={!formik.isValid || !clientSecret || !!cardErrors}
         >
           Pay
