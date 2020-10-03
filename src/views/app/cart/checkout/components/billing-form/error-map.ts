@@ -8,11 +8,7 @@ export const stripeCardErrors: { [key: string]: string } = {
   incomplete_number: 'is incomplete',
   incomplete_cvc: 'code is incomplete',
   incomplete_expiry: 'is incomplete',
-  expired_card: 'The card has expired',
   incorrect_cvc: 'code is incorrect',
   incorrect_zip: 'failed validation',
   invalid_expiry_year_past: 'year is in the past',
-  card_declined: 'The card was declined',
-  missing: 'There is no card on a customer that is being charged',
-  processing_error: 'An error occurred while processing the card',
 };
