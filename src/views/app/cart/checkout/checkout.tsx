@@ -2,7 +2,6 @@ import React from 'react';
 import { loadStripe } from '@stripe/stripe-js';
 import { Elements } from '@stripe/react-stripe-js';
 import { createCart, createCartItems } from '@modules/queries/carts';
-import { Data } from '@modules/api-response/typings';
 import { useShoppingCart } from '@components/hooks/use-shopping-cart';
 import { BillingForm } from './components/billing-form';
 
@@ -15,7 +14,7 @@ const Checkout = () => {
   const [addCartItems, { data: createdCartItems }] = createCartItems({
     onSuccess: (result) => {
       const products = result.data.map(
-        (item: Data) => item.relationships?.product
+        (item: any) => item.relationships?.product
       );
 
       updateCart(products);

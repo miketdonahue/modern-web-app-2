@@ -1,6 +1,6 @@
 import { request } from '@modules/request';
 
-type CreateCartItems = {
+export type CreateCartItems = {
   cartId: string;
   cartItems: any[];
 };
