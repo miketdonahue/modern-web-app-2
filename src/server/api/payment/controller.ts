@@ -16,7 +16,7 @@ const stripe = new Stripe(process.env.STRIPE || '', {
 });
 
 type PaymentIntentItemRelationships = {
-  product: { id: 'product'; attributes: Partial<Product> };
+  product: { id: string; attributes: Partial<Product> };
 };
 
 type PaymentIntentItem = Data<

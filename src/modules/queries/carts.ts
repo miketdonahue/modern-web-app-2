@@ -8,10 +8,10 @@ const createCart = (
   return useMutation(dataSources.createCart, options || undefined);
 };
 
-const createCartItems = (
+const syncCartItems = (
   options?: MutationOptions<AxiosResponse, any, AxiosError>
 ) => {
-  return useMutation(dataSources.createCartItems, options || undefined);
+  return useMutation(dataSources.syncCartItems, options || undefined);
 };
 
-export { createCart, createCartItems };
+export { createCart, syncCartItems };

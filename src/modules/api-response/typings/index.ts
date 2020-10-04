@@ -4,7 +4,7 @@ export type Relationship = {
 };
 
 export type Relationships = {
-  [key: string]: Relationship;
+  [key: string]: Relationship | Relationship[];
 };
 
 export interface Data<T = {}, U extends Relationships = {}> {

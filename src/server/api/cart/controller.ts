@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { getManager } from '@server/modules/db-manager';
 import { logger } from '@server/modules/logger';
-import { Cart, CART_STATUS } from '@server/entities/cart';
+import { Cart } from '@server/entities/cart';
 import { CartItem } from '@server/entities/cart-item';
 import { Product as ProductModel } from '@server/entities/product';
 import {
@@ -12,13 +12,6 @@ import {
 import { errorTypes } from '@server/modules/errors';
 
 type Product = Data<ProductModel>;
-
-/**
- * Get the user's own cart
- */
-const getMine = async (req: Request, res: Response) => {
-  return res.json({ id: '123' });
-};
 
 /**
  * Creates a new cart
@@ -68,17 +61,24 @@ const createCart = async (req: Request, res: Response) => {
 };
 
 /**
- * Creates cart items in an existing cart
+ * Sync cart items with external cart source (i.e. localStorage)
  */
-const createCartItems = async (req: Request, res: Response) => {
+const syncCartItems = async (req: Request, res: Response) => {
   const db = getManager();
-  const existingCart = await db.findOne(Cart, { id: req.params.cartId });
-  const cartHasItems = req.body.cartItems && req.body.cartItems.length > 0;
 
-  if (existingCart && cartHasItems) {
-    const cartItemIds =
+  const existingCart = await db.findOne(Cart, { id: req.params.cartId });
+  const externalCartHasItems =
+    req.body.cartItems && req.body.cartItems.length > 0;
+
+  if (existingCart && externalCartHasItems) {
+    const externalCartProductIds =
       req.body?.cartItems.map((item: Product) => item.id) || [];
-    const productsInCart = await db.findByIds(ProductModel, cartItemIds);
+
+    const productsInCart = await db.findByIds(
+      ProductModel,
+      externalCartProductIds
+    );
+
     const items = productsInCart.map((product: ProductModel) => {
       return {
         cart_id: existingCart.id,
@@ -87,30 +87,31 @@ const createCartItems = async (req: Request, res: Response) => {
       };
     });
 
-    logger.info(
-      { cartId: existingCart.id },
-      'CART-CONTROLLER: Setting cart to "active"'
-    );
-
-    await db.update(
-      Cart,
-      { id: existingCart.id },
-      { status: CART_STATUS.ACTIVE }
-    );
-
-    logger.info(
-      { cartId: existingCart.id },
-      'CART-CONTROLLER: Creating cart items'
-    );
-
     const createdCartItems = db.create(CartItem, items);
+
+    /* Mark all existing cart items as deleted */
+    await db.query(
+      `
+      UPDATE cart_item
+      SET deleted = true
+      WHERE cart_id = $1;
+    `,
+      [existingCart.id]
+    );
+
+    /* Upsert all items from external cart */
     await db
       .createQueryBuilder()
       .insert()
       .into(CartItem)
       .values(createdCartItems)
       .onConflict(
-        `("cart_id", "product_id") DO UPDATE SET "quantity" = excluded.quantity`
+        `
+        ("cart_id", "product_id")
+          DO UPDATE SET
+            "quantity" = excluded.quantity,
+            "deleted" = false
+        `
       )
       .execute();
 
@@ -158,11 +159,11 @@ const createCartItems = async (req: Request, res: Response) => {
   };
 
   logger.error(
-    { existingCart, cartHasItems },
+    { existingCart, externalCartHasItems },
     'CART-CONTROLLER: Invalid cart or cart items'
   );
 
   return res.status(401).json(errorResponse);
 };
 
-export { getMine, createCart, createCartItems };
+export { createCart, syncCartItems };
