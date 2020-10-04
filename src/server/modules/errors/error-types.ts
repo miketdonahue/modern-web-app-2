@@ -35,4 +35,8 @@ export const errorTypes = {
     code: 'INVALID_CART_ITEMS',
     detail: 'Oops, there is an error with your cart. Please try again later.',
   },
+  CART_NOT_FOUND: {
+    code: 'CART_NOT_FOUND',
+    detail: 'We could not find your shopping cart. Please log out.',
+  },
 };

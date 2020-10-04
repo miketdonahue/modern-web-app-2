@@ -10,12 +10,12 @@ const createCart = async (body: any = {}) => {
   return response.data;
 };
 
-const createCartItems = async ({ cartId, cartItems }: CreateCartItems) => {
-  const response = await request.post(`/api/v1/carts/${cartId}/items`, {
+const syncCartItems = async ({ cartId, cartItems }: CreateCartItems) => {
+  const response = await request.patch(`/api/v1/carts/${cartId}/sync`, {
     cartItems,
   });
 
   return response.data;
 };
 
-export { createCart, createCartItems };
+export { createCart, syncCartItems };
