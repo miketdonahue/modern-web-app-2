@@ -59,10 +59,12 @@ const Dropdown = ({
           {triggerElement}
         </TriggerElement>
 
-        <div className={dropdownClasses} style={{ top: offset }}>
-          {isClickBehavior && isOpen && children}
-          {!isClickBehavior && children}
-        </div>
+        {isOpen && (
+          <div className={dropdownClasses} style={{ top: offset }}>
+            {isClickBehavior && isOpen && children}
+            {!isClickBehavior && children}
+          </div>
+        )}
       </HandleOutsideClose>
     </div>
   );
