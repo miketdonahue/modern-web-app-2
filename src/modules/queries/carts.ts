@@ -1,5 +1,7 @@
-import { useMutation, MutationOptions } from 'react-query';
+import { useMutation, MutationOptions, MutationResultPair } from 'react-query';
 import { AxiosResponse, AxiosError } from 'axios';
+import { GetProduct } from '@typings/stripe';
+import { CreateCartItems } from '@modules/data-sources/carts';
 import * as dataSources from '@modules/data-sources/carts';
 
 const createCart = (
@@ -9,8 +11,12 @@ const createCart = (
 };
 
 const syncCartItems = (
-  options?: MutationOptions<AxiosResponse, any, AxiosError>
-) => {
+  options?: MutationOptions<AxiosResponse<GetProduct[]>, any, AxiosError>
+): MutationResultPair<
+  AxiosResponse<GetProduct[]>,
+  CreateCartItems,
+  AxiosError
+> => {
   return useMutation(dataSources.syncCartItems, options || undefined);
 };
 
