@@ -17,6 +17,7 @@ module.exports = {
           '@modules': './src/modules',
           '@public': './public',
           '@utils': './src/utils',
+          '@typings': './typings',
         },
         extensions: ['.js', '.jsx', '.ts', '.tsx'],
       },

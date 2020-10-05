@@ -44,20 +44,22 @@ const Cart = () => {
       <ul>
         {items?.map((item) => {
           return (
-            <li key={item.id} className="flex space-x-8">
+            <li key={item.attributes.id} className="flex space-x-8">
               <div>
                 <img
-                  src={`/images/products/${item.product.id}.jpg`}
-                  alt={item.product.name}
+                  src={`/images/products/${item.attributes.id}.jpg`}
+                  alt={item.attributes.name}
                   width="75"
                 />
               </div>
-              <div>{item.product.name}</div>
+              <div>{item.attributes.name}</div>
               <button type="button" onClick={() => removeCartItem(item)}>
                 Remove
               </button>
               <div>
-                {((item.unit_amount || 0) / 100).toLocaleString('en-US', {
+                {(
+                  (item.relationships?.price.unit_amount || 0) / 100
+                ).toLocaleString('en-US', {
                   style: 'currency',
                   currency: 'USD',
                 })}

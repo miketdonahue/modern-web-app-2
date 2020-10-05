@@ -1,6 +1,5 @@
-export type Relationship = {
+export type Relationship = object & {
   id: string;
-  attributes?: object;
 };
 
 export type Relationships = {
@@ -8,8 +7,7 @@ export type Relationships = {
 };
 
 export interface Data<T = {}, U extends Relationships = {}> {
-  id: string;
-  attributes?: T;
+  attributes: T;
   relationships?: U;
   meta?: {
     [key: string]: any;
@@ -32,8 +30,8 @@ export interface Error {
   };
 }
 
-export type ApiResponseWithData<T = {}> = {
-  data: Data<T> | Data<T>[] | null | [];
+export type ApiResponseWithData<T = {}, U extends Relationships = {}> = {
+  data: Data<T, U> | Data<T, U>[] | null | [];
   meta?: {
     [key: string]: any;
   };
