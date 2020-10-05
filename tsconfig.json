@@ -21,7 +21,8 @@
       "@styles/*": ["src/styles/*"],
       "@modules/*": ["src/modules/*"],
       "@public/*": ["public/*"],
-      "@utils/*": ["src/utils/*"]
+      "@utils/*": ["src/utils/*"],
+      "@typings/*": ["./typings/*"]
     },
     "typeRoots": ["./node_modules/@types", "./typings"],
     "lib": ["dom", "dom.iterable", "esnext"],
@@ -35,7 +36,7 @@
     "scripts",
     "templates",
     "next-env.d.ts",
-    "./typings/global.d.ts",
+    "./typings/*",
     "./*.js",
     "public/js/**/*.js",
     "src/**/*.ts",

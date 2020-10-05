@@ -1,14 +1,14 @@
 import React from 'react';
 import Link from 'next/link';
-import { getPrices } from '@modules/queries/prices';
+import { getProducts } from '@modules/queries/products';
 import { useShoppingCart } from '@components/hooks/use-shopping-cart';
 import { Button, ShoppingCart, Dropdown } from '@components/app';
 // import styles from './products.module.scss';
 
 const Products = () => {
   const { items, total, addCartItem } = useShoppingCart();
-  const { data: response, isLoading } = getPrices();
-  const prices = response?.data;
+  const { data: response, isLoading } = getProducts();
+  const products = response?.data;
 
   return (
     <div className="my-4 mx-8">
@@ -22,13 +22,15 @@ const Products = () => {
           <ul>
             {items?.map((item) => {
               return (
-                <li key={item.id}>
+                <li key={item.attributes.id}>
                   <div className="flex justify-between space-x-4">
                     <div className="whitespace-no-wrap">
-                      {item.product.name}
+                      {item.attributes.name}
                     </div>
                     <div>
-                      {((item.unit_amount || 0) / 100).toLocaleString('en-US', {
+                      {(
+                        (item.relationships?.price.unit_amount || 0) / 100
+                      ).toLocaleString('en-US', {
                         style: 'currency',
                         currency: 'USD',
                       })}
@@ -54,17 +56,18 @@ const Products = () => {
       </div>
       <div className="grid grid-cols-4 gap-4">
         {!isLoading &&
-          prices?.map((result) => {
-            const productPrice = (result.unit_amount || 0) / 100;
+          products?.map((result) => {
+            const productPrice =
+              (result.relationships?.price.unit_amount || 0) / 100;
 
             return (
-              <div key={result.id}>
+              <div key={result.attributes.id}>
                 <img
-                  src={`/images/products/${result.product.id}.jpg`}
-                  alt={result.product.name}
+                  src={`/images/products/${result.attributes.id}.jpg`}
+                  alt={result.attributes.name}
                   width="100%"
                 />
-                <div>{result.product.name}</div>
+                <div>{result.attributes.name}</div>
                 <div>
                   {productPrice.toLocaleString('en-US', {
                     style: 'currency',

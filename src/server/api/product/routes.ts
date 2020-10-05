@@ -1,12 +1,12 @@
 import * as controller from './controller';
 
 export default {
-  path: '/api/v1/prices',
+  path: '/api/v1/products',
   routes: [
     {
       path: '/',
       method: 'get',
-      controller: controller.getPrices,
+      controller: controller.getProducts,
     },
   ],
 };
