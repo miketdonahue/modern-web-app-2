@@ -1,15 +1,12 @@
 import React from 'react';
-import { Product as ProductModel } from '@server/entities/product';
 import { useRouter } from 'next/router';
 import { useShoppingCart } from '@components/hooks/use-shopping-cart';
 import { isAuthenticated } from '@modules/queries/auth';
 import { Button, Modal } from '@components/app';
-import { Data, Error } from '@modules/api-response/typings';
+import { Error } from '@modules/api-response/typings';
 import { SignInForm } from '../login/partials/sign-in-form';
 import { SignUpForm } from '../register/partials/sign-up-form';
 // import styles from './cart.module.scss';
-
-type Product = Data<ProductModel>;
 
 const Cart = () => {
   const router = useRouter();
@@ -45,22 +42,22 @@ const Cart = () => {
   return (
     <div>
       <ul>
-        {items?.map((item: Product) => {
+        {items?.map((item) => {
           return (
             <li key={item.id} className="flex space-x-8">
               <div>
                 <img
-                  src={item.attributes?.thumbnail}
-                  alt={item.attributes?.name}
+                  src={`/images/products/${item.product.id}.jpg`}
+                  alt={item.product.name}
                   width="75"
                 />
               </div>
-              <div>{item.attributes?.name}</div>
+              <div>{item.product.name}</div>
               <button type="button" onClick={() => removeCartItem(item)}>
                 Remove
               </button>
               <div>
-                {item.attributes?.price.toLocaleString('en-US', {
+                {((item.unit_amount || 0) / 100).toLocaleString('en-US', {
                   style: 'currency',
                   currency: 'USD',
                 })}

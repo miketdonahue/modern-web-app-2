@@ -1,22 +1,19 @@
 import React from 'react';
-import { Data } from '@modules/api-response/typings';
-import { Product as ProductModel } from '@server/entities/product';
-
-type Product = Data<ProductModel>;
+import { GetPrice } from '@modules/data-sources/prices';
 
 type CartState = {
-  items: Product[];
+  items: GetPrice[];
   total: number;
   status: string;
 };
 
 type ShoppingCart = {
-  items: Product[];
+  items: GetPrice[];
   total: number;
   status: string;
-  addCartItem: (item: Product) => void;
-  updateCart: (items: Product[]) => void;
-  removeCartItem: (item: Product) => void;
+  addCartItem: (item: GetPrice) => void;
+  updateCart: (items: GetPrice[]) => void;
+  removeCartItem: (item: GetPrice) => void;
 };
 
 export const useShoppingCart = (): ShoppingCart => {
@@ -29,16 +26,15 @@ export const useShoppingCart = (): ShoppingCart => {
   const storage = window.localStorage;
   const [state, setState] = React.useState<CartState>(initialState);
 
-  const getCartTotal = (items: Product[] = []) => {
-    return items.reduce((acc: number, item: Product) => {
+  const getCartTotal = (items: GetPrice[] = []) => {
+    return items.reduce((acc: number, item: GetPrice) => {
       let result = acc;
-      result += item.attributes?.price || 0;
+      result += (item.unit_amount || 0) / 100;
       return Number(result.toFixed(2));
     }, 0);
   };
 
-  const addCartItem = (item: Product) => {
-    console.log('P ITEM', item);
+  const addCartItem = (item: GetPrice) => {
     const storageCart = storage.getItem('cart') || '{}';
     const currentCart: CartState = JSON.parse(storageCart);
     const newCartItems = currentCart.items.concat(item);
@@ -61,11 +57,11 @@ export const useShoppingCart = (): ShoppingCart => {
     });
   };
 
-  const removeCartItem = (item: Product) => {
+  const removeCartItem = (item: GetPrice) => {
     const storageCart = storage.getItem('cart') || '{}';
     const currentCart: CartState = JSON.parse(storageCart);
     const newCartItems = currentCart.items.filter(
-      (product: Product) => item.id !== product.id
+      (product: GetPrice) => item.id !== product.id
     );
     const cartStatus = newCartItems.length > 0 ? 'active' : 'new';
 
@@ -86,7 +82,7 @@ export const useShoppingCart = (): ShoppingCart => {
     });
   };
 
-  const updateCart = (items: Product[]) => {
+  const updateCart = (items: GetPrice[]) => {
     const newCartTotal = getCartTotal(items);
 
     storage.setItem(
