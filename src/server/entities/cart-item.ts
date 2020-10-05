@@ -6,7 +6,7 @@ export class CartItem extends Base {
   @Column('uuid')
   public cart_id: string;
 
-  @Column('uuid')
+  @Column('character varying')
   public product_id: string;
 
   @Column('integer')

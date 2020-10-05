@@ -8,7 +8,6 @@ import { Input, Button, Select, Alert } from '@components/app';
 import { SelectItem } from '@components/app/select/typings';
 import { states } from '@modules/data/states';
 import { countries } from '@modules/data/countries';
-import { CartItem } from '@server/entities/cart-item';
 import { CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
 import {
   StripeCardElementChangeEvent,
@@ -17,17 +16,13 @@ import {
 import { AlertError } from '@components/icons';
 import { ServerErrors } from '@components/server-error';
 import { styles as inputStyles } from '@components/app/input';
-import { createPaymentIntent } from '@modules/queries/payments';
+// import { createPaymentIntent } from '@modules/queries/payments';
 import { createCustomer } from '@modules/queries/customers';
 import { Error } from '@modules/api-response';
 import { billingFormValidationSchema } from './validations';
 import { stripeCardErrors } from './error-map';
 
-type BillingForm = {
-  orderItems: Partial<CartItem>[];
-};
-
-export const BillingForm = ({ orderItems }: BillingForm) => {
+export const BillingForm = () => {
   const tailwind = useTailwind();
   const { matchesMediaQuery } = useMediaQuery();
   const stripe = useStripe();
@@ -36,14 +31,14 @@ export const BillingForm = ({ orderItems }: BillingForm) => {
   const [serverErrors, setServerErrors] = React.useState<Error[]>([]);
   const [cardBlurred, setCardBlurred] = React.useState(false);
   const [cardErrors, setCardErrors] = React.useState('incomplete');
-  const [clientSecret, setClientSecret] = React.useState('');
+  const [clientSecret /* setClientSecret */] = React.useState('');
   const [processing, setProcessing] = React.useState(false);
 
-  const [createAPaymentIntent] = createPaymentIntent({
-    onError: (error: AxiosError) => {
-      setServerErrors(error?.response?.data?.error || []);
-    },
-  });
+  // const [createAPaymentIntent] = createPaymentIntent({
+  //   onError: (error: AxiosError) => {
+  //     setServerErrors(error?.response?.data?.error || []);
+  //   },
+  // });
 
   const [createACustomer] = createCustomer({
     onError: (error: AxiosError) => {
@@ -51,13 +46,13 @@ export const BillingForm = ({ orderItems }: BillingForm) => {
     },
   });
 
-  React.useEffect(() => {
-    if (orderItems) {
-      createAPaymentIntent({ orderItems }).then((response) => {
-        setClientSecret(response?.data.attributes.clientSecret);
-      });
-    }
-  }, [orderItems]);
+  // React.useEffect(() => {
+  //   if (orderItems) {
+  //     createAPaymentIntent({ orderItems }).then((response) => {
+  //       setClientSecret(response?.data.attributes.clientSecret);
+  //     });
+  //   }
+  // }, [orderItems]);
 
   const formik = useFormik({
     validateOnChange: false,

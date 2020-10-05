@@ -1,17 +1,15 @@
 import { Request, Response } from 'express';
+import Stripe from 'stripe';
 import { getManager } from '@server/modules/db-manager';
 import { logger } from '@server/modules/logger';
 import { Cart } from '@server/entities/cart';
 import { CartItem } from '@server/entities/cart-item';
-import { Product as ProductModel } from '@server/entities/product';
+import { GetProduct } from '@typings/stripe';
 import {
   ApiResponseWithData,
   ApiResponseWithError,
-  Data,
 } from '@modules/api-response';
 import { errorTypes } from '@server/modules/errors';
-
-type Product = Data<ProductModel>;
 
 /**
  * Creates a new cart
@@ -30,8 +28,7 @@ const createCart = async (req: Request, res: Response) => {
 
     const response: ApiResponseWithData<Partial<Cart>> = {
       data: {
-        id: existingCart.id,
-        attributes: { status: existingCart.status },
+        attributes: { id: existingCart.id, status: existingCart.status },
       },
     };
 
@@ -52,8 +49,7 @@ const createCart = async (req: Request, res: Response) => {
 
   const response: ApiResponseWithData<Partial<Cart>> = {
     data: {
-      id: createdCart.id,
-      attributes: { status: createdCart.status },
+      attributes: { id: createdCart.id, status: createdCart.status },
     },
   };
 
@@ -65,24 +61,16 @@ const createCart = async (req: Request, res: Response) => {
  */
 const syncCartItems = async (req: Request, res: Response) => {
   const db = getManager();
+  const cartItems: GetProduct[] = req.body.cartItems;
 
   const existingCart = await db.findOne(Cart, { id: req.params.cartId });
-  const externalCartHasItems =
-    req.body.cartItems && req.body.cartItems.length > 0;
+  const externalCartHasItems = cartItems && cartItems.length > 0;
 
   if (existingCart && externalCartHasItems) {
-    const externalCartProductIds =
-      req.body?.cartItems.map((item: Product) => item.id) || [];
-
-    const productsInCart = await db.findByIds(
-      ProductModel,
-      externalCartProductIds
-    );
-
-    const items = productsInCart.map((product: ProductModel) => {
+    const items = req.body?.cartItems.map((product: GetProduct) => {
       return {
         cart_id: existingCart.id,
-        product_id: product.id,
+        product_id: product.attributes.id,
         quantity: 1,
       };
     });
@@ -115,31 +103,34 @@ const syncCartItems = async (req: Request, res: Response) => {
       )
       .execute();
 
-    const responseItems = createdCartItems.map((item: CartItem) => {
-      const cartProduct = productsInCart.find((i) => i.id === item.product_id);
+    // const responseItems = createdCartItems.map((item: CartItem) => {
+    //   const cartProduct = productsInCart.find((i) => i.id === item.product_id);
 
-      return {
-        id: item.id,
-        attributes: { quantity: item.quantity },
-        relationships: {
-          product: {
-            id: cartProduct?.id || '',
-            attributes: {
-              name: cartProduct?.name || '',
-              short_description: cartProduct?.short_description || '',
-              description: cartProduct?.description || '',
-              thumbnail: cartProduct?.thumbnail || '',
-              image: cartProduct?.image || '',
-              price: cartProduct?.price || null,
-              discount: cartProduct?.discount || 0,
-            },
-          },
-        },
-      };
-    });
+    //   return {
+    //     id: item.id,
+    //     attributes: { quantity: item.quantity },
+    //     relationships: {
+    //       product: {
+    //         id: cartProduct?.id || '',
+    //         attributes: {
+    //           name: cartProduct?.name || '',
+    //           short_description: cartProduct?.short_description || '',
+    //           description: cartProduct?.description || '',
+    //           thumbnail: cartProduct?.thumbnail || '',
+    //           image: cartProduct?.image || '',
+    //           price: cartProduct?.price || null,
+    //           discount: cartProduct?.discount || 0,
+    //         },
+    //       },
+    //     },
+    //   };
+    // });
 
-    const response: ApiResponseWithData<Partial<CartItem>> = {
-      data: responseItems,
+    const response: ApiResponseWithData<
+      Stripe.Product,
+      { price: Omit<Stripe.Price, 'product'> }
+    > = {
+      data: cartItems,
     };
 
     return res.json(response);

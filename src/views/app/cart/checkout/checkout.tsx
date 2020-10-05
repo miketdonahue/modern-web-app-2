@@ -11,13 +11,9 @@ const Checkout = () => {
   const { items, updateCart } = useShoppingCart();
 
   const [createACart, { data: createdCart }] = createCart();
-  const [mergeCartItems, { data: orderItems }] = syncCartItems({
+  const [mergeCartItems /* { data: orderItems } */] = syncCartItems({
     onSuccess: (result) => {
-      const products = result.data.map(
-        (item: any) => item.relationships?.product
-      );
-
-      updateCart(products);
+      updateCart(result.data);
     },
   });
 
@@ -27,14 +23,17 @@ const Checkout = () => {
 
   React.useEffect(() => {
     if (createdCart) {
-      mergeCartItems({ cartId: createdCart.data.id, cartItems: items });
+      mergeCartItems({
+        cartId: createdCart.data.attributes.id,
+        cartItems: items,
+      });
     }
   }, [createdCart]);
 
   return (
     <div className="p-8">
       <Elements stripe={promise}>
-        <BillingForm orderItems={orderItems?.data} />
+        <BillingForm />
       </Elements>
     </div>
   );

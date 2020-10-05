@@ -1,8 +1,9 @@
 import { request } from '@modules/request';
+import { GetProduct } from '@typings/stripe';
 
 export type CreateCartItems = {
   cartId: string;
-  cartItems: any[];
+  cartItems: GetProduct[];
 };
 
 const createCart = async (body: any = {}) => {
