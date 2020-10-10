@@ -14,7 +14,7 @@ export class InitialConstraints1594269292840 implements MigrationInterface {
       ALTER TABLE oauth ADD CONSTRAINT oauth_actor_id_fkey FOREIGN KEY (actor_id) REFERENCES actor (id);
 
       -- customer
-      ALTER TABLE customer ADD CONSTRAINT customer_actor_id_fkey FOREIGN KEY (actor_id) REFERENCES actor (id);
+      ALTER TABLE customer ADD CONSTRAINT customer_unique UNIQUE (actor_id);
 
       -- cart
       ALTER TABLE cart ADD CONSTRAINT cart_actor_id_fkey FOREIGN KEY (actor_id) REFERENCES actor (id);

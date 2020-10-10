@@ -6,7 +6,7 @@ export class PurchaseItem extends Base {
   @Column('uuid')
   public purchase_id: string;
 
-  @Column('uuid')
+  @Column('character varying')
   public product_id: string;
 
   @Column('integer')

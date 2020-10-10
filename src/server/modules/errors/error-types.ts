@@ -39,4 +39,8 @@ export const errorTypes = {
     code: 'CART_NOT_FOUND',
     detail: 'We could not find your shopping cart. Please log out.',
   },
+  GENERIC: {
+    code: 'GENERIC',
+    detail: 'Oops! Something went wrong. Please try again or contact support.',
+  },
 };
