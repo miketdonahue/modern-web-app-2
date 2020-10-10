@@ -17,7 +17,7 @@ import { AlertError } from '@components/icons';
 import { ServerErrors } from '@components/server-error';
 import { styles as inputStyles } from '@components/app/input';
 // import { createPaymentIntent } from '@modules/queries/payments';
-import { createCustomer } from '@modules/queries/customers';
+import { useCreateCustomer } from '@modules/queries/customers';
 import { Error } from '@modules/api-response';
 import { billingFormValidationSchema } from './validations';
 import { stripeCardErrors } from './error-map';
@@ -40,7 +40,7 @@ export const BillingForm = () => {
   //   },
   // });
 
-  const [createACustomer] = createCustomer({
+  const [createCustomer] = useCreateCustomer({
     onError: (error: AxiosError) => {
       setServerErrors(error?.response?.data?.error || []);
     },
@@ -77,7 +77,7 @@ export const BillingForm = () => {
         country: values.country.label,
       };
 
-      await createACustomer(valuesToSend);
+      await createCustomer(valuesToSend);
 
       const confirmedPayment = await stripe?.confirmCardPayment(clientSecret, {
         payment_method: {
