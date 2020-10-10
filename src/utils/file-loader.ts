@@ -13,6 +13,9 @@ const DIRS: any = {
   routes: config.server.dirs.routes.map((d: string) =>
     path.join(process.cwd(), d)
   ),
+  specialRoutes: config.server.dirs.specialRoutes.map((d: string) =>
+    path.join(process.cwd(), d)
+  ),
 };
 
 /**

@@ -56,7 +56,11 @@ export default {
       defaultSrc: ["'self'"],
     },
     dirs: {
-      routes: ['.build/src/views/**/routes.js'],
+      routes: [
+        '.build/src/views/**/routes.js',
+        '.build/src/server/api/**/*.js',
+      ],
+      specialRoutes: ['.build/src/server/api/webhooks/**/*.js'],
     },
   },
 };

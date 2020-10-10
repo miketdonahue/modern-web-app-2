@@ -136,7 +136,7 @@ export class InitialDb1594268178814 implements MigrationInterface {
         CREATE TABLE purchase_item(
           id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
           purchase_id uuid NOT NULL,
-          product_id uuid NOT NULL,
+          product_id character varying NOT NULL,
           quantity integer NOT NULL,
           created_at timestamp with time zone NOT NULL DEFAULT (now() AT TIME ZONE 'utc')::timestamptz,
           updated_at timestamp with time zone NOT NULL DEFAULT (now() AT TIME ZONE 'utc')::timestamptz,

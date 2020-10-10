@@ -19,6 +19,7 @@ const handle = nextApp.getRequestHandler();
 
 // Register types and resolvers
 const routes = fileLoader('routes', { flatten: true });
+const specialRoutes = fileLoader('specialRoutes', { flatten: true });
 
 nextApp
   .prepare()
@@ -31,6 +32,9 @@ nextApp
 
     // Trusting proxy must be set for load balancing
     expressApp.set('trust proxy', true);
+
+    // Routes needing special treatment (i.e. webhooks)
+    await registerRoutes(expressApp, nextApp, specialRoutes);
 
     // Register plugins
     await registerMiddleware(expressApp, [...coreMiddleware, requestLogger]);

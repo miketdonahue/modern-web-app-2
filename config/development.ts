@@ -36,6 +36,7 @@ export default merge(
       },
       dirs: {
         routes: ['src/views/**/routes.ts', 'src/server/api/**/*.ts'],
+        specialRoutes: ['src/server/api/webhooks/**/*.ts'],
       },
     },
   },
