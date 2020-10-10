@@ -1,8 +1,8 @@
 import React from 'react';
 import { loadStripe } from '@stripe/stripe-js';
-import { createCart, syncCartItems } from '@modules/queries/carts';
+import { useCreateCart, useSyncCartItems } from '@modules/queries/carts';
 import { useShoppingCart } from '@components/hooks/use-shopping-cart';
-import { createPaymentSession } from '@modules/queries/payments';
+import { useCreatePaymentSession } from '@modules/queries/payments';
 import { AlertError } from '@components/icons';
 import { ServerErrors } from '@components/server-error';
 import { isAuthenticated } from '@modules/queries/auth';
@@ -21,9 +21,9 @@ const Cart = () => {
   const [serverErrors, setServerErrors] = React.useState<Error[]>([]);
 
   const { items, total, updateCart, removeCartItem } = useShoppingCart();
-  const [createAPaymentSession] = createPaymentSession();
-  const [createACart, { data: createdCart }] = createCart();
-  const [mergeCartItems, { data: mergedCartItems }] = syncCartItems({
+  const [createPaymentSession] = useCreatePaymentSession();
+  const [createCart, { data: createdCart }] = useCreateCart();
+  const [syncCartItems, { data: syncedCartItems }] = useSyncCartItems({
     onSuccess: (result) => {
       updateCart(result.data);
     },
@@ -31,7 +31,7 @@ const Cart = () => {
 
   const handleCheckout = async () => {
     const stripe = await stripePromise;
-    const response = await createAPaymentSession({
+    const response = await createPaymentSession({
       orderItems: items,
     });
 
@@ -53,13 +53,13 @@ const Cart = () => {
   };
 
   React.useEffect(() => {
-    createACart({});
+    createCart({});
   }, []);
 
   React.useEffect(() => {
     if (createdCart) {
-      mergeCartItems({
-        cartId: createdCart?.data.attributes.id,
+      syncCartItems({
+        cartId: createdCart?.data.attributes.id || '',
         cartItems: items,
       });
     }
@@ -67,12 +67,12 @@ const Cart = () => {
 
   React.useEffect(() => {
     if (
-      mergedCartItems &&
+      syncedCartItems &&
       items &&
-      mergedCartItems.data.length !== items.length
+      syncedCartItems.data.length !== items.length
     ) {
-      mergeCartItems({
-        cartId: createdCart?.data.attributes.id,
+      syncCartItems({
+        cartId: createdCart?.data.attributes.id || '',
         cartItems: items,
       });
     }

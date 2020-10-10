@@ -1,13 +1,13 @@
 import React from 'react';
 import Link from 'next/link';
-import { getProducts } from '@modules/queries/products';
+import { useGetProducts } from '@modules/queries/products';
 import { useShoppingCart } from '@components/hooks/use-shopping-cart';
 import { Button, ShoppingCart, Dropdown } from '@components/app';
 // import styles from './products.module.scss';
 
 const Products = () => {
   const { items, total, addCartItem } = useShoppingCart();
-  const { data: response, isLoading } = getProducts();
+  const { data: response, isLoading } = useGetProducts();
   const products = response?.data;
 
   return (
