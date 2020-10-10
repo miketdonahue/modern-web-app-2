@@ -14,7 +14,10 @@ const Login = () => {
     <div className={styles.grid}>
       <div className={styles.gridLeft}>
         <div className={styles.loginGrid}>
-          <SignInForm successUrl="/app" onRegister={handleCreateAccount} />
+          <SignInForm
+            onSuccess={() => router.push('/app')}
+            onRegister={handleCreateAccount}
+          />
         </div>
       </div>
       <div className={styles.gridRight}>

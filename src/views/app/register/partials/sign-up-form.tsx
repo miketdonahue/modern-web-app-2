@@ -2,7 +2,6 @@ import React from 'react';
 import Link from 'next/link';
 import { useMutation } from 'react-query';
 import { AxiosError } from 'axios';
-import { useRouter } from 'next/router';
 import { useFormik } from 'formik';
 import { ServerErrors } from '@components/server-error';
 import { Button, Input, PasswordStrength, Alert } from '@components/app';
@@ -12,12 +11,11 @@ import appLogo from '@public/images/logo-sm.svg';
 import { registerValidationSchema } from '../validations';
 
 type SignUpForm = {
-  successUrl: string;
+  onSuccess: () => void;
   onLogin: () => void;
 };
 
-const SignUpForm = ({ successUrl, onLogin }: SignUpForm) => {
-  const router = useRouter();
+const SignUpForm = ({ onSuccess, onLogin }: SignUpForm) => {
   const [serverErrors, setServerErrors] = React.useState([]);
 
   const [mutate, { isLoading }] = useMutation(
@@ -27,7 +25,7 @@ const SignUpForm = ({ successUrl, onLogin }: SignUpForm) => {
         return setServerErrors(error?.response?.data?.error || []);
       },
       onSuccess: () => {
-        router.push(successUrl);
+        onSuccess();
       },
     }
   );

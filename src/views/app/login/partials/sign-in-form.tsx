@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { useMutation } from 'react-query';
 import { AxiosError } from 'axios';
-import { useRouter } from 'next/router';
 import { useFormik } from 'formik';
 import { request } from '@modules/request';
 import { Error } from '@modules/api-response';
@@ -13,12 +12,11 @@ import { Google, AlertError } from '@components/icons';
 import { loginValidationSchema } from '../validations';
 
 type SignInForm = {
-  successUrl: string;
+  onSuccess: () => void;
   onRegister: () => void;
 };
 
-const SignInForm = ({ successUrl, onRegister }: SignInForm) => {
-  const router = useRouter();
+const SignInForm = ({ onSuccess, onRegister }: SignInForm) => {
   const [serverErrors, setServerErrors] = useState<Error[]>([]);
   const [rememberMe, setRememberMe] = useState(true);
 
@@ -29,7 +27,7 @@ const SignInForm = ({ successUrl, onRegister }: SignInForm) => {
         setServerErrors(error?.response?.data?.error || []);
       },
       onSuccess: () => {
-        router.push(successUrl);
+        onSuccess();
       },
     }
   );

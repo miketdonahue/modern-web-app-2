@@ -1,14 +1,14 @@
 import { request } from '@modules/request';
-import { CartItem } from '@server/entities/cart-item';
+import { GetProduct } from '@typings/stripe';
 
-type CreatePaymentIntentPayload = {
-  orderItems: Partial<CartItem>[];
+type CreatePaymentSessionPayload = {
+  orderItems: GetProduct[];
 };
 
-export const createPaymentIntent = async (
-  payload: CreatePaymentIntentPayload
+export const createPaymentSession = async (
+  payload: CreatePaymentSessionPayload
 ) => {
-  const response = await request.post('/api/v1/payments/intent', {
+  const response = await request.post('/api/v1/payments/session', {
     ...payload,
   });
 
