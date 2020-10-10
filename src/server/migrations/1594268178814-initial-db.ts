@@ -125,6 +125,7 @@ export class InitialDb1594268178814 implements MigrationInterface {
         CREATE TABLE purchase(
           id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
           customer_id uuid NOT NULL,
+          order_number character varying NOT NULL,
           tax integer NOT NULL DEFAULT 0,
           subtotal integer NOT NULL,
           total integer NOT NULL,
