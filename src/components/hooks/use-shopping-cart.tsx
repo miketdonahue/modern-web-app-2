@@ -37,7 +37,10 @@ export const useShoppingCart = (): ShoppingCart => {
   const addCartItem = (item: GetProduct) => {
     const storageCart = storage.getItem('cart') || '{}';
     const currentCart: CartState = JSON.parse(storageCart);
-    const newCartItems = currentCart.items.concat(item);
+    const newCartItems = currentCart.items.concat({
+      ...item,
+      attributes: { ...item.attributes, quantity: 1 },
+    });
     const newCartTotal = getCartTotal(newCartItems);
 
     storage.setItem(

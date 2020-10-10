@@ -15,7 +15,10 @@ const Register = () => {
     <div className={styles.grid}>
       <div className={styles.gridLeft}>
         <div className={styles.registerGrid}>
-          <SignUpForm successUrl="/app" onLogin={handleLogin} />
+          <SignUpForm
+            onSuccess={() => router.push('/app')}
+            onLogin={handleLogin}
+          />
         </div>
       </div>
       <div className={styles.gridMiddle}>

@@ -64,14 +64,13 @@ const syncCartItems = async (req: Request, res: Response) => {
   const cartItems: GetProduct[] = req.body.cartItems;
 
   const existingCart = await db.findOne(Cart, { id: req.params.cartId });
-  const externalCartHasItems = cartItems && cartItems.length > 0;
 
-  if (existingCart && externalCartHasItems) {
+  if (existingCart) {
     const items = req.body?.cartItems.map((product: GetProduct) => {
       return {
         cart_id: existingCart.id,
         product_id: product.attributes.id,
-        quantity: 1,
+        quantity: product.attributes.quantity,
       };
     });
 
@@ -103,31 +102,8 @@ const syncCartItems = async (req: Request, res: Response) => {
       )
       .execute();
 
-    // const responseItems = createdCartItems.map((item: CartItem) => {
-    //   const cartProduct = productsInCart.find((i) => i.id === item.product_id);
-
-    //   return {
-    //     id: item.id,
-    //     attributes: { quantity: item.quantity },
-    //     relationships: {
-    //       product: {
-    //         id: cartProduct?.id || '',
-    //         attributes: {
-    //           name: cartProduct?.name || '',
-    //           short_description: cartProduct?.short_description || '',
-    //           description: cartProduct?.description || '',
-    //           thumbnail: cartProduct?.thumbnail || '',
-    //           image: cartProduct?.image || '',
-    //           price: cartProduct?.price || null,
-    //           discount: cartProduct?.discount || 0,
-    //         },
-    //       },
-    //     },
-    //   };
-    // });
-
     const response: ApiResponseWithData<
-      Stripe.Product,
+      Stripe.Product & { quantity: number },
       { price: Omit<Stripe.Price, 'product'> }
     > = {
       data: cartItems,
@@ -149,11 +125,7 @@ const syncCartItems = async (req: Request, res: Response) => {
     ],
   };
 
-  logger.error(
-    { existingCart, externalCartHasItems },
-    'CART-CONTROLLER: Invalid cart or cart items'
-  );
-
+  logger.error({ existingCart }, 'CART-CONTROLLER: Invalid cart or cart items');
   return res.status(401).json(errorResponse);
 };
 

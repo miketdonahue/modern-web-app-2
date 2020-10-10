@@ -6,9 +6,9 @@ export default {
   middleware: [secureApi],
   routes: [
     {
-      path: '/intent',
+      path: '/session',
       method: 'post',
-      controller: controller.createPaymentIntent,
+      controller: controller.createPaymentSession,
     },
   ],
 };

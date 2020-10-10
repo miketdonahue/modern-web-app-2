@@ -1,24 +1,87 @@
 import React from 'react';
-import { useRouter } from 'next/router';
+import { loadStripe } from '@stripe/stripe-js';
+import { createCart, syncCartItems } from '@modules/queries/carts';
 import { useShoppingCart } from '@components/hooks/use-shopping-cart';
+import { createPaymentSession } from '@modules/queries/payments';
+import { AlertError } from '@components/icons';
+import { ServerErrors } from '@components/server-error';
 import { isAuthenticated } from '@modules/queries/auth';
-import { Button, Modal } from '@components/app';
+import { Button, Modal, Alert } from '@components/app';
 import { Error } from '@modules/api-response/typings';
 import { SignInForm } from '../login/partials/sign-in-form';
 import { SignUpForm } from '../register/partials/sign-up-form';
 // import styles from './cart.module.scss';
 
+const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE || '');
+
 const Cart = () => {
-  const router = useRouter();
-  const { items, total, removeCartItem } = useShoppingCart();
   const [showModal, setShowModal] = React.useState(false);
   const [checkingOut, setCheckingOut] = React.useState(false);
   const [isRegisterView, setRegisterView] = React.useState(true);
+  const [serverErrors, setServerErrors] = React.useState<Error[]>([]);
+
+  const { items, total, updateCart, removeCartItem } = useShoppingCart();
+  const [createAPaymentSession] = createPaymentSession();
+  const [createACart, { data: createdCart }] = createCart();
+  const [mergeCartItems, { data: mergedCartItems }] = syncCartItems({
+    onSuccess: (result) => {
+      updateCart(result.data);
+    },
+  });
+
+  const handleCheckout = async () => {
+    const stripe = await stripePromise;
+    const response = await createAPaymentSession({
+      orderItems: items,
+    });
+
+    const result = await stripe?.redirectToCheckout({
+      sessionId: response.data.attributes.id,
+    });
+
+    if (result?.error) {
+      setServerErrors([
+        {
+          status: '500',
+          code: result.error.code || 'CHECKOUT_ERROR',
+          detail:
+            result.error.message ||
+            'There was a problem checking out your order. Please try again.',
+        },
+      ]);
+    }
+  };
+
+  React.useEffect(() => {
+    createACart({});
+  }, []);
+
+  React.useEffect(() => {
+    if (createdCart) {
+      mergeCartItems({
+        cartId: createdCart?.data.attributes.id,
+        cartItems: items,
+      });
+    }
+  }, [createdCart]);
+
+  React.useEffect(() => {
+    if (
+      mergedCartItems &&
+      items &&
+      mergedCartItems.data.length !== items.length
+    ) {
+      mergeCartItems({
+        cartId: createdCart?.data.attributes.id,
+        cartItems: items,
+      });
+    }
+  }, [items]);
 
   isAuthenticated({
     enabled: checkingOut,
-    onSuccess: () => {
-      router.push('/app/cart/checkout');
+    onSuccess: async () => {
+      await handleCheckout();
     },
     onError: (error) => {
       return error?.response?.data?.error.map((e: Error) => {
@@ -41,6 +104,17 @@ const Cart = () => {
 
   return (
     <div>
+      {serverErrors.length > 0 && (
+        <Alert variant="error" className="mb-4">
+          <div className="mr-3">
+            <AlertError size={18} />
+          </div>
+          <Alert.Content>
+            <ServerErrors errors={serverErrors} />
+          </Alert.Content>
+        </Alert>
+      )}
+
       <ul>
         {items?.map((item) => {
           return (
@@ -86,12 +160,16 @@ const Cart = () => {
           <div className="py-4 px-8">
             {isRegisterView ? (
               <SignUpForm
-                successUrl="/app/cart/checkout"
+                onSuccess={async () => {
+                  await handleCheckout();
+                }}
                 onLogin={toggleAuthView}
               />
             ) : (
               <SignInForm
-                successUrl="/app/cart/checkout"
+                onSuccess={async () => {
+                  await handleCheckout();
+                }}
                 onRegister={toggleAuthView}
               />
             )}
@@ -100,11 +178,7 @@ const Cart = () => {
         <Modal.Footer>Footer</Modal.Footer>
       </Modal>
 
-      <Button
-        href="/app/cart/checkout"
-        className="mt-4"
-        onClick={() => setCheckingOut(true)}
-      >
+      <Button className="mt-4" onClick={() => setCheckingOut(true)}>
         Checkout
       </Button>
     </div>

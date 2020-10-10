@@ -1,51 +1,37 @@
 import { Request, Response } from 'express';
 import Stripe from 'stripe';
 import { logger } from '@server/modules/logger';
-import { CartItem } from '@server/entities/cart-item';
-import { Product } from '@server/entities/product';
-import { calculateOrderTotal } from '@modules/transforms/currency';
 import { handleStripeError } from '@server/modules/errors/normalizers/stripe';
-import {
-  ApiResponseWithData,
-  Data,
-  NormalizedError,
-} from '@modules/api-response';
+import { ApiResponseWithData, NormalizedError } from '@modules/api-response';
+import { GetProduct } from '@typings/stripe';
 
 const stripe = new Stripe(process.env.STRIPE || '', {
   apiVersion: '2020-03-02',
 });
 
-type PaymentIntentItemRelationships = {
-  product: { id: string; attributes: Partial<Product> };
-};
-
-type PaymentIntentItem = Data<
-  Partial<CartItem>,
-  PaymentIntentItemRelationships
->;
-
 /**
- * Creates a new payment intent
+ * Creates a new payment session (Stripe)
  */
-const createPaymentIntent = async (req: Request, res: Response) => {
-  const items = req.body.orderItems.map((item: PaymentIntentItem) => {
-    return {
-      quantity: item.attributes?.quantity,
-      price: item.relationships?.product?.attributes?.price,
-    };
-  });
+const createPaymentSession = async (req: Request, res: Response) => {
+  const SUCCESS_DOMAIN = 'http://localhost:8080/app/cart/checkout';
+  const CANCEL_DOMAIN = 'http://localhost:8080/app/cart';
+
+  const orderItems: GetProduct[] = req.body.orderItems;
 
   try {
-    const paymentIntent = await stripe.paymentIntents.create({
-      amount: calculateOrderTotal(items),
-      currency: 'usd',
+    const session = await stripe.checkout.sessions.create({
+      payment_method_types: ['card'],
+      line_items: orderItems.map((item) => ({
+        price: item.relationships?.price.id,
+        quantity: item.attributes.quantity,
+      })),
+      mode: 'payment',
+      success_url: `${SUCCESS_DOMAIN}`,
+      cancel_url: `${CANCEL_DOMAIN}?canceled=true`,
     });
 
-    const response: ApiResponseWithData<{ clientSecret: string }> = {
-      data: {
-        id: paymentIntent.id,
-        attributes: { clientSecret: paymentIntent.client_secret || '' },
-      },
+    const response: ApiResponseWithData<{ id: string }> = {
+      data: { attributes: { id: session.id } },
     };
 
     return res.json(response);
@@ -57,4 +43,4 @@ const createPaymentIntent = async (req: Request, res: Response) => {
   }
 };
 
-export { createPaymentIntent };
+export { createPaymentSession };

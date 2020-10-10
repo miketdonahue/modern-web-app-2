@@ -6,6 +6,6 @@ export type StripeProduct = Stripe.Product & {
 };
 
 export type GetProduct = Data<
-  Stripe.Product,
+  Stripe.Product & { quantity: number },
   { price: Omit<Stripe.Price, 'product'> }
 >;
