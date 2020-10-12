@@ -45,6 +45,10 @@
 }
 
 // States
+.invisible {
+  visibility: hidden;
+}
+
 .loading {
   cursor: default;
   pointer-events: none;
@@ -54,6 +58,18 @@
   cursor: default;
   opacity: theme('opacity.25');
   pointer-events: none;
+}
+
+.loaderLight {
+  & > div {
+    background-color: theme('backgroundColor.white');
+  }
+}
+
+.loaderDark {
+  & > div {
+    background-color: theme('backgroundColor.gray.700');
+  }
 }
 
 .loader {

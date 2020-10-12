@@ -78,7 +78,7 @@ const SignInForm = ({ onSuccess, onRegister }: SignInForm) => {
         </h1>
       </div>
       <div>
-        <Button component="a" href="/app/oauth/google" fullWidth>
+        <Button href="/app/oauth/google" fullWidth>
           <div className="flex items-center justify-center">
             <Google size={32} />
             <span className="ml-2">Sign in with Google</span>
