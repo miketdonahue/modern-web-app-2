@@ -1,73 +1,62 @@
 import React from 'react';
-import cx from 'classnames';
-import { HandleOutsideClose } from '../outside-click';
-import styles from './dropdown.module.scss';
+import DropdownBase from 'react-overlays/Dropdown';
+import { Toggle } from './components/toggle';
+import { Menu } from './components/menu';
 
 type Dropdown = {
-  triggerElement: React.ReactNode;
-  behavior?: 'click' | 'hover';
-  placement?: 'bottom-left' | 'bottom-center' | 'bottom-right';
-  offset?: number;
-  className?: string;
+  drop?: 'up' | 'down' | 'left' | 'right';
+  alignEnd?: boolean;
+  defaultShow?: boolean;
+  show?: boolean;
+  triggerBehavior?: 'hover' | 'click';
+  onToggle?: (nextShow: boolean, event?: React.SyntheticEvent) => void;
+  itemSelector?: string;
+  focusFirstItemOnShow?: false | true | 'keyboard';
   children: React.ReactNode;
 };
 
-const TriggerElement = React.forwardRef(
-  ({ children, ...restOfProps }: any, ref: any) => {
-    return (
-      <span ref={ref} {...restOfProps}>
-        {children}
-      </span>
-    );
-  }
-);
-
 const Dropdown = ({
-  triggerElement,
-  behavior = 'click',
-  placement = 'bottom-left',
-  offset = 25,
-  className,
+  show,
+  onToggle,
+  triggerBehavior = 'hover',
+  drop,
+  alignEnd,
   children,
 }: Dropdown) => {
-  const isClickBehavior = behavior === 'click';
+  const isClickBehavior = triggerBehavior === 'click';
+  const [shown, setShown] = React.useState(false);
 
-  const [isOpen, setIsOpen] = React.useState(false);
+  React.useEffect(() => {
+    setShown(!!show);
+  }, [show]);
 
-  const containerClasses = cx(styles.container, {
-    [styles.dropdownWithHover]: !isClickBehavior,
-  });
-
-  const dropdownClasses = cx(
-    styles.dropdown,
-    {
-      [styles.dropdownClick]: isClickBehavior,
-      [styles.dropdownHover]: !isClickBehavior,
-      [styles.bottomLeft]: placement === 'bottom-left',
-      [styles.bottomRight]: placement === 'bottom-right',
-      [styles.bottomCenter]: placement === 'bottom-center',
-    },
-    className
-  );
+  const handleToggle = (isOpen: boolean, event?: React.SyntheticEvent) => {
+    if (onToggle) return onToggle(isOpen, event);
+    return isClickBehavior ? setShown(isOpen) : undefined;
+  };
 
   return (
-    <div className={containerClasses}>
-      <HandleOutsideClose onHandleOutsideClose={() => setIsOpen(false)}>
-        <TriggerElement
-          onClick={isClickBehavior ? () => setIsOpen(!isOpen) : null}
+    <DropdownBase
+      show={shown}
+      onToggle={handleToggle}
+      drop={drop}
+      alignEnd={alignEnd}
+      itemSelector="button:not(:disabled)"
+    >
+      {({ props }) => (
+        <div
+          {...props}
+          onMouseEnter={() => (!isClickBehavior ? setShown(true) : null)}
+          onMouseLeave={() => (!isClickBehavior ? setShown(false) : null)}
         >
-          {triggerElement}
-        </TriggerElement>
-
-        {isOpen && (
-          <div className={dropdownClasses} style={{ top: offset }}>
-            {isClickBehavior && isOpen && children}
-            {!isClickBehavior && children}
-          </div>
-        )}
-      </HandleOutsideClose>
-    </div>
+          {children}
+        </div>
+      )}
+    </DropdownBase>
   );
 };
+
+Dropdown.Toggle = Toggle;
+Dropdown.Menu = Menu;
 
 export { Dropdown };

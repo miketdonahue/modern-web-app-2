@@ -19,58 +19,69 @@ type ButtonProps = {
   href?: string;
 };
 
-const Button = ({
-  type = 'button',
-  component = 'button',
-  variant = 'default',
-  href,
-  children,
-  fullWidth = false,
-  loading = false,
-  disabled = false,
-  className,
-  ...restOfProps
-}: Button) => {
-  const buttonProps: ButtonProps = {};
-  const buttonTextClasses = cx({ invisible: loading });
-  const buttonClasses = cx(
-    styles.button,
+const Button = React.forwardRef(
+  (
     {
-      [styles.default]: variant === 'default',
-      [styles.primary]: variant === 'primary',
-      [styles.fullWidth]: fullWidth,
-      [styles.disabled]: disabled,
-      [styles.loading]: loading,
-      [styles.link]: component === 'a',
-    },
-    className
-  );
+      type = 'button',
+      component = 'button',
+      variant = 'default',
+      href,
+      children,
+      fullWidth = false,
+      loading = false,
+      disabled = false,
+      className,
+      ...restOfProps
+    }: Button,
+    ref
+  ) => {
+    const buttonProps: ButtonProps = {};
+    const buttonTextClasses = cx({ [styles.invisible]: loading });
+    const buttonClasses = cx(
+      styles.button,
+      {
+        [styles.default]: variant === 'default',
+        [styles.primary]: variant === 'primary',
+        [styles.fullWidth]: fullWidth,
+        [styles.disabled]: disabled,
+        [styles.loading]: loading,
+        [styles.link]: component === 'a',
+      },
+      className
+    );
 
-  if (component === 'a') {
-    buttonProps.href = href;
+    const loaderClasses = cx(styles.loader, {
+      [styles.loaderLight]: loading && variant !== 'default',
+      [styles.loaderDark]: loading && variant === 'default',
+    });
+
+    if (component === 'a') {
+      buttonProps.href = href;
+    }
+
+    const Component: any = component;
+
+    return (
+      <Component
+        type={type}
+        className={buttonClasses}
+        disabled={disabled}
+        ref={ref}
+        {...buttonProps}
+        {...restOfProps}
+      >
+        <span className={buttonTextClasses}>{children}</span>
+
+        {loading && (
+          <div className={loaderClasses}>
+            <div />
+            <div />
+            <div />
+          </div>
+        )}
+      </Component>
+    );
   }
-
-  const Component: any = component;
-
-  return (
-    <Component
-      type={type}
-      className={buttonClasses}
-      disabled={disabled}
-      {...buttonProps}
-      {...restOfProps}
-    >
-      <span className={buttonTextClasses}>{children}</span>
-
-      {loading && (
-        <div className={styles.loader}>
-          <div />
-          <div />
-          <div />
-        </div>
-      )}
-    </Component>
-  );
-};
+);
 
 export { Button };
