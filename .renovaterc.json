@@ -4,7 +4,7 @@
     "schedule:earlyMondays",
     ":semanticCommitTypeAll(ci)",
     ":semanticCommitScopeDisabled",
-    ":pinOnlyDevDependencies"
+    ":pinDependencies"
   ],
   "baseBranches": ["master"],
   "separateMultipleMajor": true
