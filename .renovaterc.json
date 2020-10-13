@@ -6,6 +6,6 @@
     ":semanticCommitScopeDisabled",
     ":pinOnlyDevDependencies"
   ],
-  "baseBranches": ["dev"],
+  "baseBranches": ["master"],
   "separateMultipleMajor": true
 }
