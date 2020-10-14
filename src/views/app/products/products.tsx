@@ -13,7 +13,7 @@ const Products = () => {
   return (
     <div className="my-4 mx-8">
       <div className="flex justify-end mb-4">
-        <Dropdown>
+        <Dropdown alignEnd>
           <Dropdown.Toggle id="shopping-cart">
             <ShoppingCart count={items.length} />
           </Dropdown.Toggle>

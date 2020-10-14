@@ -29,7 +29,12 @@ export const useShoppingCart = (): ShoppingCart => {
   const getCartTotal = (items: GetProduct[] = []) => {
     return items.reduce((acc: number, item: GetProduct) => {
       let result = acc;
-      result += (item.relationships?.price.unit_amount || 0) / 100;
+
+      result +=
+        ((item.relationships?.price.unit_amount || 0) *
+          item.attributes.quantity) /
+        100;
+
       return Number(result.toFixed(2));
     }, 0);
   };
@@ -37,17 +42,31 @@ export const useShoppingCart = (): ShoppingCart => {
   const addCartItem = (item: GetProduct) => {
     const storageCart = storage.getItem('cart') || '{}';
     const currentCart: CartState = JSON.parse(storageCart);
+
+    /* Check if item already exists in cart */
+    const existingItem = currentCart.items.find(
+      (i) => i.attributes.id === item.attributes.id
+    );
+
+    /* If item exists, do not add, just update quantity */
+    if (existingItem) {
+      existingItem.attributes.quantity += 1;
+    }
+
     const newCartItems = currentCart.items.concat({
       ...item,
       attributes: { ...item.attributes, quantity: 1 },
     });
-    const newCartTotal = getCartTotal(newCartItems);
+
+    const newCartTotal = getCartTotal(
+      existingItem ? currentCart.items : newCartItems
+    );
 
     storage.setItem(
       'cart',
       JSON.stringify({
         ...currentCart,
-        items: newCartItems,
+        items: existingItem ? currentCart.items : newCartItems,
         total: newCartTotal,
         status: 'active',
       })
@@ -55,7 +74,7 @@ export const useShoppingCart = (): ShoppingCart => {
 
     setState({
       ...state,
-      items: [...state.items, item],
+      items: existingItem ? currentCart.items : [...state.items, item],
       total: newCartTotal,
     });
   };
