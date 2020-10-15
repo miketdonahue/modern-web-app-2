@@ -1,10 +1,21 @@
 import React, { useEffect, useRef } from 'react';
 
+type HandleCloseFromOutside = {
+  onOutsideClick: () => void;
+  children: React.ReactNode;
+};
+
 const Wrapper = React.forwardRef(({ children }: any, ref: any) => {
   return <span ref={ref}>{children}</span>;
 });
 
-const HandleOutsideClose = ({ onHandleOutsideClose, children }: any) => {
+/**
+ * Enables close on 'Escape' key and provides outside click handler
+ */
+const HandleCloseFromOutside = ({
+  onOutsideClick,
+  children,
+}: HandleCloseFromOutside) => {
   const node = useRef<HTMLElement>();
 
   const handleClick = (e: any) => {
@@ -12,12 +23,12 @@ const HandleOutsideClose = ({ onHandleOutsideClose, children }: any) => {
       return;
     }
 
-    if (onHandleOutsideClose) onHandleOutsideClose();
+    if (onOutsideClick) onOutsideClick();
   };
 
   const handleEscape = (e: any) => {
     if (e.key === 'Escape') {
-      if (onHandleOutsideClose) onHandleOutsideClose();
+      if (onOutsideClick) onOutsideClick();
     }
   };
 
@@ -34,4 +45,4 @@ const HandleOutsideClose = ({ onHandleOutsideClose, children }: any) => {
   return <Wrapper ref={node}>{children}</Wrapper>;
 };
 
-export { HandleOutsideClose };
+export { HandleCloseFromOutside };

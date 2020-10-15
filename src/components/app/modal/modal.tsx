@@ -5,7 +5,7 @@ import { Body } from './components/body';
 import { Footer } from './components/footer';
 import { Close } from './components/close';
 import { ModalContext } from './modal-context';
-import { HandleOutsideClose } from '../outside-click';
+import { HandleCloseFromOutside } from '../handle-close-from-outside';
 import styles from './modal.module.scss';
 
 interface Modal extends React.HTMLAttributes<HTMLDivElement> {
@@ -36,11 +36,11 @@ const Modal = ({
     <ModalContext.Provider value={{ isOpen, closeModal }}>
       {isOpen && (
         <div className={styles.modalContainer}>
-          <HandleOutsideClose onHandleOutsideClose={() => closeModal()}>
+          <HandleCloseFromOutside onOutsideClick={() => closeModal()}>
             <div className={cx(styles.modal, className)} {...restOfProps}>
               <>{children}</>
             </div>
-          </HandleOutsideClose>
+          </HandleCloseFromOutside>
         </div>
       )}
     </ModalContext.Provider>
