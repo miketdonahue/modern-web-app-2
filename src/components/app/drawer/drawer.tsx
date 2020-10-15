@@ -7,13 +7,13 @@ import styles from './drawer.module.scss';
 const container = {
   open: {
     x: 0,
-    transition: { bounce: 0 },
+    transition: { bounce: 0, duration: 0.2 },
   },
   closed: { x: 400, transition: { dampening: 400 } },
 };
 
 const backdrop = {
-  open: { opacity: 1 },
+  open: { opacity: 1, transition: { duration: 0.2 } },
   closed: { opacity: 0 },
 };
 

@@ -1,15 +1,14 @@
 import React from 'react';
 import Link from 'next/link';
-import { useShoppingCart } from '@components/hooks/use-shopping-cart';
+import { GetProduct } from '@typings/stripe';
 import { Cart, Button, Drawer } from '@components/app';
 
-type ShoppingCart = {};
+type ShoppingCart = {
+  items: GetProduct[];
+  total: number;
+};
 
-export const ShoppingCart = () => {
-  const { items, total } = useShoppingCart();
-
-  // TODO: Cart items do not update here. Need to force a re-render, or put a context on outside
-
+export const ShoppingCart = ({ items, total }: ShoppingCart) => {
   const [open, setOpen] = React.useState(false);
 
   return (
