@@ -1,0 +1,31 @@
+.container {
+  bottom: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
+  z-index: theme('zIndex.50');
+}
+
+.drawer {
+  background-color: theme('colors.white');
+  height: 100vh;
+  position: relative;
+  z-index: theme('zIndex.50');
+}
+
+.content {
+  height: 100%;
+  overflow: hidden;
+  position: relative;
+  width: 100%;
+}
+
+.backdrop {
+  background-color: rgba(19, 23, 29, 0.6);
+  bottom: 0;
+  left: 0;
+  position: fixed;
+  right: 0;
+  top: 0;
+  z-index: theme('zIndex.40');
+}
