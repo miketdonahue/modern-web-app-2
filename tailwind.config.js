@@ -69,6 +69,7 @@ module.exports = {
   },
   variants: {
     textColor: ['responsive', 'hover', 'focus', 'visited'],
+    divideWidth: ['responsive', 'first', 'last'],
   },
   plugins: [],
   purge: ['./src/components/**/*.tsx', './src/views/**/*.tsx'],

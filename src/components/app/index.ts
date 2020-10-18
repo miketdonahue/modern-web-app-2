@@ -4,6 +4,7 @@ export { Button } from './button';
 export { Checkbox } from './checkbox';
 export { Drawer } from './drawer';
 export { Dropdown } from './dropdown';
+export { Incrementor } from './incrementor';
 export { Input } from './input';
 export { Modal } from './modal';
 export { HandleCloseFromOutside } from './handle-close-from-outside';

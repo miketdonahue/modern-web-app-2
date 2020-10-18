@@ -11,12 +11,15 @@ interface Cart extends React.HTMLAttributes<HTMLDivElement> {
 const Cart = ({ count, size = 30, className, ...restOfProps }: Cart) => {
   return (
     <div className="relative cursor-pointer" {...restOfProps}>
-      <div
-        className={cx(styles.badge, className)}
-        style={{ fontSize: size / 3 + 4 }}
-      >
-        {count}
-      </div>
+      {count > 0 && (
+        <div
+          className={cx(styles.badge, className)}
+          style={{ fontSize: size / 3 + 4 }}
+        >
+          {count}
+        </div>
+      )}
+
       <Icon size={size} />
     </div>
   );

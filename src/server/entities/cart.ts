@@ -6,7 +6,6 @@ export const CART_STATUS = {
   ACTIVE: 'active',
   CHECKOUT: 'checkout',
   PAID: 'paid',
-  COMPLETED: 'completed',
   ABANDONED: 'abandoned',
 };
 

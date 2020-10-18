@@ -1,13 +1,68 @@
 import React from 'react';
 import { useRouter } from 'next/router';
+import { useCreatePaymentSession } from '@modules/queries/payments';
+import { useShoppingCart } from '@components/hooks/use-shopping-cart';
+import { useCheckout } from '@components/hooks/use-checkout';
+import { Error } from '@modules/api-response';
 import { SignInForm } from './partials/sign-in-form';
 import styles from './login.module.scss';
 
 const Login = () => {
   const router = useRouter();
+  const { items } = useShoppingCart();
+  const [createPaymentSession] = useCreatePaymentSession();
+
+  const [infoMessage, setInfoMessage] = React.useState('');
+  const [serverErrors, setServerErrors] = React.useState<Error[]>([]);
+
+  React.useEffect(() => {
+    if (
+      router.query.return_to === 'checkout' &&
+      router.query.referrer === 'register'
+    ) {
+      return setInfoMessage(
+        "You've signed up successfully. Please log in to continue the check out process."
+      );
+    }
+
+    if (router.query.referrer === 'register') {
+      return setInfoMessage(
+        "You've signed up successfully. Please log in to continue."
+      );
+    }
+
+    return undefined;
+  }, []);
 
   const handleCreateAccount = () => {
-    router.push('/app/register');
+    if (router.query.return_to === 'checkout') {
+      return router.push({
+        pathname: '/app/register',
+        query: { ...router.query, referrer: 'register' },
+      });
+    }
+
+    return router.push('/app/register', '/app/register');
+  };
+
+  const handleSignInSuccess = async () => {
+    if (router.query.return_to === 'checkout') {
+      const response = await createPaymentSession({
+        orderItems: items,
+      });
+
+      const checkoutError = await useCheckout({
+        sessionId: response.data.attributes.id,
+      });
+
+      if (checkoutError) {
+        return setServerErrors([{ ...checkoutError }]);
+      }
+
+      return undefined;
+    }
+
+    return router.push('/app');
   };
 
   return (
@@ -15,8 +70,10 @@ const Login = () => {
       <div className={styles.gridLeft}>
         <div className={styles.loginGrid}>
           <SignInForm
-            onSuccess={() => router.push('/app')}
+            onSuccess={handleSignInSuccess}
             onRegister={handleCreateAccount}
+            infoMessage={infoMessage}
+            additionalServerErrors={serverErrors}
           />
         </div>
       </div>

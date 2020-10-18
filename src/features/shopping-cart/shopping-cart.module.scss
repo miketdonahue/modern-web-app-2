@@ -1,0 +1,24 @@
+.close {
+  position: absolute;
+  right: 0;
+  top: 0;
+  transition-duration: 0.35s;
+  transition-property: transform;
+
+  &:hover {
+    transform: scale(1.075);
+  }
+}
+
+.trash {
+  & svg {
+    color: theme('colors.gray.400');
+    cursor: pointer;
+    transition-duration: 0.5s;
+    transition-property: color;
+
+    &:hover {
+      color: theme('colors.gray.600');
+    }
+  }
+}

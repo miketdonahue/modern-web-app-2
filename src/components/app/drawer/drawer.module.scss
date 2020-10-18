@@ -8,6 +8,7 @@
 
 .drawer {
   background-color: theme('colors.white');
+  box-shadow: -4px 0 4px 0 rgba(140, 140, 140, 0.5);
   height: 100vh;
   position: relative;
   z-index: theme('zIndex.50');

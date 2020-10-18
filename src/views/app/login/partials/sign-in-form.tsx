@@ -8,17 +8,30 @@ import { Error } from '@modules/api-response';
 import { ServerErrors } from '@components/server-error';
 import { Button, Checkbox, Input, Tooltip, Alert } from '@components/app';
 import appLogo from '@public/images/logo-sm.svg';
-import { Google, AlertError } from '@components/icons';
+import { Google, AlertError, AlertInfo } from '@components/icons';
 import { loginValidationSchema } from '../validations';
 
 type SignInForm = {
   onSuccess: () => void;
   onRegister: () => void;
+  infoMessage?: string;
+  additionalServerErrors?: Error[];
 };
 
-const SignInForm = ({ onSuccess, onRegister }: SignInForm) => {
+const SignInForm = ({
+  onSuccess,
+  onRegister,
+  infoMessage,
+  additionalServerErrors,
+}: SignInForm) => {
   const [serverErrors, setServerErrors] = useState<Error[]>([]);
   const [rememberMe, setRememberMe] = useState(true);
+
+  React.useEffect(() => {
+    if (additionalServerErrors && additionalServerErrors.length > 0) {
+      setServerErrors(additionalServerErrors);
+    }
+  }, [additionalServerErrors]);
 
   const [mutate, { isLoading }] = useMutation(
     (variables: any) => request.post('/api/v1/auth/login', variables),
@@ -77,6 +90,16 @@ const SignInForm = ({ onSuccess, onRegister }: SignInForm) => {
           Sign in to your account
         </h1>
       </div>
+
+      {infoMessage && (
+        <Alert variant="info" className="mb-4">
+          <div className="mr-3">
+            <AlertInfo size={18} />
+          </div>
+          <Alert.Content>{infoMessage}</Alert.Content>
+        </Alert>
+      )}
+
       <div>
         <Button href="/app/oauth/google" fullWidth>
           <div className="flex items-center justify-center">

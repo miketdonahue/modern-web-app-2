@@ -8,17 +8,21 @@ const Register = () => {
   const router = useRouter();
 
   const handleLogin = () => {
-    router.push('/app/login');
+    router.push('/app/login', '/app/login');
+  };
+
+  const handleRegisterSuccess = async () => {
+    return router.push({
+      pathname: '/app/login',
+      query: { ...router.query, referrer: 'register' },
+    });
   };
 
   return (
     <div className={styles.grid}>
       <div className={styles.gridLeft}>
         <div className={styles.registerGrid}>
-          <SignUpForm
-            onSuccess={() => router.push('/app')}
-            onLogin={handleLogin}
-          />
+          <SignUpForm onSuccess={handleRegisterSuccess} onLogin={handleLogin} />
         </div>
       </div>
       <div className={styles.gridMiddle}>

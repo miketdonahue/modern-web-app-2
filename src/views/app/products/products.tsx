@@ -6,15 +6,32 @@ import { ShoppingCart } from '@features/shopping-cart';
 // import styles from './products.module.scss';
 
 const Products = () => {
-  const { items, total, addCartItem } = useShoppingCart();
+  const {
+    items,
+    quantity,
+    total,
+    addCartItem,
+    removeCartItem,
+    incrementItem,
+    decrementItem,
+  } = useShoppingCart();
   const { data: response, isLoading } = useGetProducts();
   const products = response?.data;
 
   return (
-    <div style={{ height: 2000 }}>
+    <div>
       <div className="my-4 mx-8">
         <div className="flex justify-end mb-4">
-          <ShoppingCart items={items} total={total} />
+          <ShoppingCart
+            items={items}
+            quantity={quantity}
+            total={total}
+            onIncrementQuantity={(item) => incrementItem(item)}
+            onDecrementQuantity={(item) => {
+              decrementItem(item);
+            }}
+            onRemoveItem={removeCartItem}
+          />
         </div>
         <div className="grid grid-cols-4 gap-4">
           {!isLoading &&
