@@ -1,19 +1,13 @@
 import React from 'react';
 import { Icon } from '../typings';
 
-const LockOpen = ({
-  color = 'currentColor',
-  size = 96,
-  ...restOfProps
-}: Icon) => {
+const LockOpen = ({ size = 96, ...restOfProps }: Icon) => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
       width={size}
       height={size}
-      viewBox={`0 0 ${size} ${size}`}
-      fill={color}
-      stroke={color}
+      viewBox="0 0 180 180"
       strokeWidth="0"
       strokeLinecap="round"
       strokeLinejoin="round"

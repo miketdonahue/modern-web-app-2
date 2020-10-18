@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { useMutation } from 'react-query';
 import { AxiosError } from 'axios';
 import { useFormik } from 'formik';
+import { Error } from '@modules/api-response';
 import { ServerErrors } from '@components/server-error';
 import { Button, Input, PasswordStrength, Alert } from '@components/app';
 import { Google, AlertError } from '@components/icons';
@@ -13,10 +14,21 @@ import { registerValidationSchema } from '../validations';
 type SignUpForm = {
   onSuccess: () => void;
   onLogin: () => void;
+  additionalServerErrors?: Error[];
 };
 
-const SignUpForm = ({ onSuccess, onLogin }: SignUpForm) => {
-  const [serverErrors, setServerErrors] = React.useState([]);
+const SignUpForm = ({
+  onSuccess,
+  onLogin,
+  additionalServerErrors,
+}: SignUpForm) => {
+  const [serverErrors, setServerErrors] = React.useState<Error[]>([]);
+
+  React.useEffect(() => {
+    if (additionalServerErrors && additionalServerErrors.length > 0) {
+      setServerErrors(additionalServerErrors);
+    }
+  }, [additionalServerErrors]);
 
   const [mutate, { isLoading }] = useMutation(
     (variables: any) => request.post('/api/v1/auth/register', variables),
