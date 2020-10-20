@@ -1,7 +1,7 @@
 import React from 'react';
 import { loadStripe } from '@stripe/stripe-js';
 import { useCreateCart, useSyncCartItems } from '@modules/queries/carts';
-import { useShoppingCart } from '@components/hooks/use-shopping-cart';
+import { useShoppingCart } from '@features/shopping-cart/shopping-cart';
 import { useCreatePaymentSession } from '@modules/queries/payments';
 import { AlertError } from '@components/icons';
 import { ServerErrors } from '@components/server-error';
