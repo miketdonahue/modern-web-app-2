@@ -20,5 +20,11 @@ export default {
       method: 'post',
       controller: controller.unlockActorAccount,
     },
+    {
+      path: '/:id/cart-items',
+      method: 'get',
+      middleware: [secureApi],
+      controller: controller.getActorCartItems,
+    },
   ],
 };

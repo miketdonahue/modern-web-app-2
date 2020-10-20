@@ -1,9 +1,10 @@
 import React from 'react';
 import { useRouter } from 'next/router';
 import { useCreatePaymentSession } from '@modules/queries/payments';
+import { useCreateCart, useSyncCartItems } from '@modules/queries/carts';
 import { isAuthenticated } from '@modules/queries/auth';
-import { GetProduct } from '@typings/stripe';
 import { useCheckout } from '@components/hooks/use-checkout';
+import { ShoppingCartProps } from '@components/hooks/use-shopping-cart';
 import { Cart, Button, Drawer, Incrementor, Alert } from '@components/app';
 import { AlertError, Trash } from '@components/icons';
 import { ServerErrors } from '@components/server-error';
@@ -11,33 +12,43 @@ import { ShoppingBag } from '@components/illustrations';
 import { Error } from '@modules/api-response/typings';
 import styles from './shopping-cart.module.scss';
 
-type ShoppingCart = {
-  items: GetProduct[];
-  quantity: number;
-  total: number;
-  onIncrementQuantity: (item: GetProduct) => void;
-  onDecrementQuantity: (item: GetProduct) => void;
-  onRemoveItem: (item: GetProduct) => void;
-};
-
 export const ShoppingCart = ({
   items,
   quantity,
   total,
-  onIncrementQuantity,
-  onDecrementQuantity,
-  onRemoveItem,
-}: ShoppingCart) => {
+  incrementItem,
+  decrementItem,
+  updateCart,
+  removeCartItem,
+}: Partial<ShoppingCartProps>) => {
   const router = useRouter();
   const [open, setOpen] = React.useState(false);
   const [checkingOut, setCheckingOut] = React.useState(false);
   const [serverErrors, setServerErrors] = React.useState<Error[]>([]);
 
   const [createPaymentSession] = useCreatePaymentSession();
+  const [createCart] = useCreateCart();
+  const [syncCartItems] = useSyncCartItems({
+    onSuccess: (result) => {
+      if (updateCart) updateCart(result.data);
+    },
+  });
 
   const handleCheckout = async () => {
+    createCart(
+      {},
+      {
+        onSuccess: (createdCart) => {
+          syncCartItems({
+            cartId: createdCart.data.attributes.id || '',
+            cartItems: items || [],
+          });
+        },
+      }
+    );
+
     const response = await createPaymentSession({
-      orderItems: items,
+      orderItems: items || [],
     });
 
     const checkoutError = await useCheckout({
@@ -72,7 +83,7 @@ export const ShoppingCart = ({
 
   return (
     <>
-      <Cart count={quantity} onClick={() => setOpen(true)} />
+      <Cart count={quantity || 0} onClick={() => setOpen(true)} />
 
       {/* Drawer */}
       <Drawer
@@ -90,7 +101,7 @@ export const ShoppingCart = ({
           </div>
 
           <ul className="flex-1 divide-y last:divide-y-0 divide-gray-200">
-            {!items.length && (
+            {!items?.length && (
               <div className="flex flex-col justify-center items-center space-y-6 h-full">
                 <ShoppingBag size={225} className="mx-auto" />
                 <div className="text-center font-medium mt-8">
@@ -132,9 +143,11 @@ export const ShoppingCart = ({
                             <Incrementor
                               value={item.attributes.quantity}
                               min={1}
-                              onIncrement={() => onIncrementQuantity(item)}
+                              onIncrement={() => {
+                                if (incrementItem) incrementItem(item);
+                              }}
                               onDecrement={() => {
-                                onDecrementQuantity(item);
+                                if (decrementItem) decrementItem(item);
                               }}
                             />
                           </div>
@@ -142,7 +155,9 @@ export const ShoppingCart = ({
                           <div className={styles.trash}>
                             <Trash
                               size={18}
-                              onClick={() => onRemoveItem(item)}
+                              onClick={() => {
+                                if (removeCartItem) removeCartItem(item);
+                              }}
                             />
                           </div>
                         </div>
@@ -154,13 +169,13 @@ export const ShoppingCart = ({
             })}
           </ul>
 
-          {quantity > 0 && (
+          {(quantity || 0) > 0 && (
             <>
               <div className="flex items-center justify-between font-medium pt-2">
                 <div>Item Total</div>
 
                 <div>
-                  {total.toLocaleString('en-US', {
+                  {total?.toLocaleString('en-US', {
                     style: 'currency',
                     currency: 'USD',
                   })}

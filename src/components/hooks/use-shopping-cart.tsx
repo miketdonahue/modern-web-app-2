@@ -7,7 +7,7 @@ type CartState = {
   status: string;
 };
 
-type ShoppingCart = {
+export type ShoppingCartProps = {
   items: GetProduct[];
   quantity: number;
   total: number;
@@ -17,9 +17,11 @@ type ShoppingCart = {
   decrementItem: (item: GetProduct) => void;
   removeCartItem: (item: GetProduct) => void;
   updateCart: (items: GetProduct[]) => void;
+  clearCart: () => void;
+  calculateQuantity: (items: GetProduct[]) => number;
 };
 
-export const useShoppingCart = (): ShoppingCart => {
+export const useShoppingCart = (): ShoppingCartProps => {
   const initialState = { items: [], total: 0, status: 'new' };
 
   if (typeof window === 'undefined') {
@@ -192,6 +194,18 @@ export const useShoppingCart = (): ShoppingCart => {
     });
   };
 
+  const clearCart = () => {
+    storage.removeItem('cart');
+  };
+
+  const calculateQuantity = (items: GetProduct[]) => {
+    return items?.reduce((acc, item) => {
+      let result = acc;
+      result += item.attributes?.quantity;
+      return result;
+    }, 0);
+  };
+
   React.useEffect(() => {
     const storageCart = storage.getItem('cart') || '{}';
     const currentCart: CartState = JSON.parse(storageCart);
@@ -210,11 +224,7 @@ export const useShoppingCart = (): ShoppingCart => {
 
   return {
     items: state.items,
-    quantity: state.items.reduce((acc, item) => {
-      let result = acc;
-      result += item.attributes.quantity;
-      return result;
-    }, 0),
+    quantity: calculateQuantity(state.items),
     total: state.total,
     status: state.status,
     addCartItem,
@@ -222,5 +232,7 @@ export const useShoppingCart = (): ShoppingCart => {
     incrementItem,
     decrementItem,
     removeCartItem,
+    clearCart,
+    calculateQuantity,
   };
 };

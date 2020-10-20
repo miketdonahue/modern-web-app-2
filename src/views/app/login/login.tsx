@@ -1,5 +1,6 @@
 import React from 'react';
 import { useRouter } from 'next/router';
+import { useCreateCart, useSyncCartItems } from '@modules/queries/carts';
 import { useCreatePaymentSession } from '@modules/queries/payments';
 import { useShoppingCart } from '@components/hooks/use-shopping-cart';
 import { useCheckout } from '@components/hooks/use-checkout';
@@ -9,8 +10,14 @@ import styles from './login.module.scss';
 
 const Login = () => {
   const router = useRouter();
-  const { items } = useShoppingCart();
+  const { items, updateCart } = useShoppingCart();
   const [createPaymentSession] = useCreatePaymentSession();
+  const [createCart] = useCreateCart();
+  const [syncCartItems] = useSyncCartItems({
+    onSuccess: (result) => {
+      updateCart(result.data);
+    },
+  });
 
   const [infoMessage, setInfoMessage] = React.useState('');
   const [serverErrors, setServerErrors] = React.useState<Error[]>([]);
@@ -47,6 +54,18 @@ const Login = () => {
 
   const handleSignInSuccess = async () => {
     if (router.query.return_to === 'checkout') {
+      createCart(
+        {},
+        {
+          onSuccess: (createdCart) => {
+            syncCartItems({
+              cartId: createdCart.data.attributes.id || '',
+              cartItems: items || [],
+            });
+          },
+        }
+      );
+
       const response = await createPaymentSession({
         orderItems: items,
       });

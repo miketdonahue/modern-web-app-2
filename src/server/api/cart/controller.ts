@@ -57,6 +57,26 @@ const createCart = async (req: Request, res: Response) => {
 };
 
 /**
+ * Add a new item to the cart
+ */
+const addCartItem = async (req: Request, res: Response) => {};
+
+/**
+ * Increment the quantity of an existing cart item
+ */
+const incrementCartItem = async (req: Request, res: Response) => {};
+
+/**
+ * Decrement the quantity of an existing cart item
+ */
+const decrementCartItem = async (req: Request, res: Response) => {};
+
+/**
+ * Remove an existing cart item
+ */
+const removeCartItem = async (req: Request, res: Response) => {};
+
+/**
  * Sync cart items with external cart source (i.e. localStorage)
  */
 const syncCartItems = async (req: Request, res: Response) => {
@@ -80,7 +100,9 @@ const syncCartItems = async (req: Request, res: Response) => {
     await db.query(
       `
       UPDATE cart_item
-      SET deleted = true
+      SET
+        deleted = true,
+        updated_at = NOW()
       WHERE cart_id = $1;
     `,
       [existingCart.id]
@@ -97,6 +119,7 @@ const syncCartItems = async (req: Request, res: Response) => {
         ("cart_id", "product_id")
           DO UPDATE SET
             "quantity" = excluded.quantity,
+            "updated_at" = NOW(),
             "deleted" = false
         `
       )
@@ -129,4 +152,11 @@ const syncCartItems = async (req: Request, res: Response) => {
   return res.status(401).json(errorResponse);
 };
 
-export { createCart, syncCartItems };
+export {
+  createCart,
+  addCartItem,
+  incrementCartItem,
+  decrementCartItem,
+  removeCartItem,
+  syncCartItems,
+};

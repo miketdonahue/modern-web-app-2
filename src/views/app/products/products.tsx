@@ -1,6 +1,8 @@
 import React from 'react';
 import { useGetProducts } from '@modules/queries/products';
 import { useShoppingCart } from '@components/hooks/use-shopping-cart';
+import { useActor } from '@components/hooks/use-actor';
+import { useGetActorCart } from '@modules/queries/actor';
 import { Button } from '@components/app';
 import { ShoppingCart } from '@features/shopping-cart';
 // import styles from './products.module.scss';
@@ -12,25 +14,38 @@ const Products = () => {
     total,
     addCartItem,
     removeCartItem,
+    updateCart,
     incrementItem,
     decrementItem,
+    calculateQuantity,
   } = useShoppingCart();
+  const [actorId] = useActor();
   const { data: response, isLoading } = useGetProducts();
+  const { data: cartItems } = useGetActorCart(actorId, {
+    enabled: !!actorId,
+  });
+
   const products = response?.data;
+  const actorCartItems = cartItems?.data;
+  const shoppingCartItems = actorId ? actorCartItems : items;
+  const shoppingCartQuantity = actorId
+    ? calculateQuantity(actorCartItems)
+    : quantity;
 
   return (
     <div>
       <div className="my-4 mx-8">
         <div className="flex justify-end mb-4">
           <ShoppingCart
-            items={items}
-            quantity={quantity}
+            items={shoppingCartItems}
+            quantity={shoppingCartQuantity}
             total={total}
-            onIncrementQuantity={(item) => incrementItem(item)}
-            onDecrementQuantity={(item) => {
+            incrementItem={(item) => incrementItem(item)}
+            decrementItem={(item) => {
               decrementItem(item);
             }}
-            onRemoveItem={removeCartItem}
+            updateCart={updateCart}
+            removeCartItem={removeCartItem}
           />
         </div>
         <div className="grid grid-cols-4 gap-4">

@@ -17,7 +17,7 @@ const X = ({ color = 'currentColor', size = 24, ...restOfProps }: Icon) => {
     >
       <path
         fillRule="evenodd"
-        clip-Rule="evenodd"
+        clipRule="evenodd"
         d="M12.06 13.8095L6.74946 19.12L5 17.3705L10.3105 12.06L5 6.74946L6.74946 5L12.06 10.3105L17.3705 5L19.12 6.74946L13.8095 12.06L19.12 17.3705L17.3705 19.12L12.06 13.8095Z"
         fill={color}
       />
