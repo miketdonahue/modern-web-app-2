@@ -2,7 +2,7 @@ import React from 'react';
 import { useRouter } from 'next/router';
 import { useCreateCart, useSyncCartItems } from '@modules/queries/carts';
 import { useCreatePaymentSession } from '@modules/queries/payments';
-import { useShoppingCart } from '@features/shopping-cart/shopping-cart';
+import { useShoppingCart } from '@components/hooks/use-shopping-cart';
 import { useCheckout } from '@components/hooks/use-checkout';
 import { Error } from '@modules/api-response';
 import { SignInForm } from './partials/sign-in-form';
