@@ -33,15 +33,7 @@ export const Cart = () => {
     // clearCart,
     // calculateQuantity,
   } = React.useContext(ShoppingCartContext);
-  console.log('XXXX', {
-    items,
-    quantity,
-    total,
-    incrementItem,
-    decrementItem,
-    removeCartItem,
-    updateCart,
-  });
+
   const [open, setOpen] = React.useState(false);
   const [checkingOut, setCheckingOut] = React.useState(false);
   const [serverErrors, setServerErrors] = React.useState<Error[]>([]);
@@ -138,7 +130,7 @@ export const Cart = () => {
                   <div className="flex justify-between space-x-3">
                     <div>
                       <img
-                        src={`/images/products/${item.attributes.id}.jpg`}
+                        src={`/images/products/${item.attributes.vendor_id}.jpg`}
                         alt={item.attributes.name}
                         className="h-16 w-16 rounded-md"
                       />
@@ -149,7 +141,7 @@ export const Cart = () => {
                           <div>{item.attributes.name}</div>
                           <div className="font-medium">
                             {(
-                              (item.relationships?.price.unit_amount || 0) / 100
+                              (item.attributes.price || 0) / 100
                             ).toLocaleString('en-US', {
                               style: 'currency',
                               currency: 'USD',

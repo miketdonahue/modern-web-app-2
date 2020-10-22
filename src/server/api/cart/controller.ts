@@ -4,12 +4,52 @@ import { getManager } from '@server/modules/db-manager';
 import { logger } from '@server/modules/logger';
 import { Cart } from '@server/entities/cart';
 import { CartItem } from '@server/entities/cart-item';
-import { GetProduct } from '@typings/stripe';
+import { GetProduct } from '@typings/entities/product';
 import {
   ApiResponseWithData,
   ApiResponseWithError,
 } from '@modules/api-response';
 import { errorTypes } from '@server/modules/errors';
+import { transformStripeProduct } from '../product/helpers';
+
+const stripe = new Stripe(process.env.STRIPE || '', {
+  apiVersion: '2020-03-02',
+});
+
+/**
+ * Get the cart of the currently logged in user
+ */
+const getMyCart = async (req: Request, res: Response) => {
+  const db = getManager();
+  const actorId = (req as any).actor?.id;
+
+  const myCart = await db.findOne(Cart, { actor_id: actorId });
+
+  if (!myCart) {
+    const errorResponse: ApiResponseWithError = {
+      error: [
+        {
+          status: '500',
+          code: errorTypes.CART_NOT_FOUND.code,
+          detail: errorTypes.CART_NOT_FOUND.detail,
+        },
+      ],
+    };
+
+    logger.error('CART-CONTROLLER: Could not find user cart');
+    return res.status(500).json(errorResponse);
+  }
+
+  logger.info({ cartId: myCart?.id }, 'CART-CONTROLLER: Found my cart');
+
+  const response: ApiResponseWithData<Partial<Cart>> = {
+    data: {
+      attributes: { id: myCart.id, status: myCart.status },
+    },
+  };
+
+  return res.json(response);
+};
 
 /**
  * Creates a new cart
@@ -59,7 +99,45 @@ const createCart = async (req: Request, res: Response) => {
 /**
  * Add a new item to the cart
  */
-const addCartItem = async (req: Request, res: Response) => {};
+const addCartItem = async (req: Request, res: Response) => {
+  const db = getManager();
+  const cartItem: CartItem = req.body;
+  let newCartItem;
+
+  const existingCartItem = await db.findOne(CartItem, {
+    product_id: cartItem.product_id,
+  });
+
+  if (existingCartItem) {
+    newCartItem = db.merge(CartItem, existingCartItem, {
+      quantity: existingCartItem.quantity + 1,
+      deleted: false,
+    });
+  } else {
+    newCartItem = db.create(CartItem, { ...cartItem, quantity: 1 });
+  }
+
+  const savedCartItem = await db.save(newCartItem);
+  const price = await stripe.prices.list({
+    active: true,
+    product: savedCartItem.product_id,
+    expand: ['data.product'],
+  });
+
+  const product = transformStripeProduct(price.data[0]);
+
+  const response: ApiResponseWithData<
+    Stripe.Product & { quantity: number },
+    { price: Omit<Stripe.Price, 'product'> }
+  > = {
+    data: {
+      attributes: { ...product.attributes, quantity: savedCartItem.quantity },
+      relationships: { ...product.relationships },
+    },
+  };
+
+  return res.json(response);
+};
 
 /**
  * Increment the quantity of an existing cart item
@@ -153,6 +231,7 @@ const syncCartItems = async (req: Request, res: Response) => {
 };
 
 export {
+  getMyCart,
   createCart,
   addCartItem,
   incrementCartItem,

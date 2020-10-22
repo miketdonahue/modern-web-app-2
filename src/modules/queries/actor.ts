@@ -1,6 +1,6 @@
 import { useQuery, QueryOptions, QueryResult } from 'react-query';
 import { AxiosResponse, AxiosError } from 'axios';
-import { GetProduct } from '@typings/stripe';
+import { GetProduct } from '@typings/entities/product';
 import { Error } from '@modules/api-response';
 import * as dataSources from '@modules/data-sources/actor';
 

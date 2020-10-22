@@ -1,5 +1,5 @@
 import React from 'react';
-import { GetProduct } from '@typings/stripe';
+import { GetProduct } from '@typings/entities/product';
 
 export type ShoppingCartContext = {
   items: GetProduct[];

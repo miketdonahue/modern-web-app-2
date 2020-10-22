@@ -1,40 +1,23 @@
 import { Request, Response } from 'express';
-import Stripe from 'stripe';
+import { getManager } from '@server/modules/db-manager';
 import { ApiResponseWithData } from '@modules/api-response';
-
-const stripe = new Stripe(process.env.STRIPE || '', {
-  apiVersion: '2020-03-02',
-});
+import { Product } from '@server/entities/product';
 
 /**
  * Get all products
  */
 const getProducts = async (req: Request, res: Response) => {
-  /*
-    Stripe nests product inside prices, not prices inside product. Strange decision.
-    I flipped this around here to work with products & price in a more logical manner.
-  */
-  const prices = await stripe.prices.list({
-    active: true,
-    expand: ['data.product'],
-  });
+  const db = getManager();
 
-  const productsWithPrices = prices.data.map((price) => {
-    const { product, ...priceObject } = price;
-
+  const products = await db.find(Product, {});
+  const transformedProducts = products.map((product) => {
     return {
-      attributes: { ...(product as Stripe.Product) },
-      relationships: {
-        price: { ...priceObject },
-      },
+      attributes: { ...product },
     };
   });
 
-  const response: ApiResponseWithData<
-    Stripe.Product,
-    { price: Omit<Stripe.Price, 'product'> }
-  > = {
-    data: productsWithPrices,
+  const response: ApiResponseWithData<Partial<Product>> = {
+    data: transformedProducts,
   };
 
   return res.json(response);

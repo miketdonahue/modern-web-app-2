@@ -1,5 +1,5 @@
 import { request } from '@modules/request';
-import { GetProduct } from '@typings/stripe';
+import { GetProduct } from '@typings/entities/product';
 
 export type CreateCartItems = {
   cartId: string;

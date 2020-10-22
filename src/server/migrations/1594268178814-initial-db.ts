@@ -103,6 +103,21 @@ export class InitialDb1594268178814 implements MigrationInterface {
           deleted boolean NOT NULL DEFAULT false
         );
 
+        CREATE TABLE product(
+          id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
+          vendor_id character varying NOT NULL,
+          name character varying NOT NULL,
+          image_url character varying NOT NULL,
+          description text NOT NULL,
+          short_description character varying NOT NULL,
+          statement_descriptor character varying NOT NULL,
+          price integer NOT NULL DEFAULT 0,
+          active boolean NOT NULL DEFAULT true,
+          created_at timestamp with time zone NOT NULL DEFAULT (now() AT TIME ZONE 'utc')::timestamptz,
+          updated_at timestamp with time zone NOT NULL DEFAULT (now() AT TIME ZONE 'utc')::timestamptz,
+          deleted boolean NOT NULL DEFAULT false
+        );
+
         CREATE TABLE cart(
           id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
           actor_id uuid NOT NULL,
@@ -115,7 +130,7 @@ export class InitialDb1594268178814 implements MigrationInterface {
         CREATE TABLE cart_item(
           id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
           cart_id uuid NOT NULL,
-          product_id character varying NOT NULL,
+          product_id uuid NOT NULL,
           quantity integer NOT NULL,
           created_at timestamp with time zone NOT NULL DEFAULT (now() AT TIME ZONE 'utc')::timestamptz,
           updated_at timestamp with time zone NOT NULL DEFAULT (now() AT TIME ZONE 'utc')::timestamptz,
@@ -137,7 +152,7 @@ export class InitialDb1594268178814 implements MigrationInterface {
         CREATE TABLE purchase_item(
           id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
           purchase_id uuid NOT NULL,
-          product_id character varying NOT NULL,
+          product_id uuid NOT NULL,
           quantity integer NOT NULL,
           created_at timestamp with time zone NOT NULL DEFAULT (now() AT TIME ZONE 'utc')::timestamptz,
           updated_at timestamp with time zone NOT NULL DEFAULT (now() AT TIME ZONE 'utc')::timestamptz,
@@ -157,6 +172,7 @@ export class InitialDb1594268178814 implements MigrationInterface {
         DROP TABLE IF EXISTS permission;
         DROP TABLE IF EXISTS oauth;
         DROP TABLE IF EXISTS blacklisted_token;
+        DROP TABLE IF EXISTS product;
         DROP TABLE IF EXISTS cart;
         DROP TABLE IF EXISTS cart_item;
         DROP TABLE IF EXISTS purchase;
