@@ -14,6 +14,7 @@ const Products = () => {
   // });
 
   const products = response?.data;
+  console.log('XX', products);
   // const actorCartItems = cartItems?.data;
 
   return (
@@ -25,13 +26,12 @@ const Products = () => {
         <div className="grid grid-cols-4 gap-4">
           {!isLoading &&
             products?.map((result) => {
-              const productPrice =
-                (result.relationships?.price.unit_amount || 0) / 100;
+              const productPrice = (result.attributes.price || 0) / 100;
 
               return (
                 <div key={result.attributes.id}>
                   <img
-                    src={`/images/products/${result.attributes.id}.jpg`}
+                    src={`/images/products/${result.attributes.vendor_id}.jpg`}
                     alt={result.attributes.name}
                     width="100%"
                   />

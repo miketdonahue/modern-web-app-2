@@ -1,6 +1,6 @@
 import React from 'react';
 import { Button } from '@components/app';
-import { GetProduct } from '@typings/stripe';
+import { GetProduct } from '@typings/entities/product';
 import { ShoppingCartContext } from '../../shopping-cart-context';
 
 type AddItem = {

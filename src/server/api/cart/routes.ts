@@ -6,6 +6,11 @@ export default {
   middleware: [secureApi],
   routes: [
     {
+      path: '/me',
+      method: 'get',
+      controller: controller.getMyCart,
+    },
+    {
       path: '/',
       method: 'post',
       controller: controller.createCart,

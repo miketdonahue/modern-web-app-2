@@ -25,7 +25,7 @@
       "@utils/*": ["src/utils/*"],
       "@typings/*": ["./typings/*"]
     },
-    "typeRoots": ["./node_modules/@types", "./typings"],
+    "typeRoots": ["./node_modules/@types", "./typings/**"],
     "lib": ["dom", "dom.iterable", "esnext"],
     "forceConsistentCasingInFileNames": true,
     "module": "esnext",
@@ -37,7 +37,7 @@
     "scripts",
     "templates",
     "next-env.d.ts",
-    "./typings/*",
+    "./typings/**/*.ts",
     "./*.js",
     "public/js/**/*.js",
     "src/**/*.ts",

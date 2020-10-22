@@ -1,4 +1,4 @@
-import { GetProduct } from '@typings/stripe';
+import { GetProduct } from '@typings/entities/product';
 
 export type ShoppingCartProps = {
   items: GetProduct[];

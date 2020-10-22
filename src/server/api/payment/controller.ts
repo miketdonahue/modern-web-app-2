@@ -5,7 +5,7 @@ import { logger } from '@server/modules/logger';
 import { handleStripeError } from '@server/modules/errors/normalizers/stripe';
 import { ApiResponseWithData, NormalizedError } from '@modules/api-response';
 import { Actor } from '@server/entities/actor';
-import { GetProduct } from '@typings/stripe';
+import { GetProduct } from '@typings/entities/product';
 
 const stripe = new Stripe(process.env.STRIPE || '', {
   apiVersion: '2020-03-02',
