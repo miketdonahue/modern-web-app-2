@@ -1,4 +1,4 @@
-export type ReducerAction<T> = {
+export type ReducerAction<T = {}> = {
   type: string;
-  payload: T;
+  payload?: T;
 };

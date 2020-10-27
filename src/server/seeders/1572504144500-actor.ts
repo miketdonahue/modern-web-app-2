@@ -4,6 +4,7 @@ import argon2 from 'argon2';
 import { Chance } from 'chance';
 import { Actor } from '@server/entities/actor';
 import { ActorAccount } from '@server/entities/actor-account';
+import { Cart, CART_STATUS } from '@server/entities/cart';
 import { Role, ROLE_NAME } from '@server/entities/role';
 
 const chance = new Chance();
@@ -35,6 +36,11 @@ export class Actor1572504144500 implements MigrationInterface {
 
         await transactionalEntityManager.insert(ActorAccount, {
           actor_id: (actor as any).id,
+        });
+
+        await transactionalEntityManager.insert(Cart, {
+          actor_id: (actor as any).id,
+          status: CART_STATUS.NEW,
         });
       });
     }

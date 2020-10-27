@@ -1,25 +1,22 @@
-import { GetProduct } from '@typings/entities/product';
+import { CartProduct } from '@typings/entities/product';
 import { ReducerAction } from '@typings/react';
 
 export type ReducerState = {
-  items: GetProduct[];
+  items: CartProduct[];
   total: number;
   status: string;
-};
-
-type ReducerPayload = {
-  item: GetProduct;
 };
 
 /**
  * Reducer action types
  */
 export const types = {
+  INIT_CART: 'INIT_CART',
   ADD_CART_ITEM: 'ADD_CART_ITEM',
   REMOVE_CART_ITEM: 'REMOVE_CART_ITEM',
   INCREMENT_CART_ITEM: 'INCREMENT_CART_ITEM',
   DECREMENT_CART_ITEM: 'DECREMENT_CART_ITEM',
-  SYNC_CART: 'SYNC_CART',
+  DELETE_CART: 'DELETE_CART',
 };
 
 /**
@@ -36,9 +33,11 @@ export const initialState: ReducerState = {
  */
 export const reducer = (
   state: ReducerState,
-  action: ReducerAction<ReducerPayload>
+  action: ReducerAction<Partial<ReducerState>>
 ): ReducerState => {
   switch (action.type) {
+    case types.INIT_CART:
+      return { ...state, ...action.payload };
     case types.ADD_CART_ITEM:
       return { ...state, ...action.payload };
     case types.REMOVE_CART_ITEM:
@@ -47,8 +46,8 @@ export const reducer = (
       return { ...state, ...action.payload };
     case types.DECREMENT_CART_ITEM:
       return { ...state, ...action.payload };
-    case types.SYNC_CART:
-      return { ...state, ...action.payload };
+    case types.DELETE_CART:
+      return { ...state, ...initialState };
     default:
       return state;
   }

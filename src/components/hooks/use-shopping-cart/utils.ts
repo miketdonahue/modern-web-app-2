@@ -1,13 +1,13 @@
-import { GetProduct } from '@typings/entities/product';
+import { CartProduct } from '@typings/entities/product';
 
 /**
  * Get the total dollar amount of the cart items
  */
-export const getCartTotal = (items: GetProduct[] = []) => {
-  return items.reduce((acc: number, item: GetProduct) => {
+export const getCartTotal = (items: CartProduct[] = []) => {
+  return items.reduce((acc: number, item: CartProduct) => {
     let result = acc;
 
-    result += ((item.attributes.price || 0) * item.attributes.quantity) / 100;
+    result += ((item.attributes.price || 0) * item.attributes?.quantity) / 100;
 
     return Number(result.toFixed(2));
   }, 0);
@@ -16,7 +16,7 @@ export const getCartTotal = (items: GetProduct[] = []) => {
 /**
  * Get the total quantity of items in the cart
  */
-export const calculateQuantity = (items: GetProduct[]) => {
+export const calculateQuantity = (items: CartProduct[]) => {
   return items?.reduce((acc, item) => {
     let result = acc;
     result += item.attributes?.quantity;

@@ -36,9 +36,9 @@ export default {
       controller: controller.removeCartItem,
     },
     {
-      path: '/:cartId/sync',
-      method: 'patch',
-      controller: controller.syncCartItems,
+      path: '/:cartId',
+      method: 'delete',
+      controller: controller.deleteCart,
     },
   ],
 };

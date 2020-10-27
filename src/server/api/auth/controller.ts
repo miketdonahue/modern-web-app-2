@@ -16,6 +16,7 @@ import { verifyRefreshToken } from '@server/middleware/app-middleware';
 import { errorTypes } from '@server/modules/errors';
 import { Actor } from '@server/entities/actor';
 import { ActorAccount } from '@server/entities/actor-account';
+import { Cart, CART_STATUS } from '@server/entities/cart';
 import { Role, ROLE_NAME } from '@server/entities/role';
 import { BlacklistedToken } from '@server/entities/blacklisted-token';
 import { sendEmail } from '@server/modules/mailer';
@@ -57,37 +58,43 @@ const registerActor = async (req: Request, res: Response) => {
     memoryCost: 500,
   });
 
-  const actorAccount = await db.transaction(
-    async (transactionalEntityManager: any) => {
-      logger.info('AUTH-CONTROLLER: Creating actor');
-      const createdActor = await transactionalEntityManager.create(Actor, {
-        role_id: role?.id,
-        first_name: req.body.firstName,
-        last_name: req.body.lastName,
-        email: req.body.email,
-        password,
-      });
+  const actorAccount = await db.transaction(async (manager: any) => {
+    logger.info('AUTH-CONTROLLER: Creating actor');
+    const createdActor = await manager.create(Actor, {
+      role_id: role?.id,
+      first_name: req.body.firstName,
+      last_name: req.body.lastName,
+      email: req.body.email,
+      password,
+    });
 
-      await transactionalEntityManager.save(createdActor);
+    await manager.save(createdActor);
 
-      logger.info('AUTH-CONTROLLER: Creating actor account');
-      const createdActorAccount = await db.create(ActorAccount, {
-        actor_id: createdActor.id,
-        ...(config.server.auth.confirmable && {
-          confirmed_code: generateCode(),
-          confirmed_expires: String(
-            addMinutes(new Date(), config.server.auth.codes.expireTime)
-          ),
-        }),
-        last_visit: new Date(),
-        ip: req.ip,
-      });
+    logger.info('AUTH-CONTROLLER: Creating actor account');
+    const createdActorAccount = await db.create(ActorAccount, {
+      actor_id: createdActor.id,
+      ...(config.server.auth.confirmable && {
+        confirmed_code: generateCode(),
+        confirmed_expires: String(
+          addMinutes(new Date(), config.server.auth.codes.expireTime)
+        ),
+      }),
+      last_visit: new Date(),
+      ip: req.ip,
+    });
 
-      await transactionalEntityManager.save(createdActorAccount);
+    await manager.save(createdActorAccount);
 
-      return createdActorAccount;
-    }
-  );
+    logger.info('AUTH-CONTROLLER: Creating shopping cart for user');
+    const createdCart = await db.create(Cart, {
+      actor_id: createdActor.id,
+      status: CART_STATUS.NEW,
+    });
+
+    await manager.save(createdCart);
+
+    return createdActorAccount;
+  });
 
   const [actor] = await db.query(
     `

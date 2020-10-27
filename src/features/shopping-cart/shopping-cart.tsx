@@ -15,11 +15,10 @@ const ShoppingCart = ({ children }: ShoppingCart) => {
     total,
     status,
     addCartItem,
-    updateCart,
     incrementItem,
     decrementItem,
     removeCartItem,
-    clearCart,
+    deleteCart,
     calculateQuantity,
   } = useShoppingCart();
 
@@ -31,11 +30,10 @@ const ShoppingCart = ({ children }: ShoppingCart) => {
         total,
         status,
         addCartItem,
-        updateCart,
         incrementItem,
         decrementItem,
         removeCartItem,
-        clearCart,
+        deleteCart,
         calculateQuantity,
       }}
     >

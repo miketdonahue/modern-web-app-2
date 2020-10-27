@@ -10,7 +10,11 @@ export interface Product extends Base {
   statement_descriptor: string;
   price: number;
   active: boolean;
+}
+
+interface ProductWithQuantity extends Product {
   quantity: number;
 }
 
+export type CartProduct = Data<ProductWithQuantity>;
 export type GetProduct = Data<Product>;
