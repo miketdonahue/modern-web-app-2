@@ -1,16 +1,16 @@
-import { GetProduct } from '@typings/entities/product';
+import { CartProduct } from '@typings/entities/product';
 import { ReducerAction } from '@typings/react';
 import { getCartTotal } from '../utils';
 import { types, ReducerState } from '../reducer';
 
 const storageAddItem = (
-  item: GetProduct,
+  item: CartProduct,
   dispatch: React.Dispatch<ReducerAction<Partial<ReducerState>>>
 ) => {
   const storage = window.localStorage;
   const storageCart = storage.getItem('cart') || '{}';
   const currentCart: ReducerState = JSON.parse(storageCart);
-  let newCartItems: GetProduct[] = [];
+  let newCartItems: CartProduct[] = [];
 
   /* See if the items already exists */
   const existingItem = currentCart.items.find(
@@ -22,7 +22,10 @@ const storageAddItem = (
   } else {
     newCartItems = currentCart.items.concat({
       ...item,
-      attributes: { ...item.attributes, quantity: 1 },
+      attributes: {
+        ...item.attributes,
+        quantity: 1,
+      },
     });
   }
 
@@ -50,7 +53,7 @@ const storageAddItem = (
 };
 
 const storageIncrementItem = (
-  item: GetProduct,
+  item: CartProduct,
   dispatch: React.Dispatch<ReducerAction<Partial<ReducerState>>>
 ) => {
   const storage = window.localStorage;
@@ -88,7 +91,7 @@ const storageIncrementItem = (
 };
 
 const storageDecrementItem = (
-  item: GetProduct,
+  item: CartProduct,
   dispatch: React.Dispatch<ReducerAction<Partial<ReducerState>>>
 ) => {
   const storage = window.localStorage;
@@ -124,7 +127,7 @@ const storageDecrementItem = (
 };
 
 const storageRemoveItem = (
-  item: GetProduct,
+  item: CartProduct,
   dispatch: React.Dispatch<ReducerAction<Partial<ReducerState>>>
 ) => {
   const storage = window.localStorage;
@@ -132,7 +135,7 @@ const storageRemoveItem = (
   const currentCart: ReducerState = JSON.parse(storageCart);
 
   const newCartItems = currentCart.items.filter(
-    (product: GetProduct) => item.attributes.id !== product.attributes.id
+    (product: CartProduct) => item.attributes.id !== product.attributes.id
   );
 
   const cartStatus = newCartItems.length > 0 ? 'active' : 'new';
@@ -158,34 +161,15 @@ const storageRemoveItem = (
   });
 };
 
-const storageUpdateCart = (
-  items: GetProduct[],
+const storageDeleteCart = (
   dispatch: React.Dispatch<ReducerAction<Partial<ReducerState>>>
 ) => {
   const storage = window.localStorage;
-  const newCartTotal = getCartTotal(items);
-
-  storage.setItem(
-    'cart',
-    JSON.stringify({
-      items,
-      total: newCartTotal,
-      status: 'active',
-    })
-  );
+  storage.removeItem('cart');
 
   dispatch({
-    type: types.SYNC_CART,
-    payload: {
-      items,
-      total: newCartTotal,
-    },
+    type: types.DELETE_CART,
   });
-};
-
-const storageClearCart = () => {
-  const storage = window.localStorage;
-  storage.removeItem('cart');
 };
 
 export {
@@ -193,6 +177,5 @@ export {
   storageRemoveItem,
   storageIncrementItem,
   storageDecrementItem,
-  storageUpdateCart,
-  storageClearCart,
+  storageDeleteCart,
 };

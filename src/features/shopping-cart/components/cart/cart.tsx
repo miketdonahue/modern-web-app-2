@@ -27,10 +27,10 @@ export const Cart = () => {
     incrementItem,
     decrementItem,
     removeCartItem,
-    updateCart,
+    // updateCart,
     // status,
     // addCartItem,
-    // clearCart,
+    // deleteCart,
     // calculateQuantity,
   } = React.useContext(ShoppingCartContext);
 
@@ -38,10 +38,12 @@ export const Cart = () => {
   const [checkingOut, setCheckingOut] = React.useState(false);
   const [serverErrors, setServerErrors] = React.useState<Error[]>([]);
   const [createPaymentSession] = useCreatePaymentSession();
+  // TODO: everyone will have a cart on register now, so no need for this
   const [createCart] = useCreateCart();
+  // TODO: do not need to sync cause cart is destroyed once a user becomes authenticated?? right?
   const [syncCartItems] = useSyncCartItems({
-    onSuccess: (result) => {
-      if (updateCart) updateCart(result.data);
+    onSuccess: () => {
+      // if (updateCart) updateCart(result.data);
     },
   });
 
@@ -152,7 +154,7 @@ export const Cart = () => {
                         <div className="flex items-center justify-between">
                           <div>
                             <Incrementor
-                              value={item.attributes.quantity}
+                              value={item.attributes?.quantity}
                               min={1}
                               onIncrement={() => {
                                 if (incrementItem) incrementItem(item);

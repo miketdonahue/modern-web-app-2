@@ -1,15 +1,14 @@
-import { GetProduct } from '@typings/entities/product';
+import { CartProduct } from '@typings/entities/product';
 
 export type ShoppingCartProps = {
-  items: GetProduct[];
+  items: CartProduct[];
   quantity: number;
   total: number;
   status: string;
-  addCartItem: (item: GetProduct) => void;
-  incrementItem: (item: GetProduct) => void;
-  decrementItem: (item: GetProduct) => void;
-  removeCartItem: (item: GetProduct) => void;
-  updateCart: (items: GetProduct[]) => void;
-  clearCart: () => void;
-  calculateQuantity: (items: GetProduct[]) => number;
+  addCartItem: (item: CartProduct) => void;
+  incrementItem: (item: CartProduct) => void;
+  decrementItem: (item: CartProduct) => void;
+  removeCartItem: (item: CartProduct) => void;
+  deleteCart: () => void;
+  calculateQuantity: (items: CartProduct[]) => number;
 };

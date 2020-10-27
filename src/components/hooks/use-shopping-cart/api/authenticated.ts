@@ -1,202 +1,152 @@
 import { request } from '@modules/request';
-import { GetProduct } from '@typings/entities/product';
+import { CartProduct } from '@typings/entities/product';
+import { CartMethodResponse } from '@typings/entities/cart';
 import { ReducerAction } from '@typings/react';
 import { getCartTotal } from '../utils';
 import { types, ReducerState } from '../reducer';
 
 const serverAddItem = async (
-  item: GetProduct,
+  item: CartProduct,
   dispatch: React.Dispatch<ReducerAction<Partial<ReducerState>>>
 ) => {
-  const myCartResponse = await request.get('/api/v1/carts/me');
+  const myCart = await request.get('/api/v1/carts/me');
   const response = await request.post(
-    `/api/v1/carts/${myCartResponse.data.data.attributes.id}/add-item`,
+    `/api/v1/carts/${myCart.data.data.attributes.id}/add-item`,
     {
-      cart_id: myCartResponse.data.data.attributes.id,
+      cart_id: myCart.data.data.attributes.id,
       product_id: item.attributes.id,
-      quantity: 1,
     }
   );
 
-  console.log('XXX', response.data);
-  // const storage = window.localStorage;
-  // const storageCart = storage.getItem('cart') || '{}';
-  // const currentCart: ReducerState = JSON.parse(storageCart);
-  // let newCartItems: GetProduct[] = [];
-
-  // /* See if the items already exists */
-  // const existingItem = currentCart.items.find(
-  //   (i) => i.attributes.id === item.attributes.id
-  // );
-
-  // if (existingItem) {
-  //   existingItem.attributes.quantity += 1;
-  // } else {
-  //   newCartItems = currentCart.items.concat({
-  //     ...item,
-  //     attributes: { ...item.attributes, quantity: 1 },
-  //   });
-  // }
-
-  // const newCartTotal = getCartTotal(
-  //   existingItem ? currentCart.items : newCartItems
-  // );
-
-  // storage.setItem(
-  //   'cart',
-  //   JSON.stringify({
-  //     ...currentCart,
-  //     items: existingItem ? currentCart.items : newCartItems,
-  //     total: newCartTotal,
-  //     status: 'active',
-  //   })
-  // );
+  const transformedItems = response.data.data.map(
+    (result: CartMethodResponse) => {
+      return {
+        attributes: {
+          ...result.relationships?.product,
+          quantity: result.attributes.quantity,
+        },
+      };
+    }
+  );
 
   dispatch({
     type: types.ADD_CART_ITEM,
     payload: {
-      item: response.data.data,
+      items: transformedItems,
+      total: getCartTotal(transformedItems),
     },
   });
 };
 
-const serverIncrementItem = (
-  item: GetProduct,
+const serverIncrementItem = async (
+  item: CartProduct,
   dispatch: React.Dispatch<ReducerAction<Partial<ReducerState>>>
 ) => {
-  const storage = window.localStorage;
-  const storageCart = storage.getItem('cart') || '{}';
-  const currentCart: ReducerState = JSON.parse(storageCart);
-
-  /* Find the existing item to increment */
-  const existingItem = currentCart.items.find(
-    (i) => i.attributes.id === item.attributes.id
+  const myCart = await request.get('/api/v1/carts/me');
+  const response = await request.post(
+    `/api/v1/carts/${myCart.data.data.attributes.id}/increment-item`,
+    {
+      cart_id: myCart.data.data.attributes.id,
+      product_id: item.attributes.id,
+    }
   );
 
-  if (existingItem) {
-    existingItem.attributes.quantity += 1;
+  const transformedItems = response.data.data.map(
+    (result: CartMethodResponse) => {
+      return {
+        attributes: {
+          ...result.relationships?.product,
+          quantity: result.attributes.quantity,
+        },
+      };
+    }
+  );
 
-    const newCartTotal = getCartTotal(currentCart.items);
-
-    storage.setItem(
-      'cart',
-      JSON.stringify({
-        ...currentCart,
-        items: currentCart.items,
-        total: newCartTotal,
-        status: 'active',
-      })
-    );
-
-    dispatch({
-      type: types.INCREMENT_CART_ITEM,
-      payload: {
-        items: currentCart.items,
-        total: newCartTotal,
-      },
-    });
-  }
+  dispatch({
+    type: types.INCREMENT_CART_ITEM,
+    payload: {
+      items: transformedItems,
+      total: getCartTotal(transformedItems),
+    },
+  });
 };
 
-const serverDecrementItem = (
-  item: GetProduct,
+const serverDecrementItem = async (
+  item: CartProduct,
   dispatch: React.Dispatch<ReducerAction<Partial<ReducerState>>>
 ) => {
-  const storage = window.localStorage;
-  const storageCart = storage.getItem('cart') || '{}';
-  const currentCart: ReducerState = JSON.parse(storageCart);
-
-  /* Get the existing item to decrement */
-  const existingItem = currentCart.items.find(
-    (i) => i.attributes.id === item.attributes.id
+  const myCart = await request.get('/api/v1/carts/me');
+  const response = await request.post(
+    `/api/v1/carts/${myCart.data.data.attributes.id}/decrement-item`,
+    {
+      cart_id: myCart.data.data.attributes.id,
+      product_id: item.attributes.id,
+    }
   );
 
-  if (existingItem) {
-    existingItem.attributes.quantity -= 1;
+  const transformedItems = response.data.data.map(
+    (result: CartMethodResponse) => {
+      return {
+        attributes: {
+          ...result.relationships?.product,
+          quantity: result.attributes.quantity,
+        },
+      };
+    }
+  );
 
-    const newCartTotal = getCartTotal(currentCart.items);
-
-    storage.setItem(
-      'cart',
-      JSON.stringify({
-        ...currentCart,
-        items: currentCart.items,
-      })
-    );
-
-    dispatch({
-      type: types.DECREMENT_CART_ITEM,
-      payload: {
-        items: currentCart.items,
-        total: newCartTotal,
-      },
-    });
-  }
+  dispatch({
+    type: types.DECREMENT_CART_ITEM,
+    payload: {
+      items: transformedItems,
+      total: getCartTotal(transformedItems),
+    },
+  });
 };
 
-const serverRemoveItem = (
-  item: GetProduct,
+const serverRemoveItem = async (
+  item: CartProduct,
   dispatch: React.Dispatch<ReducerAction<Partial<ReducerState>>>
 ) => {
-  const storage = window.localStorage;
-  const storageCart = storage.getItem('cart') || '{}';
-  const currentCart: ReducerState = JSON.parse(storageCart);
-
-  const newCartItems = currentCart.items.filter(
-    (product: GetProduct) => item.attributes.id !== product.attributes.id
+  const myCart = await request.get('/api/v1/carts/me');
+  const response = await request.post(
+    `/api/v1/carts/${myCart.data.data.attributes.id}/remove-item`,
+    {
+      cart_id: myCart.data.data.attributes.id,
+      product_id: item.attributes.id,
+    }
   );
 
-  const cartStatus = newCartItems.length > 0 ? 'active' : 'new';
-
-  const newCartTotal = getCartTotal(newCartItems);
-
-  storage.setItem(
-    'cart',
-    JSON.stringify({
-      ...currentCart,
-      items: newCartItems,
-      status: cartStatus,
-    })
+  const transformedItems = response.data.data.map(
+    (result: CartMethodResponse) => {
+      return {
+        attributes: {
+          ...result.relationships?.product,
+          quantity: result.attributes.quantity,
+        },
+      };
+    }
   );
 
   dispatch({
     type: types.REMOVE_CART_ITEM,
     payload: {
-      items: newCartItems,
-      total: newCartTotal,
-      status: cartStatus,
+      items: transformedItems,
+      total: getCartTotal(transformedItems),
+      status: 'new',
     },
   });
 };
 
-const serverUpdateCart = (
-  items: GetProduct[],
+const serverDeleteCart = async (
   dispatch: React.Dispatch<ReducerAction<Partial<ReducerState>>>
 ) => {
-  const storage = window.localStorage;
-  const newCartTotal = getCartTotal(items);
-
-  storage.setItem(
-    'cart',
-    JSON.stringify({
-      items,
-      total: newCartTotal,
-      status: 'active',
-    })
-  );
+  const myCart = await request.get('/api/v1/carts/me');
+  await request.delete(`/api/v1/carts/${myCart.data.data.attributes.id}`);
 
   dispatch({
-    type: types.SYNC_CART,
-    payload: {
-      items,
-      total: newCartTotal,
-    },
+    type: types.DELETE_CART,
   });
-};
-
-const serverClearCart = () => {
-  const storage = window.localStorage;
-  storage.removeItem('cart');
 };
 
 export {
@@ -204,6 +154,5 @@ export {
   serverRemoveItem,
   serverIncrementItem,
   serverDecrementItem,
-  serverUpdateCart,
-  serverClearCart,
+  serverDeleteCart,
 };

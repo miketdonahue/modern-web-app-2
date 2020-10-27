@@ -1,10 +1,10 @@
 import React from 'react';
 import { Button } from '@components/app';
-import { GetProduct } from '@typings/entities/product';
+import { CartProduct } from '@typings/entities/product';
 import { ShoppingCartContext } from '../../shopping-cart-context';
 
 type AddItem = {
-  item: GetProduct;
+  item: CartProduct;
 };
 
 export const AddItem = ({ item }: AddItem) => {

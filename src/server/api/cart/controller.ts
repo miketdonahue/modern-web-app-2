@@ -1,20 +1,16 @@
 import { Request, Response } from 'express';
-import Stripe from 'stripe';
+import { In } from 'typeorm';
 import { getManager } from '@server/modules/db-manager';
 import { logger } from '@server/modules/logger';
 import { Cart } from '@server/entities/cart';
 import { CartItem } from '@server/entities/cart-item';
-import { GetProduct } from '@typings/entities/product';
+import { Product } from '@server/entities/product';
+import { Product as ProductType, CartProduct } from '@typings/entities/product';
 import {
   ApiResponseWithData,
   ApiResponseWithError,
 } from '@modules/api-response';
 import { errorTypes } from '@server/modules/errors';
-import { transformStripeProduct } from '../product/helpers';
-
-const stripe = new Stripe(process.env.STRIPE || '', {
-  apiVersion: '2020-03-02',
-});
 
 /**
  * Get the cart of the currently logged in user
@@ -40,11 +36,28 @@ const getMyCart = async (req: Request, res: Response) => {
     return res.status(500).json(errorResponse);
   }
 
-  logger.info({ cartId: myCart?.id }, 'CART-CONTROLLER: Found my cart');
+  logger.info({ cartId: myCart.id }, 'CART-CONTROLLER: Found my cart');
 
-  const response: ApiResponseWithData<Partial<Cart>> = {
+  const cartItems = await db.find(CartItem, {
+    cart_id: myCart.id,
+    deleted: false,
+  });
+
+  const cartItemProductIds = cartItems.map((item) => item.product_id);
+  const products = cartItemProductIds.length
+    ? await db.find(Product, { id: In(cartItemProductIds) })
+    : [];
+
+  const response: ApiResponseWithData<
+    Partial<Cart>,
+    { cart_items: CartItem[]; products: ProductType[] }
+  > = {
     data: {
       attributes: { id: myCart.id, status: myCart.status },
+      relationships: {
+        cart_items: cartItems,
+        products,
+      },
     },
   };
 
@@ -56,7 +69,7 @@ const getMyCart = async (req: Request, res: Response) => {
  */
 const createCart = async (req: Request, res: Response) => {
   const db = getManager();
-  const actorId = (req as any).actor.id;
+  const actorId = (req as any).actor?.id;
 
   const existingCart = await db.findOne(Cart, { actor_id: actorId });
 
@@ -101,6 +114,7 @@ const createCart = async (req: Request, res: Response) => {
  */
 const addCartItem = async (req: Request, res: Response) => {
   const db = getManager();
+  const { cartId } = req.params;
   const cartItem: CartItem = req.body;
   let newCartItem;
 
@@ -117,23 +131,30 @@ const addCartItem = async (req: Request, res: Response) => {
     newCartItem = db.create(CartItem, { ...cartItem, quantity: 1 });
   }
 
-  const savedCartItem = await db.save(newCartItem);
-  const price = await stripe.prices.list({
-    active: true,
-    product: savedCartItem.product_id,
-    expand: ['data.product'],
+  await db.save(newCartItem);
+
+  const cartItems = await db.find(CartItem, {
+    cart_id: cartId,
+    deleted: false,
   });
 
-  const product = transformStripeProduct(price.data[0]);
+  const cartItemProductIds = cartItems.map((item) => item.product_id);
+  const products = await db.find(Product, { id: In(cartItemProductIds) });
 
   const response: ApiResponseWithData<
-    Stripe.Product & { quantity: number },
-    { price: Omit<Stripe.Price, 'product'> }
+    Partial<CartItem>,
+    { product: ProductType }
   > = {
-    data: {
-      attributes: { ...product.attributes, quantity: savedCartItem.quantity },
-      relationships: { ...product.relationships },
-    },
+    data: cartItems.map((item) => {
+      return {
+        attributes: { ...item },
+        relationships: {
+          product: {
+            ...(products.find((p) => p.id === item.product_id) as ProductType),
+          },
+        },
+      };
+    }),
   };
 
   return res.json(response);
@@ -142,29 +163,182 @@ const addCartItem = async (req: Request, res: Response) => {
 /**
  * Increment the quantity of an existing cart item
  */
-const incrementCartItem = async (req: Request, res: Response) => {};
+const incrementCartItem = async (req: Request, res: Response) => {
+  const db = getManager();
+  const { cartId } = req.params;
+  const cartItem: CartItem = req.body;
+  let newCartItem;
+
+  const existingCartItem = await db.findOne(CartItem, {
+    product_id: cartItem.product_id,
+  });
+
+  if (existingCartItem) {
+    newCartItem = db.merge(CartItem, existingCartItem, {
+      quantity: existingCartItem.quantity + 1,
+    });
+  }
+
+  await db.save(newCartItem);
+
+  const cartItems = await db.find(CartItem, {
+    cart_id: cartId,
+    deleted: false,
+  });
+
+  const cartItemProductIds = cartItems.map((item) => item.product_id);
+  const products = await db.find(Product, { id: In(cartItemProductIds) });
+
+  const response: ApiResponseWithData<
+    Partial<CartItem>,
+    { product: ProductType }
+  > = {
+    data: cartItems.map((item) => {
+      return {
+        attributes: { ...item },
+        relationships: {
+          product: {
+            ...(products.find((p) => p.id === item.product_id) as ProductType),
+          },
+        },
+      };
+    }),
+  };
+
+  return res.json(response);
+};
 
 /**
  * Decrement the quantity of an existing cart item
  */
-const decrementCartItem = async (req: Request, res: Response) => {};
+const decrementCartItem = async (req: Request, res: Response) => {
+  const db = getManager();
+  const { cartId } = req.params;
+  const cartItem: CartItem = req.body;
+  let newCartItem;
+
+  const existingCartItem = await db.findOne(CartItem, {
+    product_id: cartItem.product_id,
+  });
+
+  if (existingCartItem) {
+    newCartItem = db.merge(CartItem, existingCartItem, {
+      quantity: existingCartItem.quantity - 1,
+    });
+  }
+
+  await db.save(newCartItem);
+
+  const cartItems = await db.find(CartItem, {
+    cart_id: cartId,
+    deleted: false,
+  });
+
+  const cartItemProductIds = cartItems.map((item) => item.product_id);
+  const products = await db.find(Product, { id: In(cartItemProductIds) });
+
+  const response: ApiResponseWithData<
+    Partial<CartItem>,
+    { product: ProductType }
+  > = {
+    data: cartItems.map((item) => {
+      return {
+        attributes: { ...item },
+        relationships: {
+          product: {
+            ...(products.find((p) => p.id === item.product_id) as ProductType),
+          },
+        },
+      };
+    }),
+  };
+
+  return res.json(response);
+};
 
 /**
  * Remove an existing cart item
  */
-const removeCartItem = async (req: Request, res: Response) => {};
+const removeCartItem = async (req: Request, res: Response) => {
+  const db = getManager();
+  const { cartId } = req.params;
+  const cartItem: CartItem = req.body;
+  let newCartItem;
+
+  const existingCartItem = await db.findOne(CartItem, {
+    product_id: cartItem.product_id,
+  });
+
+  if (existingCartItem) {
+    newCartItem = db.merge(CartItem, existingCartItem, {
+      quantity: 0,
+      deleted: true,
+    });
+  }
+
+  await db.save(newCartItem);
+
+  const cartItems = await db.find(CartItem, {
+    cart_id: cartId,
+    deleted: false,
+  });
+
+  const cartItemProductIds = cartItems.map((item) => item.product_id);
+  const products = cartItemProductIds.length
+    ? await db.find(Product, { id: In(cartItemProductIds) })
+    : [];
+
+  const response: ApiResponseWithData<
+    Partial<CartItem>,
+    { product: ProductType }
+  > = {
+    data: cartItems.map((item) => {
+      return {
+        attributes: { ...item },
+        relationships: {
+          product: {
+            ...(products.find((p) => p.id === item.product_id) as ProductType),
+          },
+        },
+      };
+    }),
+  };
+
+  return res.json(response);
+};
 
 /**
- * Sync cart items with external cart source (i.e. localStorage)
+ * Delete an existing cart
+ */
+const deleteCart = async (req: Request, res: Response) => {
+  const db = getManager();
+  const { cartId } = req.params;
+
+  const existingCart = await db.findOne(Cart, {
+    id: cartId,
+  });
+
+  const updatedCart = db.merge(Cart, existingCart, { deleted: true });
+  const savedCart = await db.save(updatedCart);
+
+  const response: ApiResponseWithData<Partial<Cart>> = {
+    data: { attributes: { ...savedCart } },
+  };
+
+  return res.json(response);
+};
+
+/**
+ * Sync cart items to DB from external cart source (i.e. localStorage)
  */
 const syncCartItems = async (req: Request, res: Response) => {
   const db = getManager();
-  const cartItems: GetProduct[] = req.body.cartItems;
+  const cartItems: CartProduct[] = req.body.cartItems;
 
   const existingCart = await db.findOne(Cart, { id: req.params.cartId });
 
   if (existingCart) {
-    const items = req.body?.cartItems.map((product: GetProduct) => {
+    const items = cartItems?.map((product) => {
       return {
         cart_id: existingCart.id,
         product_id: product.attributes.id,
@@ -177,16 +351,16 @@ const syncCartItems = async (req: Request, res: Response) => {
     /* Mark all existing cart items as deleted */
     await db.query(
       `
-      UPDATE cart_item
-      SET
-        deleted = true,
-        updated_at = NOW()
-      WHERE cart_id = $1;
-    `,
+        UPDATE cart_item
+        SET
+          deleted = true,
+          updated_at = NOW()
+        WHERE cart_id = $1;
+      `,
       [existingCart.id]
     );
 
-    /* Upsert all items from external cart */
+    /* Insert all items from external cart */
     await db
       .createQueryBuilder()
       .insert()
@@ -203,14 +377,7 @@ const syncCartItems = async (req: Request, res: Response) => {
       )
       .execute();
 
-    const response: ApiResponseWithData<
-      Stripe.Product & { quantity: number },
-      { price: Omit<Stripe.Price, 'product'> }
-    > = {
-      data: cartItems,
-    };
-
-    return res.json(response);
+    return res.end();
   }
 
   const errorResponse: ApiResponseWithError = {
@@ -237,5 +404,6 @@ export {
   incrementCartItem,
   decrementCartItem,
   removeCartItem,
+  deleteCart,
   syncCartItems,
 };

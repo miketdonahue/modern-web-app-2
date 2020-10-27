@@ -1,18 +1,17 @@
 import React from 'react';
-import { GetProduct } from '@typings/entities/product';
+import { CartProduct } from '@typings/entities/product';
 
 export type ShoppingCartContext = {
-  items: GetProduct[];
+  items: CartProduct[];
   quantity: number;
   total: number;
   status: string;
-  addCartItem: (item: GetProduct) => void;
-  incrementItem: (item: GetProduct) => void;
-  decrementItem: (item: GetProduct) => void;
-  removeCartItem: (item: GetProduct) => void;
-  updateCart: (items: GetProduct[]) => void;
-  clearCart: () => void;
-  calculateQuantity: (items: GetProduct[]) => number;
+  addCartItem: (item: CartProduct) => void;
+  incrementItem: (item: CartProduct) => void;
+  decrementItem: (item: CartProduct) => void;
+  removeCartItem: (item: CartProduct) => void;
+  deleteCart: () => void;
+  calculateQuantity: (items: CartProduct[]) => number;
 };
 
 export const ShoppingCartContext = React.createContext<ShoppingCartContext>({
@@ -24,7 +23,6 @@ export const ShoppingCartContext = React.createContext<ShoppingCartContext>({
   incrementItem: () => {},
   decrementItem: () => {},
   removeCartItem: () => {},
-  updateCart: () => {},
-  clearCart: () => {},
+  deleteCart: () => {},
   calculateQuantity: () => 0,
 });

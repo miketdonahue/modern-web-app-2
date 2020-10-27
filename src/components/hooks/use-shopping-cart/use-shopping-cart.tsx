@@ -1,15 +1,21 @@
 import React from 'react';
 import { useActor } from '@components/hooks/use-actor';
-import { GetProduct } from '@typings/entities/product';
+import { CartProduct } from '@typings/entities/product';
+import { getMyCart } from '@modules/data-sources/carts';
 import {
   storageAddItem,
   storageRemoveItem,
   storageIncrementItem,
   storageDecrementItem,
-  storageUpdateCart,
-  storageClearCart,
+  storageDeleteCart,
 } from './api/unauthenticated';
-// import { serverAddItem } from './api/authenticated';
+import {
+  serverAddItem,
+  serverDecrementItem,
+  serverIncrementItem,
+  serverRemoveItem,
+  serverDeleteCart,
+} from './api/authenticated';
 import { getCartTotal, calculateQuantity } from './utils';
 import { initialState, reducer, types, ReducerState } from './reducer';
 import { ShoppingCartProps } from './typings';
@@ -27,49 +33,92 @@ export const useShoppingCart = (): ShoppingCartProps => {
 
   const storage = window.localStorage;
 
-  const addCartItem = (item: GetProduct) => {
-    // return serverAddItem(item, dispatch);
+  const addCartItem = (item: CartProduct) => {
+    if (isAuthenticated) {
+      return serverAddItem(item, dispatch);
+    }
+
     return storageAddItem(item, dispatch);
   };
 
-  const removeCartItem = (item: GetProduct) => {
+  const removeCartItem = (item: CartProduct) => {
+    if (isAuthenticated) {
+      return serverRemoveItem(item, dispatch);
+    }
+
     return storageRemoveItem(item, dispatch);
   };
 
-  const incrementItem = (item: GetProduct) => {
+  const incrementItem = (item: CartProduct) => {
+    if (isAuthenticated) {
+      return serverIncrementItem(item, dispatch);
+    }
+
     return storageIncrementItem(item, dispatch);
   };
 
-  const decrementItem = (item: GetProduct) => {
+  const decrementItem = (item: CartProduct) => {
+    if (isAuthenticated) {
+      return serverDecrementItem(item, dispatch);
+    }
+
     return storageDecrementItem(item, dispatch);
   };
 
-  const updateCart = (items: GetProduct[]) => {
-    return storageUpdateCart(items, dispatch);
-  };
-
-  const clearCart = () => {
-    return storageClearCart();
-  };
-
-  React.useEffect(() => {
-    const storageCart = storage.getItem('cart') || '{}';
-    const currentCart: ReducerState = JSON.parse(storageCart);
-    const emptyCart = !Object.keys(currentCart).length;
-
-    if (emptyCart) {
-      storage.setItem('cart', JSON.stringify(initialState));
-    } else {
-      dispatch({
-        type: types.SYNC_CART,
-        payload: {
-          items: currentCart.items,
-          total: getCartTotal(currentCart.items),
-          status: currentCart.status,
-        },
-      });
+  const deleteCart = () => {
+    if (isAuthenticated) {
+      return serverDeleteCart(dispatch);
     }
-  }, []);
+
+    return storageDeleteCart(dispatch);
+  };
+
+  /* Ensure initial state is set on first load of shopping cart */
+  React.useEffect(() => {
+    if (!isAuthenticated) {
+      const storageCart = storage.getItem('cart') || '{}';
+      const currentCart: ReducerState = JSON.parse(storageCart);
+      const emptyCart = !Object.keys(currentCart).length;
+
+      if (emptyCart) {
+        storage.setItem('cart', JSON.stringify(initialState));
+      } else {
+        dispatch({
+          type: types.INIT_CART,
+          payload: {
+            items: currentCart.items,
+            total: getCartTotal(currentCart.items),
+            status: currentCart.status,
+          },
+        });
+      }
+    } else {
+      const getCartData = async () => {
+        const myCart = await getMyCart();
+
+        const products = myCart.data?.relationships?.products.map((product) => {
+          const cartItem = myCart.data?.relationships?.cart_items.find(
+            (c) => c.product_id === product.id
+          );
+
+          return {
+            attributes: { ...product, quantity: cartItem?.quantity || 0 },
+          };
+        });
+
+        dispatch({
+          type: types.INIT_CART,
+          payload: {
+            items: products || [],
+            total: getCartTotal(products),
+            status: myCart.data?.attributes.status || '',
+          },
+        });
+      };
+
+      getCartData();
+    }
+  }, [actorId]);
 
   return {
     items: state.items,
@@ -77,11 +126,10 @@ export const useShoppingCart = (): ShoppingCartProps => {
     total: state.total,
     status: state.status,
     addCartItem,
-    updateCart,
     incrementItem,
     decrementItem,
     removeCartItem,
-    clearCart,
+    deleteCart,
     calculateQuantity,
   };
 };
