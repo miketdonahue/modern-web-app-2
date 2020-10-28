@@ -1,13 +1,13 @@
 import { AxiosResponse } from 'axios';
 import { request } from '@modules/request';
 import { Data } from '@modules/api-response';
-import { Product, GetProduct } from '@typings/entities/product';
+import { Product, CartProduct } from '@typings/entities/product';
 import { Cart } from '@typings/entities/cart';
 import { CartItem } from '@typings/entities/cart-item';
 
-export type CreateCartItems = {
-  cartId: string;
-  cartItems: GetProduct[];
+export type SyncCartItems = {
+  userId: string;
+  cartItems: CartProduct[];
 };
 
 const getMyCart = async (): Promise<
@@ -24,8 +24,9 @@ const createCart = async (body: any = {}) => {
   return response.data;
 };
 
-const syncCartItems = async ({ cartId, cartItems }: CreateCartItems) => {
-  const response = await request.patch(`/api/v1/carts/${cartId}/sync`, {
+const syncCartItems = async ({ userId, cartItems }: SyncCartItems) => {
+  const response = await request.post(`/api/v1/carts/sync`, {
+    userId,
     cartItems,
   });
 

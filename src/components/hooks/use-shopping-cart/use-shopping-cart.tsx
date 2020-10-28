@@ -65,12 +65,12 @@ export const useShoppingCart = (): ShoppingCartProps => {
     return storageDecrementItem(item, dispatch);
   };
 
-  const deleteCart = () => {
-    if (isAuthenticated) {
-      return serverDeleteCart(dispatch);
+  const deleteCart = ({ browser }: { browser: boolean }) => {
+    if (browser) {
+      return storageDeleteCart(dispatch);
     }
 
-    return storageDeleteCart(dispatch);
+    return serverDeleteCart(dispatch);
   };
 
   /* Ensure initial state is set on first load of shopping cart */

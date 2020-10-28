@@ -5,7 +5,7 @@ import { logger } from '@server/modules/logger';
 import { handleStripeError } from '@server/modules/errors/normalizers/stripe';
 import { ApiResponseWithData, NormalizedError } from '@modules/api-response';
 import { Actor } from '@server/entities/actor';
-import { GetProduct } from '@typings/entities/product';
+import { CartProduct } from '@typings/entities/product';
 
 const stripe = new Stripe(process.env.STRIPE || '', {
   apiVersion: '2020-03-02',
@@ -17,21 +17,30 @@ const stripe = new Stripe(process.env.STRIPE || '', {
 const createPaymentSession = async (req: Request, res: Response) => {
   const db = getManager();
   const SUCCESS_DOMAIN = 'http://localhost:8080/app/cart/checkout';
-  const CANCEL_DOMAIN = 'http://localhost:8080/app/cart';
+  const CANCEL_DOMAIN = 'http://localhost:8080/app/products';
 
   const actorId = (req as any).actor.id;
-  const orderItems: GetProduct[] = req.body.orderItems;
+  const orderItems: CartProduct[] = req.body.orderItems;
 
   const actor = await db.findOne(Actor, { where: { id: actorId } });
+  const preparedLineItems = orderItems.map(async (item) => {
+    const price = await stripe.prices.list({
+      product: item.attributes.vendor_id,
+    });
+
+    return {
+      price: price.data[0].id,
+      quantity: item.attributes.quantity,
+    };
+  });
+
+  const lineItems = await Promise.all(preparedLineItems);
 
   try {
     const session = await stripe.checkout.sessions.create({
       customer_email: actor?.email,
       payment_method_types: ['card'],
-      line_items: orderItems.map((item) => ({
-        price: item.relationships?.price.id,
-        quantity: item.attributes.quantity,
-      })),
+      line_items: lineItems,
       mode: 'payment',
       success_url: `${SUCCESS_DOMAIN}`,
       cancel_url: `${CANCEL_DOMAIN}?canceled=true`,
