@@ -51,9 +51,9 @@ export const Cart = () => {
     createCart(
       {},
       {
-        onSuccess: (createdCart) => {
+        onSuccess: () => {
           syncCartItems({
-            cartId: createdCart.data.attributes.id || '',
+            userId: '',
             cartItems: items || [],
           });
         },
