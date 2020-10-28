@@ -10,7 +10,7 @@ export type ShoppingCartContext = {
   incrementItem: (item: CartProduct) => void;
   decrementItem: (item: CartProduct) => void;
   removeCartItem: (item: CartProduct) => void;
-  deleteCart: () => void;
+  deleteCart: ({ browser }: { browser: boolean }) => void;
   calculateQuantity: (items: CartProduct[]) => number;
 };
 
