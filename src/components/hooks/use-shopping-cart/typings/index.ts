@@ -4,7 +4,6 @@ export type ShoppingCartProps = {
   items: CartProduct[];
   quantity: number;
   total: number;
-  status: string;
   addCartItem: (item: CartProduct) => void;
   incrementItem: (item: CartProduct) => void;
   decrementItem: (item: CartProduct) => void;

@@ -16,6 +16,11 @@ export default {
       controller: controller.createCart,
     },
     {
+      path: '/status',
+      method: 'patch',
+      controller: controller.changeCartStatus,
+    },
+    {
       path: '/:cartId/add-item',
       method: 'post',
       controller: controller.addCartItem,

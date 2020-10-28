@@ -7,7 +7,9 @@ import { ApiResponseWithError, NormalizedError } from '@modules/api-response';
 import { errorTypes } from '@server/modules/errors';
 import { Customer } from '@server/entities/customer';
 import { Purchase } from '@server/entities/purchase';
+import { Cart } from '@server/entities/cart';
 import { PurchaseItem } from '@server/entities/purchase-item';
+import { CART_STATUS } from '@typings/entities/cart';
 
 const stripe = new Stripe(process.env.STRIPE || '', {
   apiVersion: '2020-03-02',
@@ -100,6 +102,13 @@ const stripePaymentsWebhook = async (req: Request, res: Response) => {
         }) || [];
 
       await db.insert(PurchaseItem, purchaseItems);
+
+      /* Update cart status */
+      const existingCart = db.findOne(Cart, {
+        actor_id: session.metadata?.actor_id,
+      });
+
+      await db.update(Cart, existingCart, { status: CART_STATUS.PAID });
     } catch (error) {
       const errorResponse: ApiResponseWithError = {
         error: [

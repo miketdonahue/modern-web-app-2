@@ -5,7 +5,6 @@ export type ShoppingCartContext = {
   items: CartProduct[];
   quantity: number;
   total: number;
-  status: string;
   addCartItem: (item: CartProduct) => void;
   incrementItem: (item: CartProduct) => void;
   decrementItem: (item: CartProduct) => void;
@@ -18,7 +17,6 @@ export const ShoppingCartContext = React.createContext<ShoppingCartContext>({
   items: [],
   quantity: 0,
   total: 0,
-  status: '',
   addCartItem: () => {},
   incrementItem: () => {},
   decrementItem: () => {},

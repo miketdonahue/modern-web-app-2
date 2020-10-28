@@ -10,6 +10,10 @@ export type SyncCartItems = {
   cartItems: CartProduct[];
 };
 
+export type ChangeCartStatus = {
+  status: string;
+};
+
 const getMyCart = async (): Promise<
   AxiosResponse<
     Data<Partial<Cart>, { cart_items: CartItem[]; products: Product[] }>
@@ -24,6 +28,11 @@ const createCart = async (body: any = {}) => {
   return response.data;
 };
 
+const changeCartStatus = async ({ status }: ChangeCartStatus) => {
+  const response = await request.patch('/api/v1/carts/status', { status });
+  return response.data;
+};
+
 const syncCartItems = async ({ userId, cartItems }: SyncCartItems) => {
   const response = await request.post(`/api/v1/carts/sync`, {
     userId,
@@ -33,4 +42,4 @@ const syncCartItems = async ({ userId, cartItems }: SyncCartItems) => {
   return response.data;
 };
 
-export { getMyCart, createCart, syncCartItems };
+export { getMyCart, createCart, changeCartStatus, syncCartItems };
