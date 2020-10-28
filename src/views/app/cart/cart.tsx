@@ -131,9 +131,7 @@ const Cart = () => {
                 Remove
               </button>
               <div>
-                {(
-                  (item.relationships?.price.unit_amount || 0) / 100
-                ).toLocaleString('en-US', {
+                {((item.attributes.price || 0) / 100).toLocaleString('en-US', {
                   style: 'currency',
                   currency: 'USD',
                 })}
