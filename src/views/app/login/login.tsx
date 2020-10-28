@@ -1,6 +1,6 @@
 import React from 'react';
 import { useRouter } from 'next/router';
-import { useCreateCart, useSyncCartItems } from '@modules/queries/carts';
+import { useSyncCartItems } from '@modules/queries/carts';
 import { useCreatePaymentSession } from '@modules/queries/payments';
 import { useShoppingCart } from '@components/hooks/use-shopping-cart';
 import { useCheckout } from '@components/hooks/use-checkout';
@@ -10,14 +10,9 @@ import styles from './login.module.scss';
 
 const Login = () => {
   const router = useRouter();
-  const { items, updateCart } = useShoppingCart();
+  const { items, deleteCart } = useShoppingCart();
   const [createPaymentSession] = useCreatePaymentSession();
-  const [createCart] = useCreateCart();
-  const [syncCartItems] = useSyncCartItems({
-    onSuccess: (result) => {
-      updateCart(result.data);
-    },
-  });
+  const [syncCartItems] = useSyncCartItems();
 
   const [infoMessage, setInfoMessage] = React.useState('');
   const [serverErrors, setServerErrors] = React.useState<Error[]>([]);
@@ -52,20 +47,22 @@ const Login = () => {
     return router.push('/app/register', '/app/register');
   };
 
-  const handleSignInSuccess = async () => {
-    if (router.query.return_to === 'checkout') {
-      createCart(
-        {},
+  const handleSignInSuccess = async (userId: string) => {
+    if (items && items.length > 0) {
+      syncCartItems(
         {
-          onSuccess: (createdCart) => {
-            syncCartItems({
-              cartId: createdCart.data.attributes.id || '',
-              cartItems: items || [],
-            });
+          userId,
+          cartItems: items || [],
+        },
+        {
+          onSuccess: () => {
+            deleteCart({ browser: true });
           },
         }
       );
+    }
 
+    if (router.query.return_to === 'checkout') {
       const response = await createPaymentSession({
         orderItems: items,
       });

@@ -14,7 +14,6 @@ const Products = () => {
   // });
 
   const products = response?.data;
-  console.log('XX', products);
   // const actorCartItems = cartItems?.data;
 
   return (
@@ -31,7 +30,7 @@ const Products = () => {
               return (
                 <div key={result.attributes.id}>
                   <img
-                    src={`/images/products/${result.attributes.vendor_id}.jpg`}
+                    src={result.attributes.image_url}
                     alt={result.attributes.name}
                     width="100%"
                   />

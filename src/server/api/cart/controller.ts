@@ -119,6 +119,7 @@ const addCartItem = async (req: Request, res: Response) => {
   let newCartItem;
 
   const existingCartItem = await db.findOne(CartItem, {
+    cart_id: cartId,
     product_id: cartItem.product_id,
   });
 
@@ -170,6 +171,7 @@ const incrementCartItem = async (req: Request, res: Response) => {
   let newCartItem;
 
   const existingCartItem = await db.findOne(CartItem, {
+    cart_id: cartId,
     product_id: cartItem.product_id,
   });
 
@@ -218,6 +220,7 @@ const decrementCartItem = async (req: Request, res: Response) => {
   let newCartItem;
 
   const existingCartItem = await db.findOne(CartItem, {
+    cart_id: cartId,
     product_id: cartItem.product_id,
   });
 
@@ -266,6 +269,7 @@ const removeCartItem = async (req: Request, res: Response) => {
   let newCartItem;
 
   const existingCartItem = await db.findOne(CartItem, {
+    cart_id: cartId,
     product_id: cartItem.product_id,
   });
 
@@ -333,9 +337,10 @@ const deleteCart = async (req: Request, res: Response) => {
  */
 const syncCartItems = async (req: Request, res: Response) => {
   const db = getManager();
+  const userId = req.body.userId;
   const cartItems: CartProduct[] = req.body.cartItems;
 
-  const existingCart = await db.findOne(Cart, { id: req.params.cartId });
+  const existingCart = await db.findOne(Cart, { actor_id: userId });
 
   if (existingCart) {
     const items = cartItems?.map((product) => {

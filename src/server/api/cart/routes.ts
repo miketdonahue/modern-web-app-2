@@ -40,5 +40,10 @@ export default {
       method: 'delete',
       controller: controller.deleteCart,
     },
+    {
+      path: '/sync',
+      method: 'post',
+      controller: controller.syncCartItems,
+    },
   ],
 };

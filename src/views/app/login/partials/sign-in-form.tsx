@@ -12,7 +12,7 @@ import { Google, AlertError, AlertInfo } from '@components/icons';
 import { loginValidationSchema } from '../validations';
 
 type SignInForm = {
-  onSuccess: () => void;
+  onSuccess: (id: string) => void;
   onRegister: () => void;
   infoMessage?: string;
   additionalServerErrors?: Error[];
@@ -39,8 +39,8 @@ const SignInForm = ({
       onError: (error: AxiosError) => {
         setServerErrors(error?.response?.data?.error || []);
       },
-      onSuccess: () => {
-        onSuccess();
+      onSuccess: (result) => {
+        onSuccess(result.data.data.id);
       },
     }
   );

@@ -1,7 +1,7 @@
 import React from 'react';
 import { loadStripe } from '@stripe/stripe-js';
 import { useCreateCart, useSyncCartItems } from '@modules/queries/carts';
-import { useShoppingCart } from '@features/shopping-cart/shopping-cart';
+import { useShoppingCart } from '@components/hooks/use-shopping-cart';
 import { useCreatePaymentSession } from '@modules/queries/payments';
 import { AlertError } from '@components/icons';
 import { ServerErrors } from '@components/server-error';
@@ -20,12 +20,12 @@ const Cart = () => {
   const [isRegisterView, setRegisterView] = React.useState(true);
   const [serverErrors, setServerErrors] = React.useState<Error[]>([]);
 
-  const { items, total, updateCart, removeCartItem } = useShoppingCart();
+  const { items, total, removeCartItem } = useShoppingCart();
   const [createPaymentSession] = useCreatePaymentSession();
   const [createCart, { data: createdCart }] = useCreateCart();
   const [syncCartItems, { data: syncedCartItems }] = useSyncCartItems({
-    onSuccess: (result) => {
-      updateCart(result.data);
+    onSuccess: () => {
+      // updateCart(result.data);
     },
   });
 
@@ -59,7 +59,7 @@ const Cart = () => {
   React.useEffect(() => {
     if (createdCart) {
       syncCartItems({
-        cartId: createdCart?.data.attributes.id || '',
+        userId: '',
         cartItems: items,
       });
     }
@@ -72,7 +72,7 @@ const Cart = () => {
       syncedCartItems.data.length !== items.length
     ) {
       syncCartItems({
-        cartId: createdCart?.data.attributes.id || '',
+        userId: '',
         cartItems: items,
       });
     }

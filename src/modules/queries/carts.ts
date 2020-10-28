@@ -31,7 +31,7 @@ const useCreateCart = (
 const useSyncCartItems = (
   options?: MutationOptions<
     AxiosResponse<CartProduct[]>,
-    { cartId: string; cartItems: CartProduct[] },
+    { userId: string; cartItems: CartProduct[] },
     AxiosError<Error[]>
   >
 ) => {
