@@ -3,8 +3,10 @@ import { useMutation } from 'react-query';
 import { useRouter } from 'next/router';
 import Cookies from 'universal-cookie';
 import { config } from '@config';
+import { changeCartStatus } from '@modules/data-sources/carts';
 import { request } from '@modules/request';
 import { Policy } from '@components/policy';
+import { CART_STATUS } from '@typings/entities/cart';
 
 type Props = {
   id: string;
@@ -36,6 +38,12 @@ const Home = () => {
   );
 
   const handleLogout = () => {
+    const applyCartStatusChange = async () => {
+      await changeCartStatus({ status: CART_STATUS.ABANDONED });
+    };
+
+    applyCartStatusChange();
+
     logOut({
       token,
     });

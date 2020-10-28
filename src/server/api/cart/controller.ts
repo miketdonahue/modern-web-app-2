@@ -6,6 +6,7 @@ import { Cart } from '@server/entities/cart';
 import { CartItem } from '@server/entities/cart-item';
 import { Product } from '@server/entities/product';
 import { Product as ProductType, CartProduct } from '@typings/entities/product';
+import { CART_STATUS } from '@typings/entities/cart';
 import {
   ApiResponseWithData,
   ApiResponseWithError,
@@ -90,7 +91,7 @@ const createCart = async (req: Request, res: Response) => {
 
   const createdCart = db.create(Cart, {
     actor_id: actorId,
-    status: 'new',
+    status: CART_STATUS.NEW,
   });
 
   logger.info(
@@ -107,6 +108,24 @@ const createCart = async (req: Request, res: Response) => {
   };
 
   return res.json(response);
+};
+
+/**
+ * Partial update of an existing cart
+ */
+const changeCartStatus = async (req: Request, res: Response) => {
+  const db = getManager();
+  const actorId = (req as any).actor?.id;
+  const status = req.body.status;
+
+  const existingCart = await db.findOne(Cart, { actor_id: actorId });
+
+  if (existingCart) {
+    const updatedCart = db.merge(Cart, existingCart, { status });
+    await db.save(updatedCart);
+  }
+
+  return res.end();
 };
 
 /**
@@ -138,6 +157,10 @@ const addCartItem = async (req: Request, res: Response) => {
     cart_id: cartId,
     deleted: false,
   });
+
+  if (cartItems.length > 1) {
+    await db.update(Cart, { id: cartId }, { status: CART_STATUS.ACTIVE });
+  }
 
   const cartItemProductIds = cartItems.map((item) => item.product_id);
   const products = await db.find(Product, { id: In(cartItemProductIds) });
@@ -405,6 +428,7 @@ const syncCartItems = async (req: Request, res: Response) => {
 export {
   getMyCart,
   createCart,
+  changeCartStatus,
   addCartItem,
   incrementCartItem,
   decrementCartItem,

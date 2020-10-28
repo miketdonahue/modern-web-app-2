@@ -1,7 +1,9 @@
 import React from 'react';
+import { useRouter } from 'next/router';
 import { useActor } from '@components/hooks/use-actor';
 import { CartProduct } from '@typings/entities/product';
-import { getMyCart } from '@modules/data-sources/carts';
+import { CART_STATUS } from '@typings/entities/cart';
+import { getMyCart, changeCartStatus } from '@modules/data-sources/carts';
 import {
   storageAddItem,
   storageRemoveItem,
@@ -21,10 +23,21 @@ import { initialState, reducer, types, ReducerState } from './reducer';
 import { ShoppingCartProps } from './typings';
 
 export const useShoppingCart = (): ShoppingCartProps => {
+  const router = useRouter();
   const [actorId] = useActor();
+
   const [state, dispatch] = React.useReducer(reducer, initialState);
 
   const isAuthenticated = !!actorId;
+
+  /* Mark cart as abandoned if checkout was canceled */
+  if (router.query.canceled === 'true') {
+    const applyCartStatusChange = async () => {
+      await changeCartStatus({ status: CART_STATUS.ABANDONED });
+    };
+
+    applyCartStatusChange();
+  }
 
   /* Local Storage can only load client-side */
   if (typeof window === 'undefined') {
@@ -88,7 +101,6 @@ export const useShoppingCart = (): ShoppingCartProps => {
           payload: {
             items: currentCart.items,
             total: getCartTotal(currentCart.items),
-            status: currentCart.status,
           },
         });
       }
@@ -111,7 +123,6 @@ export const useShoppingCart = (): ShoppingCartProps => {
           payload: {
             items: products || [],
             total: getCartTotal(products),
-            status: myCart.data?.attributes.status || '',
           },
         });
       };
@@ -124,7 +135,6 @@ export const useShoppingCart = (): ShoppingCartProps => {
     items: state.items,
     quantity: calculateQuantity(state.items),
     total: state.total,
-    status: state.status,
     addCartItem,
     incrementItem,
     decrementItem,

@@ -5,7 +5,9 @@ import { logger } from '@server/modules/logger';
 import { handleStripeError } from '@server/modules/errors/normalizers/stripe';
 import { ApiResponseWithData, NormalizedError } from '@modules/api-response';
 import { Actor } from '@server/entities/actor';
+import { Cart } from '@server/entities/cart';
 import { CartProduct } from '@typings/entities/product';
+import { CART_STATUS } from '@typings/entities/cart';
 
 const stripe = new Stripe(process.env.STRIPE || '', {
   apiVersion: '2020-03-02',
@@ -21,6 +23,12 @@ const createPaymentSession = async (req: Request, res: Response) => {
 
   const actorId = (req as any).actor.id;
   const orderItems: CartProduct[] = req.body.orderItems;
+
+  await db.update(
+    Cart,
+    { actor_id: actorId },
+    { status: CART_STATUS.CHECKOUT }
+  );
 
   const actor = await db.findOne(Actor, { where: { id: actorId } });
   const preparedLineItems = orderItems.map(async (item) => {

@@ -708,12 +708,15 @@ const logoutActor = async (req: Request, res: Response) => {
   });
 
   logger.info('AUTH-CONTROLLER: Removing auth tokens from browser cookies');
+
   res.cookie(config.server.auth.jwt.tokenNames.payload, '', {
     expires: new Date(0),
   });
+
   res.cookie(config.server.auth.jwt.tokenNames.signature, '', {
     expires: new Date(0),
   });
+
   res.cookie(config.server.auth.jwt.tokenNames.refresh, '', {
     expires: new Date(0),
   });
