@@ -1,7 +1,7 @@
 import React from 'react';
 import { useRouter } from 'next/router';
 import { useCreatePaymentSession } from '@modules/queries/payments';
-import { useCreateCart, useSyncCartItems } from '@modules/queries/carts';
+import { useSyncCartItems } from '@modules/queries/carts';
 import { isAuthenticated } from '@modules/queries/auth';
 import { useCheckout } from '@components/hooks/use-checkout';
 import {
@@ -27,38 +27,29 @@ export const Cart = () => {
     incrementItem,
     decrementItem,
     removeCartItem,
-    // updateCart,
-    // status,
-    // addCartItem,
-    // deleteCart,
-    // calculateQuantity,
+    deleteCart,
   } = React.useContext(ShoppingCartContext);
 
   const [open, setOpen] = React.useState(false);
   const [checkingOut, setCheckingOut] = React.useState(false);
   const [serverErrors, setServerErrors] = React.useState<Error[]>([]);
   const [createPaymentSession] = useCreatePaymentSession();
-  // TODO: everyone will have a cart on register now, so no need for this
-  const [createCart] = useCreateCart();
-  // TODO: do not need to sync cause cart is destroyed once a user becomes authenticated?? right?
-  const [syncCartItems] = useSyncCartItems({
-    onSuccess: () => {
-      // if (updateCart) updateCart(result.data);
-    },
-  });
+  const [syncCartItems] = useSyncCartItems();
 
-  const handleCheckout = async () => {
-    createCart(
-      {},
-      {
-        onSuccess: () => {
-          syncCartItems({
-            userId: '',
-            cartItems: items || [],
-          });
+  const handleCheckout = async (userId: string) => {
+    if (items && items.length > 0) {
+      syncCartItems(
+        {
+          userId,
+          cartItems: items || [],
         },
-      }
-    );
+        {
+          onSuccess: () => {
+            deleteCart({ browser: true });
+          },
+        }
+      );
+    }
 
     const response = await createPaymentSession({
       orderItems: items || [],
@@ -77,8 +68,8 @@ export const Cart = () => {
 
   isAuthenticated({
     enabled: checkingOut,
-    onSuccess: async () => {
-      await handleCheckout();
+    onSuccess: async (result) => {
+      await handleCheckout(result.data.attributes.id);
     },
     onError: (error) => {
       return error?.response?.data?.error.map((e: Error) => {

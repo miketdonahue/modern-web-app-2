@@ -16,13 +16,14 @@ import { verifyRefreshToken } from '@server/middleware/app-middleware';
 import { errorTypes } from '@server/modules/errors';
 import { Actor } from '@server/entities/actor';
 import { ActorAccount } from '@server/entities/actor-account';
-import { Cart, CART_STATUS } from '@server/entities/cart';
+import { Cart } from '@server/entities/cart';
 import { Role, ROLE_NAME } from '@server/entities/role';
 import { BlacklistedToken } from '@server/entities/blacklisted-token';
 import { sendEmail } from '@server/modules/mailer';
 import * as emails from '@server/modules/mailer/emails';
 import { config } from '@config';
 import { transformRoleForToken } from '@server/modules/utilities';
+import { JwtResponse } from '@typings/jwt';
 
 /**
  * Registers a new actor
@@ -775,7 +776,16 @@ const isAuthenticated = async (req: Request, res: Response) => {
     secure: false,
   });
 
-  return res.end();
+  const constructedToken = `${newToken.header}.${newToken.body}.${newToken.signature}`;
+  const decoded = jwt.decode(constructedToken) as JwtResponse;
+
+  const response: ApiResponseWithData<Partial<JwtResponse>> = {
+    data: {
+      attributes: { id: decoded?.id },
+    },
+  };
+
+  return res.json(response);
 };
 
 /**

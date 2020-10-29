@@ -4,6 +4,7 @@ import { AxiosError } from 'axios';
 import { useRouter } from 'next/router';
 import { useFormik } from 'formik';
 import { request } from '@modules/request';
+import { Error, ErrorResponse } from '@modules/api-response';
 import { ServerErrors } from '@components/server-error';
 import { AlertError } from '@components/icons';
 import { Email, Keys, LockOpen } from '@components/illustrations';
@@ -13,12 +14,12 @@ import styles from './send-code.module.scss';
 
 const SendCode = () => {
   const router = useRouter();
-  const [serverErrors, setServerErrors] = useState([]);
+  const [serverErrors, setServerErrors] = useState<Error[]>([]);
 
   const [mutate, { isLoading }] = useMutation(
     (variables: any) => request.post('/api/v1/auth/send-code', variables),
     {
-      onError: (error: AxiosError) => {
+      onError: (error: AxiosError<ErrorResponse>) => {
         return setServerErrors(error?.response?.data?.error || []);
       },
       onSuccess: () => {

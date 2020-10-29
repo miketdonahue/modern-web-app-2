@@ -5,7 +5,7 @@ import { AxiosError } from 'axios';
 import { useRouter } from 'next/router';
 import { useFormik } from 'formik';
 import { request } from '@modules/request';
-import { Error } from '@modules/api-response';
+import { Error, ErrorResponse } from '@modules/api-response';
 import { ServerErrors } from '@components/server-error';
 import { AlertError, AlertInfo } from '@components/icons';
 import { Email, LockOpen } from '@components/illustrations';
@@ -30,8 +30,8 @@ const SecurityCode = () => {
   const [mutate, { isLoading }] = useMutation(
     (variables: any) => request.post('/api/v1/auth/security-code', variables),
     {
-      onError: (error: AxiosError) => {
-        return error?.response?.data?.error.map((e: Error) => {
+      onError: (error: AxiosError<ErrorResponse>): any => {
+        return error?.response?.data?.error.map((e) => {
           if (e.code === 'CODE_EXPIRED') {
             formik.setFieldValue('code', '');
             setInfoAlerts([...infoAlerts, e.detail || '']);

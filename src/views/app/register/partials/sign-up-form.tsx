@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { useMutation } from 'react-query';
 import { AxiosError } from 'axios';
 import { useFormik } from 'formik';
-import { Error } from '@modules/api-response';
+import { Error, ErrorResponse } from '@modules/api-response';
 import { ServerErrors } from '@components/server-error';
 import { Button, Input, PasswordStrength, Alert } from '@components/app';
 import { Google, AlertError } from '@components/icons';
@@ -33,7 +33,7 @@ const SignUpForm = ({
   const [mutate, { isLoading }] = useMutation(
     (variables: any) => request.post('/api/v1/auth/register', variables),
     {
-      onError: (error: AxiosError) => {
+      onError: (error: AxiosError<ErrorResponse>) => {
         return setServerErrors(error?.response?.data?.error || []);
       },
       onSuccess: () => {

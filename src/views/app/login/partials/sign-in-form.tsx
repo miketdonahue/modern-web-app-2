@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { useMutation } from 'react-query';
 import { AxiosError } from 'axios';
+import { useMutation } from 'react-query';
 import { useFormik } from 'formik';
 import { request } from '@modules/request';
-import { Error } from '@modules/api-response';
+import { Error, ErrorResponse } from '@modules/api-response';
 import { ServerErrors } from '@components/server-error';
 import { Button, Checkbox, Input, Tooltip, Alert } from '@components/app';
 import appLogo from '@public/images/logo-sm.svg';
@@ -36,7 +36,7 @@ const SignInForm = ({
   const [mutate, { isLoading }] = useMutation(
     (variables: any) => request.post('/api/v1/auth/login', variables),
     {
-      onError: (error: AxiosError) => {
+      onError: (error: AxiosError<ErrorResponse>) => {
         setServerErrors(error?.response?.data?.error || []);
       },
       onSuccess: (result) => {

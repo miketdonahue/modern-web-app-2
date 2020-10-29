@@ -14,6 +14,10 @@ export interface Data<T = {}, U extends Relationships = {}> {
   };
 }
 
+export type ErrorResponse = {
+  error: Error[];
+};
+
 export interface Error {
   status: string;
   code: string;
