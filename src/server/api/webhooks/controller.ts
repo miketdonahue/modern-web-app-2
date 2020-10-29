@@ -7,6 +7,7 @@ import { ApiResponseWithError, NormalizedError } from '@modules/api-response';
 import { errorTypes } from '@server/modules/errors';
 import { Customer } from '@server/entities/customer';
 import { Purchase } from '@server/entities/purchase';
+import { Product } from '@server/entities/product';
 import { Cart } from '@server/entities/cart';
 import { PurchaseItem } from '@server/entities/purchase-item';
 import { CART_STATUS } from '@typings/entities/cart';
@@ -93,22 +94,31 @@ const stripePaymentsWebhook = async (req: Request, res: Response) => {
       const createdPurchase = await db.save(newPurchase);
 
       const purchaseItems =
-        session.line_items?.data.map((item: Stripe.LineItem) => {
+        session.line_items?.data.map(async (item: Stripe.LineItem) => {
+          const product = await db.findOne(Product, {
+            vendor_id: item.price.product as string,
+          });
+
           return {
             purchase_id: createdPurchase.id,
-            product_id: item.price.product as string,
+            product_id: product?.id,
             quantity: item.quantity || 1,
           };
         }) || [];
 
-      await db.insert(PurchaseItem, purchaseItems);
+      const resolvedPurchaseItems = await Promise.all(purchaseItems);
+      await db.insert(PurchaseItem, resolvedPurchaseItems);
 
       /* Update cart status */
-      const existingCart = db.findOne(Cart, {
+      const existingCart = await db.findOne(Cart, {
         actor_id: session.metadata?.actor_id,
       });
 
-      await db.update(Cart, existingCart, { status: CART_STATUS.PAID });
+      await db.update(
+        Cart,
+        { id: existingCart?.id },
+        { status: CART_STATUS.PAID }
+      );
     } catch (error) {
       const errorResponse: ApiResponseWithError = {
         error: [

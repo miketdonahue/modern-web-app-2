@@ -35,13 +35,13 @@ export const BillingForm = () => {
   const [processing, setProcessing] = React.useState(false);
 
   // const [createAPaymentIntent] = createPaymentIntent({
-  //   onError: (error: AxiosError) => {
+  //   onError: (error) => {
   //     setServerErrors(error?.response?.data?.error || []);
   //   },
   // });
 
   const [createCustomer] = useCreateCustomer({
-    onError: (error: AxiosError) => {
+    onError: (error) => {
       setServerErrors(error?.response?.data?.error || []);
     },
   });

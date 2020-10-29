@@ -5,7 +5,7 @@ import { AxiosError } from 'axios';
 import { useRouter } from 'next/router';
 import { useFormik } from 'formik';
 import { request } from '@modules/request';
-import { Error } from '@modules/api-response';
+import { Error, ErrorResponse } from '@modules/api-response';
 import { Button, Input, PasswordStrength, Alert } from '@components/app';
 import { AlertError, AlertInfo } from '@components/icons';
 import { ServerErrors } from '@components/server-error';
@@ -20,7 +20,7 @@ const ResetPassword = () => {
   const [mutate, { isLoading }] = useMutation(
     (variables: any) => request.post('/api/v1/auth/reset-password', variables),
     {
-      onError: (error: AxiosError) => {
+      onError: (error: AxiosError<ErrorResponse>): any => {
         return error?.response?.data?.error.map((e: Error) => {
           if (e.code === 'CODE_EXPIRED') {
             setInfoAlerts([...infoAlerts, e.detail || '']);

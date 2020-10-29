@@ -1,8 +1,17 @@
-import { useQuery, BaseQueryOptions } from 'react-query';
-import { AxiosError } from 'axios';
+import { useQuery, QueryOptions, QueryResult } from 'react-query';
+import { AxiosResponse, AxiosError } from 'axios';
+import { Data, ErrorResponse } from '@modules/api-response';
 import { request } from '@modules/request';
 
-const isAuthenticated = (options?: BaseQueryOptions<unknown, AxiosError>) => {
+const isAuthenticated = (
+  options?: QueryOptions<
+    AxiosResponse<Data<{ id: string }>>,
+    AxiosError<ErrorResponse>
+  >
+): QueryResult<
+  AxiosResponse<Data<{ id: string }>>,
+  AxiosError<ErrorResponse>
+> => {
   const url = '/api/v1/auth/authenticated';
 
   return useQuery(
