@@ -38,8 +38,6 @@ const storageAddItem = (
     JSON.stringify({
       ...currentCart,
       items: existingItem ? currentCart.items : newCartItems,
-      total: newCartTotal,
-      status: 'active',
     })
   );
 
@@ -75,8 +73,6 @@ const storageIncrementItem = (
       JSON.stringify({
         ...currentCart,
         items: currentCart.items,
-        total: newCartTotal,
-        status: 'active',
       })
     );
 
@@ -147,7 +143,6 @@ const storageRemoveItem = (
     JSON.stringify({
       ...currentCart,
       items: newCartItems,
-      status: cartStatus,
     })
   );
 
