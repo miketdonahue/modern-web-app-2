@@ -10,7 +10,7 @@ import { CartProduct } from '@typings/entities/product';
 import { CART_STATUS } from '@typings/entities/cart';
 
 const stripe = new Stripe(process.env.STRIPE || '', {
-  apiVersion: '2020-03-02',
+  apiVersion: '2020-08-27',
 });
 
 /**

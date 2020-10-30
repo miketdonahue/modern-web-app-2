@@ -7,7 +7,7 @@ import { ApiResponseWithData, NormalizedError } from '@modules/api-response';
 import { handleStripeError } from '@server/modules/errors/normalizers/stripe';
 
 const stripe = new Stripe(process.env.STRIPE || '', {
-  apiVersion: '2020-03-02',
+  apiVersion: '2020-08-27',
 });
 
 /**
@@ -72,8 +72,7 @@ const createCustomer = async (req: Request, res: Response) => {
   const { id, ...restOfAttributes } = savedCustomer;
   const response: ApiResponseWithData<Partial<Customer>> = {
     data: {
-      id,
-      attributes: { ...restOfAttributes },
+      attributes: { id, ...restOfAttributes },
     },
   };
 

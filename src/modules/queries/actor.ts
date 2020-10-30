@@ -9,7 +9,7 @@ export const useGetActorCart = (
   options?: QueryConfig<AxiosResponse<GetProduct[]>, AxiosError<ErrorResponse>>
 ): QueryResult<AxiosResponse<GetProduct[]>, AxiosError<ErrorResponse>> => {
   return useQuery(
-    `/api/v1/actor/${actorId}/cart-items`,
+    `/api/v1/actors/${actorId}/cart-items`,
     () => dataSources.getActorCartItems(actorId),
     options || {}
   );

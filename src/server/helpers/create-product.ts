@@ -3,7 +3,7 @@ import { createConnection, getManager } from 'typeorm';
 import { Product } from '@server/entities/product';
 
 const stripe = new Stripe(process.env.STRIPE || '', {
-  apiVersion: '2020-03-02',
+  apiVersion: '2020-08-27',
 });
 
 /* INPUTS */

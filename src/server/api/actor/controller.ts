@@ -7,7 +7,7 @@ import { ActorAccount } from '@server/entities/actor-account';
 import { CartItem } from '@server/entities/cart-item';
 
 const stripe = new Stripe(process.env.STRIPE || '', {
-  apiVersion: '2020-03-02',
+  apiVersion: '2020-08-27',
 });
 
 /**

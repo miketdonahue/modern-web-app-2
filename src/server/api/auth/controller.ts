@@ -17,6 +17,7 @@ import { errorTypes } from '@server/modules/errors';
 import { Actor } from '@server/entities/actor';
 import { ActorAccount } from '@server/entities/actor-account';
 import { Cart } from '@server/entities/cart';
+import { CART_STATUS } from '@typings/entities/cart';
 import { Role, ROLE_NAME } from '@server/entities/role';
 import { BlacklistedToken } from '@server/entities/blacklisted-token';
 import { sendEmail } from '@server/modules/mailer';
@@ -133,7 +134,7 @@ const registerActor = async (req: Request, res: Response) => {
   await sendEmail(actor, emails.CONFIRM_EMAIL);
 
   const response: ApiResponseWithData = {
-    data: { id: actor.id },
+    data: { attributes: { id: actor.id } },
   };
 
   return res.json(response);
@@ -257,7 +258,7 @@ const confirmCode = async (req: Request, res: Response) => {
   res.cookie('actor', '', { expires: new Date(0) });
 
   const response: ApiResponseWithData = {
-    data: { id: actorAccount.actor_id },
+    data: { attributes: { id: actorAccount.actor_id } },
   };
 
   return res.json(response);
@@ -473,8 +474,7 @@ const loginActor = async (req: Request, res: Response) => {
 
   const response: ApiResponseWithData<Token> = {
     data: {
-      id: actor.id,
-      attributes: { token },
+      attributes: { id: actor.id, token },
     },
   };
 
@@ -591,7 +591,7 @@ const resetPassword = async (req: Request, res: Response) => {
   res.cookie('actor', '', { expires: new Date(0) });
 
   const response: ApiResponseWithData = {
-    data: { id: actorAccount.actor_id },
+    data: { attributes: { id: actorAccount.actor_id } },
   };
 
   return res.json(response);
@@ -687,7 +687,7 @@ const sendCode = async (req: Request, res: Response) => {
 
   const response: ApiResponseWithData = {
     data: {
-      id: updatedActor.id,
+      attributes: { id: updatedActor.id },
     },
   };
 

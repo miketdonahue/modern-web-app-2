@@ -16,7 +16,7 @@
     "lint:css": "stylelint src/**/*.{css,scss} --quiet",
     "lint": "yarn lint:ts && yarn lint:css",
     "prettier:fix": "prettier \"**/*.{ts,tsx}\" --write",
-    "ts": "tsc --noEmit",
+    "ts": "tsc --noEmit & tsc -p src/server/tsconfig.json --noEmit",
     "test": "jest",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
