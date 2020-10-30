@@ -110,9 +110,16 @@ const stripePaymentsWebhook = async (req: Request, res: Response) => {
       await db.insert(PurchaseItem, resolvedPurchaseItems);
 
       /* Update cart status */
-      const existingCart = await db.findOne(Cart, {
-        actor_id: session.metadata?.actor_id,
-      });
+      const [existingCart] = await db.query(
+        `
+          SELECT *
+          FROM cart
+          WHERE actor_id = $1
+          ORDER BY created_at DESC
+          LIMIT 1;
+        `,
+        [session.metadata?.actor_id]
+      );
 
       await db.update(
         Cart,
