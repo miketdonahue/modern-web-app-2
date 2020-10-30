@@ -24,9 +24,20 @@ const createPaymentSession = async (req: Request, res: Response) => {
   const actorId = (req as any).actor.id;
   const orderItems: CartProduct[] = req.body.orderItems;
 
+  const [existingCart] = await db.query(
+    `
+      SELECT *
+      FROM cart
+      WHERE actor_id = $1
+      ORDER BY created_at DESC
+      LIMIT 1;
+    `,
+    [actorId]
+  );
+
   await db.update(
     Cart,
-    { actor_id: actorId },
+    { id: existingCart?.id },
     { status: CART_STATUS.CHECKOUT }
   );
 

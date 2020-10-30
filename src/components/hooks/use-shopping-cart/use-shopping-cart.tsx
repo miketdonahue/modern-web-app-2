@@ -36,7 +36,19 @@ export const useShoppingCart = (): ShoppingCartProps => {
       await changeCartStatus({ status: CART_STATUS.ABANDONED });
     };
 
-    applyCartStatusChange();
+    applyCartStatusChange().then(async () => {
+      /* Clear query params, go get a new cart, reset cart state */
+      router.replace('/app/products', '/app/products', { shallow: true });
+      await getMyCart();
+
+      dispatch({
+        type: types.INIT_CART,
+        payload: {
+          items: [],
+          total: 0,
+        },
+      });
+    });
   }
 
   /* Local Storage can only load client-side */

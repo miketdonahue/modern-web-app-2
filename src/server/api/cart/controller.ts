@@ -19,28 +19,38 @@ import { errorTypes } from '@server/modules/errors';
 const getMyCart = async (req: Request, res: Response) => {
   const db = getManager();
   const actorId = (req as any).actor?.id;
+  let myCart;
 
-  const myCart = await db.findOne(Cart, { actor_id: actorId });
+  // const existingCart = await db.findOne(Cart, { actor_id: actorId });
+  const [existingCart] = await db.query(
+    `
+      SELECT *
+      FROM cart
+      WHERE actor_id = $1
+      ORDER BY created_at DESC
+      LIMIT 1;
+    `,
+    [actorId]
+  );
 
-  if (!myCart) {
-    const errorResponse: ApiResponseWithError = {
-      error: [
-        {
-          status: '500',
-          code: errorTypes.CART_NOT_FOUND.code,
-          detail: errorTypes.CART_NOT_FOUND.detail,
-        },
-      ],
-    };
+  if (
+    existingCart &&
+    [CART_STATUS.ABANDONED, CART_STATUS.PAID].includes(existingCart.status)
+  ) {
+    const newCart = await db.create(Cart, {
+      actor_id: actorId,
+      status: CART_STATUS.NEW,
+    });
 
-    logger.error('CART-CONTROLLER: Could not find user cart');
-    return res.status(500).json(errorResponse);
+    myCart = await db.save(newCart);
+  } else {
+    myCart = existingCart;
   }
 
-  logger.info({ cartId: myCart.id }, 'CART-CONTROLLER: Found my cart');
+  logger.info({ cartId: myCart?.id }, 'CART-CONTROLLER: Found my cart');
 
   const cartItems = await db.find(CartItem, {
-    cart_id: myCart.id,
+    cart_id: myCart?.id,
     deleted: false,
   });
 
@@ -54,7 +64,7 @@ const getMyCart = async (req: Request, res: Response) => {
     { cart_items: CartItem[]; products: ProductType[] }
   > = {
     data: {
-      attributes: { id: myCart.id, status: myCart.status },
+      attributes: { id: myCart?.id, status: myCart?.status },
       relationships: {
         cart_items: cartItems,
         products,
@@ -118,11 +128,19 @@ const changeCartStatus = async (req: Request, res: Response) => {
   const actorId = (req as any).actor?.id;
   const status = req.body.status;
 
-  const existingCart = await db.findOne(Cart, { actor_id: actorId });
+  const [existingCart] = await db.query(
+    `
+      SELECT *
+      FROM cart
+      WHERE actor_id = $1
+      ORDER BY created_at DESC
+      LIMIT 1;
+    `,
+    [actorId]
+  );
 
   if (existingCart) {
-    const updatedCart = db.merge(Cart, existingCart, { status });
-    await db.save(updatedCart);
+    await db.update(Cart, { id: existingCart?.id }, { status });
   }
 
   return res.end();
@@ -158,9 +176,7 @@ const addCartItem = async (req: Request, res: Response) => {
     deleted: false,
   });
 
-  if (cartItems.length > 1) {
-    await db.update(Cart, { id: cartId }, { status: CART_STATUS.ACTIVE });
-  }
+  await db.update(Cart, { id: cartId }, { status: CART_STATUS.ACTIVE });
 
   const cartItemProductIds = cartItems.map((item) => item.product_id);
   const products = await db.find(Product, { id: In(cartItemProductIds) });

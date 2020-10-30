@@ -4,7 +4,8 @@ import argon2 from 'argon2';
 import { Chance } from 'chance';
 import { Actor } from '@server/entities/actor';
 import { ActorAccount } from '@server/entities/actor-account';
-import { Cart, CART_STATUS } from '@server/entities/cart';
+import { Cart } from '@server/entities/cart';
+import { CART_STATUS } from '@typings/entities/cart';
 import { Role, ROLE_NAME } from '@server/entities/role';
 
 const chance = new Chance();
