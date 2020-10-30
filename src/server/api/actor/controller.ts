@@ -19,19 +19,6 @@ const stripe = new Stripe(process.env.STRIPE || '', {
  * @param info - GraphQL metadata
  * @returns null
  */
-const getMe = async (req: Request, res: Response) => {
-  return res.json({ id: '123' });
-};
-
-/**
- * Unlock account
- *
- * @param parent - The parent resolver
- * @param args - Actor input arguments
- * @param context - GraphQL context object
- * @param info - GraphQL metadata
- * @returns null
- */
 const unlockActorAccount = async (
   parent: any,
   args: any,
@@ -157,4 +144,4 @@ const getActorCartItems = async (req: Request, res: Response) => {
   return res.json(response);
 };
 
-export { getMe, unlockActorAccount, resetPassword, getActorCartItems };
+export { unlockActorAccount, resetPassword, getActorCartItems };

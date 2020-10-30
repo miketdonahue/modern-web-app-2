@@ -5,12 +5,6 @@ export default {
   path: '/api/v1/actors',
   routes: [
     {
-      path: '/me',
-      method: 'get',
-      middleware: [secureApi],
-      controller: controller.getMe,
-    },
-    {
       path: '/reset-password',
       method: 'post',
       controller: controller.resetPassword,

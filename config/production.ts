@@ -28,7 +28,7 @@ export default merge(
           'cdn.jsdelivr.net',
           'graphcool-playground.netlify.com',
         ],
-        connectSrc: ["'self'", 'devtools.apollodata.com'],
+        connectSrc: ["'self'"],
         frameSrc: ['js.stripe.com'],
       },
     },
