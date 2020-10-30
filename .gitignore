@@ -7,6 +7,12 @@ node_modules
 dist
 coverage
 server/logs/*
+docker-compose.yml
 yarn-debug.log*
 yarn-error.log*
-docker-compose.yml
+.yarn/*
+!.yarn/releases
+!.yarn/plugins
+!.yarn/sdks
+!.yarn/versions
+.pnp.*
