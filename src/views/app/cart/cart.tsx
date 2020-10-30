@@ -36,7 +36,7 @@ const Cart = () => {
     });
 
     const result = await stripe?.redirectToCheckout({
-      sessionId: response.data.attributes.id,
+      sessionId: response?.data.attributes.id || '',
     });
 
     if (result?.error) {
@@ -53,7 +53,7 @@ const Cart = () => {
   };
 
   React.useEffect(() => {
-    createCart({});
+    createCart();
   }, []);
 
   React.useEffect(() => {

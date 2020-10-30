@@ -1,5 +1,4 @@
 import React from 'react';
-import { AxiosError } from 'axios';
 import { useFormik } from 'formik';
 import cx from 'classnames';
 import { useTailwind } from '@components/hooks/use-tailwind';

@@ -1,8 +1,8 @@
 import {
   useMutation,
   useQuery,
-  MutationOptions,
-  QueryOptions,
+  MutationConfig,
+  QueryConfig,
   QueryResult,
 } from 'react-query';
 import { AxiosResponse, AxiosError } from 'axios';
@@ -13,13 +13,13 @@ import { Cart } from '@server/entities/cart';
 import * as dataSources from '@modules/data-sources/carts';
 
 const useGetMyCart = (
-  options?: QueryOptions<AxiosResponse<GetCart>, AxiosError<ErrorResponse>>
+  options?: QueryConfig<AxiosResponse<GetCart>, AxiosError<ErrorResponse>>
 ): QueryResult<AxiosResponse<GetCart>, AxiosError<ErrorResponse>> => {
   return useQuery('/api/v1/carts/me', dataSources.getMyCart, options || {});
 };
 
 const useCreateCart = (
-  options?: MutationOptions<
+  options?: MutationConfig<
     AxiosResponse<Data<Partial<Cart>>>,
     {},
     AxiosError<ErrorResponse>
@@ -29,10 +29,10 @@ const useCreateCart = (
 };
 
 const useSyncCartItems = (
-  options?: MutationOptions<
+  options?: MutationConfig<
     AxiosResponse<CartProduct[]>,
-    { userId: string; cartItems: CartProduct[] },
-    AxiosError<ErrorResponse>
+    AxiosError<ErrorResponse>,
+    { userId: string; cartItems: CartProduct[] }
   >
 ) => {
   return useMutation(dataSources.syncCartItems, options || undefined);

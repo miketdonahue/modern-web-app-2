@@ -68,7 +68,7 @@ const Login = () => {
       });
 
       const checkoutError = await useCheckout({
-        sessionId: response.data.attributes.id,
+        sessionId: response?.data.attributes.id || '',
       });
 
       if (checkoutError) {
