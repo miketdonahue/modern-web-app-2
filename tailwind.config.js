@@ -73,4 +73,10 @@ module.exports = {
   },
   plugins: [],
   purge: ['./src/components/**/*.tsx', './src/views/**/*.tsx'],
+  future: {
+    removeDeprecatedGapUtilities: true,
+    purgeLayersByDefault: true,
+    defaultLineHeights: true,
+    standardFontWeights: true,
+  },
 };
