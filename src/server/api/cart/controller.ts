@@ -33,10 +33,7 @@ const getMyCart = async (req: Request, res: Response) => {
     [actorId]
   );
 
-  if (
-    existingCart &&
-    [CART_STATUS.ABANDONED, CART_STATUS.PAID].includes(existingCart.status)
-  ) {
+  if (existingCart && [CART_STATUS.PAID].includes(existingCart.status)) {
     const newCart = await db.create(Cart, {
       actor_id: actorId,
       status: CART_STATUS.NEW,

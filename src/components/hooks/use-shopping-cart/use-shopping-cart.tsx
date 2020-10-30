@@ -37,17 +37,7 @@ export const useShoppingCart = (): ShoppingCartProps => {
     };
 
     applyCartStatusChange().then(async () => {
-      /* Clear query params, go get a new cart, reset cart state */
       router.replace('/app/products', '/app/products', { shallow: true });
-      await getMyCart();
-
-      dispatch({
-        type: types.INIT_CART,
-        payload: {
-          items: [],
-          total: 0,
-        },
-      });
     });
   }
 

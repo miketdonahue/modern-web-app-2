@@ -27,7 +27,6 @@ export const Cart = () => {
     incrementItem,
     decrementItem,
     removeCartItem,
-    deleteCart,
   } = React.useContext(ShoppingCartContext);
 
   const [open, setOpen] = React.useState(false);
@@ -38,17 +37,10 @@ export const Cart = () => {
 
   const handleCheckout = async (userId: string) => {
     if (items && items.length > 0) {
-      syncCartItems(
-        {
-          userId,
-          cartItems: items || [],
-        },
-        {
-          onSuccess: () => {
-            deleteCart({ browser: true });
-          },
-        }
-      );
+      syncCartItems({
+        userId,
+        cartItems: items || [],
+      });
     }
 
     const response = await createPaymentSession({
