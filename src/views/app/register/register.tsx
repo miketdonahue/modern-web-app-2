@@ -1,5 +1,6 @@
 import React from 'react';
 import { useRouter } from 'next/router';
+import { config } from '@config';
 import registerBg from '@public/images/register-bg.jpg';
 import styles from './register.module.scss';
 import { SignUpForm } from './partials/sign-up-form';
@@ -12,6 +13,13 @@ const Register = () => {
   };
 
   const handleRegisterSuccess = async () => {
+    if (config.server.auth.confirmable) {
+      return router.push({
+        pathname: '/app/security-code',
+        query: { ...router.query, type: 'confirm-email' },
+      });
+    }
+
     return router.push({
       pathname: '/app/login',
       query: { ...router.query, referrer: 'register' },

@@ -30,7 +30,7 @@ const ResetPassword = () => {
         });
       },
       onSuccess: () => {
-        router.push('/app/login');
+        router.push('/app/login?referrer=reset-password');
       },
     }
   );

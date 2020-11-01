@@ -8,7 +8,7 @@ import { ServerErrors } from '@components/server-error';
 import { isAuthenticated } from '@modules/queries/auth';
 import { Button, Modal, Alert } from '@components/app';
 import { Error } from '@modules/api-response/typings';
-import { SignInForm } from '../login/partials/sign-in-form';
+import { SignInForm } from '../login/partials/sign-in-form/sign-in-form';
 import { SignUpForm } from '../register/partials/sign-up-form';
 // import styles from './cart.module.scss';
 

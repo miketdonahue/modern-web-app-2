@@ -9,7 +9,8 @@ import { ServerErrors } from '@components/server-error';
 import { Button, Checkbox, Input, Tooltip, Alert } from '@components/app';
 import appLogo from '@public/images/logo-sm.svg';
 import { Google, AlertError, AlertInfo } from '@components/icons';
-import { loginValidationSchema } from '../validations';
+import { loginValidationSchema } from '../../validations';
+import styles from './sign-in-form.module.scss';
 
 type SignInForm = {
   onSuccess: (id: string) => void;
@@ -37,7 +38,30 @@ const SignInForm = ({
     (variables: any) => request.post('/api/v1/auth/login', variables),
     {
       onError: (error: AxiosError<ErrorResponse>) => {
-        setServerErrors(error?.response?.data?.error || []);
+        error?.response?.data?.error.map((e) => {
+          if (e.code === 'ACCOUNT_NOT_CONFIRMED') {
+            setServerErrors([
+              ...serverErrors,
+              {
+                ...e,
+                detail: [
+                  'Your account is not confirmed. Please ',
+                  <span className={styles.notConfirmedLink}>
+                    <Link
+                      href="/app/security-code?type=confirm-email"
+                      as="/app/security-code?type=confirm-email"
+                    >
+                      <a>confirm your account</a>
+                    </Link>
+                  </span>,
+                  '.',
+                ] as any,
+              },
+            ]);
+          } else {
+            setServerErrors([...serverErrors, e]);
+          }
+        });
       },
       onSuccess: (result) => {
         onSuccess(result.data.data.id);
