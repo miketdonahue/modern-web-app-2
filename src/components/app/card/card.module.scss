@@ -1,0 +1,9 @@
+.card {
+  background-color: theme('colors.white');
+  border: 1px solid theme('colors.gray.300');
+  border-radius: theme('borderRadius.sm');
+}
+
+.raised {
+  box-shadow: theme('boxShadow.md');
+}

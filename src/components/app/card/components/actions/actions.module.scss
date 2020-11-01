@@ -1,0 +1,21 @@
+.actions {
+  color: theme('colors.link');
+  font-size: theme('fontSize.sm');
+
+  & > * {
+    border-radius: theme('borderRadius.sm');
+    display: inline-flex;
+    margin: 0 -6px;
+    margin-right: theme('margin.2');
+    padding: 2px 6px;
+
+    &:last-child {
+      margin-right: 0;
+    }
+
+    &:hover {
+      background-color: theme('colors.green.100');
+      cursor: pointer;
+    }
+  }
+}
