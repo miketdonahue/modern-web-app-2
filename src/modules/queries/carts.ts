@@ -8,24 +8,13 @@ import {
 import { AxiosResponse, AxiosError } from 'axios';
 import { GetCart } from '@typings/entities/cart';
 import { CartProduct } from '@typings/entities/product';
-import { Data, ErrorResponse } from '@modules/api-response';
-import { Cart } from '@server/entities/cart';
+import { ErrorResponse } from '@modules/api-response';
 import * as dataSources from '@modules/data-sources/carts';
 
 const useGetMyCart = (
   options?: QueryConfig<AxiosResponse<GetCart>, AxiosError<ErrorResponse>>
 ): QueryResult<AxiosResponse<GetCart>, AxiosError<ErrorResponse>> => {
   return useQuery('/api/v1/carts/me', dataSources.getMyCart, options || {});
-};
-
-const useCreateCart = (
-  options?: MutationConfig<
-    AxiosResponse<Data<Partial<Cart>>>,
-    {},
-    AxiosError<ErrorResponse>
-  >
-) => {
-  return useMutation(dataSources.createCart, options || undefined);
 };
 
 const useSyncCartItems = (
@@ -38,4 +27,4 @@ const useSyncCartItems = (
   return useMutation(dataSources.syncCartItems, options || undefined);
 };
 
-export { useGetMyCart, useCreateCart, useSyncCartItems };
+export { useGetMyCart, useSyncCartItems };

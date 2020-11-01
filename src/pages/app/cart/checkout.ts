@@ -1,3 +1,3 @@
-import { Checkout } from '@views/app/cart/checkout';
+import { Checkout } from '@views/app/checkout';
 
 export default Checkout;
