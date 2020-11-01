@@ -1,10 +1,7 @@
-$backgroundColor: #434559;
-$color: #eaedf2;
-
 .tooltip {
-  background-color: $backgroundColor;
+  background-color: theme('colors.gray.700');
   border-radius: theme('borderRadius.default');
-  color: $color;
+  color: white;
   padding: theme('spacing.1') theme('spacing.2');
 }
 
@@ -17,7 +14,7 @@ $color: #eaedf2;
 }
 
 .arrow::before {
-  background: #434559;
+  background: theme('colors.gray.700');
   content: '';
   transform: rotate(45deg);
 }
