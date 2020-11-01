@@ -173,10 +173,10 @@ const confirmCode = async (req: Request, res: Response) => {
     'unlock-account': { type: 'locked', email: emails.UNLOCK_ACCOUNT_EMAIL },
   };
 
-  const decoded: any = jwt.decode(token) || { actor_id: null };
-  const actor = await db.findOne(Actor, { id: decoded.actor_id });
+  const decoded: any = jwt.decode(token) || { id: null };
+  const actor = await db.findOne(Actor, { id: decoded.id });
   const actorAccount: any = await db.findOne(ActorAccount, {
-    actor_id: decoded.actor_id,
+    actor_id: decoded.id,
     [`${codeType[req.body.type].type}_code`]: req.body.code,
   });
 
@@ -506,10 +506,10 @@ const resetPassword = async (req: Request, res: Response) => {
     return res.status(400).json(errorResponse);
   }
 
-  const decoded: any = jwt.decode(token) || { actor_id: null };
-  const actor = await db.findOne(Actor, { id: decoded.actor_id });
+  const decoded: any = jwt.decode(token) || { id: null };
+  const actor = await db.findOne(Actor, { id: decoded.id });
   const actorAccount: any = await db.findOne(ActorAccount, {
-    actor_id: decoded.actor_id,
+    actor_id: decoded.id,
     reset_password_code: req.body.code,
   });
 

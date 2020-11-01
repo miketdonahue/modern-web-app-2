@@ -5,7 +5,7 @@ import { useCreatePaymentSession } from '@modules/queries/payments';
 import { useShoppingCart } from '@components/hooks/use-shopping-cart';
 import { useCheckout } from '@components/hooks/use-checkout';
 import { Error } from '@modules/api-response';
-import { SignInForm } from './partials/sign-in-form';
+import { SignInForm } from './partials/sign-in-form/sign-in-form';
 import styles from './login.module.scss';
 
 const Login = () => {
@@ -23,18 +23,36 @@ const Login = () => {
       router.query.referrer === 'register'
     ) {
       return setInfoMessage(
-        "You've signed up successfully. Please log in to continue the check out process."
+        "You've signed up successfully. Please sign in to continue the check out process."
       );
     }
 
     if (router.query.referrer === 'register') {
       return setInfoMessage(
-        "You've signed up successfully. Please log in to continue."
+        "You've signed up successfully. Please sign in to continue."
+      );
+    }
+
+    if (router.query.referrer === 'confirm-email') {
+      return setInfoMessage(
+        'Thank you for confirming your email address. Please sign in to continue.'
+      );
+    }
+
+    if (router.query.referrer === 'reset-password') {
+      return setInfoMessage(
+        'Your password has been reset. Please sign in to continue.'
+      );
+    }
+
+    if (router.query.referrer === 'unlock-account') {
+      return setInfoMessage(
+        'Your account has been unlocked. Please sign in to continue.'
       );
     }
 
     return undefined;
-  }, []);
+  }, [router]);
 
   const handleCreateAccount = () => {
     if (router.query.return_to === 'checkout') {

@@ -41,7 +41,13 @@ const SecurityCode = () => {
         });
       },
       onSuccess: () => {
-        router.push('/app/login');
+        if (router.query.type === 'confirm-email') {
+          router.push('/app/login?referrer=confirm-email');
+        }
+
+        if (router.query.type === 'unlock-account') {
+          router.push('/app/login?referrer=unlock-account');
+        }
       },
     }
   );
