@@ -8,7 +8,7 @@ interface Button extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   component?: string;
   variant?: 'default' | 'primary';
   href?: string;
-  children: string | JSX.Element;
+  children: string | React.ReactNode;
   fullWidth?: boolean;
   loading?: boolean;
   disabled?: boolean;

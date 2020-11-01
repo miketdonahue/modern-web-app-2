@@ -7,7 +7,7 @@ import styles from './alert.module.scss';
 
 interface Alert extends React.HTMLAttributes<HTMLDivElement> {
   variant?: 'info' | 'success' | 'warning' | 'error';
-  children: string | JSX.Element | JSX.Element[];
+  children: string | React.ReactNode;
   className?: string;
 }
 

@@ -4,7 +4,7 @@ import { AlertContext } from '../../alert-context';
 import styles from './header.module.scss';
 
 interface Header extends React.HTMLAttributes<HTMLDivElement> {
-  children: string | JSX.Element | JSX.Element[];
+  children: string | React.ReactNode;
   className?: string;
 }
 
