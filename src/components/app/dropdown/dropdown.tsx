@@ -8,22 +8,13 @@ type Dropdown = {
   alignEnd?: boolean;
   defaultShow?: boolean;
   show?: boolean;
-  triggerBehavior?: 'hover' | 'click';
   onToggle?: (nextShow: boolean, event?: React.SyntheticEvent) => void;
   itemSelector?: string;
   focusFirstItemOnShow?: false | true | 'keyboard';
   children: React.ReactNode;
 };
 
-const Dropdown = ({
-  show,
-  onToggle,
-  triggerBehavior = 'hover',
-  drop,
-  alignEnd,
-  children,
-}: Dropdown) => {
-  const isClickBehavior = triggerBehavior === 'click';
+const Dropdown = ({ show, onToggle, drop, alignEnd, children }: Dropdown) => {
   const [shown, setShown] = React.useState(false);
 
   React.useEffect(() => {
@@ -32,7 +23,7 @@ const Dropdown = ({
 
   const handleToggle = (isOpen: boolean, event?: React.SyntheticEvent) => {
     if (onToggle) return onToggle(isOpen, event);
-    return isClickBehavior ? setShown(isOpen) : undefined;
+    return setShown(isOpen);
   };
 
   return (
@@ -46,8 +37,8 @@ const Dropdown = ({
       {({ props }) => (
         <div
           {...props}
-          onMouseEnter={() => (!isClickBehavior ? setShown(true) : null)}
-          onMouseLeave={() => (!isClickBehavior ? setShown(false) : null)}
+          onMouseEnter={() => setShown(true)}
+          onMouseLeave={() => setShown(false)}
         >
           {children}
         </div>
