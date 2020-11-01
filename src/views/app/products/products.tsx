@@ -1,26 +1,21 @@
 import React from 'react';
 import { useGetProducts } from '@modules/queries/products';
-// import { useActor } from '@components/hooks/use-actor';
-// import { useGetActorCart } from '@modules/queries/actor';
-// import { Button } from '@components/app';
 import { ShoppingCart } from '@features/shopping-cart';
-// import styles from './products.module.scss';
 
 const Products = () => {
-  // const [actorId] = useActor();
-  const { data: response, isLoading } = useGetProducts();
-  // const { data: cartItems } = useGetActorCart(actorId, {
-  //   enabled: !!actorId,
-  // });
+  const [cartOpen, setCartOpen] = React.useState(false);
 
+  const { data: response, isLoading } = useGetProducts();
   const products = response?.data;
-  // const actorCartItems = cartItems?.data;
 
   return (
     <ShoppingCart>
       <div className="my-4 mx-8">
         <div className="flex justify-end mb-4">
-          <ShoppingCart.Cart />
+          <ShoppingCart.Cart
+            isOpen={cartOpen}
+            onVisibleChange={(bool) => setCartOpen(bool)}
+          />
         </div>
         <div className="grid grid-cols-4 gap-4">
           {!isLoading &&
@@ -42,7 +37,10 @@ const Products = () => {
                     })}
                   </div>
 
-                  <ShoppingCart.AddItem item={result} />
+                  <ShoppingCart.AddItem
+                    item={result}
+                    onAdd={() => setCartOpen(true)}
+                  />
                 </div>
               );
             })}

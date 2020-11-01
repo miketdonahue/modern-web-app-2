@@ -18,7 +18,12 @@ import { Error } from '@modules/api-response/typings';
 import { ShoppingCartContext } from '../../shopping-cart-context';
 import styles from './cart.module.scss';
 
-export const Cart = () => {
+type Cart = {
+  isOpen: boolean;
+  onVisibleChange?: (flag: boolean) => void;
+};
+
+export const Cart = ({ isOpen = false, onVisibleChange }: Cart) => {
   const router = useRouter();
   const {
     items,
@@ -34,6 +39,14 @@ export const Cart = () => {
   const [serverErrors, setServerErrors] = React.useState<Error[]>([]);
   const [createPaymentSession] = useCreatePaymentSession();
   const [syncCartItems] = useSyncCartItems();
+
+  React.useEffect(() => {
+    setOpen(isOpen);
+  }, [isOpen]);
+
+  React.useEffect(() => {
+    if (onVisibleChange) onVisibleChange(open);
+  }, [open]);
 
   const handleCheckout = async (userId: string) => {
     if (items && items.length > 0) {
