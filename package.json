@@ -40,7 +40,7 @@
     "apollo-link": "1.2.14",
     "apollo-link-http": "1.5.17",
     "apollo-server-express": "2.18.2",
-    "argon2": "0.26.2",
+    "argon2": "0.27.0",
     "assign-deep": "1.0.1",
     "axios": "0.19.2",
     "body-parser": "1.19.0",
