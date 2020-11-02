@@ -39,7 +39,7 @@
     "apollo-client": "2.6.10",
     "apollo-link": "1.2.14",
     "apollo-link-http": "1.5.17",
-    "apollo-server-express": "2.18.2",
+    "apollo-server-express": "2.19.0",
     "argon2": "0.26.2",
     "assign-deep": "1.0.1",
     "axios": "0.19.2",
