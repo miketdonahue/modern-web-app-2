@@ -2,6 +2,8 @@
   background-color: theme('colors.white');
   border: 1px solid theme('colors.gray.300');
   border-radius: theme('borderRadius.sm');
+  display: flex;
+  flex-direction: column;
 }
 
 .raised {

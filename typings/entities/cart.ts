@@ -9,7 +9,6 @@ export enum CART_STATUS {
   CHECKOUT = 'checkout',
   PAID = 'paid',
   ABANDONED = 'abandoned',
-  COMPLETED = 'completed',
 }
 
 export interface Cart extends Base {
