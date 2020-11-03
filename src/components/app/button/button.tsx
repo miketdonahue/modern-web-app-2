@@ -5,7 +5,6 @@ import styles from './button.module.scss';
 
 interface Button extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   type?: 'button' | 'submit' | 'reset';
-  component?: string;
   variant?: 'default' | 'primary';
   href?: string;
   children: string | React.ReactNode;
@@ -23,7 +22,6 @@ const Button = React.forwardRef(
   (
     {
       type = 'button',
-      component = 'button',
       variant = 'default',
       href,
       children,
@@ -45,7 +43,7 @@ const Button = React.forwardRef(
         [styles.fullWidth]: fullWidth,
         [styles.disabled]: disabled,
         [styles.loading]: loading,
-        [styles.link]: component === 'a',
+        [styles.link]: !!href,
       },
       className
     );
@@ -55,11 +53,11 @@ const Button = React.forwardRef(
       [styles.loaderDark]: loading && variant === 'default',
     });
 
-    if (component === 'a') {
+    if (href) {
       buttonProps.href = href;
     }
 
-    const Component: any = component;
+    const Component: any = href ? 'a' : 'button';
 
     return (
       <Component

@@ -10,6 +10,7 @@ const stripe = new Stripe(process.env.STRIPE || '', {
 const attributes = {
   product: {
     name: 'Wild Game: My Mother, Her Secret, and Me',
+    filename: 'wild-game',
     image_url:
       'https://hips.hearstapps.com/ghk.h-cdn.co/assets/16/08/gettyimages-464163411.jpg?crop=1.0xw:1xh;center,top&resize=980:*',
     description:
@@ -40,6 +41,7 @@ const createProduct = async () => {
   const newProduct = await db.create(Product, {
     vendor_id: createdStripeProduct.id,
     name: attributes.product.name,
+    filename: attributes.product.filename,
     image_url: attributes.product.image_url,
     description: attributes.product.description,
     short_description: attributes.product.short_description,
@@ -51,7 +53,7 @@ const createProduct = async () => {
 
   /* Update product w/ metadata */
   await stripe.products.update(createdStripeProduct.id, {
-    metadata: { internal_id: savedProduct.id },
+    metadata: { internal_id: savedProduct.id, filename: savedProduct.filename },
   });
 
   /* Create Stripe price to attach to Stripe product */

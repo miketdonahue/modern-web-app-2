@@ -7,4 +7,13 @@ const getProducts = async (): Promise<AxiosResponse<CartProduct[]>> => {
   return response.data;
 };
 
-export { getProducts };
+const downloadProduct = async ({
+  id,
+}: {
+  id: string;
+}): Promise<AxiosResponse> => {
+  const response = await request.get(`/api/v1/products/${id}/download`);
+  return response.data;
+};
+
+export { getProducts, downloadProduct };

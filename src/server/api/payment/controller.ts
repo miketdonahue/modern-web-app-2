@@ -18,7 +18,7 @@ const stripe = new Stripe(process.env.STRIPE || '', {
  */
 const createPaymentSession = async (req: Request, res: Response) => {
   const db = getManager();
-  const SUCCESS_DOMAIN = 'http://localhost:8080/app/cart/checkout';
+  const SUCCESS_DOMAIN = 'http://localhost:8080/app/order-complete';
   const CANCEL_DOMAIN = 'http://localhost:8080/app/products';
 
   const actorId = (req as any).actor.id;

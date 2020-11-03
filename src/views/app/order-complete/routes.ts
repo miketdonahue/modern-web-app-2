@@ -1,12 +1,12 @@
 import { securePage } from '@server/middleware/app-middleware';
 
 export default {
-  path: '/app/cart',
+  path: '/app/order-complete',
+  middleware: [securePage],
   routes: [
     {
-      path: '/checkout',
-      page: '/app/cart/checkout',
-      middleware: [securePage],
+      path: '/',
+      page: '/app/order-complete',
     },
   ],
 };

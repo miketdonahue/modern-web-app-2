@@ -107,6 +107,7 @@ export class InitialDb1594268178814 implements MigrationInterface {
           id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
           vendor_id character varying NOT NULL,
           name character varying NOT NULL,
+          filename character varying NOT NULL,
           image_url character varying NOT NULL,
           description text NOT NULL,
           short_description character varying NOT NULL,

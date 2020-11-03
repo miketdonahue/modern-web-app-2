@@ -11,6 +11,9 @@ export class Product extends Base {
   public name: Type['name'];
 
   @Column('character varying')
+  public filename: Type['filename'];
+
+  @Column('character varying')
   public image_url: Type['image_url'];
 
   @Column('text')
