@@ -1,11 +1,16 @@
 import { Request, Response } from 'express';
 import Stripe from 'stripe';
+import { format } from 'date-fns';
 import { getManager } from '@server/modules/db-manager';
 import { logger } from '@server/modules/logger';
+import { titleCase } from '@modules/transforms/string';
+import { sendEmail } from '@server/modules/mailer';
+import * as emails from '@server/modules/mailer/emails';
 import { handleStripeError } from '@server/modules/errors/normalizers/stripe';
 import { ApiResponseWithError, NormalizedError } from '@modules/api-response';
 import { errorTypes } from '@server/modules/errors';
 import { Customer } from '@server/entities/customer';
+import { Actor } from '@server/entities/actor';
 import { Purchase } from '@server/entities/purchase';
 import { Product } from '@server/entities/product';
 import { Cart } from '@server/entities/cart';
@@ -40,6 +45,10 @@ const stripePaymentsWebhook = async (req: Request, res: Response) => {
 
     const session = await stripe.checkout.sessions.retrieve(response.id || '', {
       expand: ['customer', 'line_items'],
+    });
+
+    const charge = await stripe.charges.list({
+      payment_intent: session.payment_intent as string,
     });
 
     const customer: Partial<Customer> = {
@@ -126,6 +135,24 @@ const stripePaymentsWebhook = async (req: Request, res: Response) => {
         { id: existingCart?.id },
         { status: CART_STATUS.PAID }
       );
+
+      const actor = await db.findOne(Actor, { id: session.metadata?.actor_id });
+
+      const purchaseEmailData = {
+        email: actor?.email,
+        first_name: actor?.first_name,
+        amount_total: charge.data[0].amount / 100,
+        date_paid: format(
+          new Date(charge.data[0].created * 1000),
+          'MMMM d, yyyy'
+        ),
+        payment_method_details: `${titleCase(
+          charge.data[0].payment_method_details?.card?.brand || ''
+        )} - ${charge.data[0].payment_method_details?.card?.last4 || ''}`,
+        order_number: createdPurchase.order_number,
+      };
+
+      await sendEmail(purchaseEmailData, emails.BOOK_RECEIPT_EMAIL);
     } catch (error) {
       const errorResponse: ApiResponseWithError = {
         error: [
