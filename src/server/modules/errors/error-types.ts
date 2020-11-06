@@ -41,7 +41,8 @@ export const errorTypes = {
   },
   PRODUCT_NOT_FOUND: {
     code: 'PRODUCT_NOT_FOUND',
-    detail: 'Sorry, we could not find the product you are looking for.',
+    detail:
+      'Sorry, we could not find the product you are looking for. Please contact support.',
   },
   GENERIC: {
     code: 'GENERIC',

@@ -13,14 +13,34 @@ const getActorBooks = async (req: Request, res: Response) => {
 
   logger.info("ACTOR-CONTROLLER: Getting the actor's books");
 
-  const books: CartProduct[] = await db.query(
+  const books: Partial<CartProduct[]> = await db.query(
     `
-      SELECT product.*, purchase_item.quantity
-      FROM customer
-      JOIN purchase on purchase.customer_id = customer.id
-      JOIN purchase_item on purchase_item.purchase_id = purchase.id
-      JOIN product on product.id = purchase_item.product_id
-      WHERE actor_id = $1
+      SELECT
+        product.ID,
+        product.vendor_id,
+        product.NAME,
+        product.filename,
+        product.image_url,
+        product.description,
+        product.short_description,
+        product.price,
+        CAST( COUNT(product.ID) AS int) AS quantity
+      FROM
+        customer
+        JOIN purchase ON purchase.customer_id = customer.
+        ID JOIN purchase_item ON purchase_item.purchase_id = purchase.
+        ID JOIN product ON product.ID = purchase_item.product_id
+      WHERE
+        actor_id = $1
+      GROUP BY
+        product.ID,
+        product.vendor_id,
+        product.NAME,
+        product.filename,
+        product.image_url,
+        product.description,
+        product.short_description,
+        product.price;
     `,
     [actorId]
   );
@@ -31,7 +51,7 @@ const getActorBooks = async (req: Request, res: Response) => {
     };
   });
 
-  const response: ApiResponseWithData<CartProduct> = {
+  const response: ApiResponseWithData<Partial<CartProduct>> = {
     data: transformedBooks,
   };
 
