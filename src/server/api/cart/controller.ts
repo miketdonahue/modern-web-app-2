@@ -5,7 +5,8 @@ import { logger } from '@server/modules/logger';
 import { Cart } from '@server/entities/cart';
 import { CartItem } from '@server/entities/cart-item';
 import { Product } from '@server/entities/product';
-import { Product as ProductType, CartProduct } from '@typings/entities/product';
+import { Product as ProductType } from '@typings/entities/product';
+import { CartProduct } from '@typings/api/product';
 import { CART_STATUS } from '@typings/entities/cart';
 import {
   ApiResponseWithData,

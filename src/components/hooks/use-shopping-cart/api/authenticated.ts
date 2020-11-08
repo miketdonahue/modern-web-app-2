@@ -1,6 +1,6 @@
 import { request } from '@modules/request';
 import { CartProduct } from '@typings/api/product';
-import { CartMethodResponse } from '@typings/entities/cart';
+import { CartMethodResponse } from '@typings/api/cart';
 import { ReducerAction } from '@typings/react';
 import { getCartTotal } from '../utils';
 import { types, ReducerState } from '../reducer';

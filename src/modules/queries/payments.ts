@@ -1,6 +1,6 @@
 import { useMutation, MutationConfig } from 'react-query';
 import { AxiosResponse, AxiosError } from 'axios';
-import { GetProduct } from '@typings/entities/product';
+import { GetProduct } from '@typings/api/product';
 import { Data, ErrorResponse } from '@modules/api-response';
 import * as dataSources from '@modules/data-sources/payments';
 

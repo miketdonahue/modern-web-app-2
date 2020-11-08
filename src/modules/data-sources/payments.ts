@@ -1,7 +1,7 @@
 import { AxiosResponse } from 'axios';
 import { Data } from '@modules/api-response';
 import { request } from '@modules/request';
-import { GetProduct } from '@typings/entities/product';
+import { GetProduct } from '@typings/api/product';
 
 type CreatePaymentSessionPayload = {
   orderItems: GetProduct[];
