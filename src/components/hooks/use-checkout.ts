@@ -17,7 +17,7 @@ export const useCheckout = async ({ sessionId }: Checkout) => {
     // TODO: Log error to server here
 
     return {
-      status: '500',
+      status: 500,
       code: 'CHECKOUT_ERROR',
       detail:
         'There was a problem completing the check out of your order. Please try again or contact us for help.',

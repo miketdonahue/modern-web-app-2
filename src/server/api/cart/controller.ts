@@ -424,7 +424,7 @@ const syncCartItems = async (req: Request, res: Response) => {
   const errorResponse: ApiResponseWithError = {
     error: [
       {
-        status: '401',
+        status: errorTypes.INVALID_CART_ITEMS.status,
         code: errorTypes.INVALID_CART_ITEMS.code,
         detail: errorTypes.INVALID_CART_ITEMS.detail,
         meta: {
@@ -435,7 +435,7 @@ const syncCartItems = async (req: Request, res: Response) => {
   };
 
   logger.error({ existingCart }, 'CART-CONTROLLER: Invalid cart or cart items');
-  return res.status(401).json(errorResponse);
+  return res.status(errorTypes.INVALID_CART_ITEMS.status).json(errorResponse);
 };
 
 export {

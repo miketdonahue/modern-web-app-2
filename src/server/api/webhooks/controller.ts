@@ -69,7 +69,7 @@ const stripePaymentsWebhook = async (req: Request, res: Response) => {
       const errorResponse: ApiResponseWithError = {
         error: [
           {
-            status: '500',
+            status: errorTypes.GENERIC.status,
             code: errorTypes.GENERIC.code,
             detail: errorTypes.GENERIC.detail,
             meta: {
@@ -84,7 +84,7 @@ const stripePaymentsWebhook = async (req: Request, res: Response) => {
         'WEBHOOK-CONTROLLER: Could not create customer'
       );
 
-      return res.status(500).json(errorResponse);
+      return res.status(errorTypes.GENERIC.status).json(errorResponse);
     }
 
     const createdCustomer = await db.findOne(Customer, {
@@ -95,6 +95,7 @@ const stripePaymentsWebhook = async (req: Request, res: Response) => {
     try {
       const newPurchase = db.create(Purchase, {
         customer_id: createdCustomer?.id,
+        order_number: session.metadata?.order_number,
         tax: session.total_details?.amount_tax,
         subtotal: Number(session.amount_subtotal),
         total: Number(session.amount_total),
@@ -157,7 +158,7 @@ const stripePaymentsWebhook = async (req: Request, res: Response) => {
       const errorResponse: ApiResponseWithError = {
         error: [
           {
-            status: '500',
+            status: errorTypes.GENERIC.status,
             code: errorTypes.GENERIC.code,
             detail: errorTypes.GENERIC.detail,
             meta: {
@@ -172,7 +173,7 @@ const stripePaymentsWebhook = async (req: Request, res: Response) => {
         'WEBHOOK-CONTROLLER: Could not create purchase or purchase items'
       );
 
-      return res.status(500).json(errorResponse);
+      return res.status(errorTypes.GENERIC.status).json(errorResponse);
     }
   }
 

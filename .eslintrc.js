@@ -32,6 +32,7 @@ module.exports = {
       { controlComponents: ['Input'] },
     ],
     'prefer-destructuring': 0,
+    '@typescript-eslint/camelcase': 0,
 
     // Rules turned off for Next.js
     'react/react-in-jsx-scope': 0,

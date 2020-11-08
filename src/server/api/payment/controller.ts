@@ -3,6 +3,7 @@ import Stripe from 'stripe';
 import { getManager } from '@server/modules/db-manager';
 import { logger } from '@server/modules/logger';
 import { handleStripeError } from '@server/modules/errors/normalizers/stripe';
+import generateOrderNumber from '@server/modules/code';
 import { ApiResponseWithData, NormalizedError } from '@modules/api-response';
 import { Actor } from '@server/entities/actor';
 import { Cart } from '@server/entities/cart';
@@ -54,6 +55,7 @@ const createPaymentSession = async (req: Request, res: Response) => {
   });
 
   const lineItems = await Promise.all(preparedLineItems);
+  const orderNumber = generateOrderNumber(16);
 
   try {
     const session = await stripe.checkout.sessions.create({
@@ -61,10 +63,11 @@ const createPaymentSession = async (req: Request, res: Response) => {
       payment_method_types: ['card'],
       line_items: lineItems,
       mode: 'payment',
-      success_url: `${SUCCESS_DOMAIN}`,
+      success_url: `${SUCCESS_DOMAIN}?order_number=${orderNumber}`,
       cancel_url: `${CANCEL_DOMAIN}?canceled=true`,
       metadata: {
         actor_id: actorId,
+        order_number: orderNumber,
       },
     });
 

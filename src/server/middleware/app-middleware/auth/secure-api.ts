@@ -92,14 +92,14 @@ const secureApiMiddleware = (
         const response: ApiResponseWithError = {
           error: [
             {
-              status: '401',
+              status: errorTypes.UNAUTHENTICATED.status,
               code: errorTypes.UNAUTHENTICATED.code,
               detail: errorTypes.UNAUTHENTICATED.detail,
             },
           ],
         };
 
-        return res.status(401).json(response);
+        return res.status(errorTypes.UNAUTHENTICATED.status).json(response);
       }
 
       logger.info(`AUTHENTICATE-MIDDLEWARE: Authenticating user`);

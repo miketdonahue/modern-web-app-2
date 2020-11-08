@@ -11,7 +11,7 @@ const reactQueryConfig = {
   queries: {
     retry: (failureCount: number, error: any) => {
       const unauthorizedError = error.response.data.error.find(
-        (err: any) => err.status === '401'
+        (err: any) => err.status === 401
       );
 
       /*

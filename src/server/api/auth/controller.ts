@@ -38,7 +38,7 @@ const registerActor = async (req: Request, res: Response) => {
     const errorResponse: ApiResponseWithError = {
       error: [
         {
-          status: '400',
+          status: errorTypes.ACCOUNT_ALREADY_EXISTS.status,
           code: errorTypes.ACCOUNT_ALREADY_EXISTS.code,
           detail: errorTypes.ACCOUNT_ALREADY_EXISTS.detail,
         },
@@ -49,7 +49,9 @@ const registerActor = async (req: Request, res: Response) => {
       'AUTH-CONTROLLER: An actor with the provided email address already exists'
     );
 
-    return res.status(400).json(errorResponse);
+    return res
+      .status(errorTypes.ACCOUNT_ALREADY_EXISTS.status)
+      .json(errorResponse);
   }
 
   const role = await db.findOne(Role, { name: ROLE_NAME.ACTOR });
@@ -151,7 +153,7 @@ const confirmCode = async (req: Request, res: Response) => {
   const errorResponse: ApiResponseWithError = {
     error: [
       {
-        status: '400',
+        status: errorTypes.CODE_NOT_FOUND.status,
         code: errorTypes.CODE_NOT_FOUND.code,
         detail: errorTypes.CODE_NOT_FOUND.detail,
       },
@@ -162,7 +164,7 @@ const confirmCode = async (req: Request, res: Response) => {
     jwt.verify(token, config.server.auth.jwt.secret);
   } catch (err) {
     logger.warn({ err }, 'AUTH-CONTROLLER: The actor account was not found');
-    return res.status(400).json(errorResponse);
+    return res.status(errorTypes.CODE_NOT_FOUND.status).json(errorResponse);
   }
 
   const codeType: any = {
@@ -220,7 +222,7 @@ const confirmCode = async (req: Request, res: Response) => {
     const errResponse: ApiResponseWithError = {
       error: [
         {
-          status: '400',
+          status: errorTypes.CODE_EXPIRED.status,
           code: errorTypes.CODE_EXPIRED.code,
           detail: errorTypes.CODE_EXPIRED.detail,
         },
@@ -237,7 +239,7 @@ const confirmCode = async (req: Request, res: Response) => {
       'AUTH-CONTROLLER: The confirmed code has expired'
     );
 
-    return res.status(400).json(errResponse);
+    return res.status(errorTypes.CODE_EXPIRED.status).json(errResponse);
   }
 
   logger.info('AUTH-CONTROLLER: Confirming actor account');
@@ -288,7 +290,7 @@ const loginActor = async (req: Request, res: Response) => {
   const errorResponse: ApiResponseWithError = {
     error: [
       {
-        status: '400',
+        status: errorTypes.INVALID_CREDENTIALS.status,
         code: errorTypes.INVALID_CREDENTIALS.code,
         detail: errorTypes.INVALID_CREDENTIALS.detail,
       },
@@ -297,7 +299,9 @@ const loginActor = async (req: Request, res: Response) => {
 
   if (!actor || !actorAccount) {
     logger.warn('AUTH-CONTROLLER: The actor account was not found');
-    return res.status(400).json(errorResponse);
+    return res
+      .status(errorTypes.INVALID_CREDENTIALS.status)
+      .json(errorResponse);
   }
 
   if (config.server.auth.confirmable && !actorAccount.confirmed) {
@@ -340,7 +344,7 @@ const loginActor = async (req: Request, res: Response) => {
     const errResponse: ApiResponseWithError = {
       error: [
         {
-          status: '403',
+          status: errorTypes.ACCOUNT_NOT_CONFIRMED.status,
           code: errorTypes.ACCOUNT_NOT_CONFIRMED.code,
           detail: errorTypes.ACCOUNT_NOT_CONFIRMED.detail,
         },
@@ -348,7 +352,9 @@ const loginActor = async (req: Request, res: Response) => {
     };
 
     logger.warn('AUTH-CONTROLLER: The actor account is not confirmed');
-    return res.status(403).json(errResponse);
+    return res
+      .status(errorTypes.ACCOUNT_NOT_CONFIRMED.status)
+      .json(errResponse);
   }
 
   if (actorAccount.locked) {
@@ -385,7 +391,7 @@ const loginActor = async (req: Request, res: Response) => {
     const errResponse: ApiResponseWithError = {
       error: [
         {
-          status: '403',
+          status: errorTypes.ACCOUNT_LOCKED.status,
           code: errorTypes.ACCOUNT_LOCKED.code,
           detail: errorTypes.ACCOUNT_LOCKED.detail,
         },
@@ -393,7 +399,7 @@ const loginActor = async (req: Request, res: Response) => {
     };
 
     logger.warn('AUTH-CONTROLLER: The actor account is locked');
-    return res.status(403).json(errResponse);
+    return res.status(errorTypes.ACCOUNT_LOCKED.status).json(errResponse);
   }
 
   const passwordMatch = await argon2.verify(
@@ -492,7 +498,7 @@ const resetPassword = async (req: Request, res: Response) => {
   const errorResponse: ApiResponseWithError = {
     error: [
       {
-        status: '400',
+        status: errorTypes.CODE_NOT_FOUND.status,
         code: errorTypes.CODE_NOT_FOUND.code,
         detail: errorTypes.CODE_NOT_FOUND.detail,
       },
@@ -503,7 +509,7 @@ const resetPassword = async (req: Request, res: Response) => {
     jwt.verify(token, config.server.auth.jwt.secret);
   } catch (err) {
     logger.warn({ err }, 'AUTH-CONTROLLER: The actor account was not found');
-    return res.status(400).json(errorResponse);
+    return res.status(errorTypes.CODE_NOT_FOUND.status).json(errorResponse);
   }
 
   const decoded: any = jwt.decode(token) || { id: null };
@@ -551,7 +557,7 @@ const resetPassword = async (req: Request, res: Response) => {
     const errResponse: ApiResponseWithError = {
       error: [
         {
-          status: '400',
+          status: errorTypes.CODE_EXPIRED.status,
           code: errorTypes.CODE_EXPIRED.code,
           detail: errorTypes.CODE_EXPIRED.detail,
         },
@@ -566,7 +572,7 @@ const resetPassword = async (req: Request, res: Response) => {
       'AUTH-CONTROLLER: The reset password code has expired'
     );
 
-    return res.status(400).json(errResponse);
+    return res.status(errorTypes.CODE_EXPIRED.status).json(errResponse);
   }
 
   await db.update(
@@ -747,7 +753,7 @@ const isAuthenticated = async (req: Request, res: Response) => {
     const errorResponse: ApiResponseWithError = {
       error: [
         {
-          status: '401',
+          status: errorTypes.UNAUTHENTICATED.status,
           code: errorTypes.UNAUTHENTICATED.code,
           detail: errorTypes.UNAUTHENTICATED.detail,
           meta: {
@@ -757,7 +763,7 @@ const isAuthenticated = async (req: Request, res: Response) => {
       ],
     };
 
-    return res.status(401).json(errorResponse);
+    return res.status(errorTypes.UNAUTHENTICATED.status).json(errorResponse);
   }
 
   // TODO: change to `secure: true` when HTTPS
@@ -807,14 +813,14 @@ const getToken = async (req: Request, res: Response) => {
     const errorResponse: ApiResponseWithError = {
       error: [
         {
-          status: '401',
+          status: errorTypes.UNAUTHENTICATED.status,
           code: errorTypes.UNAUTHENTICATED.code,
           detail: errorTypes.UNAUTHENTICATED.detail,
         },
       ],
     };
 
-    return res.status(401).json(errorResponse);
+    return res.status(errorTypes.UNAUTHENTICATED.status).json(errorResponse);
   }
 
   // TODO: change to `secure: true` when HTTPS

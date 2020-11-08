@@ -56,7 +56,7 @@ const downloadProduct = async (req: Request, res: Response) => {
   const errorResponse: ApiResponseWithError = {
     error: [
       {
-        status: '400',
+        status: errorTypes.PRODUCT_NOT_FOUND.status,
         code: errorTypes.PRODUCT_NOT_FOUND.code,
         detail: errorTypes.PRODUCT_NOT_FOUND.detail,
       },
@@ -64,7 +64,7 @@ const downloadProduct = async (req: Request, res: Response) => {
   };
 
   logger.error({ id }, 'PRODUCT-CONTROLLER: Could not find product');
-  return res.status(400).json(errorResponse);
+  return res.status(errorTypes.PRODUCT_NOT_FOUND.status).json(errorResponse);
 };
 
 export { getProducts, downloadProduct };

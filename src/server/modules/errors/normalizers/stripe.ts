@@ -17,7 +17,7 @@ export const handleStripeError = (error: any) => {
         response: {
           error: [
             {
-              status: '500',
+              status: 500,
               code: error.code || null,
               detail:
                 'Oops. Something went wrong. Please try again or contact support.',

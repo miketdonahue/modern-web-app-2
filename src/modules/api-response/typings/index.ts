@@ -19,7 +19,7 @@ export type ErrorResponse = {
 };
 
 export interface Error {
-  status: string;
+  status: number;
   code: string;
   detail: string;
   source?: {
