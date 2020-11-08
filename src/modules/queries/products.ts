@@ -1,6 +1,6 @@
 import { useQuery, QueryConfig, QueryResult } from 'react-query';
 import { AxiosResponse, AxiosError } from 'axios';
-import { CartProduct } from '@typings/entities/product';
+import { CartProduct } from '@typings/api/product';
 import { ErrorResponse } from '@modules/api-response';
 import * as dataSources from '@modules/data-sources/products';
 

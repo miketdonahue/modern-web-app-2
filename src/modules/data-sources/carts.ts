@@ -1,8 +1,9 @@
 import { AxiosResponse } from 'axios';
 import { request } from '@modules/request';
 import { Data } from '@modules/api-response';
-import { GetCart, Cart } from '@typings/entities/cart';
-import { CartProduct } from '@typings/entities/product';
+import { Cart } from '@typings/entities/cart';
+import { GetCart } from '@typings/api/cart';
+import { CartProduct } from '@typings/api/product';
 
 export type SyncCartItems = {
   userId: string;

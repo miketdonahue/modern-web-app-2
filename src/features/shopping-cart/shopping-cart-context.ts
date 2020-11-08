@@ -1,5 +1,5 @@
 import React from 'react';
-import { CartProduct } from '@typings/entities/product';
+import { CartProduct } from '@typings/api/product';
 
 export type ShoppingCartContext = {
   items: CartProduct[];

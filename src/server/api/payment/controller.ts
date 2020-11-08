@@ -7,7 +7,7 @@ import generateOrderNumber from '@server/modules/code';
 import { ApiResponseWithData, NormalizedError } from '@modules/api-response';
 import { Actor } from '@server/entities/actor';
 import { Cart } from '@server/entities/cart';
-import { CartProduct } from '@typings/entities/product';
+import { CartProduct } from '@typings/api/product';
 import { CART_STATUS } from '@typings/entities/cart';
 
 const stripe = new Stripe(process.env.STRIPE || '', {

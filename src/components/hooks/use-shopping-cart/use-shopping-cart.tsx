@@ -1,7 +1,7 @@
 import React from 'react';
 import { useRouter } from 'next/router';
 import { useActor } from '@components/hooks/use-actor';
-import { CartProduct } from '@typings/entities/product';
+import { CartProduct } from '@typings/api/product';
 import { CART_STATUS } from '@typings/entities/cart';
 import { getMyCart, changeCartStatus } from '@modules/data-sources/carts';
 import {

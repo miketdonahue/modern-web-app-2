@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import { getManager } from '@server/modules/db-manager';
 import { logger } from '@server/modules/logger';
 import { ApiResponseWithData } from '@modules/api-response';
-import { CartProduct } from '@typings/entities/product';
+import { CartProduct } from '@typings/api/product';
 
 /**
  * Get an actor's books

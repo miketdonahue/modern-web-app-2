@@ -1,4 +1,4 @@
-import { CartProduct } from '@typings/entities/product';
+import { CartProduct } from '@typings/api/product';
 import { ReducerAction } from '@typings/react';
 import { getCartTotal } from '../utils';
 import { types, ReducerState } from '../reducer';

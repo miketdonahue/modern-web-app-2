@@ -1,4 +1,3 @@
-import { Data } from '@modules/api-response';
 import { Base } from './base';
 
 export interface Product extends Base {
@@ -13,9 +12,6 @@ export interface Product extends Base {
   active: boolean;
 }
 
-interface ProductWithQuantity extends Product {
+export interface ProductWithQuantity extends Product {
   quantity: number;
 }
-
-export type CartProduct = Data<ProductWithQuantity>;
-export type GetProduct = Data<Product>;

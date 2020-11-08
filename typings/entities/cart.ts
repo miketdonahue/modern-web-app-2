@@ -15,10 +15,3 @@ export interface Cart extends Base {
   actor_id: string;
   status: CART_STATUS;
 }
-
-export type GetCart = Data<
-  Partial<Cart>,
-  { cart_items: CartItem[]; products: Product[] }
->;
-
-export type CartMethodResponse = Data<Partial<CartItem>, { product: Product }>;

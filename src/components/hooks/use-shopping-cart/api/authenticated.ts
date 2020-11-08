@@ -1,5 +1,5 @@
 import { request } from '@modules/request';
-import { CartProduct } from '@typings/entities/product';
+import { CartProduct } from '@typings/api/product';
 import { CartMethodResponse } from '@typings/entities/cart';
 import { ReducerAction } from '@typings/react';
 import { getCartTotal } from '../utils';
