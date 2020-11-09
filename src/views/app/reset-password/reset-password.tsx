@@ -23,10 +23,10 @@ const ResetPassword = () => {
       onError: (error: AxiosError<ErrorResponse>): any => {
         return error?.response?.data?.error.map((e: Error) => {
           if (e.code === 'CODE_EXPIRED') {
-            setInfoAlerts([...infoAlerts, e.detail || '']);
-          } else {
-            setServerErrors([...serverErrors, e]);
+            return setInfoAlerts([...infoAlerts, e.detail || '']);
           }
+
+          return setServerErrors([...serverErrors, e]);
         });
       },
       onSuccess: () => {

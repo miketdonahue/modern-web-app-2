@@ -3,7 +3,7 @@ import DropdownBase from 'react-overlays/Dropdown';
 import { Toggle } from './components/toggle';
 import { Menu } from './components/menu';
 
-type Dropdown = {
+type DropdownProps = {
   drop?: 'up' | 'down' | 'left' | 'right';
   alignEnd?: boolean;
   defaultShow?: boolean;
@@ -14,7 +14,13 @@ type Dropdown = {
   children: React.ReactNode;
 };
 
-const Dropdown = ({ show, onToggle, drop, alignEnd, children }: Dropdown) => {
+const Dropdown = ({
+  show,
+  onToggle,
+  drop,
+  alignEnd,
+  children,
+}: DropdownProps) => {
   const [shown, setShown] = React.useState(false);
 
   React.useEffect(() => {

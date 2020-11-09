@@ -18,12 +18,12 @@ import { Error } from '@modules/api-response/typings';
 import { ShoppingCartContext } from '../../shopping-cart-context';
 import styles from './cart.module.scss';
 
-type Cart = {
+type CartProps = {
   isOpen: boolean;
   onVisibleChange?: (flag: boolean) => void;
 };
 
-export const Cart = ({ isOpen = false, onVisibleChange }: Cart) => {
+export const Cart = ({ isOpen = false, onVisibleChange }: CartProps) => {
   const router = useRouter();
   const {
     items,

@@ -2,7 +2,7 @@ import React from 'react';
 import cx from 'classnames';
 import styles from './checkbox.module.scss';
 
-interface Checkbox extends React.InputHTMLAttributes<HTMLInputElement> {
+interface CheckboxProps extends React.InputHTMLAttributes<HTMLInputElement> {
   disabled?: boolean;
 }
 
@@ -10,7 +10,7 @@ const Checkbox = ({
   disabled = false,
   className,
   ...restOfProps
-}: Checkbox) => {
+}: CheckboxProps) => {
   return (
     <input
       type="checkbox"

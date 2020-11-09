@@ -3,12 +3,12 @@ import cx from 'classnames';
 import { CardContext } from '../../card-context';
 import styles from './image.module.scss';
 
-interface Image extends React.ImgHTMLAttributes<HTMLImageElement> {
+interface ImageProps extends React.ImgHTMLAttributes<HTMLImageElement> {
   alt: string;
   className?: string;
 }
 
-const Image = ({ alt, className, ...restOfProps }: Image) => {
+const Image = ({ alt, className, ...restOfProps }: ImageProps) => {
   return (
     <CardContext.Consumer>
       {() => {

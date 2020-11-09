@@ -3,12 +3,12 @@ import cx from 'classnames';
 import { CardContext } from '../../card-context';
 import styles from './footer.module.scss';
 
-interface Footer extends React.HTMLAttributes<HTMLDivElement> {
+interface FooterProps extends React.HTMLAttributes<HTMLDivElement> {
   children: string | React.ReactNode;
   className?: string;
 }
 
-const Footer = ({ children, className, ...restOfProps }: Footer) => {
+const Footer = ({ children, className, ...restOfProps }: FooterProps) => {
   return (
     <CardContext.Consumer>
       {() => {

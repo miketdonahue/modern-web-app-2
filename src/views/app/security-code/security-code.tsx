@@ -34,10 +34,10 @@ const SecurityCode = () => {
         return error?.response?.data?.error.map((e) => {
           if (e.code === 'CODE_EXPIRED') {
             formik.setFieldValue('code', '');
-            setInfoAlerts([...infoAlerts, e.detail || '']);
-          } else {
-            setServerErrors([...serverErrors, e]);
+            return setInfoAlerts([...infoAlerts, e.detail || '']);
           }
+
+          return setServerErrors([...serverErrors, e]);
         });
       },
       onSuccess: () => {

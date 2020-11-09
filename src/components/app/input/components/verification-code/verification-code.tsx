@@ -4,7 +4,8 @@ import cx from 'classnames';
 import baseStyles from '../../input.module.scss';
 import styles from './verification-code.module.scss';
 
-interface VerificationCode extends React.InputHTMLAttributes<HTMLInputElement> {
+interface VerificationCodeProps
+  extends React.InputHTMLAttributes<HTMLInputElement> {
   numOfFields: number;
   values?: () => string[];
   onInputChange: (value: string) => void;
@@ -36,7 +37,7 @@ const VerificationCode = ({
   disabled = false,
   className,
   ...restOfProps
-}: VerificationCode) => {
+}: VerificationCodeProps) => {
   const [inputValues, setInputValues] = useState(Array(numOfFields).fill(''));
   const refs = generateRefs(numOfFields);
 

@@ -2,9 +2,9 @@ import React from 'react';
 import { X } from '@components/icons';
 import { DrawerContext } from '../../drawer-context';
 
-interface Close extends React.HTMLAttributes<HTMLButtonElement> {}
+interface CloseProps extends React.HTMLAttributes<HTMLButtonElement> {}
 
-export const Close = ({ ...restOfProps }: Close) => {
+export const Close = ({ ...restOfProps }: CloseProps) => {
   return (
     <DrawerContext.Consumer>
       {({ onClose }) => {

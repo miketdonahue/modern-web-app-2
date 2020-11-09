@@ -3,12 +3,12 @@ import { Button } from '@components/app';
 import { CartProduct } from '@typings/api/product';
 import { ShoppingCartContext } from '../../shopping-cart-context';
 
-type AddItem = {
+type AddItemProps = {
   item: CartProduct;
   onAdd?: () => void;
 };
 
-export const AddItem = ({ item, onAdd }: AddItem) => {
+export const AddItem = ({ item, onAdd }: AddItemProps) => {
   const { addCartItem } = React.useContext(ShoppingCartContext);
 
   return (

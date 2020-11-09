@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 
-type HandleCloseFromOutside = {
+type HandleCloseFromOutsideProps = {
   onOutsideClick: () => void;
   children: React.ReactNode;
 };
@@ -15,7 +15,7 @@ const Wrapper = React.forwardRef(({ children }: any, ref: any) => {
 const HandleCloseFromOutside = ({
   onOutsideClick,
   children,
-}: HandleCloseFromOutside) => {
+}: HandleCloseFromOutsideProps) => {
   const node = useRef<HTMLElement>();
 
   const handleClick = (e: any) => {

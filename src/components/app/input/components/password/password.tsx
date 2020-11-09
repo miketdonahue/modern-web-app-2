@@ -4,7 +4,7 @@ import { EyeOpen, EyeClosed } from '@components/icons';
 import baseStyles from '../../input.module.scss';
 import styles from './password.module.scss';
 
-interface Password extends React.InputHTMLAttributes<HTMLInputElement> {
+interface PasswordProps extends React.InputHTMLAttributes<HTMLInputElement> {
   error?: boolean;
   disabled?: boolean;
 }
@@ -14,7 +14,7 @@ const Password = ({
   disabled = false,
   className,
   ...restOfProps
-}: Password) => {
+}: PasswordProps) => {
   const [passwordShown, setPasswordShown] = useState(false);
 
   const handlePasswordShown = (

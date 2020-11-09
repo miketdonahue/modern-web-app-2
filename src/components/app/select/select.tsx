@@ -5,7 +5,7 @@ import { ChevronDown } from '@components/icons';
 import { SelectItem } from './typings';
 import styles from './select.module.scss';
 
-type Select = {
+type SelectProps = {
   id?: string;
   name?: string;
   menuId: string;
@@ -29,7 +29,7 @@ export const Select = ({
   onSelection,
   error = false,
   children,
-}: Select) => {
+}: SelectProps) => {
   const itemToString = (item: SelectItem | null) =>
     item?.label ? item.label : '';
   const {

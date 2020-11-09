@@ -8,7 +8,7 @@ import { ModalContext } from './modal-context';
 import { HandleCloseFromOutside } from '../handle-close-from-outside';
 import styles from './modal.module.scss';
 
-interface Modal extends React.HTMLAttributes<HTMLDivElement> {
+interface ModalProps extends React.HTMLAttributes<HTMLDivElement> {
   show: boolean;
   onClose: (isOpen: boolean) => void;
 }
@@ -19,7 +19,7 @@ const Modal = ({
   className,
   children,
   ...restOfProps
-}: Modal) => {
+}: ModalProps) => {
   const [isOpen, setIsOpen] = React.useState(false);
 
   React.useEffect(() => {

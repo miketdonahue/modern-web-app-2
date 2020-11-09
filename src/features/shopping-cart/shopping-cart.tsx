@@ -4,11 +4,11 @@ import { Cart } from './components/cart';
 import { AddItem } from './components/add-item';
 import { ShoppingCartContext } from './shopping-cart-context';
 
-type ShoppingCart = {
+type ShoppingCartProps = {
   children: React.ReactNode;
 };
 
-const ShoppingCart = ({ children }: ShoppingCart) => {
+const ShoppingCart = ({ children }: ShoppingCartProps) => {
   const {
     items,
     quantity,

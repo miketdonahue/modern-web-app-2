@@ -3,7 +3,7 @@ import cx from 'classnames';
 import { CardContext } from '../../card-context';
 import styles from './body.module.scss';
 
-interface Body extends React.HTMLAttributes<HTMLDivElement> {
+interface BodyProps extends React.HTMLAttributes<HTMLDivElement> {
   characterLimit?: number;
   children: string | React.ReactNode;
   className?: string;
@@ -14,7 +14,7 @@ const Body = ({
   children,
   className,
   ...restOfProps
-}: Body) => {
+}: BodyProps) => {
   return (
     <CardContext.Consumer>
       {() => {

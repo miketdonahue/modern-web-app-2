@@ -1,7 +1,7 @@
 import React from 'react';
 import { CartProduct } from '@typings/api/product';
 
-export type ShoppingCartContext = {
+export type ShoppingCartContextProps = {
   items: CartProduct[];
   quantity: number;
   total: number;
@@ -13,7 +13,9 @@ export type ShoppingCartContext = {
   calculateQuantity: (items: CartProduct[]) => number;
 };
 
-export const ShoppingCartContext = React.createContext<ShoppingCartContext>({
+export const ShoppingCartContext = React.createContext<
+  ShoppingCartContextProps
+>({
   items: [],
   quantity: 0,
   total: 0,

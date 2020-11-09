@@ -2,12 +2,12 @@ import React from 'react';
 import cx from 'classnames';
 import styles from './content.module.scss';
 
-interface Content extends React.HTMLAttributes<HTMLDivElement> {
+interface ContentProps extends React.HTMLAttributes<HTMLDivElement> {
   children: string | React.ReactNode;
   className?: string;
 }
 
-const Content = ({ children, className, ...restOfProps }: Content) => {
+const Content = ({ children, className, ...restOfProps }: ContentProps) => {
   const contentClasses = cx(styles.content, className);
 
   return (

@@ -3,12 +3,12 @@ import cx from 'classnames';
 import { CardContext } from '../../card-context';
 import styles from './actions.module.scss';
 
-interface Actions extends React.HTMLAttributes<HTMLDivElement> {
+interface ActionsProps extends React.HTMLAttributes<HTMLDivElement> {
   children: string | React.ReactNode;
   className?: string;
 }
 
-const Actions = ({ children, className, ...restOfProps }: Actions) => {
+const Actions = ({ children, className, ...restOfProps }: ActionsProps) => {
   return (
     <CardContext.Consumer>
       {() => {

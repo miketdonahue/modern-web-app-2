@@ -60,10 +60,10 @@ export const registerRoutes = (
 
       routes.forEach((action: Action) => {
         const {
-          path = '', // eslint-disable-line no-shadow
+          path = '', // eslint-disable-line @typescript-eslint/no-shadow
           page = '',
           method = '',
-          middleware = [], // eslint-disable-line no-shadow
+          middleware = [], // eslint-disable-line @typescript-eslint/no-shadow
           controller = null,
         } = action;
 

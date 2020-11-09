@@ -2,7 +2,7 @@ import React from 'react';
 import { Plus, Minus } from '@components/icons';
 import styles from './incrementor.module.scss';
 
-type Incrementor = {
+type IncrementorProps = {
   value?: number;
   size?: number;
   min?: number;
@@ -20,7 +20,7 @@ export const Incrementor = ({
   onIncrement,
   onDecrement,
   onChange,
-}: Incrementor) => {
+}: IncrementorProps) => {
   const [internalValue, setInternalValue] = React.useState(0);
 
   React.useEffect(() => {

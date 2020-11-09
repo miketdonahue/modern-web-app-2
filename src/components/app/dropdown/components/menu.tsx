@@ -1,12 +1,16 @@
 import React from 'react';
 import { useDropdownMenu } from 'react-overlays';
 
-interface Menu extends React.HTMLAttributes<HTMLDivElement> {
+interface MenuProps extends React.HTMLAttributes<HTMLDivElement> {
   role?: 'menu' | 'list';
   children: React.ReactNode;
 }
 
-export const Menu = ({ role = 'menu', children, ...restOfProps }: Menu) => {
+export const Menu = ({
+  role = 'menu',
+  children,
+  ...restOfProps
+}: MenuProps) => {
   const { props } = useDropdownMenu();
 
   return (

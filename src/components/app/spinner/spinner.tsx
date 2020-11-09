@@ -2,7 +2,7 @@ import React from 'react';
 import cx from 'classnames';
 import styles from './spinner.module.scss';
 
-interface Spinner extends React.HTMLAttributes<HTMLDivElement> {
+interface SpinnerProps extends React.HTMLAttributes<HTMLDivElement> {
   size?: number;
   indeterminate?: boolean;
   active?: boolean | NodeJS.Timeout;
@@ -14,7 +14,7 @@ const Spinner = ({
   indeterminate = false,
   className,
   ...restOfProps
-}: Spinner) => {
+}: SpinnerProps) => {
   const spinnerStyles = cx(styles.spinner, {
     [styles.indeterminate]: indeterminate,
     [styles.active]: active,

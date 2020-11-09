@@ -12,7 +12,7 @@ import { Google, AlertError, AlertInfo } from '@components/icons';
 import { loginValidationSchema } from '../../validations';
 import styles from './sign-in-form.module.scss';
 
-type SignInForm = {
+type SignInFormProps = {
   onSuccess: (id: string) => void;
   onRegister: () => void;
   infoMessage?: string;
@@ -24,7 +24,7 @@ const SignInForm = ({
   onRegister,
   infoMessage,
   additionalServerErrors,
-}: SignInForm) => {
+}: SignInFormProps) => {
   const [serverErrors, setServerErrors] = useState<Error[]>([]);
   const [rememberMe, setRememberMe] = useState(true);
 
@@ -40,7 +40,7 @@ const SignInForm = ({
       onError: (error: AxiosError<ErrorResponse>) => {
         error?.response?.data?.error.map((e) => {
           if (e.code === 'ACCOUNT_NOT_CONFIRMED') {
-            setServerErrors([
+            return setServerErrors([
               ...serverErrors,
               {
                 ...e,
@@ -58,9 +58,9 @@ const SignInForm = ({
                 ] as any,
               },
             ]);
-          } else {
-            setServerErrors([...serverErrors, e]);
           }
+
+          return setServerErrors([...serverErrors, e]);
         });
       },
       onSuccess: (result) => {

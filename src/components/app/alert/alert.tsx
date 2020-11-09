@@ -5,7 +5,7 @@ import { Header } from './components/header';
 import { Content } from './components/content';
 import styles from './alert.module.scss';
 
-interface Alert extends React.HTMLAttributes<HTMLDivElement> {
+interface AlertProps extends React.HTMLAttributes<HTMLDivElement> {
   variant?: 'info' | 'success' | 'warning' | 'error';
   children: string | React.ReactNode;
   className?: string;
@@ -16,7 +16,7 @@ const Alert = ({
   children,
   className,
   ...restOfProps
-}: Alert) => {
+}: AlertProps) => {
   const alertClasses = cx(
     styles.alert,
     {

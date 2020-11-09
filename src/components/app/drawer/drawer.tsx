@@ -7,7 +7,7 @@ import { DrawerContext } from './drawer-context';
 import { Close } from './components/close';
 import styles from './drawer.module.scss';
 
-type Drawer = {
+type DrawerProps = {
   isOpen: boolean;
   onClose: () => void;
   width?: string;
@@ -28,7 +28,13 @@ const backdrop = {
   closed: { opacity: 0 },
 };
 
-const Drawer = ({ isOpen, width, onClose, className, children }: Drawer) => {
+const Drawer = ({
+  isOpen,
+  width,
+  onClose,
+  className,
+  children,
+}: DrawerProps) => {
   const [shown, setShown] = React.useState(false);
 
   React.useEffect(() => {

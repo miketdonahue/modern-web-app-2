@@ -3,7 +3,7 @@ import React from 'react';
 import cx from 'classnames';
 import styles from './button.module.scss';
 
-interface Button extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   type?: 'button' | 'submit' | 'reset';
   variant?: 'default' | 'primary';
   href?: string;
@@ -14,7 +14,7 @@ interface Button extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   className?: string;
 }
 
-type ButtonProps = {
+type ButtonLinkProps = {
   href?: string;
 };
 
@@ -30,10 +30,10 @@ const Button = React.forwardRef(
       disabled = false,
       className,
       ...restOfProps
-    }: Button,
+    }: ButtonProps,
     ref
   ) => {
-    const buttonProps: ButtonProps = {};
+    const buttonProps: ButtonLinkProps = {};
     const buttonTextClasses = cx({ [styles.invisible]: loading });
     const buttonClasses = cx(
       styles.button,

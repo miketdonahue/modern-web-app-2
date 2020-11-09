@@ -10,13 +10,13 @@ import { Footer } from './components/footer';
 import { Actions } from './components/actions';
 import styles from './card.module.scss';
 
-interface Card extends React.HTMLAttributes<HTMLDivElement> {
+interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
   raised?: boolean;
   children: string | React.ReactNode;
   className?: string;
 }
 
-const Card = ({ raised, children, className, ...restOfProps }: Card) => {
+const Card = ({ raised, children, className, ...restOfProps }: CardProps) => {
   const cardClasses = cx(
     styles.card,
     {

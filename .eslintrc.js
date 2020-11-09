@@ -34,6 +34,9 @@ module.exports = {
     'prefer-destructuring': 0,
     '@typescript-eslint/camelcase': 0,
 
+    // Must be turned off in favor of "@typescript-eslint/no-redeclare"
+    'no-redeclare': 'off',
+
     // Rules turned off for Next.js
     'react/react-in-jsx-scope': 0,
     'jsx-a11y/anchor-is-valid': 0,

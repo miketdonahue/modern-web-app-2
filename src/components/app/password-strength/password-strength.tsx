@@ -2,7 +2,7 @@ import React from 'react';
 import cx from 'classnames';
 import styles from './password-strength.module.scss';
 
-type PasswordStrength = {
+type PasswordStrengthProps = {
   password: string;
   className?: string;
 };
@@ -32,7 +32,7 @@ const PasswordStrength = ({
   password = '',
   className,
   ...restOfProps
-}: PasswordStrength) => {
+}: PasswordStrengthProps) => {
   const passwordStrengthText = calculatedStrength(password);
   const passwordStrengthClasses = cx({
     [styles.strong]: passwordStrengthText === 'Strong',

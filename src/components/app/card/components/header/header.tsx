@@ -3,12 +3,12 @@ import cx from 'classnames';
 import { CardContext } from '../../card-context';
 import styles from './header.module.scss';
 
-interface Header extends React.HTMLAttributes<HTMLDivElement> {
+interface HeaderProps extends React.HTMLAttributes<HTMLDivElement> {
   children: string | React.ReactNode;
   className?: string;
 }
 
-const Header = ({ children, className, ...restOfProps }: Header) => {
+const Header = ({ children, className, ...restOfProps }: HeaderProps) => {
   return (
     <CardContext.Consumer>
       {() => {

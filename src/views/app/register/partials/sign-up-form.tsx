@@ -11,7 +11,7 @@ import { request } from '@modules/request';
 import appLogo from '@public/images/logo-sm.svg';
 import { registerValidationSchema } from '../validations';
 
-type SignUpForm = {
+type SignUpFormProps = {
   onSuccess: () => void;
   onLogin: () => void;
   additionalServerErrors?: Error[];
@@ -21,7 +21,7 @@ const SignUpForm = ({
   onSuccess,
   onLogin,
   additionalServerErrors,
-}: SignUpForm) => {
+}: SignUpFormProps) => {
   const [serverErrors, setServerErrors] = React.useState<Error[]>([]);
 
   React.useEffect(() => {

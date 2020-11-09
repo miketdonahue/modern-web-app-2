@@ -5,7 +5,7 @@ import { Password } from './components/password';
 import { VerificationCode } from './components/verification-code';
 import styles from './input.module.scss';
 
-interface Input extends React.InputHTMLAttributes<HTMLInputElement> {
+interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   type?: 'text' | 'email' | 'hidden';
   error?: boolean;
   disabled?: boolean;
@@ -17,7 +17,7 @@ const Input = ({
   disabled = false,
   className,
   ...restOfProps
-}: Input) => {
+}: InputProps) => {
   const inputClasses = cx(styles.input, { [styles.error]: error }, className);
 
   return (
