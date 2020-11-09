@@ -39,7 +39,7 @@ export const authorize = (req: Request, res: Response): any => {
   );
 
   const scopes = ['https://www.googleapis.com/auth/userinfo.email'];
-  const state = jwt.sign({ state: uuid() }, config.server.auth.jwt.secret, {
+  const state = jwt.sign({ state: uuid() }, process.env.JWT_SECRET || '', {
     expiresIn: '1m',
   });
 
@@ -83,7 +83,7 @@ export const verify = {
     const { code } = req.query;
     const verifiedState: any = jwt.verify(
       req.query.state as string,
-      config.server.auth.jwt.secret
+      process.env.JWT_SECRET || ''
     );
     const { tokens } = await oauth2Client.getToken(code as string);
     const decoded: any = jwt.decode(tokens.id_token as string);
@@ -221,7 +221,7 @@ export const authenticate = async (
 
   const token = jwt.sign(
     { id: actor.id, role: actor.role },
-    config.server.auth.jwt.secret,
+    process.env.JWT_SECRET || '',
     { expiresIn: config.server.auth.jwt.expiresIn }
   );
 

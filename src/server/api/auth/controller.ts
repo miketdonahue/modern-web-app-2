@@ -115,10 +115,7 @@ const registerActor = async (req: Request, res: Response) => {
   );
 
   logger.info('AUTH-CONTROLLER: Signing actor id token');
-  const actorIdToken = jwt.sign(
-    { id: actor.id },
-    config.server.auth.jwt.secret
-  );
+  const actorIdToken = jwt.sign({ id: actor.id }, process.env.JWT_SECRET || '');
 
   // TODO: change to `secure: true` when HTTPS
   res.cookie('actor', actorIdToken, {
@@ -161,7 +158,7 @@ const confirmCode = async (req: Request, res: Response) => {
   };
 
   try {
-    jwt.verify(token, config.server.auth.jwt.secret);
+    jwt.verify(token, process.env.JWT_SECRET || '');
   } catch (err) {
     logger.warn({ err }, 'AUTH-CONTROLLER: The actor account was not found');
     return res.status(errorTypes.CODE_NOT_FOUND.status).json(errorResponse);
@@ -308,7 +305,7 @@ const loginActor = async (req: Request, res: Response) => {
     logger.info('AUTH-CONTROLLER: Signing actor id token');
     const actorIdToken = jwt.sign(
       { id: actor.id },
-      config.server.auth.jwt.secret
+      process.env.JWT_SECRET || ''
     );
 
     // TODO: change to `secure: true` when HTTPS
@@ -361,7 +358,7 @@ const loginActor = async (req: Request, res: Response) => {
     logger.info('AUTH-CONTROLLER: Signing actor id token');
     const actorIdToken = jwt.sign(
       { id: actor.id },
-      config.server.auth.jwt.secret
+      process.env.JWT_SECRET || ''
     );
 
     // TODO: change to `secure: true` when HTTPS
@@ -409,7 +406,7 @@ const loginActor = async (req: Request, res: Response) => {
 
   const refreshToken = jwt.sign(
     { hash: uuid() },
-    config.server.auth.jwt.refreshSecret,
+    process.env.JWT_REFRESH_SECRET || '',
     {
       expiresIn: config.server.auth.jwt.refreshExpiresIn,
     }
@@ -444,7 +441,7 @@ const loginActor = async (req: Request, res: Response) => {
   logger.info('AUTH-CONTROLLER: Signing auth tokens');
   const token = jwt.sign(
     { id: actor.id, role: transformRoleForToken(role) },
-    config.server.auth.jwt.secret,
+    process.env.JWT_SECRET || '',
     { expiresIn: config.server.auth.jwt.expiresIn }
   );
 
@@ -506,7 +503,7 @@ const resetPassword = async (req: Request, res: Response) => {
   };
 
   try {
-    jwt.verify(token, config.server.auth.jwt.secret);
+    jwt.verify(token, process.env.JWT_SECRET || '');
   } catch (err) {
     logger.warn({ err }, 'AUTH-CONTROLLER: The actor account was not found');
     return res.status(errorTypes.CODE_NOT_FOUND.status).json(errorResponse);
@@ -682,7 +679,7 @@ const sendCode = async (req: Request, res: Response) => {
   logger.info('AUTH-CONTROLLER: Signing actor id token');
   const actorIdToken = jwt.sign(
     { id: updatedActor.id },
-    config.server.auth.jwt.secret
+    process.env.JWT_SECRET || ''
   );
 
   // TODO: change to `secure: true` when HTTPS

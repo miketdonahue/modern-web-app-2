@@ -39,7 +39,7 @@ const secureApiMiddleware = (
 
   return jwt.verify(
     constructedToken,
-    config.server.auth.jwt.secret,
+    process.env.JWT_SECRET || '',
     async (err: any, decoded: any) => {
       if (err) {
         if (err.name === 'TokenExpiredError') {

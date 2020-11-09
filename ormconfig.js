@@ -9,6 +9,10 @@ module.exports = [
     database: process.env.DB_NAME,
     entities: ['.build/src/server/entities/**/*.js'],
     migrations: ['.build/src/server/migrations/*.js'],
+    cli: {
+      entitiesDir: 'src/server/entities',
+      migrationsDir: 'src/server/migrations',
+    },
     logging: false,
   },
   {

@@ -26,7 +26,7 @@ export const verifyJwt = (
 
   return jwt.verify(
     constructedToken,
-    config.server.auth.jwt.secret,
+    process.env.JWT_SECRET || '',
     (err: any, decoded: any) => {
       return onVerify(err, decoded);
     }
@@ -40,7 +40,7 @@ export const verifyRefreshToken = async (refreshToken: string) => {
   const db = getManager();
 
   try {
-    jwt.verify(refreshToken, config.server.auth.jwt.refreshSecret);
+    jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET || '');
   } catch (err) {
     logger.warn({ err }, 'USE-REFRESH-TOKEN: Could not verify refresh token');
     return undefined;
@@ -71,7 +71,7 @@ export const verifyRefreshToken = async (refreshToken: string) => {
       id: actorAccount.actor_id,
       role: transformRoleForToken(role),
     },
-    config.server.auth.jwt.secret,
+    process.env.JWT_SECRET || '',
     { expiresIn: config.server.auth.jwt.expiresIn }
   );
 
