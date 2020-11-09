@@ -56,10 +56,10 @@ module.exports = {
         link: colors.green[600],
 
         // Contextual
-        error: '',
-        warning: '',
-        success: '',
-        info: '',
+        // error: '',
+        // warning: '',
+        // success: '',
+        // info: '',
       },
       fontFamily: {
         // Add application custom font
@@ -72,7 +72,11 @@ module.exports = {
     divideWidth: ['responsive', 'first', 'last'],
   },
   plugins: [],
-  purge: ['./src/components/**/*.tsx', './src/views/**/*.tsx'],
+  purge: [
+    './src/components/**/*.{js,ts,jsx,tsx}',
+    './src/features/**/*.{js,ts,jsx,tsx}',
+    './src/views/**/*.{js,ts,jsx,tsx}',
+  ],
   future: {
     removeDeprecatedGapUtilities: true,
     purgeLayersByDefault: true,

@@ -17,3 +17,9 @@ babel config --out-dir .build/config --presets @babel/preset-typescript --extens
 
 # Transpile utils folder
 babel src/utils --out-dir .build/src/utils --presets @babel/preset-typescript --extensions '.ts'
+
+# Transpile modules folder
+babel src/modules --out-dir .build/src/modules --presets @babel/preset-typescript --extensions '.ts'
+
+# Transpile typings folder
+babel typings --out-dir .build/typings --presets @babel/preset-typescript --extensions '.ts'
