@@ -3,7 +3,7 @@ import { useRouter } from 'next/router';
 import { useCreatePaymentSession } from '@modules/queries/payments';
 import { useSyncCartItems } from '@modules/queries/carts';
 import { isAuthenticated } from '@modules/queries/auth';
-import { useCheckout } from '@components/hooks/use-checkout';
+import { useCheckout } from 'src/hooks/use-checkout';
 import {
   Cart as CartIcon,
   Button,
