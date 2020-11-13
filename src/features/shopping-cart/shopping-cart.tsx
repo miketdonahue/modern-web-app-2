@@ -1,5 +1,5 @@
 import React from 'react';
-import { useShoppingCart } from '@components/hooks/use-shopping-cart';
+import { useShoppingCart } from 'src/hooks/use-shopping-cart';
 import { Cart } from './components/cart';
 import { AddItem } from './components/add-item';
 import { ShoppingCartContext } from './shopping-cart-context';

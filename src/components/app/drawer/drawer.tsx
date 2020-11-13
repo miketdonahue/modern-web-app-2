@@ -1,7 +1,7 @@
 import React from 'react';
 import cx from 'classnames';
 import { motion } from 'framer-motion';
-import { useDisableBodyScroll } from '@components/hooks/use-disable-body-scroll';
+import { useDisableBodyScroll } from 'src/hooks/use-disable-body-scroll';
 import { HandleCloseFromOutside } from '../handle-close-from-outside';
 import { DrawerContext } from './drawer-context';
 import { Close } from './components/close';
