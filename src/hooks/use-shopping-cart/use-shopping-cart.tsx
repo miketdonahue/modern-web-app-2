@@ -37,7 +37,7 @@ export const useShoppingCart = (): ShoppingCartProps => {
     };
 
     applyCartStatusChange().then(async () => {
-      router.replace('/app/products', '/app/products', { shallow: true });
+      router.replace('/', '/', { shallow: true });
     });
   }
 

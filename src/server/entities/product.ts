@@ -20,9 +20,6 @@ export class Product extends Base {
   public description: Type['description'];
 
   @Column('character varying')
-  public short_description: Type['short_description'];
-
-  @Column('character varying')
   public statement_descriptor: Type['statement_descriptor'];
 
   @Column('integer', { default: 0 })

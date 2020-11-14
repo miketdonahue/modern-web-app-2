@@ -14,8 +14,6 @@ export const useCheckout = async ({ sessionId }: Checkout) => {
       sessionId,
     });
   } catch (error) {
-    // TODO: Log error to server here
-
     return {
       status: 500,
       code: 'CHECKOUT_ERROR',

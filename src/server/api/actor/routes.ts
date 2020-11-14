@@ -6,9 +6,9 @@ export default {
   middleware: [secureApi],
   routes: [
     {
-      path: '/books',
+      path: '/courses',
       method: 'get',
-      controller: controller.getActorBooks,
+      controller: controller.getActorCourses,
     },
   ],
 };

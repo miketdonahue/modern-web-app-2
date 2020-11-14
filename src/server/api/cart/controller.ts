@@ -22,7 +22,6 @@ const getMyCart = async (req: Request, res: Response) => {
   const actorId = (req as any).actor?.id;
   let myCart;
 
-  // const existingCart = await db.findOne(Cart, { actor_id: actorId });
   const [existingCart] = await db.query(
     `
       SELECT *

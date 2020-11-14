@@ -2,60 +2,54 @@ import { Request, Response } from 'express';
 import { getManager } from '@server/modules/db-manager';
 import { logger } from '@server/modules/logger';
 import { ApiResponseWithData } from '@modules/api-response';
-import { CartProduct } from '@typings/api/product';
+import { Product } from '@typings/entities/product';
 
 /**
- * Get an actor's books
+ * Get an actor's courses
  */
-const getActorBooks = async (req: Request, res: Response) => {
+const getActorCourses = async (req: Request, res: Response) => {
   const db = getManager();
   const actorId = (req as any).actor.id;
 
-  logger.info("ACTOR-CONTROLLER: Getting the actor's books");
+  logger.info("ACTOR-CONTROLLER: Getting the actor's courses");
 
-  const books: Partial<CartProduct[]> = await db.query(
+  const courses: Partial<Product[]> = await db.query(
     `
       SELECT
-        product.ID,
+        product.id,
         product.vendor_id,
-        product.NAME,
+        product.name,
         product.filename,
         product.image_url,
-        product.description,
-        product.short_description,
-        product.price,
-        CAST( COUNT(product.ID) AS int) AS quantity
-      FROM
-        customer
-        JOIN purchase ON purchase.customer_id = customer.
-        ID JOIN purchase_item ON purchase_item.purchase_id = purchase.
-        ID JOIN product ON product.ID = purchase_item.product_id
+        product.description
+      FROM customer
+        JOIN purchase ON purchase.customer_id = customer.id
+        JOIN purchase_item ON purchase_item.purchase_id = purchase.id
+        JOIN product ON product.id = purchase_item.product_id
       WHERE
         actor_id = $1
       GROUP BY
-        product.ID,
+        product.id,
         product.vendor_id,
-        product.NAME,
+        product.name,
         product.filename,
         product.image_url,
-        product.description,
-        product.short_description,
-        product.price;
+        product.description;
     `,
     [actorId]
   );
 
-  const transformedBooks = books.map((book) => {
+  const transformedCourses = courses.map((course) => {
     return {
-      attributes: { ...book },
+      attributes: { ...course },
     };
   });
 
-  const response: ApiResponseWithData<Partial<CartProduct>> = {
-    data: transformedBooks,
+  const response: ApiResponseWithData<Partial<Product>> = {
+    data: transformedCourses,
   };
 
   return res.json(response);
 };
 
-export { getActorBooks };
+export { getActorCourses };

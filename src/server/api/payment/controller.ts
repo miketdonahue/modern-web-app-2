@@ -10,7 +10,7 @@ import { Cart } from '@server/entities/cart';
 import { CartProduct } from '@typings/api/product';
 import { CART_STATUS } from '@typings/entities/cart';
 
-const stripe = new Stripe(process.env.STRIPE || '', {
+const stripe = new Stripe(process.env.STRIPE_SECRET || '', {
   apiVersion: '2020-08-27',
 });
 
@@ -20,7 +20,7 @@ const stripe = new Stripe(process.env.STRIPE || '', {
 const createPaymentSession = async (req: Request, res: Response) => {
   const db = getManager();
   const SUCCESS_DOMAIN = 'http://localhost:8080/app/order-complete';
-  const CANCEL_DOMAIN = 'http://localhost:8080/app/products';
+  const CANCEL_DOMAIN = 'http://localhost:8080';
 
   const actorId = (req as any).actor.id;
   const orderItems: CartProduct[] = req.body.orderItems;

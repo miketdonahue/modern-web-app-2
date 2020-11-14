@@ -17,7 +17,7 @@ import { Cart } from '@server/entities/cart';
 import { PurchaseItem } from '@server/entities/purchase-item';
 import { CART_STATUS } from '@typings/entities/cart';
 
-const stripe = new Stripe(process.env.STRIPE || '', {
+const stripe = new Stripe(process.env.STRIPE_SECRET || '', {
   apiVersion: '2020-08-27',
 });
 

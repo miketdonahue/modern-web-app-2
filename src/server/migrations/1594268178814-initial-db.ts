@@ -110,7 +110,6 @@ export class InitialDb1594268178814 implements MigrationInterface {
           filename character varying NOT NULL,
           image_url character varying NOT NULL,
           description text NOT NULL,
-          short_description character varying NOT NULL,
           statement_descriptor character varying NOT NULL,
           price integer NOT NULL DEFAULT 0,
           active boolean NOT NULL DEFAULT true,

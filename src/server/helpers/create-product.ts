@@ -2,22 +2,20 @@ import Stripe from 'stripe';
 import { createConnection, getManager } from 'typeorm';
 import { Product } from '@server/entities/product';
 
-const stripe = new Stripe(process.env.STRIPE || '', {
+const stripe = new Stripe(process.env.STRIPE_SECRET || '', {
   apiVersion: '2020-08-27',
 });
 
 /* INPUTS */
 const attributes = {
   product: {
-    name: 'Wild Game: My Mother, Her Secret, and Me',
-    filename: 'wild-game',
+    name: 'Test Course',
+    filename: 'test-course',
     image_url:
-      'https://hips.hearstapps.com/ghk.h-cdn.co/assets/16/08/gettyimages-464163411.jpg?crop=1.0xw:1xh;center,top&resize=980:*',
+      'https://images.unsplash.com/photo-1567606404839-dea8cec4d278?ixlib=rb-1.2.1&auto=format&fit=crop&w=749&q=80',
     description:
       'Donec vulputate et massa ut vehicula. Quisque efficitur justo id purus posuere pretium.',
-    short_description:
-      'Donec vulputate et massa ut vehicula. Quisque efficitur justo id purus posuere pretium.',
-    statement_descriptor: 'PRODUCT 1',
+    statement_descriptor: 'TEST COURSE',
   },
   price: {
     currency: 'usd',
@@ -32,7 +30,7 @@ const createProduct = async () => {
   /* Create Stripe product */
   const createdStripeProduct = await stripe.products.create({
     name: attributes.product.name,
-    description: attributes.product.short_description,
+    description: attributes.product.description,
     statement_descriptor: attributes.product.statement_descriptor,
     images: [attributes.product.image_url],
   });
@@ -44,7 +42,6 @@ const createProduct = async () => {
     filename: attributes.product.filename,
     image_url: attributes.product.image_url,
     description: attributes.product.description,
-    short_description: attributes.product.short_description,
     statement_descriptor: attributes.product.statement_descriptor,
     price: attributes.price.amount,
   });

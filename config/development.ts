@@ -30,9 +30,11 @@ export default merge(
         ],
         styleSrc: ["'self'", "'unsafe-inline'", 'fonts.googleapis.com'],
         fontSrc: ["'self'", 'data:', 'fonts.gstatic.com'],
-        imgSrc: ["'self'", 'data:', 'rickandmortyapi.com'],
+        imgSrc: ["'self'", 'data:', 'images.unsplash.com'],
         connectSrc: ["'self'"],
-        frameSrc: ['js.stripe.com'],
+        frameSrc: ['js.stripe.com', 'static.videezy.com'],
+        mediaSrc: ["'self'", 'static.videezy.com'],
+        workerSrc: ["'self'", 'blob:', 'static.videezy.com'],
       },
       dirs: {
         routes: ['src/views/**/routes.ts', 'src/server/api/**/*.ts'],
