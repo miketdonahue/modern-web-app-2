@@ -1,12 +1,16 @@
 import { securePage } from '@server/middleware/app-middleware';
 
 export default {
-  path: '/app/account',
+  path: '/app/courses',
   middleware: [securePage],
   routes: [
     {
-      path: '/my-books',
-      page: '/app/account/my-books',
+      path: '/',
+      page: '/app/courses',
+    },
+    {
+      path: '/:id',
+      page: '/app/courses/[id]',
     },
   ],
 };

@@ -6,7 +6,7 @@ import { Customer } from '@server/entities/customer';
 import { ApiResponseWithData, NormalizedError } from '@modules/api-response';
 import { handleStripeError } from '@server/modules/errors/normalizers/stripe';
 
-const stripe = new Stripe(process.env.STRIPE || '', {
+const stripe = new Stripe(process.env.STRIPE_SECRET || '', {
   apiVersion: '2020-08-27',
 });
 

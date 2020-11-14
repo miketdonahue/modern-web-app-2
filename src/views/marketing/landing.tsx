@@ -2,7 +2,7 @@ import React from 'react';
 import { useGetProducts } from '@modules/queries/products';
 import { ShoppingCart } from '@features/shopping-cart';
 
-const Products = () => {
+const Landing = () => {
   const [cartOpen, setCartOpen] = React.useState(false);
 
   const { data: response, isLoading } = useGetProducts();
@@ -50,4 +50,4 @@ const Products = () => {
   );
 };
 
-export { Products };
+export { Landing };

@@ -52,8 +52,8 @@ const Home = () => {
   return (
     <div>
       <h2>Pages</h2>
-      <Link href="/app/products">
-        <a>Products</a>
+      <Link href="/app/courses">
+        <a>Courses</a>
       </Link>
       <Policy can="post:read:any">
         <div>Policy</div>

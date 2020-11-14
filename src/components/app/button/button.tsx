@@ -1,6 +1,7 @@
 /* eslint-disable react/button-has-type */
 import React from 'react';
 import cx from 'classnames';
+import { Link, LinkProps } from './components/link';
 import styles from './button.module.scss';
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
@@ -12,6 +13,13 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   loading?: boolean;
   disabled?: boolean;
   className?: string;
+}
+
+interface CompoundedComponent
+  extends React.ForwardRefExoticComponent<
+    ButtonProps & React.RefAttributes<HTMLButtonElement>
+  > {
+  Link: ({ children, ...restOfProps }: LinkProps) => JSX.Element;
 }
 
 type ButtonLinkProps = {
@@ -80,6 +88,9 @@ const Button = React.forwardRef(
       </Component>
     );
   }
-);
+) as CompoundedComponent;
+
+// Sub-components
+Button.Link = Link;
 
 export { Button };
