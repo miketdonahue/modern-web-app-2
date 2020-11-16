@@ -92,7 +92,7 @@
     "@types/classnames": "2.2.11",
     "@types/cookie-parser": "1.4.2",
     "@types/cors": "^2.8.8",
-    "@types/csurf": "1.9.36",
+    "@types/csurf": "1.11.0",
     "@types/deepmerge": "2.2.0",
     "@types/enzyme": "3.10.8",
     "@types/enzyme-adapter-react-16": "1.0.6",
