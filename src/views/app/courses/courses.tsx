@@ -1,8 +1,9 @@
 import React from 'react';
-import { useGetActorBooks } from '@modules/queries/actor';
+import Link from 'next/link';
+import { useGetActorCourses } from '@modules/queries/actor';
 
 export const Courses = () => {
-  const { data: response, isLoading } = useGetActorBooks();
+  const { data: response, isLoading } = useGetActorCourses();
   const courses = response?.data;
 
   return (
@@ -18,7 +19,10 @@ export const Courses = () => {
                   alt={result.attributes.name}
                   width="100%"
                 />
-                <div>{result.attributes.name}</div>
+
+                <Link href={`/app/courses/${result.attributes.slug}`}>
+                  <a>{result.attributes.name}</a>
+                </Link>
               </div>
             );
           })}

@@ -1,5 +1,5 @@
 import 'reflect-metadata';
-import express from 'express';
+import express, { Request, Response, NextFunction, Errback } from 'express';
 import nextServer from 'next';
 import { createConnection } from 'typeorm';
 import { HealthCheck } from '@server/modules/health-check';
@@ -8,6 +8,7 @@ import { fileLoader } from '@utils/file-loader';
 import { requestLogger } from '@server/middleware/app-middleware';
 import { config } from '@config';
 import { coreMiddleware } from '@server/middleware/core-middleware';
+import { ApiResponseWithError } from '@modules/api-response';
 import { registerRoutes } from './plugins/register-routes';
 import { registerMiddleware } from './plugins/register-middleware';
 
@@ -39,6 +40,32 @@ nextApp
     // Register plugins
     await registerMiddleware(expressApp, [...coreMiddleware, requestLogger]);
     await registerRoutes(expressApp, nextApp, routes);
+
+    // Global error middleware
+    expressApp.use(
+      (
+        err: Errback & { status: number; code: string; detail: string },
+        req: Request,
+        res: Response,
+        next: NextFunction
+      ) => {
+        if (err) {
+          const errorResponse: ApiResponseWithError = {
+            error: [
+              {
+                status: err.status,
+                code: err.code,
+                detail: err.detail,
+              },
+            ],
+          };
+
+          return res.status(err.status).json(errorResponse);
+        }
+
+        return next();
+      }
+    );
 
     // Health & graceful shutdown
     expressApp.get('/health/liveness', (req, res) => res.status(200).end());

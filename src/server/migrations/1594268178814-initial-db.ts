@@ -107,12 +107,30 @@ export class InitialDb1594268178814 implements MigrationInterface {
           id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
           vendor_id character varying NOT NULL,
           name character varying NOT NULL,
-          filename character varying NOT NULL,
+          slug character varying NOT NULL,
           image_url character varying NOT NULL,
           description text NOT NULL,
           statement_descriptor character varying NOT NULL,
           price integer NOT NULL DEFAULT 0,
           active boolean NOT NULL DEFAULT true,
+          created_at timestamp with time zone NOT NULL DEFAULT (now() AT TIME ZONE 'utc')::timestamptz,
+          updated_at timestamp with time zone NOT NULL DEFAULT (now() AT TIME ZONE 'utc')::timestamptz,
+          deleted boolean NOT NULL DEFAULT false
+        );
+
+        CREATE UNIQUE INDEX product_slug_idx
+          ON product(slug);
+
+        CREATE TABLE product_video(
+          id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
+          product_id uuid NOT NULL,
+          title character varying NOT NULL,
+          slug character varying NOT NULL,
+          image_url character varying NOT NULL,
+          video_url character varying NOT NULL,
+          description text NOT NULL,
+          length int NOT NULL,
+          ordering int NOT NULL,
           created_at timestamp with time zone NOT NULL DEFAULT (now() AT TIME ZONE 'utc')::timestamptz,
           updated_at timestamp with time zone NOT NULL DEFAULT (now() AT TIME ZONE 'utc')::timestamptz,
           deleted boolean NOT NULL DEFAULT false

@@ -5,7 +5,7 @@ export default {
     middleware: {
       helmet: {
         referrerPolicy: {
-          policy: 'same-origin',
+          policy: 'strict-origin-when-cross-origin',
         },
       },
       cors: {

@@ -19,7 +19,7 @@ export class Product1603829764223 implements MigrationInterface {
         return {
           vendor_id: item.product.id,
           name: item.product.name,
-          filename: item.product.metadata.filename,
+          slug: item.product.metadata.slug,
           image_url: `http://localhost:8080/images/products/${item.product.id}.jpg`,
           description: item.product.description || '',
           statement_descriptor: item.product.statement_descriptor || '',

@@ -1,93 +1,76 @@
 import React from 'react';
-import videojs, { VideoJsPlayerOptions } from 'video.js';
+import Player from 'plyr';
 
 type VideoPlayerProps = {
-  src: string;
-  setSrc: (src: string) => void;
+  playerRef: any;
 };
 
-export const useVideo = ({ src }: VideoPlayerProps) => {
-  const videoRef = React.useRef(null);
-  const [player, setPlayer] = React.useState<videojs.Player | null>(null);
+type VideoPlayer = {
+  isReady: boolean;
+  setSrc: (src: string) => void;
+  changeSrc: (src: string) => void;
+};
 
-  const options: VideoJsPlayerOptions = {
-    autoplay: true,
-    controls: true,
-    fluid: true,
-    preload: 'auto',
-    poster: '',
-    inactivityTimeout: 1000,
-    playbackRates: [0.5, 1, 1.5, 2],
-    children: [
-      'mediaLoader',
-      'posterImage',
-      'textTrackDisplay',
-      'bigPlayButton',
-      'loadingSpinner',
-      'errorDisplay',
-      'textTrackSettings',
-      'resizeManager',
-      {
-        name: 'controlBar',
-        children: [
-          'playToggle',
-          'volumePanel',
-          'currentTimeDisplay',
-          'timeDivider',
-          'durationDisplay',
-          'progressControl',
-          'liveDisplay',
-          'seekToLive',
-          'remainingTimeDisplay',
-          'customControlSpacer',
-          'playbackRateMenuButton',
-          'chaptersButton',
-          'descriptionsButton',
-          'audioTrackButton',
-          'fullscreenToggle',
-        ],
-      },
+export const useVideo = ({ playerRef }: VideoPlayerProps): VideoPlayer => {
+  const [player, setPlayer] = React.useState<any | null>(null);
+
+  const options = {
+    controls: [
+      'play-large',
+      'play',
+      'progress',
+      'current-time',
+      'mute',
+      'volume',
+      'settings',
+      'airplay',
+      'fullscreen',
     ],
-    html5: {
-      hls: {
-        enableLowInitialPlaylist: true,
-        smoothQualityChange: true,
-        overrideNative: true,
-      },
-    },
+    volume: 0.75,
+    speed: { selected: 1, options: [0.5, 1, 1.5, 2] },
   };
 
   React.useEffect(() => {
-    const vjsPlayer = videojs(videoRef.current, {
+    const videoPlayer = new Player(playerRef.current, {
       ...options,
     });
 
-    setPlayer(vjsPlayer);
+    setPlayer(videoPlayer);
 
     return () => {
       if (player !== null) {
-        player.dispose();
+        player.destroy();
       }
     };
-  }, []);
+  }, [playerRef]);
 
-  React.useEffect(() => {
-    if (src && player !== null) {
-      player.src({
-        src,
-        type: 'video/mp4',
-      });
-    }
-  }, [src, player]);
-
-  const setSrc = (value: string) => {
-    if (value && player !== null) {
-      player.src({
-        src: value,
-        type: 'video/mp4',
-      });
+  const setSrc = (src: string) => {
+    if (player) {
+      player.source = {
+        type: 'video',
+        sources: [
+          {
+            src,
+            type: 'video/mp4',
+          },
+        ],
+      };
     }
   };
 
-  return { ref: videoRef, src, setSrc };
+  const changeSrc = (src: string) => {
+    if (player) {
+      player.source = {
+        type: 'video',
+        sources: [
+          {
+            src,
+            type: 'video/mp4',
+          },
+        ],
+      };
+    }
+  };
+
+  return { isReady: !!player, setSrc, changeSrc };
 };

@@ -9,6 +9,11 @@ export const errorTypes = {
     code: 'UNAUTHENTICATED',
     detail: 'You are not authenticated and thus cannot perform this action.',
   },
+  UNAUTHORIZED: {
+    status: 403,
+    code: 'UNAUTHORIZED',
+    detail: 'You are not authorized to view this content.',
+  },
   ACCOUNT_ALREADY_EXISTS: {
     status: 400,
     code: 'ACCOUNT_ALREADY_EXISTS',

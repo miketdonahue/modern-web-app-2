@@ -5,7 +5,7 @@ import Cookies from 'universal-cookie';
 import { config } from '@config';
 import { changeCartStatus } from '@modules/data-sources/carts';
 import { request } from '@modules/request';
-import { Policy } from '@components/policy';
+import { Show } from '@components/show';
 import { CART_STATUS } from '@typings/entities/cart';
 
 type Props = {
@@ -55,9 +55,9 @@ const Home = () => {
       <Link href="/app/courses">
         <a>Courses</a>
       </Link>
-      <Policy can="post:read:any">
-        <div>Policy</div>
-      </Policy>
+      <Show can="post:read:any">
+        <div>Show</div>
+      </Show>
       <ul>
         <li>
           <Link href="/app/about">

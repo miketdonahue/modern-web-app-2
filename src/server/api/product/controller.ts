@@ -42,12 +42,12 @@ const downloadProduct = async (req: Request, res: Response) => {
   if (product) {
     const url = s3.getSignedUrl('getObject', {
       Bucket: 'tiny-series-ebooks',
-      Key: product?.filename,
+      Key: product?.slug,
       Expires: 60,
     });
 
-    const response: ApiResponseWithData<{ url: string; filename: string }> = {
-      data: { attributes: { url, filename: product.filename } },
+    const response: ApiResponseWithData<{ url: string; slug: string }> = {
+      data: { attributes: { url, slug: product.slug } },
     };
 
     return res.json(response);

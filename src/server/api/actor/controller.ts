@@ -19,7 +19,7 @@ const getActorCourses = async (req: Request, res: Response) => {
         product.id,
         product.vendor_id,
         product.name,
-        product.filename,
+        product.slug,
         product.image_url,
         product.description
       FROM customer
@@ -32,7 +32,7 @@ const getActorCourses = async (req: Request, res: Response) => {
         product.id,
         product.vendor_id,
         product.name,
-        product.filename,
+        product.slug,
         product.image_url,
         product.description;
     `,

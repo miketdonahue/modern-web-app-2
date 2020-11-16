@@ -10,7 +10,7 @@ const stripe = new Stripe(process.env.STRIPE_SECRET || '', {
 const attributes = {
   product: {
     name: 'Test Course',
-    filename: 'test-course',
+    slug: 'test-course',
     image_url:
       'https://images.unsplash.com/photo-1567606404839-dea8cec4d278?ixlib=rb-1.2.1&auto=format&fit=crop&w=749&q=80',
     description:
@@ -39,7 +39,7 @@ const createProduct = async () => {
   const newProduct = await db.create(Product, {
     vendor_id: createdStripeProduct.id,
     name: attributes.product.name,
-    filename: attributes.product.filename,
+    slug: attributes.product.slug,
     image_url: attributes.product.image_url,
     description: attributes.product.description,
     statement_descriptor: attributes.product.statement_descriptor,
@@ -50,7 +50,7 @@ const createProduct = async () => {
 
   /* Update product w/ metadata */
   await stripe.products.update(createdStripeProduct.id, {
-    metadata: { internal_id: savedProduct.id, filename: savedProduct.filename },
+    metadata: { internal_id: savedProduct.id, slug: savedProduct.slug },
   });
 
   /* Create Stripe price to attach to Stripe product */

@@ -4,7 +4,7 @@ import { GetProduct } from '@typings/api/product';
 import { ErrorResponse } from '@modules/api-response';
 import * as dataSources from '@modules/data-sources/actor';
 
-export const useGetActorBooks = (
+export const useGetActorCourses = (
   options?: QueryConfig<AxiosResponse<GetProduct[]>, AxiosError<ErrorResponse>>
 ): QueryResult<AxiosResponse<GetProduct[]>, AxiosError<ErrorResponse>> => {
   return useQuery(

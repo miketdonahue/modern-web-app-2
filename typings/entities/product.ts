@@ -3,7 +3,7 @@ import { Base } from './base';
 export interface Product extends Base {
   vendor_id: string;
   name: string;
-  filename: string;
+  slug: string;
   image_url: string;
   description: string;
   statement_descriptor: string;

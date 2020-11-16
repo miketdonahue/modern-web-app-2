@@ -31,9 +31,14 @@ export default merge(
         styleSrc: ["'self'", "'unsafe-inline'", 'fonts.googleapis.com'],
         fontSrc: ["'self'", 'data:', 'fonts.gstatic.com'],
         imgSrc: ["'self'", 'data:', 'images.unsplash.com'],
-        connectSrc: ["'self'"],
+        connectSrc: ["'self'", 'cdn.plyr.io'],
         frameSrc: ['js.stripe.com', 'static.videezy.com'],
-        mediaSrc: ["'self'", 'static.videezy.com'],
+        mediaSrc: [
+          "'self'",
+          'static.videezy.com',
+          'cdn.plyr.io',
+          'zerotosixtyjavascript.s3.us-east-2.amazonaws.com',
+        ],
         workerSrc: ["'self'", 'blob:', 'static.videezy.com'],
       },
       dirs: {
