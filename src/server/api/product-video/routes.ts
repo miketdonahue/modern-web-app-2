@@ -10,5 +10,11 @@ export default {
       middleware: [secureApi],
       controller: controller.getProductVideos,
     },
+    {
+      path: '/:id/watched',
+      method: 'post',
+      middleware: [secureApi],
+      controller: controller.setProductVideoWatched,
+    },
   ],
 };

@@ -2,7 +2,8 @@ import React from 'react';
 import Player from 'plyr';
 
 type VideoPlayerProps = {
-  playerRef: any;
+  playerRef: React.RefObject<HTMLVideoElement>;
+  onEnded?: (e: any) => void;
 };
 
 type VideoPlayer = {
@@ -11,7 +12,10 @@ type VideoPlayer = {
   changeSrc: (src: string) => void;
 };
 
-export const useVideo = ({ playerRef }: VideoPlayerProps): VideoPlayer => {
+export const useVideo = ({
+  playerRef,
+  onEnded,
+}: VideoPlayerProps): VideoPlayer => {
   const [player, setPlayer] = React.useState<any | null>(null);
 
   const options = {
@@ -31,11 +35,15 @@ export const useVideo = ({ playerRef }: VideoPlayerProps): VideoPlayer => {
   };
 
   React.useEffect(() => {
-    const videoPlayer = new Player(playerRef.current, {
+    const videoPlayer = new Player(playerRef.current as HTMLElement, {
       ...options,
     });
 
     setPlayer(videoPlayer);
+
+    videoPlayer.on('ended', (event: any) => {
+      if (onEnded) onEnded(event);
+    });
 
     return () => {
       if (player !== null) {

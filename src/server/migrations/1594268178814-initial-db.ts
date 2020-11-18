@@ -136,6 +136,16 @@ export class InitialDb1594268178814 implements MigrationInterface {
           deleted boolean NOT NULL DEFAULT false
         );
 
+        CREATE TABLE product_video_actor(
+          id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
+          actor_id uuid NOT NULL,
+          product_video_id uuid NOT NULL,
+          watched boolean NOT NULL DEFAULT false,
+          created_at timestamp with time zone NOT NULL DEFAULT (now() AT TIME ZONE 'utc')::timestamptz,
+          updated_at timestamp with time zone NOT NULL DEFAULT (now() AT TIME ZONE 'utc')::timestamptz,
+          deleted boolean NOT NULL DEFAULT false
+        );
+
         CREATE TABLE cart(
           id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
           actor_id uuid NOT NULL,
@@ -191,6 +201,8 @@ export class InitialDb1594268178814 implements MigrationInterface {
         DROP TABLE IF EXISTS oauth;
         DROP TABLE IF EXISTS blacklisted_token;
         DROP TABLE IF EXISTS product;
+        DROP TABLE IF EXISTS product_video;
+        DROP TABLE IF EXISTS product_video_actor;
         DROP TABLE IF EXISTS cart;
         DROP TABLE IF EXISTS cart_item;
         DROP TABLE IF EXISTS purchase;

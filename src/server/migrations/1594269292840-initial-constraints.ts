@@ -19,6 +19,11 @@ export class InitialConstraints1594269292840 implements MigrationInterface {
       -- product_video
       ALTER TABLE product_video ADD CONSTRAINT product_video_product_id_fkey FOREIGN KEY (product_id) REFERENCES product (id);
 
+      -- product_video_actor
+      ALTER TABLE product_video_actor
+        ADD CONSTRAINT product_video_actor_product_id_fkey FOREIGN KEY (product_id) REFERENCES product (id)
+        ADD CONSTRAINT product_video_actor_actor_id_fkey FOREIGN KEY (actor_id) REFERENCES actor (id);
+
       -- cart
       ALTER TABLE cart ADD CONSTRAINT cart_actor_id_fkey FOREIGN KEY (actor_id) REFERENCES actor (id);
 
@@ -58,6 +63,11 @@ export class InitialConstraints1594269292840 implements MigrationInterface {
 
       -- product_video
       ALTER TABLE product_video DROP CONSTRAINT product_video_product_id_fkey;
+
+      -- product_video_actor
+      ALTER TABLE product_video_actor
+        DROP CONSTRAINT product_video_actor_product_id_fkey
+        DROP CONSTRAINT product_video_actor_actor_id_fkey;
 
       -- cart
       ALTER TABLE cart DROP CONSTRAINT cart_actor_id_fkey;

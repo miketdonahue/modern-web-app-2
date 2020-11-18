@@ -1,6 +1,7 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import { AppProps } from 'next/app';
 import Router from 'next/router';
+import { ReactQueryDevtools } from 'react-query-devtools';
 import { request } from '@modules/request';
 import { ReactQueryConfigProvider } from 'react-query';
 import 'focus-visible/dist/focus-visible.min';
@@ -41,6 +42,7 @@ export default function MyApp({ Component, pageProps, router }: AppProps) {
   return (
     <ReactQueryConfigProvider config={reactQueryConfig}>
       <Component {...pageProps} key={router.pathname} />
+      <ReactQueryDevtools initialIsOpen={false} />
     </ReactQueryConfigProvider>
   );
 }
