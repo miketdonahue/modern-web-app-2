@@ -14,8 +14,8 @@ export default {
       },
     },
     {
-      path: '/:id',
-      page: '/app/lessons/[id]',
+      path: '/:slug',
+      page: '/app/lessons/[slug]',
     },
   ],
 };

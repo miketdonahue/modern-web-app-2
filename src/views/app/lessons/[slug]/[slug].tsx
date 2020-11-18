@@ -21,7 +21,7 @@ const Lessons = () => {
   const playerRef = React.useRef(null);
   const [setProductVideoWatched] = useSetProductVideoWatched();
 
-  const lessonSlug = router.query.id as string;
+  const lessonSlug = router.query.slug as string;
 
   const [state, dispatch] = React.useReducer(
     (

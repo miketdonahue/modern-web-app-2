@@ -1,1 +1,0 @@
-export { Lessons } from './[id]';

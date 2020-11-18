@@ -104,7 +104,7 @@ const getProductVideos = async (
 const setProductVideoWatched = async (req: Request, res: Response) => {
   const db = getManager();
   const actorId = (req as any).actor?.id;
-  const productVideoId = req.params.id;
+  const productVideoId = req.params.slug;
 
   const existingRecord = await db.findOne(ProductVideoActor, {
     where: {

@@ -53,6 +53,7 @@
     "framer-motion": "2.9.4",
     "glob": "7.1.6",
     "googleapis": "64.0.0",
+    "gray-matter": "^4.0.2",
     "helmet": "4.2.0",
     "is-glob": "4.0.1",
     "jsonwebtoken": "8.5.1",
