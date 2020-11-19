@@ -4,11 +4,11 @@ import matter from 'gray-matter';
 import remark from 'remark';
 import html from 'remark-html';
 
-export const getLessonMarkdown = async (slug: string) => {
-  const fullPath = path.join(
-    'src/views/app/lessons/descriptions',
-    `${slug}.md`
-  );
+/**
+ * Given a markdown file, transforms the contents to HTML
+ */
+export const markdownToHtml = async (dir: string, slug: string) => {
+  const fullPath = path.join(dir, `${slug}.md`);
 
   const fileContents = fs.readFileSync(fullPath, 'utf8');
   const matterResult = matter(fileContents);

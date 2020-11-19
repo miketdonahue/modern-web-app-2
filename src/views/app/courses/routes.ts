@@ -9,8 +9,8 @@ export default {
       page: '/app/courses',
     },
     {
-      path: '/:id',
-      page: '/app/courses/[id]',
+      path: '/:slug',
+      page: '/app/courses/[slug]',
     },
   ],
 };

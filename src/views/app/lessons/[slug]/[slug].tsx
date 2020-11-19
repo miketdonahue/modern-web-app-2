@@ -11,8 +11,8 @@ import {
 import { VideoPlayer } from '@components/app/video-player';
 import { Button } from '@components/app';
 import { ReducerAction } from '@typings/react';
+import { markdownToHtml } from '@modules/markdown-to-html';
 import { ReducerState, initialState, types } from './reducer';
-import { getLessonMarkdown } from './utils';
 
 const SocialSharing = dynamic(() => import('@features/social-sharing'), {
   ssr: false,
@@ -177,7 +177,10 @@ const Lessons = ({ descriptionHtml }: LessonsProps) => {
 };
 
 const getServerSideProps: GetServerSideProps = async ({ query }) => {
-  const lessonMarkdown = await getLessonMarkdown(query.slug as string);
+  const lessonMarkdown = await markdownToHtml(
+    'src/views/app/lessons/descriptions',
+    query.slug as string
+  );
 
   return {
     props: {
