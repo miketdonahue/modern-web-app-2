@@ -1,5 +1,6 @@
 import React from 'react';
 import cx from 'classnames';
+import { GetServerSideProps } from 'next';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
 import { useVideo } from '@hooks/use-video';
@@ -11,12 +12,17 @@ import { VideoPlayer } from '@components/app/video-player';
 import { Button } from '@components/app';
 import { ReducerAction } from '@typings/react';
 import { ReducerState, initialState, types } from './reducer';
+import { getLessonMarkdown } from './utils';
 
 const SocialSharing = dynamic(() => import('@features/social-sharing'), {
   ssr: false,
 });
 
-const Lessons = () => {
+type LessonsProps = {
+  descriptionHtml: string;
+};
+
+const Lessons = ({ descriptionHtml }: LessonsProps) => {
   const router = useRouter();
   const playerRef = React.useRef(null);
   const [setProductVideoWatched] = useSetProductVideoWatched();
@@ -164,8 +170,20 @@ const Lessons = () => {
         twitter={{ title: 'title' }}
         facebook={{ title: 'title' }}
       />
+
+      <div dangerouslySetInnerHTML={{ __html: descriptionHtml }} />
     </div>
   );
 };
 
-export { Lessons };
+const getServerSideProps: GetServerSideProps = async ({ query }) => {
+  const lessonMarkdown = await getLessonMarkdown(query.slug as string);
+
+  return {
+    props: {
+      descriptionHtml: lessonMarkdown.contentHtml,
+    },
+  };
+};
+
+export { Lessons, getServerSideProps };

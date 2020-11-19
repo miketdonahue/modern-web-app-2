@@ -1,1 +1,1 @@
-export { Lessons } from './[slug]';
+export { Lessons, getServerSideProps } from './[slug]';

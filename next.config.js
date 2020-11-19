@@ -13,7 +13,7 @@ module.exports = withBundleAnalyzer({
     maxInactiveAge: 300000, // 5 minutes
     pagesBufferLength: 5,
   },
-  webpack: (config) => {
+  webpack: (config, { isServer }) => {
     config.module.rules.push({
       test: /\.(png|jpg|svg|eot|otf|ttf|woff|woff2)$/,
       use: {
@@ -26,6 +26,12 @@ module.exports = withBundleAnalyzer({
         },
       },
     });
+
+    if (!isServer) {
+      config.node = {
+        fs: 'empty',
+      };
+    }
 
     return config;
   },

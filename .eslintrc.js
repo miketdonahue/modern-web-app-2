@@ -34,6 +34,7 @@ module.exports = {
     'prefer-destructuring': 0,
     'react/destructuring-assignment': 0,
     '@typescript-eslint/camelcase': 0,
+    'react/no-danger': 0,
 
     // Must be turned off in favor of "@typescript-eslint/no-redeclare"
     'no-redeclare': 'off',
