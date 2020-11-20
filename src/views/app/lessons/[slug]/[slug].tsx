@@ -10,8 +10,12 @@ import {
 } from '@modules/queries/product-videos';
 import { VideoPlayer } from '@components/app/video-player';
 import { Button } from '@components/app';
+import { useGetGithubCode } from '@modules/queries/github';
 import { ReducerAction } from '@typings/react';
 import { markdownToHtml } from '@modules/markdown-to-html';
+import { PrismLight as SyntaxHighlighter } from 'react-syntax-highlighter';
+import typescript from 'react-syntax-highlighter/dist/cjs/languages/prism/typescript';
+import atomDark from 'react-syntax-highlighter/dist/cjs/styles/prism/atom-dark';
 import { ReducerState, initialState, types } from './reducer';
 
 const SocialSharing = dynamic(() => import('@features/social-sharing'), {
@@ -22,12 +26,16 @@ type LessonsProps = {
   descriptionHtml: string;
 };
 
+SyntaxHighlighter.registerLanguage('typescript', typescript);
+
 const Lessons = ({ descriptionHtml }: LessonsProps) => {
   const router = useRouter();
+  const lessonSlug = router.query.slug as string;
   const playerRef = React.useRef(null);
+  const { data: response } = useGetGithubCode(`${lessonSlug}.ts`);
   const [setProductVideoWatched] = useSetProductVideoWatched();
 
-  const lessonSlug = router.query.slug as string;
+  const lessonCode = response?.data;
 
   const [state, dispatch] = React.useReducer(
     (
@@ -172,6 +180,19 @@ const Lessons = ({ descriptionHtml }: LessonsProps) => {
       />
 
       <div dangerouslySetInnerHTML={{ __html: descriptionHtml }} />
+
+      {lessonCode?.attributes.code && (
+        <div className="text-sm">
+          <SyntaxHighlighter
+            language="typescript"
+            style={atomDark}
+            wrapLongLines
+            showLineNumbers
+          >
+            {lessonCode?.attributes.code}
+          </SyntaxHighlighter>
+        </div>
+      )}
     </div>
   );
 };

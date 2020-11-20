@@ -70,4 +70,9 @@ export const errorTypes = {
     detail:
       'Sorry, we could not find your purchase order. Please contact support.',
   },
+  GITHUB_CODE_NOT_FOUND: {
+    status: 404,
+    code: 'GITHUB_CODE_NOT_FOUND',
+    detail: 'We could not display the code sample.',
+  },
 };
