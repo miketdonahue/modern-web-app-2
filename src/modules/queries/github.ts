@@ -14,8 +14,25 @@ export const useGetGithubCode = (
   AxiosError<ErrorResponse>
 > => {
   return useQuery(
-    '/api/v1/github/code',
+    ['/api/v1/github/code', filename],
     () => dataSources.getGithubCode(filename),
+    options || {}
+  );
+};
+
+export const useGetGithubMarkdown = (
+  filename: string,
+  options?: QueryConfig<
+    AxiosResponse<Data<{ contents: string }>>,
+    AxiosError<ErrorResponse>
+  >
+): QueryResult<
+  AxiosResponse<Data<{ contents: string }>>,
+  AxiosError<ErrorResponse>
+> => {
+  return useQuery(
+    ['/api/v1/github/file-contents', filename],
+    () => dataSources.getGithubMarkdown(filename),
     options || {}
   );
 };

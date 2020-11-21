@@ -1,6 +1,5 @@
 import React from 'react';
 import cx from 'classnames';
-import { GetServerSideProps } from 'next';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
 import { useVideo } from '@hooks/use-video';
@@ -9,10 +8,12 @@ import {
   useSetProductVideoWatched,
 } from '@modules/queries/product-videos';
 import { VideoPlayer } from '@components/app/video-player';
+import {
+  useGetGithubCode,
+  useGetGithubMarkdown,
+} from '@modules/queries/github';
 import { Button } from '@components/app';
-import { useGetGithubCode } from '@modules/queries/github';
 import { ReducerAction } from '@typings/react';
-import { markdownToHtml } from '@modules/markdown-to-html';
 import { PrismLight as SyntaxHighlighter } from 'react-syntax-highlighter';
 import typescript from 'react-syntax-highlighter/dist/cjs/languages/prism/typescript';
 import atomDark from 'react-syntax-highlighter/dist/cjs/styles/prism/atom-dark';
@@ -22,20 +23,32 @@ const SocialSharing = dynamic(() => import('@features/social-sharing'), {
   ssr: false,
 });
 
-type LessonsProps = {
-  descriptionHtml: string;
-};
-
 SyntaxHighlighter.registerLanguage('typescript', typescript);
 
-const Lessons = ({ descriptionHtml }: LessonsProps) => {
+const Lessons = () => {
   const router = useRouter();
   const lessonSlug = router.query.slug as string;
   const playerRef = React.useRef(null);
-  const { data: response } = useGetGithubCode(`${lessonSlug}.ts`);
   const [setProductVideoWatched] = useSetProductVideoWatched();
+  const { data: codeResponse } = useGetGithubCode(`${lessonSlug}/code.ts`, {
+    enabled: router.query.slug,
+  });
+  const { data: descriptionResponse } = useGetGithubMarkdown(
+    `${lessonSlug}/description.md`,
+    {
+      enabled: router.query.slug,
+    }
+  );
+  const { data: additionalResourcesResponse } = useGetGithubMarkdown(
+    `${lessonSlug}/additional-resources.md`,
+    {
+      enabled: router.query.slug,
+    }
+  );
 
-  const lessonCode = response?.data;
+  const lessonCode = codeResponse?.data;
+  const lessonDescription = descriptionResponse?.data;
+  const lessonAdditionalResources = additionalResourcesResponse?.data;
 
   const [state, dispatch] = React.useReducer(
     (
@@ -179,7 +192,17 @@ const Lessons = ({ descriptionHtml }: LessonsProps) => {
         facebook={{ title: 'title' }}
       />
 
-      <div dangerouslySetInnerHTML={{ __html: descriptionHtml }} />
+      <div
+        dangerouslySetInnerHTML={{
+          __html: lessonDescription?.attributes.contents || '',
+        }}
+      />
+
+      <div
+        dangerouslySetInnerHTML={{
+          __html: lessonAdditionalResources?.attributes.contents || '',
+        }}
+      />
 
       {lessonCode?.attributes.code && (
         <div className="text-sm">
@@ -197,17 +220,4 @@ const Lessons = ({ descriptionHtml }: LessonsProps) => {
   );
 };
 
-const getServerSideProps: GetServerSideProps = async ({ query }) => {
-  const lessonMarkdown = await markdownToHtml(
-    'src/views/app/lessons/descriptions',
-    query.slug as string
-  );
-
-  return {
-    props: {
-      descriptionHtml: lessonMarkdown.contentHtml,
-    },
-  };
-};
-
-export { Lessons, getServerSideProps };
+export { Lessons };

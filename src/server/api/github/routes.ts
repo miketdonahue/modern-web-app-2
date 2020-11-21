@@ -8,5 +8,10 @@ export default {
       method: 'get',
       controller: controller.getGithubCode,
     },
+    {
+      path: '/file-contents',
+      method: 'get',
+      controller: controller.getGithubMarkdown,
+    },
   ],
 };

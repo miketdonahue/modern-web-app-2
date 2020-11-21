@@ -75,4 +75,9 @@ export const errorTypes = {
     code: 'GITHUB_CODE_NOT_FOUND',
     detail: 'We could not display the code sample.',
   },
+  GITHUB_FILE_NOT_FOUND: {
+    status: 404,
+    code: 'GITHUB_FILE_NOT_FOUND',
+    detail: 'We could not display the contents of this file.',
+  },
 };

@@ -11,3 +11,13 @@ export const getGithubCode = async (
 
   return response.data;
 };
+
+export const getGithubMarkdown = async (
+  filename: string
+): Promise<AxiosResponse<Data<{ contents: string }>>> => {
+  const response = await request.get('/api/v1/github/file-contents', {
+    params: { filename },
+  });
+
+  return response.data;
+};
