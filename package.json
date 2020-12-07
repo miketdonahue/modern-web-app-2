@@ -48,7 +48,7 @@
     "express": "4.17.1",
     "focus-visible": "5.2.0",
     "formik": "2.2.5",
-    "framer-motion": "2.9.4",
+    "framer-motion": "2.9.5",
     "glob": "7.1.6",
     "googleapis": "64.0.0",
     "helmet": "4.2.0",
