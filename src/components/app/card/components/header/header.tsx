@@ -8,20 +8,18 @@ interface HeaderProps extends React.HTMLAttributes<HTMLDivElement> {
   className?: string;
 }
 
-const Header = ({ children, className, ...restOfProps }: HeaderProps) => {
-  return (
-    <CardContext.Consumer>
-      {() => {
-        const headerClasses = cx(styles.header, {}, className);
+const Header = ({ children, className, ...restOfProps }: HeaderProps) => (
+  <CardContext.Consumer>
+    {() => {
+      const headerClasses = cx(styles.header, {}, className);
 
-        return (
-          <div className={headerClasses} {...restOfProps}>
-            {children}
-          </div>
-        );
-      }}
-    </CardContext.Consumer>
-  );
-};
+      return (
+        <div className={headerClasses} {...restOfProps}>
+          {children}
+        </div>
+      );
+    }}
+  </CardContext.Consumer>
+);
 
 export { Header };

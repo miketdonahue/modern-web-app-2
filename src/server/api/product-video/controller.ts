@@ -80,18 +80,16 @@ const getProductVideos = async (
     [product?.id]
   );
 
-  const transformedProductVideos = productVideos.map((video) => {
-    return {
-      attributes: { ...video },
-      meta: {
-        watched: video.watched,
-      },
-    };
-  });
+  const transformedProductVideos = productVideos.map((video) => ({
+    attributes: { ...video },
+    meta: {
+      watched: video.watched,
+    },
+  }));
 
-  const response: ApiResponseWithData<Partial<
-    ProductVideo & { watched: boolean }
-  >> = {
+  const response: ApiResponseWithData<
+    Partial<ProductVideo & { watched: boolean }>
+  > = {
     data: transformedProductVideos,
   };
 

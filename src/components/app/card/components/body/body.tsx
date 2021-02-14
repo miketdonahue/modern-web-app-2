@@ -14,25 +14,23 @@ const Body = ({
   children,
   className,
   ...restOfProps
-}: BodyProps) => {
-  return (
-    <CardContext.Consumer>
-      {() => {
-        const bodyClasses = cx(styles.body, {}, className);
+}: BodyProps) => (
+  <CardContext.Consumer>
+    {() => {
+      const bodyClasses = cx(styles.body, {}, className);
 
-        const childrenNode =
-          typeof children === 'string' && characterLimit && characterLimit > 0
-            ? `${children.slice(0, characterLimit)}...`
-            : children;
+      const childrenNode =
+        typeof children === 'string' && characterLimit && characterLimit > 0
+          ? `${children.slice(0, characterLimit)}...`
+          : children;
 
-        return (
-          <div className={bodyClasses} {...restOfProps}>
-            {childrenNode}
-          </div>
-        );
-      }}
-    </CardContext.Consumer>
-  );
-};
+      return (
+        <div className={bodyClasses} {...restOfProps}>
+          {childrenNode}
+        </div>
+      );
+    }}
+  </CardContext.Consumer>
+);
 
 export { Body };

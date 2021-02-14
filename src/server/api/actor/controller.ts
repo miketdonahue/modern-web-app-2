@@ -39,11 +39,9 @@ const getActorCourses = async (req: Request, res: Response) => {
     [actorId]
   );
 
-  const transformedCourses = courses.map((course) => {
-    return {
-      attributes: { ...course },
-    };
-  });
+  const transformedCourses = courses.map((course) => ({
+    attributes: { ...course },
+  }));
 
   const response: ApiResponseWithData<Partial<Product>> = {
     data: transformedCourses,

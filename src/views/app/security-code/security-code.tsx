@@ -27,11 +27,11 @@ const SecurityCode = () => {
     onSubmit: () => {},
   });
 
-  const [mutate, { isLoading }] = useMutation(
+  const { mutate, isLoading } = useMutation(
     (variables: any) => request.post('/api/v1/auth/security-code', variables),
     {
       onError: (error: AxiosError<ErrorResponse>): any => {
-        return error?.response?.data?.error.map((e) => {
+        error?.response?.data?.error.map((e) => {
           if (e.code === 'CODE_EXPIRED') {
             formik.setFieldValue('code', '');
             return setInfoAlerts([...infoAlerts, e.detail || '']);
@@ -181,9 +181,9 @@ const SecurityCode = () => {
                         <AlertInfo size={18} />
                       </div>
                       <Alert.Content>
-                        {infoAlerts.map((message: string) => {
-                          return <span key={uuid()}>{message}</span>;
-                        })}
+                        {infoAlerts.map((message: string) => (
+                          <span key={uuid()}>{message}</span>
+                        ))}
                       </Alert.Content>
                     </Alert>
                   )}

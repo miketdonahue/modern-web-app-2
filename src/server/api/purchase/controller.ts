@@ -38,14 +38,12 @@ const getPurchases = async (req: Request, res: Response) => {
     return res.status(errorTypes.PURCHASE_NOT_FOUND.status).json(errorResponse);
   }
 
-  const transformedPurchases = purchases.map((purchase) => {
-    return {
-      attributes: { ...purchase },
-      relationships: {
-        actor: { ...actor },
-      },
-    };
-  });
+  const transformedPurchases = purchases.map((purchase) => ({
+    attributes: { ...purchase },
+    relationships: {
+      actor: { ...actor },
+    },
+  }));
 
   const response: GetPurchaseResponse = {
     data: transformedPurchases,

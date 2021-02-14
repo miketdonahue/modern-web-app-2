@@ -8,20 +8,18 @@ interface ContentProps extends React.HTMLAttributes<HTMLDivElement> {
   className?: string;
 }
 
-const Content = ({ children, className, ...restOfProps }: ContentProps) => {
-  return (
-    <CardContext.Consumer>
-      {() => {
-        const contentClasses = cx(styles.content, {}, className);
+const Content = ({ children, className, ...restOfProps }: ContentProps) => (
+  <CardContext.Consumer>
+    {() => {
+      const contentClasses = cx(styles.content, {}, className);
 
-        return (
-          <div className={contentClasses} {...restOfProps}>
-            {children}
-          </div>
-        );
-      }}
-    </CardContext.Consumer>
-  );
-};
+      return (
+        <div className={contentClasses} {...restOfProps}>
+          {children}
+        </div>
+      );
+    }}
+  </CardContext.Consumer>
+);
 
 export { Content };

@@ -8,16 +8,14 @@ interface ImageProps extends React.ImgHTMLAttributes<HTMLImageElement> {
   className?: string;
 }
 
-const Image = ({ alt, className, ...restOfProps }: ImageProps) => {
-  return (
-    <CardContext.Consumer>
-      {() => {
-        const imageClasses = cx(styles.image, {}, className);
+const Image = ({ alt, className, ...restOfProps }: ImageProps) => (
+  <CardContext.Consumer>
+    {() => {
+      const imageClasses = cx(styles.image, {}, className);
 
-        return <img alt={alt} className={imageClasses} {...restOfProps} />;
-      }}
-    </CardContext.Consumer>
-  );
-};
+      return <img alt={alt} className={imageClasses} {...restOfProps} />;
+    }}
+  </CardContext.Consumer>
+);
 
 export { Image };

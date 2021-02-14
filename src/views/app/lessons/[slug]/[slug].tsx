@@ -29,20 +29,20 @@ const Lessons = () => {
   const router = useRouter();
   const lessonSlug = router.query.slug as string;
   const playerRef = React.useRef(null);
-  const [setProductVideoWatched] = useSetProductVideoWatched();
+  const { mutate: setProductVideoWatched } = useSetProductVideoWatched();
   const { data: codeResponse } = useGetGithubCode(`${lessonSlug}/code.ts`, {
-    enabled: router.query.slug,
+    enabled: !!router.query.slug,
   });
   const { data: descriptionResponse } = useGetGithubMarkdown(
     `${lessonSlug}/description.md`,
     {
-      enabled: router.query.slug,
+      enabled: !!router.query.slug,
     }
   );
   const { data: additionalResourcesResponse } = useGetGithubMarkdown(
     `${lessonSlug}/additional-resources.md`,
     {
-      enabled: router.query.slug,
+      enabled: !!router.query.slug,
     }
   );
 
@@ -90,7 +90,7 @@ const Lessons = () => {
       lessonSlug,
     },
     {
-      enabled: lessonSlug,
+      enabled: !!lessonSlug,
     }
   );
 

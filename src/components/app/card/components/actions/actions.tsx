@@ -8,20 +8,18 @@ interface ActionsProps extends React.HTMLAttributes<HTMLDivElement> {
   className?: string;
 }
 
-const Actions = ({ children, className, ...restOfProps }: ActionsProps) => {
-  return (
-    <CardContext.Consumer>
-      {() => {
-        const actionsClasses = cx(styles.actions, {}, className);
+const Actions = ({ children, className, ...restOfProps }: ActionsProps) => (
+  <CardContext.Consumer>
+    {() => {
+      const actionsClasses = cx(styles.actions, {}, className);
 
-        return (
-          <div className={actionsClasses} {...restOfProps}>
-            {children}
-          </div>
-        );
-      }}
-    </CardContext.Consumer>
-  );
-};
+      return (
+        <div className={actionsClasses} {...restOfProps}>
+          {children}
+        </div>
+      );
+    }}
+  </CardContext.Consumer>
+);
 
 export { Actions };

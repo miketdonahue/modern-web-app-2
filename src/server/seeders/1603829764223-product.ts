@@ -15,17 +15,15 @@ export class Product1603829764223 implements MigrationInterface {
     });
 
     if (stripePrices && stripePrices.data && stripePrices.data.length) {
-      const products = stripePrices.data.map((item: any) => {
-        return {
-          vendor_id: item.product.id,
-          name: item.product.name,
-          slug: item.product.metadata.slug,
-          image_url: `http://localhost:8080/images/products/${item.product.id}.jpg`,
-          description: item.product.description || '',
-          statement_descriptor: item.product.statement_descriptor || '',
-          price: item.unit_amount || 0,
-        };
-      });
+      const products = stripePrices.data.map((item: any) => ({
+        vendor_id: item.product.id,
+        name: item.product.name,
+        slug: item.product.metadata.slug,
+        image_url: `http://localhost:8080/images/products/${item.product.id}.jpg`,
+        description: item.product.description || '',
+        statement_descriptor: item.product.statement_descriptor || '',
+        price: item.unit_amount || 0,
+      }));
 
       await db.insert(Product, products);
     }

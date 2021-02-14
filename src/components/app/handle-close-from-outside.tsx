@@ -5,9 +5,9 @@ type HandleCloseFromOutsideProps = {
   children: React.ReactNode;
 };
 
-const Wrapper = React.forwardRef(({ children }: any, ref: any) => {
-  return <span ref={ref}>{children}</span>;
-});
+const Wrapper = React.forwardRef(({ children }: any, ref: any) => (
+  <span ref={ref}>{children}</span>
+));
 
 /**
  * Enables close on 'Escape' key and provides outside click handler

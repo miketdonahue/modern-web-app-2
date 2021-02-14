@@ -7,15 +7,13 @@ export interface LinkProps
   children: React.ReactNode;
 }
 
-export const Link = ({ children, ...restOfProps }: LinkProps) => {
-  return (
-    <button
-      type="button"
-      onClick={restOfProps.onClick}
-      className={cx(styles.link, restOfProps.className)}
-      {...restOfProps}
-    >
-      {children}
-    </button>
-  );
-};
+export const Link = ({ children, ...restOfProps }: LinkProps) => (
+  <button
+    type="button"
+    onClick={restOfProps.onClick}
+    className={cx(styles.link, restOfProps.className)}
+    {...restOfProps}
+  >
+    {children}
+  </button>
+);

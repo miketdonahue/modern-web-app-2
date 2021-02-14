@@ -9,7 +9,7 @@ export const OrderComplete = () => {
     {
       orderNumber: router.query.order_number as string,
     },
-    { enabled: router.query.order_number }
+    { enabled: !!router.query.order_number }
   );
 
   const purchase = purchases?.data[0];

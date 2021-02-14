@@ -34,7 +34,7 @@ const SignInForm = ({
     }
   }, [additionalServerErrors]);
 
-  const [mutate, { isLoading }] = useMutation(
+  const { mutate, isLoading } = useMutation(
     (variables: any) => request.post('/api/v1/auth/login', variables),
     {
       onError: (error: AxiosError<ErrorResponse>) => {

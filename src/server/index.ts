@@ -77,9 +77,7 @@ nextApp
     });
 
     // Catch all requests
-    expressApp.get('*', (req, res) => {
-      return handle(req, res);
-    });
+    expressApp.get('*', (req, res) => handle(req, res));
 
     const serverInstance = expressApp.listen(port, () => {
       logger.info(

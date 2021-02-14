@@ -1,4 +1,4 @@
-import { useQuery, QueryConfig, QueryResult } from 'react-query';
+import { useQuery, UseQueryOptions, UseQueryResult } from 'react-query';
 import { AxiosResponse, AxiosError } from 'axios';
 import { GetPurchaseData } from '@typings/api/purchase';
 import { ErrorResponse } from '@modules/api-response';
@@ -8,14 +8,16 @@ type PurchasesGetBy = { orderNumber?: string };
 
 export const useGetPurchases = (
   getBy: PurchasesGetBy,
-  options?: QueryConfig<
+  options?: UseQueryOptions<
     AxiosResponse<GetPurchaseData[]>,
     AxiosError<ErrorResponse>
   >
-): QueryResult<AxiosResponse<GetPurchaseData[]>, AxiosError<ErrorResponse>> => {
-  return useQuery(
+): UseQueryResult<
+  AxiosResponse<GetPurchaseData[]>,
+  AxiosError<ErrorResponse>
+> =>
+  useQuery(
     '/api/v1/purchases',
     () => dataSources.getPurchases({ orderNumber: getBy.orderNumber }),
     options || {}
   );
-};

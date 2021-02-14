@@ -86,8 +86,8 @@ const getSchemaFiles = (
   dirs: any[],
   recursive: boolean,
   globOptions: any
-): any => {
-  return dirs
+): any =>
+  dirs
     .map((dir) => {
       if (isGlob(dir)) {
         return readGlobSync(dir, globOptions);
@@ -100,7 +100,6 @@ const getSchemaFiles = (
       return readDirSync(dir);
     })
     .flat();
-};
 
 /**
  * Load contexts of given files
