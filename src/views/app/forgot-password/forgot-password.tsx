@@ -10,7 +10,7 @@ import styles from './forgot-password.module.scss';
 const ForgotPassword = () => {
   const router = useRouter();
 
-  const [mutate, { isLoading }] = useMutation(
+  const { mutate, isLoading } = useMutation(
     (variables: any) => request.post('/api/v1/auth/forgot-password', variables),
     {
       onSuccess: () => {

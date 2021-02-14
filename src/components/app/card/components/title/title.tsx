@@ -8,20 +8,18 @@ interface TitleProps extends React.HTMLAttributes<HTMLDivElement> {
   className?: string;
 }
 
-const Title = ({ children, className, ...restOfProps }: TitleProps) => {
-  return (
-    <CardContext.Consumer>
-      {() => {
-        const titleClasses = cx(styles.title, {}, className);
+const Title = ({ children, className, ...restOfProps }: TitleProps) => (
+  <CardContext.Consumer>
+    {() => {
+      const titleClasses = cx(styles.title, {}, className);
 
-        return (
-          <div className={titleClasses} {...restOfProps}>
-            {children}
-          </div>
-        );
-      }}
-    </CardContext.Consumer>
-  );
-};
+      return (
+        <div className={titleClasses} {...restOfProps}>
+          {children}
+        </div>
+      );
+    }}
+  </CardContext.Consumer>
+);
 
 export { Title };

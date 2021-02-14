@@ -16,11 +16,11 @@ const SendCode = () => {
   const router = useRouter();
   const [serverErrors, setServerErrors] = useState<Error[]>([]);
 
-  const [mutate, { isLoading }] = useMutation(
+  const { mutate, isLoading } = useMutation(
     (variables: any) => request.post('/api/v1/auth/send-code', variables),
     {
       onError: (error: AxiosError<ErrorResponse>) => {
-        return setServerErrors(error?.response?.data?.error || []);
+        setServerErrors(error?.response?.data?.error || []);
       },
       onSuccess: () => {
         if (router.query.type === 'forgot-password') {

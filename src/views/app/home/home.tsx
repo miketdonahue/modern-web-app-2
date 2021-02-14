@@ -28,7 +28,7 @@ const Home = () => {
   const cookies = new Cookies();
   const token = cookies.get(config.server.auth.jwt.tokenNames.payload);
 
-  const [logOut] = useMutation(
+  const { mutate: logOut } = useMutation(
     (variables: any) => request.post('/api/v1/auth/logout', variables),
     {
       onSuccess: () => {

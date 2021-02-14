@@ -13,16 +13,16 @@ export type ShoppingCartContextProps = {
   calculateQuantity: (items: CartProduct[]) => number;
 };
 
-export const ShoppingCartContext = React.createContext<
-  ShoppingCartContextProps
->({
-  items: [],
-  quantity: 0,
-  total: 0,
-  addCartItem: () => {},
-  incrementItem: () => {},
-  decrementItem: () => {},
-  removeCartItem: () => {},
-  deleteCart: () => {},
-  calculateQuantity: () => 0,
-});
+export const ShoppingCartContext = React.createContext<ShoppingCartContextProps>(
+  {
+    items: [],
+    quantity: 0,
+    total: 0,
+    addCartItem: () => {},
+    incrementItem: () => {},
+    decrementItem: () => {},
+    removeCartItem: () => {},
+    deleteCart: () => {},
+    calculateQuantity: () => 0,
+  }
+);

@@ -21,7 +21,6 @@ export class InitialConstraints1594269292840 implements MigrationInterface {
 
       -- product_video_actor
       ALTER TABLE product_video_actor
-        ADD CONSTRAINT product_video_actor_product_id_fkey FOREIGN KEY (product_id) REFERENCES product (id)
         ADD CONSTRAINT product_video_actor_actor_id_fkey FOREIGN KEY (actor_id) REFERENCES actor (id);
 
       -- cart

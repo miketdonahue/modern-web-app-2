@@ -17,11 +17,11 @@ const ResetPassword = () => {
   const [infoAlerts, setInfoAlerts] = React.useState<string[]>([]);
   const [serverErrors, setServerErrors] = React.useState<Error[]>([]);
 
-  const [mutate, { isLoading }] = useMutation(
+  const { mutate, isLoading } = useMutation(
     (variables: any) => request.post('/api/v1/auth/reset-password', variables),
     {
       onError: (error: AxiosError<ErrorResponse>): any => {
-        return error?.response?.data?.error.map((e: Error) => {
+        error?.response?.data?.error.map((e: Error) => {
           if (e.code === 'CODE_EXPIRED') {
             return setInfoAlerts([...infoAlerts, e.detail || '']);
           }
@@ -192,9 +192,9 @@ const ResetPassword = () => {
                         <AlertInfo size={18} />
                       </div>
                       <Alert.Content>
-                        {infoAlerts.map((message: string) => {
-                          return <span key={uuid()}>{message}</span>;
-                        })}
+                        {infoAlerts.map((message: string) => (
+                          <span key={uuid()}>{message}</span>
+                        ))}
                       </Alert.Content>
                     </Alert>
                   )}

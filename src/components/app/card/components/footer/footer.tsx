@@ -8,20 +8,18 @@ interface FooterProps extends React.HTMLAttributes<HTMLDivElement> {
   className?: string;
 }
 
-const Footer = ({ children, className, ...restOfProps }: FooterProps) => {
-  return (
-    <CardContext.Consumer>
-      {() => {
-        const footerClasses = cx(styles.footer, {}, className);
+const Footer = ({ children, className, ...restOfProps }: FooterProps) => (
+  <CardContext.Consumer>
+    {() => {
+      const footerClasses = cx(styles.footer, {}, className);
 
-        return (
-          <div className={footerClasses} {...restOfProps}>
-            {children}
-          </div>
-        );
-      }}
-    </CardContext.Consumer>
-  );
-};
+      return (
+        <div className={footerClasses} {...restOfProps}>
+          {children}
+        </div>
+      );
+    }}
+  </CardContext.Consumer>
+);
 
 export { Footer };

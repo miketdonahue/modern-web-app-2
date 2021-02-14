@@ -17,7 +17,7 @@ const Course = ({ descriptionHtml }: CourseProps) => {
       productSlug: router.query.slug as string,
     },
     {
-      enabled: router.query.slug,
+      enabled: !!router.query.slug,
     }
   );
 

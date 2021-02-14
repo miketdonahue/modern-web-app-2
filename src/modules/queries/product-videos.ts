@@ -1,10 +1,10 @@
 import {
   useQuery,
   useMutation,
-  queryCache,
-  QueryConfig,
-  QueryResult,
-  MutationConfig,
+  QueryClient,
+  UseQueryOptions,
+  UseQueryResult,
+  UseMutationOptions,
 } from 'react-query';
 import { AxiosResponse, AxiosError } from 'axios';
 import { ErrorResponse } from '@modules/api-response';
@@ -18,12 +18,15 @@ type ProductVideosBGetBy = {
 
 export const useGetProductVideos = (
   getBy: ProductVideosBGetBy,
-  options?: QueryConfig<
+  options?: UseQueryOptions<
     AxiosResponse<GetProductVideo[]>,
     AxiosError<ErrorResponse>
   >
-): QueryResult<AxiosResponse<GetProductVideo[]>, AxiosError<ErrorResponse>> => {
-  return useQuery(
+): UseQueryResult<
+  AxiosResponse<GetProductVideo[]>,
+  AxiosError<ErrorResponse>
+> =>
+  useQuery(
     '/api/v1/product-videos',
     () =>
       dataSources.getProductVideos({
@@ -32,21 +35,24 @@ export const useGetProductVideos = (
       }),
     options || {}
   );
-};
 
 export const useSetProductVideoWatched = (
-  options?: MutationConfig<
+  options?: UseMutationOptions<
     AxiosResponse<Partial<GetProductVideo>>,
     AxiosError<ErrorResponse>,
     { productVideoId: string }
   >
 ) => {
+  const queryClient = new QueryClient();
+
   return useMutation(dataSources.setProductVideoWatched, {
     onMutate: (data) => {
-      queryCache.cancelQueries('/api/v1/product-videos');
-      const previousRecords = queryCache.getQueryData('/api/v1/product-videos');
+      queryClient.cancelQueries('/api/v1/product-videos');
+      const previousRecords = queryClient.getQueryData(
+        '/api/v1/product-videos'
+      );
 
-      queryCache.setQueryData('/api/v1/product-videos', (records: any) => {
+      queryClient.setQueryData('/api/v1/product-videos', (records: any) => {
         const recordToUpdate = records.data.find(
           (item: GetProductVideo) => item.attributes.id === data.productVideoId
         );
@@ -59,10 +65,10 @@ export const useSetProductVideoWatched = (
       });
 
       return () =>
-        queryCache.setQueryData('/api/v1/product-videos', previousRecords);
+        queryClient.setQueryData('/api/v1/product-videos', previousRecords);
     },
     onSettled: (data, error, variables, onMutateValue) => {
-      queryCache.invalidateQueries('/api/v1/product-videos');
+      queryClient.invalidateQueries('/api/v1/product-videos');
 
       if (options?.onSettled)
         options.onSettled(data, error, variables, onMutateValue);

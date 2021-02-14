@@ -1,14 +1,14 @@
-import { useQuery, QueryResult, QueryConfig } from 'react-query';
+import { useQuery, UseQueryResult, UseQueryOptions } from 'react-query';
 import { AxiosResponse, AxiosError } from 'axios';
 import { Data, ErrorResponse } from '@modules/api-response';
 import { request } from '@modules/request';
 
 const isAuthenticated = (
-  options?: QueryConfig<
+  options?: UseQueryOptions<
     AxiosResponse<Data<{ id: string }>>,
     AxiosError<ErrorResponse>
   >
-): QueryResult<
+): UseQueryResult<
   AxiosResponse<Data<{ id: string }>>,
   AxiosError<ErrorResponse>
 > => {

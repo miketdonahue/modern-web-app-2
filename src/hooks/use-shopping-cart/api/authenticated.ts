@@ -19,14 +19,12 @@ const serverAddItem = async (
   );
 
   const transformedItems = response.data.data.map(
-    (result: CartMethodResponse) => {
-      return {
-        attributes: {
-          ...result.relationships?.product,
-          quantity: result.attributes.quantity,
-        },
-      };
-    }
+    (result: CartMethodResponse) => ({
+      attributes: {
+        ...result.relationships?.product,
+        quantity: result.attributes.quantity,
+      },
+    })
   );
 
   dispatch({
@@ -52,14 +50,12 @@ const serverIncrementItem = async (
   );
 
   const transformedItems = response.data.data.map(
-    (result: CartMethodResponse) => {
-      return {
-        attributes: {
-          ...result.relationships?.product,
-          quantity: result.attributes.quantity,
-        },
-      };
-    }
+    (result: CartMethodResponse) => ({
+      attributes: {
+        ...result.relationships?.product,
+        quantity: result.attributes.quantity,
+      },
+    })
   );
 
   dispatch({
@@ -85,14 +81,12 @@ const serverDecrementItem = async (
   );
 
   const transformedItems = response.data.data.map(
-    (result: CartMethodResponse) => {
-      return {
-        attributes: {
-          ...result.relationships?.product,
-          quantity: result.attributes.quantity,
-        },
-      };
-    }
+    (result: CartMethodResponse) => ({
+      attributes: {
+        ...result.relationships?.product,
+        quantity: result.attributes.quantity,
+      },
+    })
   );
 
   dispatch({
@@ -118,14 +112,12 @@ const serverRemoveItem = async (
   );
 
   const transformedItems = response.data.data.map(
-    (result: CartMethodResponse) => {
-      return {
-        attributes: {
-          ...result.relationships?.product,
-          quantity: result.attributes.quantity,
-        },
-      };
-    }
+    (result: CartMethodResponse) => ({
+      attributes: {
+        ...result.relationships?.product,
+        quantity: result.attributes.quantity,
+      },
+    })
   );
 
   dispatch({

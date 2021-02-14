@@ -16,11 +16,9 @@ const getProducts = async (req: Request, res: Response) => {
   const db = getManager();
 
   const products = await db.find(Product, {});
-  const transformedProducts = products.map((product) => {
-    return {
-      attributes: { ...product },
-    };
-  });
+  const transformedProducts = products.map((product) => ({
+    attributes: { ...product },
+  }));
 
   const response: ApiResponseWithData<Partial<Product>> = {
     data: transformedProducts,

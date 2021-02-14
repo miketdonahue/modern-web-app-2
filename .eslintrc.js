@@ -35,6 +35,7 @@ module.exports = {
     'react/destructuring-assignment': 0,
     '@typescript-eslint/camelcase': 0,
     'react/no-danger': 0,
+    'arrow-body-style': ['error', 'as-needed'],
 
     // Must be turned off in favor of "@typescript-eslint/no-redeclare"
     'no-redeclare': 'off',

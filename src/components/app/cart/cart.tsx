@@ -8,21 +8,19 @@ interface CartProps extends React.HTMLAttributes<HTMLDivElement> {
   size?: number;
 }
 
-const Cart = ({ count, size = 30, className, ...restOfProps }: CartProps) => {
-  return (
-    <div className="relative cursor-pointer" {...restOfProps}>
-      {count > 0 && (
-        <div
-          className={cx(styles.badge, className)}
-          style={{ fontSize: size / 3 + 4 }}
-        >
-          {count}
-        </div>
-      )}
+const Cart = ({ count, size = 30, className, ...restOfProps }: CartProps) => (
+  <div className="relative cursor-pointer" {...restOfProps}>
+    {count > 0 && (
+      <div
+        className={cx(styles.badge, className)}
+        style={{ fontSize: size / 3 + 4 }}
+      >
+        {count}
+      </div>
+    )}
 
-      <Icon size={size} />
-    </div>
-  );
-};
+    <Icon size={size} />
+  </div>
+);
 
 export { Cart };

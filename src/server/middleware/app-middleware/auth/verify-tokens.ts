@@ -27,9 +27,7 @@ export const verifyJwt = (
   return jwt.verify(
     constructedToken,
     process.env.JWT_SECRET || '',
-    (err: any, decoded: any) => {
-      return onVerify(err, decoded);
-    }
+    (err: any, decoded: any) => onVerify(err, decoded)
   );
 };
 

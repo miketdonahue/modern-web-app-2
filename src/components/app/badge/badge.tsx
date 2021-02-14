@@ -6,12 +6,10 @@ interface BadgeProps extends React.HTMLAttributes<HTMLDivElement> {
   count: number;
 }
 
-const Badge = ({ count, className, ...restOfProps }: BadgeProps) => {
-  return (
-    <div className={cx(styles.badge, className)} {...restOfProps}>
-      {count}
-    </div>
-  );
-};
+const Badge = ({ count, className, ...restOfProps }: BadgeProps) => (
+  <div className={cx(styles.badge, className)} {...restOfProps}>
+    {count}
+  </div>
+);
 
 export { Badge };

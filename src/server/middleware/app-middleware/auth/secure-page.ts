@@ -11,71 +11,64 @@ const securePageMiddleware = (
   req: Request,
   res: Response,
   next: NextFunction
-) => {
-  return verifyJwt(
-    req.headers?.cookie || '',
-    async (err: any, decoded: any) => {
-      const uc = new Cookies(req.headers && req.headers.cookie);
-      const uCookies = uc.getAll();
+) =>
+  verifyJwt(req.headers?.cookie || '', async (err: any, decoded: any) => {
+    const uc = new Cookies(req.headers && req.headers.cookie);
+    const uCookies = uc.getAll();
 
-      if (err) {
-        if (err.name === 'TokenExpiredError') {
-          logger.info('SECURE-PAGE-MIDDLEWARE: Auth token has expired');
+    if (err) {
+      if (err.name === 'TokenExpiredError') {
+        logger.info('SECURE-PAGE-MIDDLEWARE: Auth token has expired');
 
-          const newToken = await verifyRefreshToken(
-            uCookies[config.server.auth.jwt.tokenNames.refresh]
+        const newToken = await verifyRefreshToken(
+          uCookies[config.server.auth.jwt.tokenNames.refresh]
+        );
+
+        if (!newToken) {
+          logger.warn(
+            'SECURE-PAGE-MIDDLEWARE: Refresh token error, redirecting'
           );
 
-          if (!newToken) {
-            logger.warn(
-              'SECURE-PAGE-MIDDLEWARE: Refresh token error, redirecting'
-            );
-
-            return res.redirect(302, '/app/login');
-          }
-
-          // TODO: change to `secure: true` when HTTPS
-          res.cookie(
-            config.server.auth.jwt.tokenNames.payload,
-            `${newToken.header}.${newToken.body}`,
-            {
-              path: '/',
-              secure: false,
-            }
-          );
-
-          res.cookie(
-            config.server.auth.jwt.tokenNames.signature,
-            newToken.signature,
-            {
-              path: '/',
-              httpOnly: true,
-              secure: false,
-            }
-          );
-
-          logger.info('SECURE-PAGE-MIDDLEWARE: Authenticating user');
-
-          // Add the decoded actor to req for continued access
-          (req as any).actor = decoded;
-          return next();
+          return res.redirect(302, '/app/login');
         }
 
-        logger.warn(
-          { err },
-          'SECURE-PAGE-MIDDLEWARE: Token error, redirecting'
+        // TODO: change to `secure: true` when HTTPS
+        res.cookie(
+          config.server.auth.jwt.tokenNames.payload,
+          `${newToken.header}.${newToken.body}`,
+          {
+            path: '/',
+            secure: false,
+          }
         );
-        return res.redirect(302, '/app/login');
+
+        res.cookie(
+          config.server.auth.jwt.tokenNames.signature,
+          newToken.signature,
+          {
+            path: '/',
+            httpOnly: true,
+            secure: false,
+          }
+        );
+
+        logger.info('SECURE-PAGE-MIDDLEWARE: Authenticating user');
+
+        // Add the decoded actor to req for continued access
+        (req as any).actor = decoded;
+        return next();
       }
 
-      logger.info(`AUTHENTICATE-MIDDLEWARE: Authenticating user`);
-
-      // Add the decoded actor to req for continued access
-      (req as any).actor = decoded;
-      return next();
+      logger.warn({ err }, 'SECURE-PAGE-MIDDLEWARE: Token error, redirecting');
+      return res.redirect(302, '/app/login');
     }
-  );
-};
+
+    logger.info(`AUTHENTICATE-MIDDLEWARE: Authenticating user`);
+
+    // Add the decoded actor to req for continued access
+    (req as any).actor = decoded;
+    return next();
+  });
 
 export const securePage = {
   name: 'secure-page',

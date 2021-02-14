@@ -21,17 +21,15 @@ export const SocialSharing = (props: SocialSharingProps) => {
   const left = window.innerWidth / 2 - width / 2;
   const top = window.innerHeight / 2 - height / 2;
 
-  const getTwitterUrl = () => {
-    return `https://twitter.com/intent/tweet?url=${
+  const getTwitterUrl = () =>
+    `https://twitter.com/intent/tweet?url=${
       props.twitter.urlToShare || window.location.href
     }&text=${encodeURIComponent(props.twitter.title)}`;
-  };
 
-  const getFacebookUrl = () => {
-    return `https://www.facebook.com/sharer/sharer.php?u=${
+  const getFacebookUrl = () =>
+    `https://www.facebook.com/sharer/sharer.php?u=${
       props.facebook.urlToShare || window.location.href
     }&title=${encodeURIComponent(props.facebook.title)}`;
-  };
 
   const windowOptions = `resizable,scrollbars,status,height=${height},width=${width},left=${left},top=${top}`;
 

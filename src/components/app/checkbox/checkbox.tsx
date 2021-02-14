@@ -10,15 +10,13 @@ const Checkbox = ({
   disabled = false,
   className,
   ...restOfProps
-}: CheckboxProps) => {
-  return (
-    <input
-      type="checkbox"
-      className={cx(styles.checkbox, className)}
-      disabled={disabled}
-      {...restOfProps}
-    />
-  );
-};
+}: CheckboxProps) => (
+  <input
+    type="checkbox"
+    className={cx(styles.checkbox, className)}
+    disabled={disabled}
+    {...restOfProps}
+  />
+);
 
 export { Checkbox };

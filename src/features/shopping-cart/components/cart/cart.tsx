@@ -37,8 +37,8 @@ export const Cart = ({ isOpen = false, onVisibleChange }: CartProps) => {
   const [open, setOpen] = React.useState(false);
   const [checkingOut, setCheckingOut] = React.useState(false);
   const [serverErrors, setServerErrors] = React.useState<Error[]>([]);
-  const [createPaymentSession] = useCreatePaymentSession();
-  const [syncCartItems] = useSyncCartItems();
+  const { mutateAsync: createPaymentSession } = useCreatePaymentSession();
+  const { mutate: syncCartItems } = useSyncCartItems();
 
   React.useEffect(() => {
     setOpen(isOpen);
@@ -77,7 +77,7 @@ export const Cart = ({ isOpen = false, onVisibleChange }: CartProps) => {
       await handleCheckout(result.data.attributes.id);
     },
     onError: (error) => {
-      return error?.response?.data?.error.map((e: Error) => {
+      error?.response?.data?.error.map((e: Error) => {
         if (e.code === 'UNAUTHENTICATED') {
           return router.push(
             '/app/login?return_to=checkout',
@@ -122,60 +122,59 @@ export const Cart = ({ isOpen = false, onVisibleChange }: CartProps) => {
               </div>
             )}
 
-            {items?.map((item) => {
-              return (
-                <li key={item.attributes.id} className="py-3">
-                  <div className="flex justify-between space-x-3">
-                    <div>
-                      <img
-                        src={`/images/products/${item.attributes.vendor_id}.jpg`}
-                        alt={item.attributes.name}
-                        className="h-16 w-16 rounded-md"
-                      />
-                    </div>
-                    <div className="flex-1">
-                      <div className="flex flex-col space-y-2">
-                        <div className="flex justify-between space-x-8">
-                          <div>{item.attributes.name}</div>
-                          <div className="font-medium">
-                            {(
-                              (item.attributes.price || 0) / 100
-                            ).toLocaleString('en-US', {
+            {items?.map((item) => (
+              <li key={item.attributes.id} className="py-3">
+                <div className="flex justify-between space-x-3">
+                  <div>
+                    <img
+                      src={`/images/products/${item.attributes.vendor_id}.jpg`}
+                      alt={item.attributes.name}
+                      className="h-16 w-16 rounded-md"
+                    />
+                  </div>
+                  <div className="flex-1">
+                    <div className="flex flex-col space-y-2">
+                      <div className="flex justify-between space-x-8">
+                        <div>{item.attributes.name}</div>
+                        <div className="font-medium">
+                          {((item.attributes.price || 0) / 100).toLocaleString(
+                            'en-US',
+                            {
                               style: 'currency',
                               currency: 'USD',
-                            })}
-                          </div>
+                            }
+                          )}
+                        </div>
+                      </div>
+
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <Incrementor
+                            value={item.attributes?.quantity}
+                            min={1}
+                            onIncrement={() => {
+                              if (incrementItem) incrementItem(item);
+                            }}
+                            onDecrement={() => {
+                              if (decrementItem) decrementItem(item);
+                            }}
+                          />
                         </div>
 
-                        <div className="flex items-center justify-between">
-                          <div>
-                            <Incrementor
-                              value={item.attributes?.quantity}
-                              min={1}
-                              onIncrement={() => {
-                                if (incrementItem) incrementItem(item);
-                              }}
-                              onDecrement={() => {
-                                if (decrementItem) decrementItem(item);
-                              }}
-                            />
-                          </div>
-
-                          <div className={styles.trash}>
-                            <Trash
-                              size={18}
-                              onClick={() => {
-                                if (removeCartItem) removeCartItem(item);
-                              }}
-                            />
-                          </div>
+                        <div className={styles.trash}>
+                          <Trash
+                            size={18}
+                            onClick={() => {
+                              if (removeCartItem) removeCartItem(item);
+                            }}
+                          />
                         </div>
                       </div>
                     </div>
                   </div>
-                </li>
-              );
-            })}
+                </div>
+              </li>
+            ))}
           </ul>
 
           {(quantity || 0) > 0 && (

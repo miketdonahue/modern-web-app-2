@@ -11,8 +11,8 @@ import styles from './login.module.scss';
 const Login = () => {
   const router = useRouter();
   const { items, deleteCart } = useShoppingCart();
-  const [createPaymentSession] = useCreatePaymentSession();
-  const [syncCartItems] = useSyncCartItems();
+  const { mutateAsync: createPaymentSession } = useCreatePaymentSession();
+  const { mutate: syncCartItems } = useSyncCartItems();
 
   const [infoMessage, setInfoMessage] = React.useState('');
   const [serverErrors, setServerErrors] = React.useState<Error[]>([]);

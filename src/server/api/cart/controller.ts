@@ -182,16 +182,14 @@ const addCartItem = async (req: Request, res: Response) => {
     Partial<CartItem>,
     { product: ProductType }
   > = {
-    data: cartItems.map((item) => {
-      return {
-        attributes: { ...item },
-        relationships: {
-          product: {
-            ...(products.find((p) => p.id === item.product_id) as ProductType),
-          },
+    data: cartItems.map((item) => ({
+      attributes: { ...item },
+      relationships: {
+        product: {
+          ...(products.find((p) => p.id === item.product_id) as ProductType),
         },
-      };
-    }),
+      },
+    })),
   };
 
   return res.json(response);
@@ -231,16 +229,14 @@ const incrementCartItem = async (req: Request, res: Response) => {
     Partial<CartItem>,
     { product: ProductType }
   > = {
-    data: cartItems.map((item) => {
-      return {
-        attributes: { ...item },
-        relationships: {
-          product: {
-            ...(products.find((p) => p.id === item.product_id) as ProductType),
-          },
+    data: cartItems.map((item) => ({
+      attributes: { ...item },
+      relationships: {
+        product: {
+          ...(products.find((p) => p.id === item.product_id) as ProductType),
         },
-      };
-    }),
+      },
+    })),
   };
 
   return res.json(response);
@@ -280,16 +276,14 @@ const decrementCartItem = async (req: Request, res: Response) => {
     Partial<CartItem>,
     { product: ProductType }
   > = {
-    data: cartItems.map((item) => {
-      return {
-        attributes: { ...item },
-        relationships: {
-          product: {
-            ...(products.find((p) => p.id === item.product_id) as ProductType),
-          },
+    data: cartItems.map((item) => ({
+      attributes: { ...item },
+      relationships: {
+        product: {
+          ...(products.find((p) => p.id === item.product_id) as ProductType),
         },
-      };
-    }),
+      },
+    })),
   };
 
   return res.json(response);
@@ -332,16 +326,14 @@ const removeCartItem = async (req: Request, res: Response) => {
     Partial<CartItem>,
     { product: ProductType }
   > = {
-    data: cartItems.map((item) => {
-      return {
-        attributes: { ...item },
-        relationships: {
-          product: {
-            ...(products.find((p) => p.id === item.product_id) as ProductType),
-          },
+    data: cartItems.map((item) => ({
+      attributes: { ...item },
+      relationships: {
+        product: {
+          ...(products.find((p) => p.id === item.product_id) as ProductType),
         },
-      };
-    }),
+      },
+    })),
   };
 
   return res.json(response);
@@ -379,13 +371,11 @@ const syncCartItems = async (req: Request, res: Response) => {
   const existingCart = await db.findOne(Cart, { actor_id: userId });
 
   if (existingCart) {
-    const items = cartItems?.map((product) => {
-      return {
-        cart_id: existingCart.id,
-        product_id: product.attributes.id,
-        quantity: product.attributes.quantity,
-      };
-    });
+    const items = cartItems?.map((product) => ({
+      cart_id: existingCart.id,
+      product_id: product.attributes.id,
+      quantity: product.attributes.quantity,
+    }));
 
     const createdCartItems = db.create(CartItem, items);
 
