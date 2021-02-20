@@ -106,7 +106,7 @@ const stripePaymentsWebhook = async (req: Request, res: Response) => {
       const purchaseItems =
         session.line_items?.data.map(async (item: Stripe.LineItem) => {
           const product = await db.findOne(Product, {
-            vendor_id: item.price.product as string,
+            vendor_id: item.price?.product as string,
           });
 
           return {

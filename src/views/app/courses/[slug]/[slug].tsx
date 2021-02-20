@@ -51,15 +51,14 @@ const Course = ({ descriptionHtml }: CourseProps) => {
   );
 };
 
-const getServerSideProps: GetServerSideProps = async ({ query }) => {
+const getServerSideProps: GetServerSideProps = async () => {
   const lessonMarkdown = await markdownToHtml(
-    'src/views/app/courses/descriptions',
-    query.slug as string
+    'src/views/app/courses/descriptions'
   );
 
   return {
     props: {
-      descriptionHtml: lessonMarkdown.contentHtml,
+      descriptionHtml: lessonMarkdown,
     },
   };
 };
