@@ -12,17 +12,6 @@ module.exports = {
       1440: '1440px',
       1600: '1600px',
     },
-    // Set colors from default without unwanted colors included
-    colors: {
-      black: colors.black,
-      white: colors.white,
-      gray: colors.gray,
-      red: colors.red,
-      blue: colors.blue,
-      orange: colors.orange,
-      yellow: colors.yellow,
-      green: colors.green,
-    },
     spacing: {
       px: '1px',
       0: '0',
@@ -54,12 +43,6 @@ module.exports = {
         // Font
         text: colors.gray[700],
         link: colors.green[600],
-
-        // Contextual
-        // error: '',
-        // warning: '',
-        // success: '',
-        // info: '',
       },
       fontFamily: {
         // Add application custom font
@@ -77,10 +60,4 @@ module.exports = {
     './src/features/**/*.{js,ts,jsx,tsx}',
     './src/views/**/*.{js,ts,jsx,tsx}',
   ],
-  future: {
-    removeDeprecatedGapUtilities: true,
-    purgeLayersByDefault: true,
-    defaultLineHeights: true,
-    standardFontWeights: true,
-  },
 };
